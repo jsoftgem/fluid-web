@@ -1,5 +1,10 @@
-<div>
+<div ng-controller="module1Ctrl">
 
     <h1>Page 1</h1>
 
+    <ul>
+        <li ng-repeat="person in data.resultList">
+            {{person.name}}
+        </li>
+    </ul>
 </div>

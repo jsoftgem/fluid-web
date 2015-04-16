@@ -301,7 +301,7 @@ fluidComponents
 
                             console.info("autoget-page", scope.task.page);
                             return q(function (resolve, reject) {
-                                if ((scope.task.page !== undefined && scope.task.page !== null) && (scope.task.page.autoGet !== null && scope.task.page.autoGet === true)) {
+                                if ((scope.task.page !== undefined && scope.task.page !== null) && (scope.task.page.autoGet && scope.task.page.autoGet === true)) {
                                     scope.task.currentPage = scope.task.page.name;
                                     var url = scope.homeUrl;
                                     if (scope.task.page.getParam) {
@@ -311,12 +311,13 @@ fluidComponents
                                             url = scope.homeUrl + scope.task.page.getParam;
                                         }
                                     }
+                                    console.info("auto-get-url",url);
                                     f2.get(url, scope.task)
                                         .success(function (data) {
                                             console.info("autoget", data);
                                             resolve({page: scope.task.page.name, value: data});
                                         });
-                                } else if ((scope.task.page !== undefined && scope.task.page !== null) && (scope.task.page.autoGet === null || scope.task.page.autoGet === false)) {
+                                } else if ((scope.task.page !== undefined && scope.task.page !== null) && (!scope.task.page.autoGet || scope.task.page.autoGet === null || scope.task.page.autoGet === false)) {
                                     scope.task.currentPage = scope.task.page.name;
                                     console.info("autoget false", false);
                                     resolve({page: scope.task.page.name});
@@ -988,6 +989,7 @@ fluidComponents
                                             }
                                         }
                                     };
+                                    /*TODO: provide ways to add custom task state uri*/
                                     scope.task.hide = function () {
                                         if (scope.task.onWindowHiding(scope.task.page)) {
                                             if (scope.fluidFrameService.fullScreen) {
@@ -1031,7 +1033,18 @@ fluidComponents
                                                             }
                                                         })
                                                         .error(function (data) {
-
+                                                            for (var i = 0; i < f.taskList.length; i++) {
+                                                                var task = f.taskList[i];
+                                                                if (scope.task.id === task.id) {
+                                                                    f.taskList.splice(i, 1);
+                                                                }
+                                                                if (scope.fluidFrameService.fullScreen) {
+                                                                    scope.task.fluidScreen();
+                                                                }
+                                                                if (!rs.$$phase) {
+                                                                    scope.$apply();
+                                                                }
+                                                            }
                                                         })
                                                         .then(function (data) {
                                                             scope.$destroy();
@@ -1107,10 +1120,10 @@ fluidComponents
                             if (fullScreen) {
                                 var height = window.innerHeight;
                                 height = estimateHeight(height) - 50;
-                                var panel = $("#_id_fp_" + scope.task.id + ".portlet");
-                                var panelBody = panel.find(".portlet-body");
+                                var panel = $("#_id_fp_" + scope.task.id + ".panel");
+                                var panelBody = panel.find(".panel-body");
                                 panel.height(height);
-                                var headerHeight = panel.find("div.portlet-header").height();
+                                var headerHeight = panel.find("div.panel-heading").height();
                                 panelBody.height(height - headerHeight);
                                 panelBody.css("overflow", "auto");
                             }
@@ -1144,13 +1157,13 @@ fluidComponents
 
                                 scope.fluidFrameService.getFrame().css("overflow", "hidden");
 
-                                var panel = $("#_id_fp_" + scope.task.id + ".portlet");
+                                var panel = $("#_id_fp_" + scope.task.id + ".panel");
 
-                                var panelBody = panel.find(".portlet-body");
+                                var panelBody = panel.find(".panel-body");
 
                                 panel.height(height);
 
-                                var headerHeight = panel.find("div.portlet-header").height();
+                                var headerHeight = panel.find("div.panel-heading").height();
 
                                 panelBody.height(height - headerHeight);
 
@@ -2865,7 +2878,6 @@ fluidComponents
                 } else if (status === 403) {
                     rs.$broadcast(EVENT_NOT_ALLOWED + task.id, data.msg);
                 }
-                c
             });
 
             promise.then(function () {
@@ -2928,7 +2940,6 @@ fluidComponents
 
             return promise;
         };
-
         this.updateResource = function (url, data, task) {
             var headers = {"fluid-container-id": "_id_fpb_" + task.id, "Content-type": "application/json"};
 

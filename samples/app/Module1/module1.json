@@ -5,19 +5,23 @@
   "size": 100,
   "glyph": "fa fa-gears",
   "active": true,
+  "lazyLoad":true,
+  "moduleJS":"module1",
+  "moduleFiles":"app/Module1/module1-controller.js",
   "pages": [
     {
       "name": "page1",
       "title": "Page 1",
-      "home": "https://en.wikipedia.org/wiki/Main_Page",
-      "get": "/app/Module1/pages/page1-data.json",
-      "isHome": false
+      "home": "app/Module1/pages/page1.html",
+      "get": "app/Module1/pages/page1-data.json",
+      "isHome": true,
+      "autoGet": true
     },
     {
-      "name": "wiki",
+      "name": "page2",
       "title": "Page 2",
-      "home": "/samples/app/Module1/pages/page2.html",
-      "isHome": true
+      "home": "app/Module1/pages/page2.html",
+      "isHome": false
     }
   ]
 }
