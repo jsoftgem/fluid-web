@@ -1,8 +1,8 @@
 {
   "name": "Module 1",
   "title": "Sample Module",
-  "generic": false,
   "size": 100,
+  "active": true,
   "pages": [
     {
       "name": "home",

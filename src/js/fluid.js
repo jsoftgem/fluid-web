@@ -13,8 +13,9 @@ fluidComponents.config(["$httpProvider", "localStorageServiceProvider", function
 fluidComponents.run([function () {
 }]);
 fluidComponents
-    .directive("fluidPanel", ["fluidFrameService", "fluidHttpService", "$templateCache", "$compile", "fluidMessageService", "$rootScope", "$q", "$timeout", "$ocLazyLoad", "$templateCache",
-        function (f, f2, tc, c, ms, rs, q, t, oc, tc) {
+    .directive("fluidPanel", ["fluidFrameService", "fluidHttpService", "$templateCache", "$compile",
+        "fluidMessageService", "$rootScope", "$q", "$timeout", "$ocLazyLoad", "sessionService",
+        function (f, f2, tc, c, ms, rs, q, t, oc, ss) {
             return {
                 scope: {task: '='},
                 restrict: "E",
@@ -700,7 +701,6 @@ fluidComponents
                             if (task) {
                                 if (task.generic) {
                                     scope.task.page = undefined;
-                                    console.info("fluid-panel-session", ss);
                                     scope.baseTask = ss.getSessionProperty(scope.task.url);
 
                                     if (scope.baseTask) {
@@ -1188,7 +1188,7 @@ fluidComponents
         }])
     .directive("fluidFrame", ["fluidFrameService", "$window", "$rootScope", "$timeout", "$templateCache", function (f, w, rs, t, tc) {
         return {
-            restrict: "E",
+            restrict: "AE",
             transclude: true,
             scope: true,
             template: tc.get("templates/fluid/fluidFrame.html"),
@@ -2458,6 +2458,7 @@ fluidComponents
         this.isSearch = false;
         this.searchTask = "";
         this.taskUrl = "services/fluid_task_service/getTask?name=";
+        this.fullScreen = false;
         if (this.taskList === undefined) {
             this.taskList = [];
         }
@@ -2590,7 +2591,7 @@ fluidComponents
         return this;
 
     }])
-    .service("fluidHttpService", ["$rootScope", "$http", "fluidLoaderService", "$q", "$timeout", function (rs, h, fl, q, t) {
+    .service("fluidHttpService", ["$rootScope", "$http", "fluidLoaderService", "$q", "$timeout", "sessionService", function (rs, h, fl, q, t, ss) {
         this.httpSerialKey = new Date().getTime();
         this.post = function (url, data, task) {
             task.loaded = false;
@@ -3368,10 +3369,6 @@ function isJson(str) {
     return true;
 }
 
-
-function getPageFromTaskPages(name, task) {
-
-}
 
 function getHomePageFromTaskPages(task) {
     var $page = {};
