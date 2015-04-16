@@ -158,12 +158,12 @@ and open the template in the editor.
 .fluid-modal div.panel {
     margin: auto;
 }
+
 .freeze {
     position: fixed;
     float: inherit;
     width: 30pc;
 }
-
 
 .fluid-panel {
     background: rgb(170, 208, 160);
@@ -282,6 +282,11 @@ div.fluid-form label {
 .panel-control {
     margin-top: -10px;
     margin-right: -14px;
+}
+
+.panel-tools {
+    margin-top: -28.8px;
+    margin-right: -1.5px;
 }
 
 /*frame content*/

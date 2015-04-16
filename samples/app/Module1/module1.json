@@ -5,8 +5,15 @@
   "active": true,
   "pages": [
     {
-      "name": "home",
+      "name": "page1",
       "title": "Page 1",
+      "home": "https://en.wikipedia.org/wiki/Main_Page",
+      "get": "app/Module1/pages/page1-data.json",
+      "isHome": true
+    },
+    {
+      "name": "wiki",
+      "title": "Page 2",
       "home": "app/Module1/pages/page1.html",
       "get": "app/Module1/pages/page1-data.json",
       "isHome": true

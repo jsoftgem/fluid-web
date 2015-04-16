@@ -1,7 +1,7 @@
 <div id='_id_fp_{{task.id}}' task
-     class="portlet box {{!fluidFrameService.fullScreen ? 'portlet-primary' : 'portlet-default'}}">
-    <div class='portlet-header' ng-show="!task.locked">
-        <div class="caption"><a ng-if="!fluidFrameService.fullScreen " data-toggle='collapse'
+     class="panel {{!fluidFrameService.fullScreen ? 'panel-primary' : 'panel-default'}}">
+    <div class='panel-heading' ng-show="!task.locked">
+        <div class="panel-title"><a ng-if="!fluidFrameService.fullScreen " data-toggle='collapse'
                                 data-target='#_{{task.id}}'
                                 href='#'
                                 class="fluid-panel-heading-title"><span ng-class="task.glyph"
@@ -14,7 +14,7 @@
             <img ng-if="!task.loaded && fluidFrameService.fullScreen"
                  src="images/loader/windows_like_2.GIF"/>
         </div>
-        <div class="tools">
+        <div class="panel-tools pull-right">
             <div class='btn-group btn-group-lg hidden-lg'><a href='#' class='dropdown-toggle'
                                                              data-toggle='dropdown'>
                 <span ng-class="task.glyph" class='fluid-panel-icon-control'/></a>
@@ -90,7 +90,7 @@
         </div>
     </div>
     <div id='_{{task.id}}' class='panel-collapse collapse in'>
-        <div id='_id_fpb_{{task.id}}' class='portlet-body minHeight fluid-panel' ng-disabled='!task.loaded'>
+        <div id='_id_fpb_{{task.id}}' class='panel-body minHeight fluid-panel' ng-disabled='!task.loaded'>
             <fluid-message id="{{fluid.getElementFlowId('pnl_msg')}}"></fluid-message>
             <fluid-tool size="large" fluid="fluid" id="{{fluid.getElementFlowId('flw_tl')}}"
                         ng-if='task.showToolBar' controls='toolbars'
