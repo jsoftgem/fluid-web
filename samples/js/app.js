@@ -6,11 +6,9 @@ angular.module("mainApp", ["fluid"])
 
         s.module1Task = {};
 
-        console.info("fhs", fhs);
-
-        fhs.getLocal("example/app/Module1/module1.json")
+        fhs.getLocal("app/Module1/module1.json")
             .success(function (module1) {
-                s.module1Task = module;
+                s.module1Task = module1;
             })
 
 

@@ -13,8 +13,8 @@ flowComponents.config(["$httpProvider", "localStorageServiceProvider", function 
 flowComponents.run(["$templateCache", function (tc) {
 }]);
 flowComponents
-    .directive("flowPanel", ["flowFrameService", "flowHttpService", "$templateCache", "$compile", "flowMessageService", "$rootScope", "$q", "$timeout", "$ocLazyLoad", "userProfile", "sessionService",
-        function (f, f2, tc, c, ms, rs, q, t, oc, up, ss) {
+    .directive("flowPanel", ["flowFrameService", "flowHttpService", "$templateCache", "$compile", "flowMessageService", "$rootScope", "$q", "$timeout", "$ocLazyLoad",
+        function (f, f2, tc, c, ms, rs, q, t, oc) {
             return {
                 scope: {task: '='},
                 restrict: "E",
@@ -1277,7 +1277,7 @@ flowComponents
     .directive("flowTool", ["$rootScope", "$compile", function (r, c) {
 
         return {
-            scope: {task: '=', controls: '=', pages: '=', flow: "=", size: "@", fixed:'='},
+            scope: {task: '=', controls: '=', pages: '=', flow: "=", size: "@", fixed: '='},
             restrict: "E",
             replace: true,
             templateUrl: "templates/fluid/fluidToolbar.html",
