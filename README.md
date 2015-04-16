@@ -1,5 +1,7 @@
 # fluid-web
-Web Client Framework for Fluid Platform
+Web Application Platform based on AngularJS and Twitter Bootstrap.
+
+##Key Features
 
 ## Usage
 bower install -g fluid-web
