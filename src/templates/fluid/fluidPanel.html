@@ -2,10 +2,10 @@
      class="panel {{!fluidFrameService.fullScreen ? 'panel-primary' : 'panel-default'}}">
     <div class='panel-heading' ng-show="!task.locked">
         <div class="panel-title"><a ng-if="!fluidFrameService.fullScreen " data-toggle='collapse'
-                                data-target='#_{{task.id}}'
-                                href='#'
-                                class="fluid-panel-heading-title"><span ng-class="task.glyph"
-                                                                        class='hidden-sm hidden-md hidden-xs'></span><span
+                                    data-target='#_{{task.id}}'
+                                    href='#'
+                                    class="fluid-panel-heading-title"><span ng-class="task.glyph"
+                                                                            class='hidden-sm hidden-md hidden-xs'></span><span
                 ng-if="task.loaded">&nbsp;{{task.title}} - {{task.page.title}}</span></a>
             <span ng-if="task.loaded && fluidFrameService.fullScreen">&nbsp;{{task.title}} - {{task.page.title}}</span>
 
@@ -17,7 +17,8 @@
         <div class="panel-tools pull-right">
             <div class='btn-group btn-group-lg hidden-lg'><a href='#' class='dropdown-toggle'
                                                              data-toggle='dropdown'>
-                <span ng-class="task.glyph" class='fluid-panel-icon-control'/></a>
+                <span ng-class="task.glyph"
+                      class="{{!fluidFrameService.fullScreen ? 'fa-inverse' : 'text-primary'}} fluid-panel-icon-control"/></a>
                 <ul class='dropdown-menu dropdown-menu-right dropdown-menu-inverse'>
                     <li><a href='#' ng-click='task.refresh()'>Refresh</a></li>
                     <li class='divider hidden-lg hidden-sm hidden-xs'></li>

@@ -1,21 +1,22 @@
 {
+  "id": "module1",
   "name": "Module 1",
   "title": "Sample Module",
   "size": 100,
+  "glyph": "fa fa-gears",
   "active": true,
   "pages": [
     {
       "name": "page1",
       "title": "Page 1",
       "home": "https://en.wikipedia.org/wiki/Main_Page",
-      "get": "app/Module1/pages/page1-data.json",
-      "isHome": true
+      "get": "/app/Module1/pages/page1-data.json",
+      "isHome": false
     },
     {
       "name": "wiki",
       "title": "Page 2",
-      "home": "app/Module1/pages/page1.html",
-      "get": "app/Module1/pages/page1-data.json",
+      "home": "/samples/app/Module1/pages/page2.html",
       "isHome": true
     }
   ]
