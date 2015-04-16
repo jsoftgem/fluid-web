@@ -2593,7 +2593,7 @@ flowComponents
         return this;
 
     }])
-    .service("flowHttpService", ["$rootScope", "$http", "flowLoaderService", "$resource", "sessionService", "$q", "$timeout", function (rs, h, fl, r, ss, q, t) {
+    .service("flowHttpService", ["$rootScope", "$http", "flowLoaderService", "$q", "$timeout", function (rs, h, fl, q, t) {
         this.httpSerialKey = new Date().getTime();
         this.post = function (url, data, task) {
             task.loaded = false;
@@ -2930,39 +2930,7 @@ flowComponents
 
             return promise;
         };
-        this.getResource = function (url, task) {
 
-            /*   var headers = {
-             "flow-container-id": "_id_fpb_" + task.id,
-             "Content-type": "application/json",
-             "Authorization": "Basic " + c.authorization
-             };
-
-             if (task.currentPage) {
-             headers.method = "get";
-             headers.flowPage = task.currentPage;
-             }
-             var promise = h({
-             method: "get",
-             url: url,
-             headers: headers
-             });
-
-             promise.success(function (config) {
-             $("#_id_fpb_" + task.id).loadingOverlay("remove");
-             });
-
-             promise.error(function (data, status, headers, config) {
-             $("#_id_fpb_" + task.id).loadingOverlay("remove");
-             if (status === 401) {
-             rs.$broadcast("NOT_AUTHENTICATED", data.msg);
-             } else if (status === 403) {
-             rs.$broadcast(EVENT_NOT_ALLOWED + task.id, data.msg);
-             }
-             });*/
-
-            return r(url);
-        }
         this.updateResource = function (url, data, task) {
             var headers = {"flow-container-id": "_id_fpb_" + task.id, "Content-type": "application/json"};
 
