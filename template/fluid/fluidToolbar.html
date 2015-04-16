@@ -1,0 +1,19 @@
+<div class='container-fluid animated fadeIn anim-dur' style='overflow: auto'>
+    <div class="ndg-breadcrumb">
+        <ul class='breadcrumb'>
+            <li class="pull-left" ng-repeat='page in task.navPages'>
+                <a title='page.title' href='#' ng-click='goToEvent(page.name,page.param)'>{{page.title}}</a>
+            </li>
+            <div class='form-group pull-right'>
+                <div class='btn-group {{group-size}}'>
+                    <button id='btn_tool_{{control.id}}_{{task.id}}' ng-repeat='control in controls' title='{{control.label}}'
+                            class='btn button-tool' ng-class='getClass(control.uiType)' ng-click='runEvent(control)'
+                            ng-disabled='control.disabled' type='button'><span ng-class='control.glyph'></span></button>
+                </div>
+            </div>
+            <div class="clearfix"></div>
+        </ul>
+
+    </div>
+
+</div>

@@ -1,0 +1,340 @@
+/*
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+*/
+/*
+    Created on : 09 20, 14, 11:44:35 AM
+    Author     : Jerico
+*/
+
+.hidden {
+    display: none;
+}
+
+.flow-bar-nav {
+    max-height: 80px;
+    margin: auto;
+    overflow: auto;
+}
+
+.translucent {
+    opacity: 0.9;
+}
+
+.active {
+    color: #fff;
+    background-color: #dcdcdc;
+    /*background-color: #2c3e50;*/
+}
+
+.center {
+    margin-top: 60px;
+    padding: 0;
+}
+
+.border {
+    border: solid 1px rgba(52, 73, 94, .85);
+}
+
+.anim-dur {
+    -webkit-animation-duration: 1s;
+}
+
+.minHeight {
+    min-height: 250px;
+}
+
+.maxHeight {
+    max-height: 500px;
+}
+
+.flow-bar-task-collapse {
+    max-height: 500px;
+    max-width: 500px;
+    overflow: auto;
+}
+
+.flow-bar-task {
+    min-width: 200px;
+    max-width: 300px;
+    overflow: auto;
+}
+
+.flow-bar-icon {
+    margin-left: 2px;
+    border-radius: 100px;
+    text-align: center;
+    background-color: rgba(2, 152, 210, 0.9);
+}
+
+.flow-bar-icon-active > .flow-bar-icon {
+    background: rgba(2, 102, 200, 0.3);
+}
+
+.flow-bar-icon-span {
+    display: inline-block;
+    vertical-align: middle;
+    line-height: normal;
+    transform: scale(1.9, 2.1);
+
+}
+
+.flow-loader-icon {
+    transform: scale(1.9, 2.1);
+}
+
+.horizontalSpace {
+
+    margin-left: 3px;
+    margin-right: 3px;
+}
+
+.sizeButton {
+    width: 30px;
+    height: 30px;
+}
+
+.size25pc {
+    font-size: 8px;
+}
+
+.size50pc {
+    font-size: 10px;
+}
+
+.size75pc {
+    font-size: 12px;
+}
+
+.size100pc {
+    font-size: 14px;
+}
+
+.flowFont {
+    font-family: Helvetica;
+}
+
+.button-tool {
+    margin: 2px 2px 2px 2px;
+    font-size: 20px;
+    text-align: center;
+}
+
+.flow-message {
+    max-height: 30px;
+}
+
+.overlay {
+    position: absolute;
+    top: 34px;
+    left: 15px;
+    right: 15px;
+    bottom: 24px;
+    background-color: rgba(52, 73, 94, 0.85);
+    z-index: 9999 !important;
+
+}
+
+.overlay-full {
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    right: 0px;
+    bottom: 0px;
+    margin-bottom: -22px;
+    background-color: rgba(52, 73, 94, 0.85);
+    z-index: 9999 !important;
+
+}
+
+.flow-modal {
+    margin-top: 4pc;
+    margin-left: 2pc;
+    margin-right: 2pc;
+    color: #2f4255;
+}
+
+.flow-modal div.panel {
+    margin: auto;
+}
+.freeze {
+    position: fixed;
+    float: inherit;
+    width: 30pc;
+}
+
+
+.flow-panel {
+    background: rgb(170, 208, 160);
+    overflow-x: auto;
+}
+
+.flow-panel-heading-title {
+    margin-top: 2px;
+    margin-left: 2px;
+    color: white;
+}
+
+.active-color {
+    color: rgba(2, 152, 210, 0.9);
+}
+
+.flow-panel-icon-control {
+    margin-right: 5px;
+    transform: scale(1.5, 1.5);
+}
+
+.flow-panel-page {
+    min-height: 250px;
+}
+
+.flow-sub-table-control {
+    margin: -1px 1px 5px 2px;
+    padding-top: -1px;
+}
+
+.flow-lookup-input {
+    background: #ffffff;
+}
+
+.required {
+    color: red;
+}
+
+.flowBarTooltipTitleHeader {
+    border-bottom: solid 1px lightslategray;
+    padding-bottom: 2px;
+}
+
+.flowBarTooltipTitleText {
+    margin-bottom: 5px
+}
+
+.flowBarTooltipTitlePage {
+    color: #ffffff;
+}
+
+.flow-group-icon {
+    /*border: solid 1px #c0c0c0;*/
+    width: 200px;
+    height: 175px;
+    background: #d3d7da;
+    /*border-radius: 5px;*/
+}
+
+.flow-group-icon > .circle {
+    border-radius: 100px;
+}
+
+.flow-group-icon-accept {
+    border: solid 1px #1f9d55;
+    border-radius: 5px;
+}
+
+.flow-group-icon-error {
+    border: solid 1px #d9534f;
+    border-radius: 5px;
+}
+
+.bg-active {
+    background: rgba(2, 152, 210, 0.9);
+}
+
+.bg-active-translucent {
+    background: rgba(2, 152, 210, 0.4);
+}
+
+/*Utilities*/
+
+.width100pc {
+    width: 100%;
+}
+
+.ct {
+    margin: 0px auto;
+    text-align: center;
+}
+
+.marginBottom5px {
+    margin-bottom: 5px;
+}
+
+/* form */
+.fluid-radio {
+    display: block;
+    width: 100%;
+}
+
+.fluid-radio-horizontal {
+    height: 34px;
+    line-height: 1.42857143;
+    color: #555;
+}
+
+div.flow-form label {
+    font-size: 14px;
+    font-style: inherit;
+    font-variant: inherit;
+    text-align: left !important;
+}
+
+.panel-control {
+    margin-top: -10px;
+    margin-right: -14px;
+}
+
+/*frame content*/
+.frame-content {
+    margin: 0 auto;
+    clear: both;
+    background: url(../images/bg/school.png) repeat;
+}
+
+.frame-content-div {
+    padding-left: 0px;
+    padding-right: 0px;
+}
+
+.frame-fullscreen {
+    padding: 0;
+}
+
+.frame-fluidscreen {
+    padding-top: 15px;
+}
+
+.element-center {
+    padding: 1px;
+    margin: auto;
+}
+
+.overflow-x {
+    overflow-x: auto;
+}
+
+.fluid-checkbox {
+    border: none;
+    text-align: center;
+    color: #f5f5f5;
+    cursor: pointer;
+
+}
+
+.fluid-checkbox disabled {
+    color: darkgray !important;
+}
+
+.fluid-checkbox i {
+    font-size: 30px !important;
+}
+
+.flow-footer {
+    margin: 0 auto;
+    bottom: 0;
+    opacity: 0.8;
+    max-height: 100px;
+    overflow: auto;
+    width: 30pc;
+    position: absolute;
+}

@@ -1,0 +1,21 @@
+<li class="dropdown">
+    <a data-hover="dropdown" href="#" class="dropdown-toggle">
+        <i class="fa fa-bell fa-fw"></i>
+        <span class="badge badge-blue" ng-show="fs.alerts.length > 0">{{fs.alerts.length}}</span></a>
+    <ul class="dropdown-menu dropdown-alerts">
+        <li><p>You have {{fs.alerts.length > 0 ? fs.alerts.length +' new' : 'no new' }} notifications</p></li>
+        <li>
+            <div class="dropdown-slimscroll">
+                <ul>
+                    <li ng-repeat="alert in fs.top">
+                        <a href="#" ng-click="open(alert)" ng-class="!alert.notified ?'active':''">
+                            <div ng-class="getLabelScheme(alert)" class="fluid-notify-icon"><i
+                                    ng-class="getMessageTypeGlyph(alert)"></i></div>
+                            &nbsp;{{alert.message | characters: 25 : false}}<span class="pull-right text-muted small">{{fs.interval(alert)}}</span></a>
+                    </li>
+                </ul>
+            </div>
+        </li>
+        <li class="last" ><a href="#" class="text-right" ng-click="openNotificationCenter()">See all alerts</a></li>
+    </ul>
+</li>

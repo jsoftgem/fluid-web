@@ -1,0 +1,116 @@
+<table class="table table-hover table-condensed" ng-init="rep = []">
+    <thead>
+    <tr>
+        <th class="bg-primary header-center">
+            <input type="checkbox"
+                   ng-model="task.table.isMaterialsAdvisor"
+                   flow-tooltip
+                   tooltip-title="{{task.table.isMaterialsAdvisor == true ? 'Hide materials advisor' : 'Show materials advisor'}}"
+                   tooltip-time="300" tooltip-at="top right" tooltip-my="bottom left"/></th>
+        <th class="bg-info">
+            <input type="checkbox"
+                   ng-model="task.table.isWeek"
+                   flow-tooltip
+                   tooltip-title="{{task.table.isWeek == true ? 'Hide week' : 'Show week'}}"
+                   tooltip-time="300" tooltip-at="top right" tooltip-my="bottom left"/>
+        </th>
+        <th ng-if="!task.isYear" class="bg-info">
+            <input type="checkbox"
+                   ng-model="task.table.isYear"
+                   flow-tooltip
+                   tooltip-title="{{task.table.isWeek == true ? 'Hide year' : 'Show year'}}"
+                   tooltip-time="300" tooltip-at="top right"
+                   tooltip-my="bottom left"/></th>
+        <th class="bg-info header"></th>
+        <th class="bg-info header"></th>
+        <th class="bg-success"></th>
+        <th class="bg-info"></th>
+        <th class="bg-info"></th>
+        <th class="bg-success"></th>
+        <th class="bg-info"></th>
+        <th class="bg-info"></th>
+        <th class="bg-success"></th>
+        <th class="bg-warning"></th>
+        <th class="bg-warning"></th>
+        <th class="bg-warning"></th>
+        <th class="bg-warning"></th>
+        <th class="bg-warning"></th>
+        <th class="bg-warning"></th>
+        <th class="bg-warning"></th>
+        <th class="bg-warning"></th>
+        <th class="bg-warning"></th>
+        <th class="bg-warning"></th>
+    </tr>
+    </thead>
+    <thead>
+    <tr>
+        <th class="bg-primary">{{!task.isAgent && task.table.isMaterialsAdvisor ? 'Materials Advisor'
+            :'Action'}}
+        </th>
+        <th class="bg-info" ng-if="task.table.isWeek">Week</th>
+        <th ng-if="!task.isYear && task.table.isYear" class="bg-info">Year</th>
+        <th class="bg-info header">Planned Target</th>
+        <th class="bg-info header">Planned Actual</th>
+        <th class="bg-success">Planned Call Productivity</th>
+        <th class="bg-info">Unplanned Target</th>
+        <th class="bg-info">Unplanned Actual</th>
+        <th class="bg-success">Unplanned Call Productivity</th>
+        <th class="bg-info">Total Target</th>
+        <th class="bg-info">Total Actual</th>
+        <th class="bg-success">Total Call Productivity</th>
+        <th class="bg-warning">Exam Copies Distribution</th>
+        <th class="bg-warning">Invitation to Events</th>
+        <th class="bg-warning">Confirmation of Events</th>
+        <th class="bg-warning">Giveaways Distribution</th>
+        <th class="bg-warning">Delivery of Incentive/Donation</th>
+        <th class="bg-warning">Purchase Order</th>
+        <th class="bg-warning">Delivery of Add'l Order / TRM / Compli</th>
+        <th class="bg-warning">Booklist</th>
+        <th class="bg-warning">Updated Customer Info Sheet</th>
+        <th class="bg-warning">Implemented Ex-Sem</th>
+    </tr>
+    </thead>
+
+    <tbody ng-repeat="(month , report) in task.result | groupBy: 'reportMonth'"
+           ng-init="rep.push({selectedWeek:0})">
+    <tr>
+        <td class="bg-info" colspan="2">{{month}}</td>
+        <td colspan="3"><select ng-model="rep[$index].selectedWeek">
+            <option value="1" label="Week 1"></option>
+            <option value="2" label="Week 2"></option>
+            <option value="3" label="Week 3"></option>
+            <option value="4" label="Week 4"></option>
+            <option value="5" label="Week 5"></option>
+            <option value="0" label="All week"></option>
+        </select></td>
+    </tr>
+    <tr ng-show="rep[$index].selectedWeek == 0"
+        ng-repeat="day in report">
+        <td><a href="#" ng-click="task.getCustomers(day)"><span><i
+                ng-class="(day.view ? 'fa fa-search-minus' : 'fa fa-search-plus')"></i>
+                                         {{ !task.isAgent && table.isMaterialsAdvisor ? day.materialsAdvisor : ''}}</span></a>
+        </td>
+        <td ng-if="table.isWeek">{{day.week}}</td>
+        <td ng-if="!task.isYear">{{day.year}}</td>
+        <td>{{day.plannedTarget}}</td>
+        <td>{{day.plannedActual}}</td>
+        <td>{{day.plannedCallProductivity | setDecimal: 2}}%</td>
+        <td>{{day.unplannedTarget}}</td>
+        <td>{{day.unplannedActual}}</td>
+        <td>{{day.unplannedCallProductivity | setDecimal: 2}}%</td>
+        <td>{{day.totalActivity}}</td>
+        <td>{{day.unplannedActual + day.unplannedActual}}</td>
+        <td>{{day.totalCallProductivity | setDecimal: 2}}%</td>
+        <td>{{day.ecd}}</td>
+        <td>{{day.ite}}</td>
+        <td>{{day.coe}}</td>
+        <td>{{day.gd}}</td>
+        <td>{{day.doi}}</td>
+        <td>{{day.po}}</td>
+        <td>{{day.daotrc}}</td>
+        <td>{{day.bookList}}</td>
+        <td>{{day.ucis}}</td>
+        <td>{{day.ies}}</td>
+    </tr>
+    </tbody>
+</table>

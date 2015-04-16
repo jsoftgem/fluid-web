@@ -1,0 +1,16 @@
+<div class='form-group flow-form'><label column="12" class='control-label col-sm-2'>{{label}}<i ng-if='notDone'
+                                                                                                class='fa fa-spinner fa-spin'></i><span
+        class="text-danger" ng-show='required'>*</span>
+
+    <div class='flow-group-icon' accept='image/*' ng-model='preview' ng-file-drop
+         drag-over-class="{accept:'flow-group-icon-accept', reject:'flow-group-icon-error', delay:100}">
+        <img class='thumbnail' style='border-radius: 5px' width='198px' height='173px'
+             ng-src='{{preview[0].dataUrl}}'/></div>
+    <div class='marginBottom5px' ng-show='!disabled'><span accept='image/*' class='btn btn-info' ng-show='!disabled'
+                                                           ng-file-change='onFileSelect(preview[0],$files)'
+                                                           ng-file-select ng-model='preview'>
+            <span class='fa fa-image'
+                  ng-show='!disabled'></span>&nbsp;&nbsp;{{preview[0].dataUrl != null ? 'Change' : 'Attach'}}</span></span>
+    </div>
+</label>
+</div>
