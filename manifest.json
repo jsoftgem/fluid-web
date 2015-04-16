@@ -1,0 +1,12 @@
+{
+  // Required
+  "manifest_version": 2,
+  "name": "Fluid-web",
+  "version": "1.0.0",
+
+  // Recommended
+  "default_locale": "en",
+  "description": "Fluid Web Framework",
+
+
+}
