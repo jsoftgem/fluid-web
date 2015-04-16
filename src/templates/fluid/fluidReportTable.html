@@ -4,20 +4,20 @@
         <th class="bg-primary header-center">
             <input type="checkbox"
                    ng-model="task.table.isMaterialsAdvisor"
-                   flow-tooltip
+                   fluid-tooltip
                    tooltip-title="{{task.table.isMaterialsAdvisor == true ? 'Hide materials advisor' : 'Show materials advisor'}}"
                    tooltip-time="300" tooltip-at="top right" tooltip-my="bottom left"/></th>
         <th class="bg-info">
             <input type="checkbox"
                    ng-model="task.table.isWeek"
-                   flow-tooltip
+                   fluid-tooltip
                    tooltip-title="{{task.table.isWeek == true ? 'Hide week' : 'Show week'}}"
                    tooltip-time="300" tooltip-at="top right" tooltip-my="bottom left"/>
         </th>
         <th ng-if="!task.isYear" class="bg-info">
             <input type="checkbox"
                    ng-model="task.table.isYear"
-                   flow-tooltip
+                   fluid-tooltip
                    tooltip-title="{{task.table.isWeek == true ? 'Hide year' : 'Show year'}}"
                    tooltip-time="300" tooltip-at="top right"
                    tooltip-my="bottom left"/></th>

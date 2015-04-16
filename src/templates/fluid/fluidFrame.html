@@ -1,18 +1,18 @@
 <div class="container-fluid frame-content"
-     ng-class="flowFrameService.fullScreen ? 'frame-fullscreen' : 'frame-fluidscreen'">
-    <div ng-if="flowFrameService.fullScreen" class="container-fluid frame-content-div"
-         ng-show="flowFrameService.fullScreen">
-        <flow-panel task='flowFrameService.fullScreenTask'></flow-panel>
+     ng-class="fluidFrameService.fullScreen ? 'frame-fullscreen' : 'frame-fluidscreen'">
+    <div ng-if="fluidFrameService.fullScreen" class="container-fluid frame-content-div"
+         ng-show="fluidFrameService.fullScreen">
+        <fluid-panel task='fluidFrameService.fullScreenTask'></fluid-panel>
     </div>
-    <div ng-if="!flowFrameService.fullScreen" class="container-fluid frame-content-div"
-         ng-hide="flowFrameService.fullScreen">
+    <div ng-if="!fluidFrameService.fullScreen" class="container-fluid frame-content-div"
+         ng-hide="fluidFrameService.fullScreen">
         <div ng-init="initTask(task)"
-             ng-repeat='task in flowFrameService.taskList | filter:{active:true, title:flowFrameService.searchTask}'>
-            <flow-panel task='task'></flow-panel>
+             ng-repeat='task in fluidFrameService.taskList | filter:{active:true, title:fluidFrameService.searchTask}'>
+            <fluid-panel task='task'></fluid-panel>
         </div>
     </div>
-    <div class="flow-footer portlet box color portlet-primary" ng-show="flowFrameService.actionBarShowing"
-         ng-class="flowFrameService.actionBarClass">
+    <div class="fluid-footer portlet box color portlet-primary" ng-show="fluidFrameService.actionBarShowing"
+         ng-class="fluidFrameService.actionBarClass">
         <div class="portlet-header">
             <div class="tools"></div>
         </div>
