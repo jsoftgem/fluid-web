@@ -1,13 +1,15 @@
 {
   "name": "Module 1",
   "title": "Sample Module",
+  "generic": false,
+  "size": 100,
   "pages": [
     {
       "name": "home",
       "title": "Page 1",
       "home": "app/Module1/pages/page1.html",
       "get": "app/Module1/pages/page1-data.json",
-      "isHome":true
+      "isHome": true
     }
   ]
 }

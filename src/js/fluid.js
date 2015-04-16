@@ -1,7 +1,7 @@
 /**Fluid Web v0.0.1
  * Created by Jerico de Guzman
  * October 2014**/
-var fluidComponents = angular.module("fluid", ["angularFileUpload", "oc.lazyLoad", "LocalStorageModule"]);
+var fluidComponents = angular.module("fluid", ["angularFileUpload", "oc.lazyLoad", "LocalStorageModule", "templates-dist"]);
 
 fluidComponents.config(["$httpProvider", "localStorageServiceProvider", function (h, ls) {
     ls.setPrefix("fluid")
@@ -1112,7 +1112,7 @@ fluidComponents
                                 panel.height(height);
                                 var headerHeight = panel.find("div.portlet-header").height();
                                 panelBody.height(height - headerHeight);
-                                panelBody.css("overfluid", "auto");
+                                panelBody.css("overflow", "auto");
                             }
                             if (scope.task.generic === false) {
                                 scope.task.loaded = false;
@@ -1142,7 +1142,7 @@ fluidComponents
 
                                 height = estimateHeight(height) - 50;
 
-                                scope.fluidFrameService.getFrame().css("overfluid", "hidden");
+                                scope.fluidFrameService.getFrame().css("overflow", "hidden");
 
                                 var panel = $("#_id_fp_" + scope.task.id + ".portlet");
 
@@ -1154,7 +1154,7 @@ fluidComponents
 
                                 panelBody.height(height - headerHeight);
 
-                                panelBody.css("overfluid", "auto");
+                                panelBody.css("overflow", "auto");
 
                                 console.info("panelBody", panelBody);
 
@@ -1197,8 +1197,6 @@ fluidComponents
 
                 scope.frame = {};
                 scope.fluidFrameService = f;
-
-
                 scope.$watch(function (scope) {
                     return scope.fluidFrameService.fullScreen;
                 }, function (fullScreen) {
@@ -1209,18 +1207,18 @@ fluidComponents
                         var height = window.innerHeight;
                         height = estimateHeight(height);
                         if (scope.fluidFrameService.isSearch) {
-                            frameDiv.attr("style", "height:" + height + "px;overfluid:auto");
+                            frameDiv.attr("style", "height:" + height + "px;overflow:auto");
                         } else {
-                            element.attr("style", "height:" + height + "px;overfluid:auto");
+                            element.attr("style", "height:" + height + "px;overflow:auto");
                         }
-                        $("body").attr("style", "height: " + height + "px;overfluid:hidden");
+                        $("body").attr("style", "height: " + height + "px;overflow:hidden");
                     } else {
                         var height = window.innerHeight;
                         height = estimateHeight(height);
                         if (scope.fluidFrameService.isSearch) {
-                            //frameDiv.attr("style", "height:" + height + "px;overfluid:hidden");
+                            //frameDiv.attr("style", "height:" + height + "px;overflow:hidden");
                         } else {
-                            //element.attr("style", "height:" + height + "px;overfluid:hidden");
+                            //element.attr("style", "height:" + height + "px;overflow:hidden");
                         }
                     }
                 });
@@ -1237,21 +1235,21 @@ fluidComponents
                         var height = window.innerHeight;
                         height = estimateHeight(height);
                         if (scope.fluidFrameService.isSearch) {
-                            frameDiv.attr("style", "height:" + height + "px;overfluid:auto");
+                            frameDiv.attr("style", "height:" + height + "px;overflow:auto");
                         } else {
-                            element.attr("style", "height:" + height + "px;overfluid:auto");
+                            element.attr("style", "height:" + height + "px;overflow:auto");
                         }
                     } else {
                         var height = window.innerHeight;
                         height = estimateHeight(height);
                         if (scope.fluidFrameService.isSearch) {
-                            frameDiv.attr("style", "height:" + height + "px;overfluid:hidden");
+                            frameDiv.attr("style", "height:" + height + "px;overflow:hidden");
                         } else {
-                            element.attr("style", "height:" + height + "px;overfluid:hidden");
+                            element.attr("style", "height:" + height + "px;overflow:hidden");
                         }
                     }
 
-                    $("body").attr("style", "height: " + height + "px;overfluid:hidden");
+                    $("body").attr("style", "height: " + height + "px;overflow:hidden");
                 });
 
 
@@ -1492,7 +1490,7 @@ fluidComponents
 
 
             },
-            template: "<div class='form-group'><div class='panel panel-primary'><div class='panel-heading'><a href='#' class='fluid-panel-heading-title' data-toggle='collapse' data-target='#{{id}}_collapse'>{{title}}</a><div class='pull-right'><div class='btn-group btn-group-xs'><button type='button' class='btn btn-info fluid-sub-table-control' ng-click='create()' ng-show='createEnabled'><span class='fa fa-plus'></span></button><button ng-show=\"lookUp == 'true'\" type='button' class='btn btn-info fluid-sub-table-control' ng-click='look()'><span class='fa fa-search'></span></button></div></div></div><div class='panel-collapse collapse in' id='{{id}}_collapse'><div class='panel-body' ><div ng-transclude></div><div class='container-fluid' style='overfluid-y: auto'><table class='table table-responsive table-hover'></table></div></div></div></div>",
+            template: "<div class='form-group'><div class='panel panel-primary'><div class='panel-heading'><a href='#' class='fluid-panel-heading-title' data-toggle='collapse' data-target='#{{id}}_collapse'>{{title}}</a><div class='pull-right'><div class='btn-group btn-group-xs'><button type='button' class='btn btn-info fluid-sub-table-control' ng-click='create()' ng-show='createEnabled'><span class='fa fa-plus'></span></button><button ng-show=\"lookUp == 'true'\" type='button' class='btn btn-info fluid-sub-table-control' ng-click='look()'><span class='fa fa-search'></span></button></div></div></div><div class='panel-collapse collapse in' id='{{id}}_collapse'><div class='panel-body' ><div ng-transclude></div><div class='container-fluid' style='overflow-y: auto'><table class='table table-responsive table-hover'></table></div></div></div></div>",
             link: function (scope, element) {
                 if (!scope.lookUp) {
                     scope.lookUp = "true";
@@ -1541,7 +1539,7 @@ fluidComponents
 
                 $("<i>").addClass("fa fa-search").appendTo(inputSpan);
 
-                var modalPanelBody = $("<div>").addClass("panel-body").attr("style", "overfluid:auto;height:200px").appendTo(modalPanel).get();
+                var modalPanelBody = $("<div>").addClass("panel-body").attr("style", "overflow:auto;height:200px").appendTo(modalPanel).get();
 
                 var modalPanelFooter = $("<div>").addClass("panel-footer").attr("style", "height:50px").appendTo(modalPanel).get();
 
@@ -1746,7 +1744,7 @@ fluidComponents
 
                     $("<i>").addClass("fa fa-search").appendTo(inputSpan);
 
-                    var modalPanelBody = $("<div>").addClass("panel-body").attr("style", "overfluid:auto;height:200px").appendTo(modalPanel).get();
+                    var modalPanelBody = $("<div>").addClass("panel-body").attr("style", "overflow:auto;height:200px").appendTo(modalPanel).get();
 
                     var modalPanelFooter = $("<div>").addClass("panel-footer").attr("style", "height:50px").appendTo(modalPanel).get();
 
@@ -2489,7 +2487,6 @@ fluidComponents
                 $(".frame-content").scrollTo($("div.box[task]:eq(" + index + ")"), 200);
             }, 300);
         };
-
         this.toggleSearch = function () {
             this.isSearch = !this.isSearch;
             if (this.isSearch === false) {
@@ -3369,4 +3366,46 @@ function isJson(str) {
         return false;
     }
     return true;
+}
+
+
+function getPageFromTaskPages(name, task) {
+
+}
+
+function getHomePageFromTaskPages(task) {
+    var $page = {};
+
+    angular.forEach(task.pages, function (page, key) {
+        if (page.isHome) {
+            this.page = page;
+            this.index = key;
+        }
+    }, $page);
+
+    return $page;
+}
+
+function getPageIndexFromTaskPages(name, task) {
+    var $index = -1;
+    angular.forEach(task.pages, function (page, key) {
+        if (page.name === name) {
+            this.index = key;
+        }
+    }, $index);
+
+    return $index;
+}
+
+function getPageIndexFromPages(name, pages) {
+    var $index = -1;
+    angular.forEach(pages, function (page, key) {
+        if (page != null) {
+            if (page.name === name) {
+                this.index = key;
+            }
+        }
+
+    }, $index);
+    return $index;
 }
