@@ -1,0 +1,13 @@
+/*Sample data for page 1*/
+[
+  {
+    name: "John Doe",
+    age: 42,
+    email: "john_doe@jsofttechnologies.com"
+  },
+  {
+    name: "Jerico de Guzman",
+    age: 24,
+    email: "jerico@jsofttechnologies.com"
+  }
+]

@@ -1,6 +1,5 @@
 # fluid-web
 Web Client Framework for Fluid Platform
 
-To install:
-
+## Usage
 bower install -g fluid-web
