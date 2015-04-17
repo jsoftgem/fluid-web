@@ -4,7 +4,7 @@
   "title": "Sample Module",
   "size": 100,
   "glyph": "fa fa-gears",
-  "useImg": false,
+  "useImg": true,
   "imgSrc": "app/Module1/icon.png",
   "active": true,
   "lazyLoad": true,

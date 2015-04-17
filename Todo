@@ -8,8 +8,8 @@ New Task Model
   "name": "taskName", // Task name (unique) (required)
   "title": "taskTitle", // Task title display
   "glyph": "fa fa-gears", // Task icon
-  "useImg": false //TODO:  if True will use img src instead of glyphicon
-  "imgSrc":"app/img/src/icon.png", //TODO: Image icon src
+  "useImg": false //if True will use img src instead of glyphicon
+  "imgSrc":"app/img/src/icon.png", //Image icon src
   "size": 50, // Task panel width 25, 50, 75 and 100 percent
   "locked":false, // Lock the task panel (Task panel cannot be resized, minimized, closed & pinned)
   "pinned":false,//If true, pin the task panel (glue the task panel on screen)
