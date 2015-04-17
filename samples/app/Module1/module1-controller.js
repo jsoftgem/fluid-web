@@ -5,4 +5,9 @@ angular.module("module1", ["fluid"])
             s.data = data;
         }
 
+        s.selectPerson = function (person) {
+            s.task.selectedPerson = person;
+            s.fluid.goTo("page2");
+        }
+
     }]);

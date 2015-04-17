@@ -45,8 +45,6 @@ fluidComponents
                         scope.userTask = {};
                         scope.userTask.closed = false;
                         scope.fluid = {};
-
-
                         scope.toolbars = [
                             {
                                 "id": 'home',
@@ -92,12 +90,9 @@ fluidComponents
                                 }
                             }
                         ];
-
                         /* Page Event */
                         scope.fluid.event = {};
-
                         scope.fluid.message = {};
-
                         scope.fluid.message.duration = 3000;
                         scope.http = {};
                         scope.currentPageIndex = 0;
@@ -112,7 +107,6 @@ fluidComponents
                         scope.fluid.onOpenPinned = function (page, param) {
 
                         };
-
                         scope.fluid.navToTask = function (task) {
 
                             var $index = {index: 0};
@@ -128,7 +122,6 @@ fluidComponents
                             });
                         }
                         scope.fluid.openTaskBaseUrl = "services/fluid_task_service/getTask?";
-
                         scope.fluid.openTask = function (name, page, param, newTask, origin, size) {
 
                             var url = scope.fluid.openTaskBaseUrl;
@@ -901,17 +894,14 @@ fluidComponents
                                                 rs.$broadcast(scope.fluid.event.getResizeEventId(), scope.task.page.name, scope.task.size);
                                             }
                                             scope.userTask.size = scope.task.size;
-                                            if (scope.task.generic === false) {
-                                                if (scope.task.id.indexOf("gen") === -1) {
-                                                    scope.userTask.fluidTaskId = scope.task.id.split("_")[0];
-                                                    scope.userTask.fluidId = scope.task.fluidId;
-                                                    f2.post("services/fluid_user_task_crud/save_task_state?field=size", scope.userTask, scope.task)
-                                                        .then(function () {
-                                                            t(function () {
-                                                                generateTask(scope, t, f2);
-                                                            });
-                                                        });
-                                                }
+
+                                            if (scope.task.stateAjax) {
+                                                saveTaskSate(scope.task, scope.userTask, f2, "size")
+                                                    .then(function () {
+                                                        generateTask(scope, t, f2);
+                                                    });
+                                            } else {
+                                                generateTask(scope, t, f2);
                                             }
                                         }
 
@@ -927,17 +917,13 @@ fluidComponents
                                                 rs.$broadcast(scope.fluid.event.getResizeEventId(), scope.task.page.name, scope.task.size);
                                             }
                                             scope.userTask.size = scope.task.size;
-                                            if (scope.task.generic === false) {
-                                                if (scope.task.id.indexOf("gen") === -1) {
-                                                    scope.userTask.fluidTaskId = scope.task.id.split("_")[0];
-                                                    scope.userTask.fluidId = scope.task.fluidId;
-                                                    f2.post("services/fluid_user_task_crud/save_task_state?field=size", scope.userTask, scope.task)
-                                                        .then(function () {
-                                                            t(function () {
-                                                                generateTask(scope, t, f2);
-                                                            });
-                                                        });
-                                                }
+                                            if (scope.task.stateAjax) {
+                                                saveTaskSate(scope.task, scope.userTask, f2, "size")
+                                                    .then(function () {
+                                                        generateTask(scope, t, f2);
+                                                    });
+                                            } else {
+                                                generateTask(scope, t, f2);
                                             }
                                         }
                                     };
@@ -952,13 +938,13 @@ fluidComponents
                                                 rs.$broadcast(scope.fluid.event.getResizeEventId(), scope.task.page.name, scope.task.size);
                                             }
                                             scope.userTask.size = scope.task.size;
-                                            if (scope.task.generic === false) {
-                                                if (scope.task.id.indexOf("gen") === -1) {
-                                                    scope.userTask.fluidTaskId = scope.task.id.split("_")[0];
-                                                    scope.userTask.fluidId = scope.task.fluidId;
-                                                    f2.post("services/fluid_user_task_crud/save_task_state?field=size", scope.userTask, scope.task);
-                                                    console.log("max75");
-                                                }
+                                            if (scope.task.stateAjax) {
+                                                saveTaskSate(scope.task, scope.userTask, f2, "size")
+                                                    .then(function () {
+                                                        generateTask(scope, t, f2);
+                                                    });
+                                            } else {
+                                                generateTask(scope, t, f2);
                                             }
                                         }
 
@@ -974,19 +960,16 @@ fluidComponents
                                                 rs.$broadcast(scope.fluid.event.getResizeEventId(), scope.task.page.name, scope.task.size);
                                             }
                                             scope.userTask.size = scope.task.size;
-                                            if (scope.task.generic === false) {
-                                                if (scope.task.id.indexOf("gen") === -1) {
-                                                    scope.userTask.fluidTaskId = scope.task.id.split("_")[0];
-                                                    scope.userTask.fluidId = scope.task.fluidId;
-                                                    f2.post("services/fluid_user_task_crud/save_task_state?field=size", scope.userTask, scope.task)
-                                                        .then(function () {
-                                                            t(function () {
-                                                                generateTask(scope, t, f2);
-                                                            });
-                                                        });
 
-                                                }
+                                            if (scope.task.stateAjax) {
+                                                saveTaskSate(scope.task, scope.userTask, f2, "size")
+                                                    .then(function () {
+                                                        generateTask(scope, t, f2);
+                                                    });
+                                            } else {
+                                                generateTask(scope, t, f2);
                                             }
+
                                         }
                                     };
                                     /*TODO: provide ways to add custom task state uri*/
@@ -997,60 +980,45 @@ fluidComponents
                                             }
                                             scope.task.active = false;
                                             scope.userTask.active = scope.task.active;
-                                            if (scope.task.generic === false) {
-                                                if (scope.task.id.indexOf("gen") === -1) {
-                                                    scope.userTask.fluidTaskId = scope.task.id.split("_")[0];
-                                                    scope.userTask.fluidId = scope.task.fluidId;
-                                                    f2.post("services/fluid_user_task_crud/save_task_state?field=active", scope.userTask, scope.task);
-
-                                                }
-
+                                            if (scope.task.stateAjax) {
+                                                saveTaskSate(scope.task, scope.userTask, f2, "active");
                                             }
                                         }
 
                                     };
                                     scope.task.close = function () {
                                         if (scope.task.onWindowClosing(scope.task.page)) {
-
-                                            if (scope.task.generic === false) {
-                                                if (scope.task.id.indexOf("gen") === -1) {
-                                                    scope.userTask.closed = true;
-                                                    scope.userTask.fluidTaskId = scope.task.id.split("_")[0];
-                                                    scope.userTask.fluidId = scope.task.fluidId;
-                                                    f2.post("services/fluid_user_task_crud/save_task_state?field=close", scope.userTask, scope.task)
-                                                        .success(function (data) {
-                                                            for (var i = 0; i < f.taskList.length; i++) {
-                                                                var task = f.taskList[i];
-                                                                if (scope.task.id === task.id) {
-                                                                    f.taskList.splice(i, 1);
-                                                                }
-                                                                if (scope.fluidFrameService.fullScreen) {
-                                                                    scope.task.fluidScreen();
-                                                                }
-                                                                if (!rs.$$phase) {
-                                                                    scope.$apply();
-                                                                }
+                                            if (scope.task.stateAjax) {
+                                                saveTaskSate(scope.task, scope.userTask, f2, "close")
+                                                    .then(function () {
+                                                        for (var i = 0; i < f.taskList.length; i++) {
+                                                            var task = f.taskList[i];
+                                                            if (scope.task.id === task.id) {
+                                                                f.taskList.splice(i, 1);
                                                             }
-                                                        })
-                                                        .error(function (data) {
-                                                            for (var i = 0; i < f.taskList.length; i++) {
-                                                                var task = f.taskList[i];
-                                                                if (scope.task.id === task.id) {
-                                                                    f.taskList.splice(i, 1);
-                                                                }
-                                                                if (scope.fluidFrameService.fullScreen) {
-                                                                    scope.task.fluidScreen();
-                                                                }
-                                                                if (!rs.$$phase) {
-                                                                    scope.$apply();
-                                                                }
+                                                            if (scope.fluidFrameService.fullScreen) {
+                                                                scope.task.fluidScreen();
                                                             }
-                                                        })
-                                                        .then(function (data) {
-                                                            scope.$destroy();
-                                                        });
-
+                                                            if (!rs.$$phase) {
+                                                                scope.$apply();
+                                                            }
+                                                        }
+                                                        scope.$destroy();
+                                                    });
+                                            } else {
+                                                for (var i = 0; i < f.taskList.length; i++) {
+                                                    var task = f.taskList[i];
+                                                    if (scope.task.id === task.id) {
+                                                        f.taskList.splice(i, 1);
+                                                    }
+                                                    if (scope.fluidFrameService.fullScreen) {
+                                                        scope.task.fluidScreen();
+                                                    }
+                                                    if (!rs.$$phase) {
+                                                        scope.$apply();
+                                                    }
                                                 }
+                                                scope.$destroy();
                                             }
                                         }
 
@@ -1066,14 +1034,12 @@ fluidComponents
                                             scope.userTask.param = "";
                                         }
 
-                                        if (scope.task.generic === false) {
-                                            if (scope.task.id.indexOf("gen") === -1) {
-                                                scope.userTask.fluidTaskId = scope.task.id.split("_")[0];
-                                                scope.userTask.fluidId = scope.task.fluidId;
-                                                scope.userTask.pinned = scope.task.pinned;
-                                                f2.post("services/fluid_user_task_crud/save_task_state?field=pin", scope.userTask, scope.task);
-                                            }
+                                        if (scope.task.stateAjax) {
+                                            scope.userTask.fluidId = scope.task.fluidId;
+                                            scope.userTask.pinned = scope.task.pinned;
+                                            saveTaskSate(scope.task, scope.userTask, f2, "pin");
                                         }
+
                                     };
                                     scope.task.fullScreen = function () {
                                         f.toggleFullscreen(scope.task);
@@ -3422,4 +3388,19 @@ function getPageIndexFromPages(name, pages) {
 
     }, $index);
     return $index;
+}
+
+
+function saveTaskSate(task, userTask, fluidHttpService, field) {
+    if (task.generic === false) {
+        if (task.id.indexOf("gen") === -1) {
+            userTask.fluidTaskId = task.id.split("_")[0];
+            userTask.fluidId = task.fluidId;
+            return fluidHttpService.query({
+                url: task.stateAjax.url + "?field=" + field,
+                method: task.stateAjax.method,
+                data: userTask
+            }, task);
+        }
+    }
 }

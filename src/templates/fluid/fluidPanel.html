@@ -15,8 +15,9 @@
                  src="../assets/loader/loader2.GIF"/>
         </div>
         <div class="{{task.useImg ? 'panel-control-img': 'panel-control-glyph'}} pull-right">
-            <div class="btn-group btn-group-lg hidden-lg {{!task.useImg?'fluid-icon-right-glyph':''}}"><a href='#' class='dropdown-toggle'
-                                                             data-toggle='dropdown'>
+            <div class="btn-group btn-group-lg hidden-lg {{!task.useImg?'fluid-icon-right-glyph':''}}"><a href='#'
+                                                                                                          class='dropdown-toggle'
+                                                                                                          data-toggle='dropdown'>
                 <fluid-task-icon task="task"
                                  class=" {{!fluidFrameService.fullScreen ? 'fa-inverse' : 'text-primary'}} fluid-panel-icon-control"></fluid-task-icon>
             </a>
@@ -37,7 +38,7 @@
                            ng-click='task.close()'>Close</a></li>
                 </ul>
             </div>
-            <div class='hidden-md hidden-xs hidden-sm btn-group btn-group-xs panel-tools'>
+            <div class="hidden-md hidden-xs hidden-sm btn-group btn-group-xs {{!fluidFrameService.fullScreen? 'panel-tools' :''}}">
                 <!-- ToDo: Allow panel to freeze. <button class='btn btn-info fa fa-paperclip' ng-click='freeze(task)'ng-class=\"task.freeze ? 'active' :''\" title='Clip'></button>-->
                 <!-- <button ng-class="task.pinned ?
                          'active' :''" title='Pin' type="button" class="btn btn-info" ng-click='task.pin()' >
