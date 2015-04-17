@@ -1,29 +1,29 @@
 {
-  "id": "module1",
-  "name": "Module 1",
-  "title": "Person",
+  "id": "module2",
+  "name": "Module 2",
+  "title": "Movies",
   "size": 50,
   "glyph": "fa fa-gears",
   "useImg": true,
-  "imgSrc": "app/Module1/icon.png",
+  "imgSrc": "app/Module2/icon.png",
   "active": true,
   "lazyLoad": true,
   "showToolBar": true,
-  "moduleJS": "module1",
-  "moduleFiles": "app/Module1/module1-controller.js",
+  "moduleJS": "module2",
+  "moduleFiles": "app/Module2/module2-controller.js",
   "pages": [
     {
       "name": "page1",
       "title": "Home",
-      "home": "app/Module1/pages/page1.html",
-      "get": "app/Module1/pages/page1-data.json",
+      "home": "app/Module2/pages/page1.html",
+      "get": "app/Module2/pages/page1-data.json",
       "isHome": true,
       "autoGet": true
     },
     {
       "name": "page2",
       "title": "Edit",
-      "home": "app/Module1/pages/page2.html",
+      "home": "app/Module2/pages/page2.html",
       "isHome": false
     }
   ]
