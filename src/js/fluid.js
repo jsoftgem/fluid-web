@@ -311,7 +311,7 @@ fluidComponents
                                             url = scope.homeUrl + scope.task.page.getParam;
                                         }
                                     }
-                                    console.info("auto-get-url",url);
+                                    console.info("auto-get-url", url);
                                     f2.get(url, scope.task)
                                         .success(function (data) {
                                             console.info("autoget", data);
@@ -2174,7 +2174,7 @@ fluidComponents
                 var tries = 0;
 
                 if (!scope.defaultImage) {
-                    scope.defaultImage = "../images/gallery/profile_default.png";
+                    scope.defaultImage = "../assets/gallery/default.png";
                 }
 
                 scope.refresh = function () {
@@ -2418,13 +2418,21 @@ fluidComponents
             }
         }
     }])
-    .directive("fluidUploader", "$templateCache", ["$upload", function (u, tc) {
+    .directive("fluidUploader", ["$upload", "$templateCache", function (u, tc) {
         return {
             restict: "AE",
             link: function (scope, element, attr) {
 
             },
             template: tc.get("templates/fluid/fluidUploader.html")
+        }
+    }])
+    .directive("fluidTaskIcon", ["$templateCache", function (tc) {
+        return {
+            restrict: "AE",
+            scope: {task: "="},
+            template: tc.get("templates/fluid/fluidTaskIcon.html"),
+            replace: true
         }
     }])
     .directive("column", function () {

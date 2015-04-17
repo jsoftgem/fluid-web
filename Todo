@@ -52,3 +52,7 @@ New Task Model
     "method": "PUT/POST"
   }//TODO: state ajax for task state saving e.g. close, pin, minimize, resize , etc..
 }
+
+
+
+//TODO: use template cache in for pagees

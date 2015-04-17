@@ -4,10 +4,12 @@
   "title": "Sample Module",
   "size": 100,
   "glyph": "fa fa-gears",
+  "useImg": false,
+  "imgSrc": "app/Module1/icon.png",
   "active": true,
-  "lazyLoad":true,
-  "moduleJS":"module1",
-  "moduleFiles":"app/Module1/module1-controller.js",
+  "lazyLoad": true,
+  "moduleJS": "module1",
+  "moduleFiles": "app/Module1/module1-controller.js",
   "pages": [
     {
       "name": "page1",

@@ -279,20 +279,29 @@ div.fluid-form label {
 }
 
 .panel-control {
-    margin-top: -10px;
-    margin-right: -14px;
+    margin-top: -22px;
+    margin-right: -9px;
+}
+
+.panel-control-img {
+    margin-top: -22px;
+    margin-right: -9px;
+}
+
+.panel-control-glyph {
+    margin-top: -17px;
+    margin-right: -9px;
 }
 
 .panel-tools {
-    margin-top: -28.3px;
-    margin-right: -1.5px;
+    margin-top: -34px;
+    margin-right: -5px;
 }
 
 /*frame content*/
 .frame-content {
     margin: 0 auto;
     clear: both;
-    background: url(../images/bg/school.png) repeat;
 }
 
 .frame-content-div {
@@ -341,4 +350,17 @@ div.fluid-form label {
     overfluid: auto;
     width: 30pc;
     position: absolute;
+}
+
+.fluid-task-icon {
+    -webkit-transform: scale(1.7, 1.7);
+}
+
+.fluid-icon-left {
+    margin-left: -10px;
+    margin-right: 4px;
+    margin-top: -13px;
+}
+.fluid-icon-right-glyph {
+    margin-top: -15px;
 }

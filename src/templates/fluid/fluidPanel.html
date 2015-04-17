@@ -4,8 +4,8 @@
         <div class="panel-title"><a ng-if="!fluidFrameService.fullScreen " data-toggle='collapse'
                                     data-target='#_{{task.id}}'
                                     href='#'
-                                    class="fluid-panel-heading-title"><span ng-class="task.glyph"
-                                                                            class='hidden-sm hidden-md hidden-xs'></span><span
+                                    class="fluid-panel-heading-title">
+            <fluid-task-icon class="fluid-icon-left hidden-sm hidden-md hidden-xs" task="task"></fluid-task-icon><span
                 ng-if="task.loaded">&nbsp;{{task.title}} - {{task.page.title}}</span></a>
             <span ng-if="task.loaded && fluidFrameService.fullScreen">&nbsp;{{task.title}} - {{task.page.title}}</span>
 
@@ -14,11 +14,12 @@
             <img ng-if="!task.loaded && fluidFrameService.fullScreen"
                  src="../assets/loader/loader2.GIF"/>
         </div>
-        <div class="panel-tools pull-right">
+        <div class="{{task.useImg ? 'panel-control-img': 'panel-control-glyph'}} pull-right">
             <div class='btn-group btn-group-lg hidden-lg'><a href='#' class='dropdown-toggle'
                                                              data-toggle='dropdown'>
-                <span ng-class="task.glyph"
-                      class="{{!fluidFrameService.fullScreen ? 'fa-inverse' : 'text-primary'}} fluid-panel-icon-control"/></a>
+                <fluid-task-icon task="task"
+                                 class="{{!task.useImg?'fluid-icon-right-glyph':''}} {{!fluidFrameService.fullScreen ? 'fa-inverse' : 'text-primary'}} fluid-panel-icon-control"></fluid-task-icon>
+            </a>
                 <ul class='dropdown-menu dropdown-menu-right dropdown-menu-inverse'>
                     <li><a href='#' ng-click='task.refresh()'>Refresh</a></li>
                     <li class='divider hidden-lg hidden-sm hidden-xs'></li>
@@ -36,7 +37,7 @@
                            ng-click='task.close()'>Close</a></li>
                 </ul>
             </div>
-            <div class='hidden-md hidden-xs hidden-sm btn-group btn-group-xs panel-control'>
+            <div class='hidden-md hidden-xs hidden-sm btn-group btn-group-xs panel-tools'>
                 <!-- ToDo: Allow panel to freeze. <button class='btn btn-info fa fa-paperclip' ng-click='freeze(task)'ng-class=\"task.freeze ? 'active' :''\" title='Clip'></button>-->
                 <!-- <button ng-class="task.pinned ?
                          'active' :''" title='Pin' type="button" class="btn btn-info" ng-click='task.pin()' >
