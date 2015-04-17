@@ -3030,9 +3030,7 @@ fluidComponents
 
             return promise;
         }
-
         return this;
-
     }])
     .service("fluidControlService", [function () {
 

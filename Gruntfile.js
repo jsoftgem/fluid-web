@@ -9,7 +9,7 @@ module.exports = function (grunt) {
                     options: {
                         install: true,
                         copy: false,
-                        targetDir: '/libs',
+                        targetDir: './libs',
                         cleanTargetDir: true
                     }
                 }
@@ -60,11 +60,18 @@ module.exports = function (grunt) {
                     files: [
                         {
                             expand: true,
-                            cwd: 'src/css',
+                            cwd: 'dist/css',
                             src: ['*.css'],
                             dest: 'dist/css',
                             ext: '.min.css'
                         }]
+                }
+            },
+            concat_css: {
+                options: {},
+                all: {
+                    src: ["src/css/*.css"],
+                    dest: "dist/css/fluid.css"
                 }
             }
             , clean: {
@@ -117,6 +124,7 @@ module.exports = function (grunt) {
     grunt.loadNpmTasks('grunt-contrib-cssmin');
     grunt.loadNpmTasks('grunt-contrib-concat');
     grunt.loadNpmTasks('grunt-contrib-uglify');
+    grunt.loadNpmTasks('grunt-concat-css');
     grunt.loadNpmTasks('grunt-html2js');
     grunt.loadNpmTasks('grunt-contrib-watch');
     grunt.loadNpmTasks('grunt-bower-task');
@@ -128,5 +136,5 @@ module.exports = function (grunt) {
      grunt.registerTask('package', ['bower', 'jshint', 'karma:unit', 'html2js:dist', 'concat:dist', 'uglify:dist',
      'clean:temp', 'compress:dist']);*/
     grunt.registerTask('package', ['bower', 'html2js:dist', 'concat:dist', 'uglify:dist',
-        'clean:temp', 'compress:dist', 'cssmin']);
+        'clean:temp', 'compress:dist', 'cssmin', 'concat_css']);
 }
