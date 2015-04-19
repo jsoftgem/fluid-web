@@ -10,4 +10,5 @@ angular.module("module1", ["fluid"])
             s.fluid.goTo("page2");
         }
 
+        s.sample = "hello";
     }]);

@@ -1,7 +1,7 @@
 /**Fluid Web v0.0.1
  * Created by Jerico de Guzman
  * October 2014**/
-var fluidComponents = angular.module("fluid", ["angularFileUpload", "oc.lazyLoad", "LocalStorageModule", "templates-dist"]);
+var fluidComponents = angular.module("fluid", ["angularFileUpload", "oc.lazyLoad", "LocalStorageModule", "templates-dist", "ngSanitize"]);
 
 fluidComponents.config(["$httpProvider", "localStorageServiceProvider", function (h, ls) {
     ls.setPrefix("fluid")
@@ -46,6 +46,16 @@ fluidComponents
                         scope.userTask.closed = false;
                         scope.fluid = {};
                         scope.toolbars = [
+                            {
+                                "id": 'showPageList',
+                                "glyph": "fa fa-bars",
+                                "label": "Pages",
+                                "disabled": false,
+                                "uiType": "success",
+                                "action": function () {
+                                    scope.task.showPageList = !scope.task.showPageList;
+                                }
+                            },
                             {
                                 "id": 'home',
                                 "glyph": "fa fa-home",
@@ -118,7 +128,7 @@ fluidComponents
                             }, $index);
 
                             t(function () {
-                                $(".frame-content").scrollTo($("div.box[task]:eq(" + $index.index + ") div"), 200);
+                                $(".frame-content").scrollTo($("div.panel[task]:eq(" + $index.index + ") div"), 200);
                             });
                         }
                         scope.fluid.openTaskBaseUrl = "services/fluid_task_service/getTask?";
@@ -1088,9 +1098,13 @@ fluidComponents
                                 height = estimateHeight(height) - 50;
                                 var panel = $("#_id_fp_" + scope.task.id + ".panel");
                                 var panelBody = panel.find(".panel-body");
-                                panel.height(height);
+                                console.info("fluid-panel-fullscreen-height", height);
+                                panel.css("height", height);
                                 var headerHeight = panel.find("div.panel-heading").height();
-                                panelBody.height(height - headerHeight);
+                                console.info("fluid-panel-fullscreen-header-height", headerHeight);
+                                var bodyHeight = height - headerHeight;
+                                console.info("fluid-panel-fullscreen-body-height", bodyHeight);
+                                panelBody.css("height", bodyHeight, "important");
                                 panelBody.css("overflow", "auto");
                             }
                             if (scope.task.generic === false) {
@@ -1131,7 +1145,11 @@ fluidComponents
 
                                 var headerHeight = panel.find("div.panel-heading").height();
 
-                                panelBody.height(height - headerHeight);
+                                var bodyHeight = height - headerHeight;
+                                
+                                console.info("fluid-panel-fullscreen-body-height", bodyHeight);
+
+                                panelBody.css("height", bodyHeight, "important");
 
                                 panelBody.css("overflow", "auto");
 
@@ -2472,7 +2490,7 @@ fluidComponents
             }
 
             t(function () {
-                $(".frame-content").scrollTo($("div.box[task]:eq(" + index + ")"), 200);
+                $(".frame-content").scrollTo($("div.panel[task]:eq(" + index + ")"), 200);
             }, 300);
         };
         this.toggleSearch = function () {
@@ -2824,7 +2842,6 @@ fluidComponents
                 url = this.host + url;
             }
             var headers = {
-                "fluid-container-id": "_id_fpb_" + task.id,
                 "Content-type": "application/json"
             };
 
@@ -3060,7 +3077,7 @@ fluidComponents
             }
 
             var alertContainer = $(messageId).get();
-            var alert = $("<div>").attr("fluid-msg", index).addClass("animated pulse anim-dur").addClass(fluidMessageService.alertType).appendTo(alertContainer).get();
+            var alert = $("<div>").attr("fluid-msg", index)/*.addClass("animated pulse anim-dur")*/.addClass(fluidMessageService.alertType).appendTo(alertContainer).get();
 
             $("<button>").attr("type", "button").addClass("close icon-cross").attr("data-dismiss", "alert").appendTo(alert).get();
 
@@ -3261,7 +3278,6 @@ function Control() {
     return control;
 }
 
-
 var eventInterceptorId = "event_interceptor_id_";
 var goToEventID = "event_got_id_";
 var EVENT_NOT_ALLOWED = "not_allowed_";
@@ -3272,7 +3288,6 @@ function estimateHeight(height) {
     /*var _pc = height >= 768 ? height * 0.055 : height <= 768 && height > 600 ? height * 0.065 : height <= 600 && height > 400 ? height * 0.09 : height * 0.15;*/
     return height - _pc
 }
-
 
 function generateTask(scope, t, f2) {
     console.info("generateTask > scope.task.page", scope.task.page);
@@ -3291,7 +3306,7 @@ function generateTask(scope, t, f2) {
         scope.task.page.param = scope.task.pageParam;
         var page = scope.task.page;
 
-        if (scope.task.page.isHome === false) {
+        if (!scope.task.page.isHome || scope.task.page.isHome === false) {
             if (scope.task.pages) {
                 var $page = getHomePageFromTaskPages(scope.task);
                 scope.home = $page.page.name;
@@ -3343,6 +3358,7 @@ function generateTask(scope, t, f2) {
 
     t(loadGetFn, 500);
 }
+
 function isJson(str) {
     try {
         JSON.parse(str);
@@ -3492,12 +3508,12 @@ angular.module("templates/fluid/fluidFrame.html", []).run(["$templateCache", fun
     "            <fluid-panel task='task'></fluid-panel>\n" +
     "        </div>\n" +
     "    </div>\n" +
-    "    <div class=\"fluid-footer portlet box color portlet-primary\" ng-show=\"fluidFrameService.actionBarShowing\"\n" +
+    "    <div class=\"fluid-footer panel panel-primary\" ng-show=\"fluidFrameService.actionBarShowing\"\n" +
     "         ng-class=\"fluidFrameService.actionBarClass\">\n" +
-    "        <div class=\"portlet-header\">\n" +
+    "        <div class=\"panel-heading\">\n" +
     "            <div class=\"tools\"></div>\n" +
     "        </div>\n" +
-    "        <div class=\"portlet-body\">\n" +
+    "        <div class=\"panel-body\">\n" +
     "            body\n" +
     "        </div>\n" +
     "        <!--<div class=\"pull-right\">Powered by <a href=\"#www.jsofttechnologies.com\">JSoft Technologies</a> of GEM</div>-->\n" +
@@ -3678,15 +3694,33 @@ angular.module("templates/fluid/fluidPanel.html", []).run(["$templateCache", fun
     "        </div>\n" +
     "    </div>\n" +
     "    <div id='_{{task.id}}' class='panel-collapse collapse in'>\n" +
-    "        <div id='_id_fpb_{{task.id}}' class='panel-body minHeight fluid-panel' ng-disabled='!task.loaded'>\n" +
+    "        <div id='_id_fpb_{{task.id}}'\n" +
+    "             class=\"panel-body minHeight fluid-panel\"\n" +
+    "             ng-disabled='!task.loaded'>\n" +
     "            <fluid-message id=\"{{fluid.getElementFlowId('pnl_msg')}}\"></fluid-message>\n" +
     "            <fluid-tool size=\"large\" fluid=\"fluid\" id=\"{{fluid.getElementFlowId('flw_tl')}}\"\n" +
     "                        ng-if='task.showToolBar' controls='toolbars'\n" +
     "                        task='task' pages='task.navPages'></fluid-tool>\n" +
-    "            <div ng-if='task.pageLoaded' id='page_div_{{task.id}}' class='fluid-panel-page'\n" +
+    "\n" +
+    "            <div class=\"col-lg-3 fluid-panel-page-list\" ng-if=\"task.showPageList\">\n" +
+    "                <ul class=\"list-group\">\n" +
+    "                    <li class=\"list-group-item\" ng-repeat=\"page in task.pages\">\n" +
+    "                        <a href=\"#\" ng-click=\"fluid.goTo(page.name)\">{{page.title}}</a>\n" +
+    "                    </li>\n" +
+    "                </ul>\n" +
+    "            </div>\n" +
+    "            <div ng-if='task.pageLoaded && !task.page.static' id='page_div_{{task.id}}'\n" +
+    "                 ng-class=\"task.showPageList ? 'col-lg-9':''\"\n" +
+    "                 class=\"fluid-panel-page animated {{task.pageTransition ? task.pageTransition : 'fadeIn'}}\"\n" +
     "                 ng-style=\"!fluidFrameService.fullScreen?{overfluid:auto}:{}\"\n" +
     "                 ng-include='task.page.home'></div>\n" +
+    "            <div ng-if='task.pageLoaded && task.page.static' id='page_div_{{task.id}}'\n" +
+    "                 ng-class=\"task.showPageList ? 'col-lg-9':''\"\n" +
+    "                 class=\"fluid-panel-page animated {{task.pageTransition ? task.pageTransition : 'fadeIn'}}\"\n" +
+    "                 ng-style=\"!fluidFrameService.fullScreen?{overfluid:auto}:{}\"\n" +
+    "                 ng-bind-html='task.page.html'></div>\n" +
     "        </div>\n" +
+    "\n" +
     "    </div>\n" +
     "</div>\n" +
     "");

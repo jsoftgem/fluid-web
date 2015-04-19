@@ -15,6 +15,7 @@ New Task Model
   "pinned":false,//If true, pin the task panel (glue the task panel on screen)
   "active": true,//If true, shows the task panel on fluidFrame
   "showToolBar":true,// If true, shows the toolbar & page breadcrumb
+  "pageTransition":"fadeInRight",
   "page":"page1",// Current page of the task
   "pageParam":"id",//TODO: parameter for url, if useAction use json object for param
   "useAction":false,//TODO: If true, initAction is required, uses the specified action of the current page for resultData will disregard autoGet
@@ -31,7 +32,10 @@ New Task Model
       "get": "app/Module1/pages/page1-data.json", //preset get uri
       "post": "services/page/post", //preset post uri
       "delURL": "services/page/delete", //preset delete uri
+     TODO: "requiredParam":["id","option:['Good','Better','Best']"],// add param requirements
       "put": "services/page/put",//preset put uri
+      TODO: "static":false, // page will use static html
+      TODO: "html":"<div></div>",// static html, angular el will not work for now
       "autoGet": true,//If TRUE, will get the result data from get uri
       "isHome": true,//Will be the main page of the task (must only specifiy one home page per task)
       "actions": [

@@ -361,6 +361,14 @@ div.fluid-form label {
     margin-right: 4px;
     margin-top: -13px;
 }
+
 .fluid-icon-right-glyph {
     margin-top: -15px;
+}
+
+.fluid-panel-page-list {
+}
+
+.fluid-panel-page {
+    z-index: 0;
 }
