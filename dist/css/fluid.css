@@ -311,7 +311,7 @@ div.fluid-form label {
 }
 
 .frame-fullscreen {
-    padding: 0;
+    padding: 0 !important;
 }
 
 .frame-fluidscreen {

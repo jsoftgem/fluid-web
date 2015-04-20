@@ -1176,7 +1176,7 @@ fluidComponents
 
                     if (!fullScreen) {
                         var height = window.innerHeight;
-                        height = estimateHeight(height);
+                        height = estimateHeight(height) - 5;
                         if (scope.fluidFrameService.isSearch) {
                             frameDiv.attr("style", "height:" + height + "px;overflow:auto");
                         } else {
@@ -2393,10 +2393,12 @@ fluidComponents
             replace: true
         }
     }])
-    .directive("column", function () {
+    .directive("column", ["$rootScope", function (rs) {
         return {
             restrict: "A",
+            scope: {task: "="},
             link: function (scope, element, attr) {
+
                 if (attr.column) {
                     scope.column = attr.column;
                 }
@@ -2407,9 +2409,61 @@ fluidComponents
                         .addClass("col-sm-12")
                         .addClass("col-xs-12")
                 }
+
+
+                scope.$watch(function (scope) {
+                    if (scope.task) {
+                        return scope.task.size;
+                    }
+
+                }, function (size) {
+                    switch (size) {
+                        case 25:
+                            element.addClass("col-lg-12")
+                                .addClass("col-md-12")
+                                .addClass("col-sm-12")
+                                .addClass("col-xs-12")
+                            break;
+                        case 50:
+                            if (rs.viewport === "lg") {
+                                element.addClass("col-lg-" + scope.column);
+                            } else if (rs.viewport === "md") {
+                                element.addClass("col-md-" + scope.column);
+                            } else if (rs.viewport === "sm") {
+                                element.addClass("col-sm-12");
+                            } else if (rs.viewport === "xs") {
+                                element.addClass("col-xs-12");
+                            }
+                            break;
+                        case 75:
+                            if (rs.viewport === "lg") {
+                                element.addClass("col-lg-" + scope.column);
+                            } else if (rs.viewport === "md") {
+                                element.addClass("col-md-12");
+                            } else if (rs.viewport === "sm") {
+                                element.addClass("col-sm-12");
+                            } else if (rs.viewport === "xs") {
+                                element.addClass("col-xs-12");
+                            }
+                            break;
+                        case 100:
+                            if (rs.viewport === "lg") {
+                                element.addClass("col-lg-" + scope.column);
+                            } else if (rs.viewport === "md") {
+                                element.addClass("col-md-" + scope.column);
+                            } else if (rs.viewport === "sm") {
+                                element.addClass("col-sm-12");
+                            } else if (rs.viewport === "xs") {
+                                element.addClass("col-xs-12");
+                            }
+                            break;
+                    }
+                });
+
+
             }
         }
-    });
+    }]);
 
 function setChildIndexIds(element, taskId, suffix, depth) {
     var children = $(element).children();
@@ -3291,13 +3345,13 @@ var EVENT_NOT_ALLOWED = "not_allowed_";
 var AUTHORIZATION = "authorization";
 
 function estimateHeight(height) {
-    var _pc = window.innerWidth < 450 ? 100 : window.innerWidth < 768 ? 55 : window.innerWidth < 1200 ? 70 : 70;
+    var _pc = window.innerWidth < 450 ? 65 : window.innerWidth < 768 ? 70 : window.innerWidth < 1200 ? 85 : 50;
     /*var _pc = height >= 768 ? height * 0.055 : height <= 768 && height > 600 ? height * 0.065 : height <= 600 && height > 400 ? height * 0.09 : height * 0.15;*/
     return height - _pc
 }
 
 function estimatedFrameHeight(height) {
-    var _pc = window.innerWidth < 450 ? 80 : window.innerWidth < 768 ? 60 : window.innerWidth < 1200 ? 90 : 50;
+    var _pc = window.innerWidth < 450 ? 60 : window.innerWidth < 768 ? 60 : window.innerWidth < 1200 ? 80 : 50;
     /*var _pc = height >= 768 ? height * 0.055 : height <= 768 && height > 600 ? height * 0.065 : height <= 600 && height > 400 ? height * 0.09 : height * 0.15;*/
     return height - _pc
 }
@@ -3435,7 +3489,7 @@ function saveTaskSate(task, userTask, fluidHttpService, field) {
 
 function autoSizePanel(task) {
     var height = window.innerHeight;
-    height = estimateHeight(height);
+    height = estimateHeight(height) - 30;
     var panel = $("#_id_fp_" + task.id + ".panel");
     var panelBody = $("#_id_fp_" + task.id + ".panel div.fluid-panel-content");
     console.info("fluid-panel-fullscreen-height", height);
@@ -3526,9 +3580,10 @@ angular.module("templates/fluid/fluidFrame.html", []).run(["$templateCache", fun
   $templateCache.put("templates/fluid/fluidFrame.html",
     "<div class=\"container-fluid frame-content\"\n" +
     "     ng-class=\"fluidFrameService.fullScreen ? 'frame-fullscreen' : 'frame-fluidscreen'\">\n" +
-    "    <div ng-if=\"fluidFrameService.fullScreen\" class=\"container-fluid frame-content-div\"\n" +
-    "         ng-show=\"fluidFrameService.fullScreen\">\n" +
-    "        <bootstrap-viewport></bootstrap-viewport>\n" +
+    "\n" +
+    "    <bootstrap-viewport></bootstrap-viewport>\n" +
+    "    <div ng-if=\"fluidFrameService.fullScreen\" class=\"frame-content-div\" column=\"12\"\n" +
+    "         ng-show=\"fluidFrameService.fullScreen\" style=\"padding: 0;\">\n" +
     "        <fluid-panel task='fluidFrameService.fullScreenTask'></fluid-panel>\n" +
     "    </div>\n" +
     "    <div ng-if=\"!fluidFrameService.fullScreen\" class=\"container-fluid frame-content-div\"\n" +
@@ -3630,7 +3685,7 @@ angular.module("templates/fluid/fluidNotify.html", []).run(["$templateCache", fu
 angular.module("templates/fluid/fluidPanel.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("templates/fluid/fluidPanel.html",
     "<div id='_id_fp_{{task.id}}' task\n" +
-    "     class=\"panel {{!fluidFrameService.fullScreen ? 'panel-primary' : 'panel-default'}}\">\n" +
+    "     class=\"panel {{!fluidFrameService.fullScreen ? 'panel-primary' : 'panel-default frame-fullscreen'}}\">\n" +
     "    <div class='panel-heading' ng-show=\"!task.locked\">\n" +
     "        <div class=\"panel-title\"><a ng-if=\"!fluidFrameService.fullScreen \" data-toggle='collapse'\n" +
     "                                    data-target='#_{{task.id}}'\n" +
