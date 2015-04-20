@@ -2,6 +2,7 @@
      ng-class="fluidFrameService.fullScreen ? 'frame-fullscreen' : 'frame-fluidscreen'">
     <div ng-if="fluidFrameService.fullScreen" class="container-fluid frame-content-div"
          ng-show="fluidFrameService.fullScreen">
+        <bootstrap-viewport></bootstrap-viewport>
         <fluid-panel task='fluidFrameService.fullScreenTask'></fluid-panel>
     </div>
     <div ng-if="!fluidFrameService.fullScreen" class="container-fluid frame-content-div"

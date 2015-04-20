@@ -185,6 +185,7 @@ and open the template in the editor.
 }
 
 .fluid-panel-page {
+    border: none;
     min-height: 250px;
 }
 
@@ -367,8 +368,77 @@ div.fluid-form label {
 }
 
 .fluid-panel-page-list {
+    border: none;
+    margin-top: -16px;
 }
 
-.fluid-panel-page {
-    z-index: 0;
+.fluid-panel-content {
+    margin-top: -16px;
+}
+
+/* BREADCRUMB */
+.ndg-breadcrumb .breadcrumb {
+    background-color: #eee;
+}
+
+.ndg-breadcrumb .breadcrumb li {
+    margin-top: 9px;
+}
+
+.ndg-breadcrumb .breadcrumb .form-group {
+    margin-bottom: 0px;
+}
+
+.ndg-breadcrumb .breadcrumb .button-tool {
+    font-size: 18px;
+    padding: 3px 6px;
+}
+
+/* END BREADCRUMB */
+
+.plain-text {
+    color: black;
+    font: inherit;
+}
+
+/*Bootstrap viewport check*/
+
+.fluid-view-lg {
+    display: none;
+}
+
+.fluid-view-md {
+    display: none;
+}
+
+.fluid-view-sm {
+    display: none;
+}
+
+.fluid-view-xs {
+    display: none;
+}
+
+@media (max-width: 767px) {
+    .fluid-view-xs {
+        display: block;
+    }
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+    .fluid-view-sm {
+        display: block
+    }
+}
+
+@media (min-width: 992px) and (max-width: 1199px) {
+    .fluid-view-md {
+        display: block
+    }
+}
+
+@media (min-width: 1200px) {
+    .fluid-view-lg {
+        display: block
+    }
 }

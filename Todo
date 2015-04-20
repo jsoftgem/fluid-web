@@ -60,3 +60,5 @@ New Task Model
 
 //TODO: fix toolbar
 //TODO: use template cache in for pages
+//TODO: Menu toolbar in FluidPanel
+//TODO: FluidToolbar mobile responsive
