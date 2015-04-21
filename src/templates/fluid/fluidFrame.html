@@ -8,7 +8,7 @@
     </div>
     <div ng-if="!fluidFrameService.fullScreen" class="container-fluid frame-content-div"
          ng-hide="fluidFrameService.fullScreen">
-        <div ng-init="initTask(task)"
+        <div ng-init="initTask(task)" class="fluid-panel-transition"
              ng-repeat='task in fluidFrameService.taskList | filter:{active:true, title:fluidFrameService.searchTask}'>
             <fluid-panel task='task'></fluid-panel>
         </div>

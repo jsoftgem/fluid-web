@@ -165,6 +165,11 @@ and open the template in the editor.
     width: 30pc;
 }
 
+.fluid-panel-transition {
+    -webkit-transition: width 0.2s;
+    transition: width 0.2s;
+}
+
 .fluid-panel {
     overfluid-x: auto;
 }

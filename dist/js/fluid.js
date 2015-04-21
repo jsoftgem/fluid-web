@@ -3846,7 +3846,7 @@ angular.module("templates/fluid/fluidFrame.html", []).run(["$templateCache", fun
     "    </div>\n" +
     "    <div ng-if=\"!fluidFrameService.fullScreen\" class=\"container-fluid frame-content-div\"\n" +
     "         ng-hide=\"fluidFrameService.fullScreen\">\n" +
-    "        <div ng-init=\"initTask(task)\"\n" +
+    "        <div ng-init=\"initTask(task)\" class=\"fluid-panel-transition\"\n" +
     "             ng-repeat='task in fluidFrameService.taskList | filter:{active:true, title:fluidFrameService.searchTask}'>\n" +
     "            <fluid-panel task='task'></fluid-panel>\n" +
     "        </div>\n" +
