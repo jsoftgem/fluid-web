@@ -3310,116 +3310,63 @@ fluidComponents.directive("bootstrapViewport", ["$rootScope", "$window", functio
         }
     }
 }]);
-
+/*TODO: improve*/
 fluidComponents.directive("fluidVisible", ["$rootScope", "$window", function (rs, w) {
 
     return {
         restrict: "AC",
-        scope: {task: "=", view: "@", size: "@"},
+        scope: {task: "="},
         link: function (scope, element, attr) {
-            if (scope.view) {
-                if (scope.view.indexOf(",") > -1) {
-                    var views = scope.view.split(",");
-                    var returnValue = {valid: false};
-                    angular.forEach(views, function (data) {
-                        if (rs.viewport === data) {
-                            this.valid = true;
-                        }
-                    }, returnValue);
+            var currentElement = element[0];
+            console.info("fluidVisible-source", currentElement);
 
+            scope.source = currentElement;
 
-                    if (!returnValue.valid) {
-                        element.hide();
-                    } else {
-                        element.show();
-                    }
-                } else {
-                    var valid = false;
-                    if (rs.viewport === scope.view) {
-                        valid = true;
-                    }
-
-                    if (!valid) {
-                        element.hide();
-                    } else {
-                        element.show();
-                    }
-                }
+            if (attr.view) {
+                scope.view = attr.view;
             }
-            if (rs.viewport === "lg") {
-                if (scope.task) {
-                    if (scope.size) {
-                        if (scope.size.indexOf(",") > -1) {
-                            var sizes = scope.size.split(",");
-                            console.info("sizes", sizes);
-                            var returnValue = {valid: false};
-
-                            angular.forEach(sizes, function (data) {
-                                if (scope.task.size + '' === data) {
-                                    this.valid = true;
-                                }
-                            }, returnValue);
-                            console.info("size-value", returnValue);
-                            if (!returnValue.valid) {
-                                element.hide();
-                            } else {
-                                element.show();
-                            }
-                        } else {
-                            var valid = false;
-                            if (scope.task.size + '' === scope.size) {
-                                valid = true;
-                            }
-
-                            if (!valid) {
-                                element.hide();
-                            } else {
-                                element.show();
-                            }
-                        }
-
-
-                    }
-                }
+            if (attr.size) {
+                scope.size = attr.size;
             }
-            $(w).on("resize", function () {
+
+            scope.checkView = function () {
                 if (scope.view) {
                     if (scope.view.indexOf(",") > -1) {
                         var views = scope.view.split(",");
+                        console.info("fluidVisible-views", views);
                         var returnValue = {valid: false};
                         angular.forEach(views, function (data) {
                             if (rs.viewport === data) {
                                 this.valid = true;
                             }
                         }, returnValue);
-
-
                         if (!returnValue.valid) {
-                            element.hide();
+                            $(scope.source).hide();
                         } else {
-                            element.show();
+                            $(scope.source).show();
                         }
                     } else {
                         var valid = false;
                         if (rs.viewport === scope.view) {
                             valid = true;
                         }
-
                         if (!valid) {
-                            element.hide();
+                            $(scope.source).hide();
                         } else {
-                            element.show();
+                            $(scope.source).show();
                         }
                     }
                 }
+            }
+            scope.checkSize = function () {
                 if (rs.viewport === "lg") {
                     if (scope.task) {
                         if (scope.size) {
                             if (scope.size.indexOf(",") > -1) {
                                 var sizes = scope.size.split(",");
+                                console.info("fluidVisible-sizes", sizes);
                                 console.info("sizes", sizes);
                                 var returnValue = {valid: false};
-
                                 angular.forEach(sizes, function (data) {
                                     if (scope.task.size + '' === data) {
                                         this.valid = true;
@@ -3427,20 +3374,19 @@ fluidComponents.directive("fluidVisible", ["$rootScope", "$window", function (rs
                                 }, returnValue);
                                 console.info("size-value", returnValue);
                                 if (!returnValue.valid) {
-                                    element.hide();
+                                    $(scope.source).hide();
                                 } else {
-                                    element.show();
+                                    $(scope.source).show();
                                 }
                             } else {
                                 var valid = false;
                                 if (scope.task.size + '' === scope.size) {
                                     valid = true;
                                 }
-
                                 if (!valid) {
-                                    element.hide();
+                                    $(scope.source).hide();
                                 } else {
-                                    element.show();
+                                    $(scope.source).show();
                                 }
                             }
 
@@ -3448,12 +3394,176 @@ fluidComponents.directive("fluidVisible", ["$rootScope", "$window", function (rs
                         }
                     }
                 }
+            }
 
+            scope.checkView();
+            scope.checkSize();
+
+            $(w).on("resize", function () {
+                scope.checkView();
+                scope.checkSize();
             })
+            if (scope.task) {
+                scope.$watch(function (scope) {
+                    return scope.task.size
+                }, function (value) {
+                    scope.checkSize();
+                });
+            }
 
         }
     }
 
+}])
+fluidComponents.directive("hidden25", [function () {
+    return {
+        restrict: "AC",
+        scope: false,
+        link: function (scope, element, attr) {
+
+            if (scope.task) {
+                scope.$watch(function (scope) {
+                    return scope.task.size;
+                }, function (value) {
+                    switch (value) {
+                        case 25:
+                            element.hide();
+                            break;
+                        case 50:
+                            if (!element.attr("hidden50")) {
+                                element.show();
+                            }
+                            break;
+                        case 75:
+                            if (!element.attr("hidden75")) {
+                                element.show();
+                            }
+                            break;
+                        case 100:
+                            if (!element.attr("hidden100")) {
+                                element.show();
+                            }
+                            break;
+                    }
+
+                });
+
+            }
+
+        }
+    }
+}])
+fluidComponents.directive("hidden50", [function () {
+    return {
+        restrict: "AC",
+        scope: false,
+        link: function (scope, element, attr) {
+
+            if (scope.task) {
+                scope.$watch(function (scope) {
+                    return scope.task.size;
+                }, function (value) {
+                    console.info("hidden50",element[0]);
+                    console.info("hidden50-size",value);
+                    switch (value) {
+                        case 25:
+                            if (!element.attr("hidden25")) {
+                                element.show();
+                            }
+                            break;
+                        case 50:
+                            console.info("hidden50-hidden",element);
+                            element.hide();
+                            break;
+                        case 75:
+                            if (!element.attr("hidden75")) {
+                                element.show();
+                            }
+                            break;
+                        case 100:
+                            if (!element.attr("hidden100")) {
+                                element.show();
+                            }
+                            break;
+                    }
+                });
+
+            }
+
+        }
+    }
+}])
+fluidComponents.directive("hidden75", [function () {
+    return {
+        restrict: "AC", scope: false,
+        link: function (scope, element, attr) {
+
+            if (scope.task) {
+                scope.$watch(function (scope) {
+                    return scope.task.size;
+                }, function (value) {
+                    switch (value) {
+                        case 25:
+                            if (!element.attr("hidden25")) {
+                                element.show();
+                            }
+                            break;
+                        case 50:
+                            if (!element.attr("hidden50")) {
+                                element.show();
+                            }
+                            break;
+                        case 75:
+                            element.hide();
+                            break;
+                        case 100:
+                            if (!element.attr("hidden100")) {
+                                element.show();
+                            }
+                            break;
+                    }
+                });
+
+            }
+
+        }
+    }
+}])
+fluidComponents.directive("hidden100", [function () {
+    return {
+        restrict: "AC", scope: false,
+        link: function (scope, element, attr) {
+
+            if (scope.task) {
+                scope.$watch(function (scope) {
+                    return scope.task.size;
+                }, function (value) {
+                    switch (value) {
+                        case 25:
+                            if (!element.attr("hidden25")) {
+                                element.show();
+                            }
+                            break;
+                        case 50:
+                            if (!element.attr("hidden50")) {
+                                element.show();
+                            }
+                            break;
+                        case 75:
+                            if (!element.attr("hidden75")) {
+                                element.show();
+                            }
+                            break;
+                        case 100:
+                            element.hide();
+                            break;
+                    }
+                });
+
+            }
+
+        }
+    }
 }])
 /**Prototypes**/
 function Task() {
@@ -3880,21 +3990,21 @@ angular.module("templates/fluid/fluidPanel.html", []).run(["$templateCache", fun
     "                      ></i>\n" +
     "                 </button>-->\n" +
     "\n" +
-    "                <button ng-hide='fluidFrameService.fullScreen' ng-disabled='task.pinned' type=\"button\"\n" +
+    "              <!--  <button ng-hide='fluidFrameService.fullScreen' ng-disabled='task.pinned' type=\"button\"\n" +
     "                        class=\"btn btn-info\" ng-click='task.max25()' title=\"Maximize - 25\">\n" +
     "                    <i><span class='fa fa-arrows-h' style=\"transform: scaleX(0.8)\"></span></i>\n" +
-    "                </button>\n" +
+    "                </button>-->\n" +
     "\n" +
     "                <button ng-hide='fluidFrameService.fullScreen' ng-disabled='task.pinned' title=\"Maximize - 50\"\n" +
     "                        class=\"btn btn-info\"\n" +
     "                        ng-click='task.max50()'>\n" +
     "                    <i class='element-center fa fa-arrows-h' style=\"transform: scaleX(0.9)\"></i>\n" +
     "                </button>\n" +
-    "                <button ng-hide='fluidFrameService.fullScreen' ng-disabled='task.pinned' ng-click='task.max75()'\n" +
+    "                <!--<button ng-hide='fluidFrameService.fullScreen' ng-disabled='task.pinned' ng-click='task.max75()'\n" +
     "                        class=\"btn btn-info\">\n" +
     "                    <i title=\"Maximize - 75\"\n" +
     "                            ><span class='fa fa-arrows-h' style=\"transform: scaleX(1.1)\"></span></i>\n" +
-    "                </button>\n" +
+    "                </button>-->\n" +
     "                <button ng-hide='fluidFrameService.fullScreen' ng-disabled='task.pinned' ng-click='task.max100()'\n" +
     "                        class=\"btn btn-info\">\n" +
     "                    <i title=\"Maximize - 100\" class='element-center fa fa-arrows-h' style=\"transform: scaleX(1.3)\"></i>\n" +
@@ -3936,12 +4046,13 @@ angular.module("templates/fluid/fluidPanel.html", []).run(["$templateCache", fun
     "                        ng-if='task.showToolBar' controls='toolbars'\n" +
     "                        task='task' pages='task.navPages'></fluid-tool>\n" +
     "\n" +
-    "            <div class=\"col-lg-3 col-md-3 hidden-sm hidden-xs fluid-panel-page-list\" ng-if=\"task.showPageList\">\n" +
-    "                <div class=\"input-group \">\n" +
+    "            <div class=\"hidden50\"\n" +
+    "                 ng-class=\"task.showPageList?'fluid-panel-page-list col-lg-3 col-md-3': 'fluid-panel-page-list-hidden'\">\n" +
+    "                <div ng-if=\"task.showPageList\" class=\"input-group \">\n" +
     "                    <input class=\"form-control\" ng-model=\"task.searchPage\" placeholder=\"Page\"/>\n" +
     "                    <span class=\"input-group-addon\"><i class=\"fa fa-search\"></i></span>\n" +
     "                </div>\n" +
-    "                <ul class=\"list-group\">\n" +
+    "                <ul ng-if=\"task.showPageList\" class=\"list-group\">\n" +
     "                    <li class=\"list-group-item\" ng-repeat=\"page in task.pages | filter: task.searchPage\"\n" +
     "                        ng-click=\"fluid.goTo(page.name)\"\n" +
     "                        style=\"cursor: pointer\"\n" +
@@ -3951,7 +4062,7 @@ angular.module("templates/fluid/fluidPanel.html", []).run(["$templateCache", fun
     "                </ul>\n" +
     "            </div>\n" +
     "            <div class=\"fluid-panel-content\"\n" +
-    "                 ng-class=\"task.showPageList ? 'col-lg-9 col-md-9':'col-lg-12'\">\n" +
+    "                 ng-class=\"task.showPageList ? 'col-lg-9 col-md-9':'col-lg-12 col-md-12'\">\n" +
     "                <div ng-if='task.pageLoaded && !task.page.static' id='page_div_{{task.id}}'\n" +
     "                     class=\"fluid-panel-page animated {{task.pageTransition ? task.pageTransition : 'fadeIn'}}\"\n" +
     "                     ng-include='task.page.home'></div>\n" +
@@ -4134,9 +4245,11 @@ angular.module("templates/fluid/fluidToolbar.html", []).run(["$templateCache", f
   $templateCache.put("templates/fluid/fluidToolbar.html",
     "<div class='container-fluid animated fadeIn anim-dur' style='overflow: auto'>\n" +
     "    <div class=\"ndg-breadcrumb\">\n" +
-    "        <ul class='breadcrumb'>\n" +
-    "            <li style=\"overflow: auto\" class=\"pull-left\" ng-repeat='page in task.navPages'>\n" +
-    "                <a ng-class=\"task.page.name == page.name ? 'plain-text':''\" title='page.title' href='#'\n" +
+    "        <ul class='breadcrumb hidden-xs hidden-sm hidden50'>\n" +
+    "\n" +
+    "            <li class=\"pull-left\"\n" +
+    "                ng-repeat='page in task.navPages'>\n" +
+    "                <a ng-class=\"task.page.name == page.name ? 'plain-text':''\" title='{{page.title}}' href='#'\n" +
     "                   ng-click='goToEvent(page.name,page.param)'>{{page.title}}</a>\n" +
     "            </li>\n" +
     "            <div class='form-group pull-right'>\n" +
@@ -4150,7 +4263,26 @@ angular.module("templates/fluid/fluidToolbar.html", []).run(["$templateCache", f
     "            </div>\n" +
     "            <div class=\"clearfix\"></div>\n" +
     "        </ul>\n" +
+    "        <div class='breadcrumb hidden100'>\n" +
+    "            <!--TODO: create modal for fluidTask-->\n" +
+    "            <div class=\"pull-left\">\n" +
+    "                <a ng-class=\"task.page.name == task.navPages[0].name ? 'plain-text':''\"\n" +
+    "                   title='{{task.navPages[0].title}}' href='#'\n" +
+    "                   ng-click='goToEvent(task.navPages[0].name,task.navPages[0].param)'>{{task.navPages[0].title}}</a>\n" +
+    "                <a ng-if=\"task.navPages.length > 1\" href=\"#\"><i class=\"fa fa-caret-down\"></i></a>\n" +
+    "            </div>\n" +
     "\n" +
+    "            <div class='form-group pull-right'>\n" +
+    "                <div class='btn-group {{group-size}}'>\n" +
+    "                    <button id='btn_tool_{{control.id}}_{{task.id}}' ng-repeat='control in controls'\n" +
+    "                            title='{{control.label}}'\n" +
+    "                            class='btn button-tool' ng-class='getClass(control.uiType)'\n" +
+    "                            ng-click='runEvent(control)'\n" +
+    "                            ng-disabled='control.disabled' type='button'><span ng-class='control.glyph'></span></button>\n" +
+    "                </div>\n" +
+    "            </div>\n" +
+    "            <div class=\"clearfix\"></div>\n" +
+    "        </div>\n" +
     "    </div>\n" +
     "\n" +
     "</div>");

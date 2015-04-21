@@ -3315,111 +3315,58 @@ fluidComponents.directive("fluidVisible", ["$rootScope", "$window", function (rs
 
     return {
         restrict: "AC",
-        scope: {task: "=", view: "@", size: "@"},
+        scope: {task: "="},
         link: function (scope, element, attr) {
-            if (scope.view) {
-                if (scope.view.indexOf(",") > -1) {
-                    var views = scope.view.split(",");
-                    var returnValue = {valid: false};
-                    angular.forEach(views, function (data) {
-                        if (rs.viewport === data) {
-                            this.valid = true;
-                        }
-                    }, returnValue);
+            var currentElement = element[0];
+            console.info("fluidVisible-source", currentElement);
 
+            scope.source = currentElement;
 
-                    if (!returnValue.valid) {
-                        element.hide();
-                    } else {
-                        element.show();
-                    }
-                } else {
-                    var valid = false;
-                    if (rs.viewport === scope.view) {
-                        valid = true;
-                    }
-
-                    if (!valid) {
-                        element.hide();
-                    } else {
-                        element.show();
-                    }
-                }
+            if (attr.view) {
+                scope.view = attr.view;
             }
-            if (rs.viewport === "lg") {
-                if (scope.task) {
-                    if (scope.size) {
-                        if (scope.size.indexOf(",") > -1) {
-                            var sizes = scope.size.split(",");
-                            console.info("sizes", sizes);
-                            var returnValue = {valid: false};
-
-                            angular.forEach(sizes, function (data) {
-                                if (scope.task.size + '' === data) {
-                                    this.valid = true;
-                                }
-                            }, returnValue);
-                            console.info("size-value", returnValue);
-                            if (!returnValue.valid) {
-                                element.hide();
-                            } else {
-                                element.show();
-                            }
-                        } else {
-                            var valid = false;
-                            if (scope.task.size + '' === scope.size) {
-                                valid = true;
-                            }
-
-                            if (!valid) {
-                                element.hide();
-                            } else {
-                                element.show();
-                            }
-                        }
-
-
-                    }
-                }
+            if (attr.size) {
+                scope.size = attr.size;
             }
-            $(w).on("resize", function () {
+
+            scope.checkView = function () {
                 if (scope.view) {
                     if (scope.view.indexOf(",") > -1) {
                         var views = scope.view.split(",");
+                        console.info("fluidVisible-views", views);
                         var returnValue = {valid: false};
                         angular.forEach(views, function (data) {
                             if (rs.viewport === data) {
                                 this.valid = true;
                             }
                         }, returnValue);
-
-
                         if (!returnValue.valid) {
-                            element.hide();
+                            $(scope.source).hide();
                         } else {
-                            element.show();
+                            $(scope.source).show();
                         }
                     } else {
                         var valid = false;
                         if (rs.viewport === scope.view) {
                             valid = true;
                         }
-
                         if (!valid) {
-                            element.hide();
+                            $(scope.source).hide();
                         } else {
-                            element.show();
+                            $(scope.source).show();
                         }
                     }
                 }
+            }
+            scope.checkSize = function () {
                 if (rs.viewport === "lg") {
                     if (scope.task) {
                         if (scope.size) {
                             if (scope.size.indexOf(",") > -1) {
                                 var sizes = scope.size.split(",");
+                                console.info("fluidVisible-sizes", sizes);
                                 console.info("sizes", sizes);
                                 var returnValue = {valid: false};
-
                                 angular.forEach(sizes, function (data) {
                                     if (scope.task.size + '' === data) {
                                         this.valid = true;
@@ -3427,20 +3374,19 @@ fluidComponents.directive("fluidVisible", ["$rootScope", "$window", function (rs
                                 }, returnValue);
                                 console.info("size-value", returnValue);
                                 if (!returnValue.valid) {
-                                    element.hide();
+                                    $(scope.source).hide();
                                 } else {
-                                    element.show();
+                                    $(scope.source).show();
                                 }
                             } else {
                                 var valid = false;
                                 if (scope.task.size + '' === scope.size) {
                                     valid = true;
                                 }
-
                                 if (!valid) {
-                                    element.hide();
+                                    $(scope.source).hide();
                                 } else {
-                                    element.show();
+                                    $(scope.source).show();
                                 }
                             }
 
@@ -3448,12 +3394,176 @@ fluidComponents.directive("fluidVisible", ["$rootScope", "$window", function (rs
                         }
                     }
                 }
+            }
 
+            scope.checkView();
+            scope.checkSize();
+
+            $(w).on("resize", function () {
+                scope.checkView();
+                scope.checkSize();
             })
+            if (scope.task) {
+                scope.$watch(function (scope) {
+                    return scope.task.size
+                }, function (value) {
+                    scope.checkSize();
+                });
+            }
 
         }
     }
 
+}])
+fluidComponents.directive("hidden25", [function () {
+    return {
+        restrict: "AC",
+        scope: false,
+        link: function (scope, element, attr) {
+
+            if (scope.task) {
+                scope.$watch(function (scope) {
+                    return scope.task.size;
+                }, function (value) {
+                    switch (value) {
+                        case 25:
+                            element.hide();
+                            break;
+                        case 50:
+                            if (!element.attr("hidden50")) {
+                                element.show();
+                            }
+                            break;
+                        case 75:
+                            if (!element.attr("hidden75")) {
+                                element.show();
+                            }
+                            break;
+                        case 100:
+                            if (!element.attr("hidden100")) {
+                                element.show();
+                            }
+                            break;
+                    }
+
+                });
+
+            }
+
+        }
+    }
+}])
+fluidComponents.directive("hidden50", [function () {
+    return {
+        restrict: "AC",
+        scope: false,
+        link: function (scope, element, attr) {
+
+            if (scope.task) {
+                scope.$watch(function (scope) {
+                    return scope.task.size;
+                }, function (value) {
+                    console.info("hidden50",element[0]);
+                    console.info("hidden50-size",value);
+                    switch (value) {
+                        case 25:
+                            if (!element.attr("hidden25")) {
+                                element.show();
+                            }
+                            break;
+                        case 50:
+                            console.info("hidden50-hidden",element);
+                            element.hide();
+                            break;
+                        case 75:
+                            if (!element.attr("hidden75")) {
+                                element.show();
+                            }
+                            break;
+                        case 100:
+                            if (!element.attr("hidden100")) {
+                                element.show();
+                            }
+                            break;
+                    }
+                });
+
+            }
+
+        }
+    }
+}])
+fluidComponents.directive("hidden75", [function () {
+    return {
+        restrict: "AC", scope: false,
+        link: function (scope, element, attr) {
+
+            if (scope.task) {
+                scope.$watch(function (scope) {
+                    return scope.task.size;
+                }, function (value) {
+                    switch (value) {
+                        case 25:
+                            if (!element.attr("hidden25")) {
+                                element.show();
+                            }
+                            break;
+                        case 50:
+                            if (!element.attr("hidden50")) {
+                                element.show();
+                            }
+                            break;
+                        case 75:
+                            element.hide();
+                            break;
+                        case 100:
+                            if (!element.attr("hidden100")) {
+                                element.show();
+                            }
+                            break;
+                    }
+                });
+
+            }
+
+        }
+    }
+}])
+fluidComponents.directive("hidden100", [function () {
+    return {
+        restrict: "AC", scope: false,
+        link: function (scope, element, attr) {
+
+            if (scope.task) {
+                scope.$watch(function (scope) {
+                    return scope.task.size;
+                }, function (value) {
+                    switch (value) {
+                        case 25:
+                            if (!element.attr("hidden25")) {
+                                element.show();
+                            }
+                            break;
+                        case 50:
+                            if (!element.attr("hidden50")) {
+                                element.show();
+                            }
+                            break;
+                        case 75:
+                            if (!element.attr("hidden75")) {
+                                element.show();
+                            }
+                            break;
+                        case 100:
+                            element.hide();
+                            break;
+                    }
+                });
+
+            }
+
+        }
+    }
 }])
 /**Prototypes**/
 function Task() {
