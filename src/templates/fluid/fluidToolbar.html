@@ -1,7 +1,7 @@
 <div class='container-fluid animated fadeIn anim-dur' style='overflow: auto'>
     <div class="ndg-breadcrumb">
         <ul class='breadcrumb'>
-            <li class="pull-left" ng-repeat='page in task.navPages'>
+            <li style="overflow: auto" class="pull-left" ng-repeat='page in task.navPages'>
                 <a ng-class="task.page.name == page.name ? 'plain-text':''" title='page.title' href='#'
                    ng-click='goToEvent(page.name,page.param)'>{{page.title}}</a>
             </li>

@@ -1176,21 +1176,24 @@ fluidComponents
 
                     if (!fullScreen) {
                         var height = window.innerHeight;
-                        height = estimateHeight(height) - 5;
+                        height = estimatedFrameHeight(height);
+                        var frameHeight = height - 22;
                         if (scope.fluidFrameService.isSearch) {
-                            frameDiv.attr("style", "height:" + height + "px;overflow:auto");
+                            frameDiv.attr("style", "height:" + frameHeight + "px;overflow:auto");
                         } else {
-                            element.attr("style", "height:" + height + "px;overflow:auto");
+                            element.attr("style", "height:" + frameHeight + "px;overflow:auto");
                         }
                         $("body").attr("style", "height: " + height + "px;overflow:hidden");
                     } else {
                         var height = window.innerHeight;
-                        height = estimateHeight(height);
+                        height = estimatedFrameHeight(height);
+                        var frameHeight = height - 22;
                         if (scope.fluidFrameService.isSearch) {
-                            //frameDiv.attr("style", "height:" + height + "px;overflow:hidden");
+                            frameDiv.attr("style", "height:" + frameHeight + "px;overflow:hidden");
                         } else {
-                            //element.attr("style", "height:" + height + "px;overflow:hidden");
+                            element.attr("style", "height:" + frameHeight + "px;overflow:hidden");
                         }
+                        $("body").attr("style", "height: " + height + "px;overflow:hidden");
                     }
                 });
 
@@ -1205,18 +1208,19 @@ fluidComponents
                     if (!scope.fluidFrameService.fullScreen) {
                         var height = window.innerHeight;
                         height = estimatedFrameHeight(height);
+                        var frameHeight = height - 22;
                         if (scope.fluidFrameService.isSearch) {
-                            frameDiv.attr("style", "height:" + height + "px;overflow:auto");
+                            frameDiv.attr("style", "height:" + frameHeight + "px;overflow:auto");
                         } else {
-                            element.attr("style", "height:" + height + "px;overflow:auto");
+                            element.attr("style", "height:" + frameHeight + "px;overflow:auto");
                         }
                     } else {
                         var height = window.innerHeight;
-                        height = estimatedFrameHeight(height);
+                        height = estimatedFrameHeight(height) - 22;
                         if (scope.fluidFrameService.isSearch) {
-                            frameDiv.attr("style", "height:" + height + "px;overflow:hidden");
+                            frameDiv.attr("style", "height:" + frameHeight + "px;overflow:hidden");
                         } else {
-                            element.attr("style", "height:" + height + "px;overflow:hidden");
+                            element.attr("style", "height:" + frameHeight + "px;overflow:hidden");
                         }
                     }
 
@@ -3307,6 +3311,150 @@ fluidComponents.directive("bootstrapViewport", ["$rootScope", "$window", functio
     }
 }]);
 
+fluidComponents.directive("fluidVisible", ["$rootScope", "$window", function (rs, w) {
+
+    return {
+        restrict: "AC",
+        scope: {task: "=", view: "@", size: "@"},
+        link: function (scope, element, attr) {
+            if (scope.view) {
+                if (scope.view.indexOf(",") > -1) {
+                    var views = scope.view.split(",");
+                    var returnValue = {valid: false};
+                    angular.forEach(views, function (data) {
+                        if (rs.viewport === data) {
+                            this.valid = true;
+                        }
+                    }, returnValue);
+
+
+                    if (!returnValue.valid) {
+                        element.hide();
+                    } else {
+                        element.show();
+                    }
+                } else {
+                    var valid = false;
+                    if (rs.viewport === scope.view) {
+                        valid = true;
+                    }
+
+                    if (!valid) {
+                        element.hide();
+                    } else {
+                        element.show();
+                    }
+                }
+            }
+            if (rs.viewport === "lg") {
+                if (scope.task) {
+                    if (scope.size) {
+                        if (scope.size.indexOf(",") > -1) {
+                            var sizes = scope.size.split(",");
+                            console.info("sizes", sizes);
+                            var returnValue = {valid: false};
+
+                            angular.forEach(sizes, function (data) {
+                                if (scope.task.size + '' === data) {
+                                    this.valid = true;
+                                }
+                            }, returnValue);
+                            console.info("size-value", returnValue);
+                            if (!returnValue.valid) {
+                                element.hide();
+                            } else {
+                                element.show();
+                            }
+                        } else {
+                            var valid = false;
+                            if (scope.task.size + '' === scope.size) {
+                                valid = true;
+                            }
+
+                            if (!valid) {
+                                element.hide();
+                            } else {
+                                element.show();
+                            }
+                        }
+
+
+                    }
+                }
+            }
+            $(w).on("resize", function () {
+                if (scope.view) {
+                    if (scope.view.indexOf(",") > -1) {
+                        var views = scope.view.split(",");
+                        var returnValue = {valid: false};
+                        angular.forEach(views, function (data) {
+                            if (rs.viewport === data) {
+                                this.valid = true;
+                            }
+                        }, returnValue);
+
+
+                        if (!returnValue.valid) {
+                            element.hide();
+                        } else {
+                            element.show();
+                        }
+                    } else {
+                        var valid = false;
+                        if (rs.viewport === scope.view) {
+                            valid = true;
+                        }
+
+                        if (!valid) {
+                            element.hide();
+                        } else {
+                            element.show();
+                        }
+                    }
+                }
+                if (rs.viewport === "lg") {
+                    if (scope.task) {
+                        if (scope.size) {
+                            if (scope.size.indexOf(",") > -1) {
+                                var sizes = scope.size.split(",");
+                                console.info("sizes", sizes);
+                                var returnValue = {valid: false};
+
+                                angular.forEach(sizes, function (data) {
+                                    if (scope.task.size + '' === data) {
+                                        this.valid = true;
+                                    }
+                                }, returnValue);
+                                console.info("size-value", returnValue);
+                                if (!returnValue.valid) {
+                                    element.hide();
+                                } else {
+                                    element.show();
+                                }
+                            } else {
+                                var valid = false;
+                                if (scope.task.size + '' === scope.size) {
+                                    valid = true;
+                                }
+
+                                if (!valid) {
+                                    element.hide();
+                                } else {
+                                    element.show();
+                                }
+                            }
+
+
+                        }
+                    }
+                }
+
+            })
+
+        }
+    }
+
+}])
 /**Prototypes**/
 function Task() {
     var task = {};
@@ -3345,7 +3493,7 @@ var EVENT_NOT_ALLOWED = "not_allowed_";
 var AUTHORIZATION = "authorization";
 
 function estimateHeight(height) {
-    var _pc = window.innerWidth < 450 ? 65 : window.innerWidth < 768 ? 70 : window.innerWidth < 1200 ? 85 : 50;
+    var _pc = window.innerWidth < 450 ? 55 : window.innerWidth < 768 ? 55 : window.innerWidth < 1200 ? 73 : 50;
     /*var _pc = height >= 768 ? height * 0.055 : height <= 768 && height > 600 ? height * 0.065 : height <= 600 && height > 400 ? height * 0.09 : height * 0.15;*/
     return height - _pc
 }
@@ -3732,20 +3880,20 @@ angular.module("templates/fluid/fluidPanel.html", []).run(["$templateCache", fun
     "                      ></i>\n" +
     "                 </button>-->\n" +
     "\n" +
-    "                <!-- <button ng-hide='fluidFrameService.fullScreen' ng-disabled='task.pinned' type=\"button\"\n" +
-    "                        class=\"btn btn-info\" ng-click='task.max25()'>\n" +
-    "                     <i title=\"Maximize - 25\"><span class='fa fa-arrows-h' style=\"transform: scaleX(0.7)\"></span></i>\n" +
-    "                 </button>-->\n" +
+    "                <button ng-hide='fluidFrameService.fullScreen' ng-disabled='task.pinned' type=\"button\"\n" +
+    "                        class=\"btn btn-info\" ng-click='task.max25()' title=\"Maximize - 25\">\n" +
+    "                    <i><span class='fa fa-arrows-h' style=\"transform: scaleX(0.8)\"></span></i>\n" +
+    "                </button>\n" +
     "\n" +
     "                <button ng-hide='fluidFrameService.fullScreen' ng-disabled='task.pinned' title=\"Maximize - 50\"\n" +
     "                        class=\"btn btn-info\"\n" +
     "                        ng-click='task.max50()'>\n" +
     "                    <i class='element-center fa fa-arrows-h' style=\"transform: scaleX(0.9)\"></i>\n" +
     "                </button>\n" +
-    "                <!-- <button ng-hide='fluidFrameService.fullScreen' ng-disabled='task.pinned' ng-click='task.max75()'\n" +
-    "                         class=\"btn btn-info\">\n" +
-    "                     <i title=\"Maximize - 75\"\n" +
-    "                             ><span class='fa fa-arrows-h' style=\"transform: scaleX(1.1)\"></span></i>-->\n" +
+    "                <button ng-hide='fluidFrameService.fullScreen' ng-disabled='task.pinned' ng-click='task.max75()'\n" +
+    "                        class=\"btn btn-info\">\n" +
+    "                    <i title=\"Maximize - 75\"\n" +
+    "                            ><span class='fa fa-arrows-h' style=\"transform: scaleX(1.1)\"></span></i>\n" +
     "                </button>\n" +
     "                <button ng-hide='fluidFrameService.fullScreen' ng-disabled='task.pinned' ng-click='task.max100()'\n" +
     "                        class=\"btn btn-info\">\n" +
@@ -3987,7 +4135,7 @@ angular.module("templates/fluid/fluidToolbar.html", []).run(["$templateCache", f
     "<div class='container-fluid animated fadeIn anim-dur' style='overflow: auto'>\n" +
     "    <div class=\"ndg-breadcrumb\">\n" +
     "        <ul class='breadcrumb'>\n" +
-    "            <li class=\"pull-left\" ng-repeat='page in task.navPages'>\n" +
+    "            <li style=\"overflow: auto\" class=\"pull-left\" ng-repeat='page in task.navPages'>\n" +
     "                <a ng-class=\"task.page.name == page.name ? 'plain-text':''\" title='page.title' href='#'\n" +
     "                   ng-click='goToEvent(page.name,page.param)'>{{page.title}}</a>\n" +
     "            </li>\n" +
