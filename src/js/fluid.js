@@ -3453,18 +3453,20 @@ fluidComponents.directive("hidden25", [function () {
         }
     }
 }])
-fluidComponents.directive("hidden50", [function () {
+fluidComponents.directive("hidden50", ["fluidFrameService", function (f) {
     return {
         restrict: "AC",
         scope: false,
         link: function (scope, element, attr) {
-
-            if (scope.task) {
+            if (f.fullScreen && (!attr.showOnFullscreen || attr.showOnFullscreen === "false")) {
+                element.hide();
+            } else if (f.fullScreen && attr.showOnFullscreen === "true") {
+                element.show();
+            }
+            else if (scope.task) {
                 scope.$watch(function (scope) {
                     return scope.task.size;
                 }, function (value) {
-                    console.info("hidden50",element[0]);
-                    console.info("hidden50-size",value);
                     switch (value) {
                         case 25:
                             if (!element.attr("hidden25")) {
@@ -3472,7 +3474,7 @@ fluidComponents.directive("hidden50", [function () {
                             }
                             break;
                         case 50:
-                            console.info("hidden50-hidden",element);
+                            console.info("hidden50-hidden", element);
                             element.hide();
                             break;
                         case 75:
@@ -3533,8 +3535,12 @@ fluidComponents.directive("hidden100", [function () {
     return {
         restrict: "AC", scope: false,
         link: function (scope, element, attr) {
-
-            if (scope.task) {
+            if (f.fullScreen && (!attr.showOnFullscreen || attr.showOnFullscreen === "false")) {
+                element.hide();
+            } else if (f.fullScreen && attr.showOnFullscreen === "true") {
+                element.show();
+            }
+            else if (scope.task) {
                 scope.$watch(function (scope) {
                     return scope.task.size;
                 }, function (value) {

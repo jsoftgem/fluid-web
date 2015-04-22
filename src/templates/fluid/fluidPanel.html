@@ -46,10 +46,10 @@
                       ></i>
                  </button>-->
 
-              <!--  <button ng-hide='fluidFrameService.fullScreen' ng-disabled='task.pinned' type="button"
-                        class="btn btn-info" ng-click='task.max25()' title="Maximize - 25">
-                    <i><span class='fa fa-arrows-h' style="transform: scaleX(0.8)"></span></i>
-                </button>-->
+                <!--  <button ng-hide='fluidFrameService.fullScreen' ng-disabled='task.pinned' type="button"
+                          class="btn btn-info" ng-click='task.max25()' title="Maximize - 25">
+                      <i><span class='fa fa-arrows-h' style="transform: scaleX(0.8)"></span></i>
+                  </button>-->
 
                 <button ng-hide='fluidFrameService.fullScreen' ng-disabled='task.pinned' title="Maximize - 50"
                         class="btn btn-info"
@@ -102,7 +102,7 @@
                         ng-if='task.showToolBar' controls='toolbars'
                         task='task' pages='task.navPages'></fluid-tool>
 
-            <div class="hidden50"
+            <div class="hidden50" show-on-fullscreen="true"
                  ng-class="task.showPageList?'fluid-panel-page-list col-lg-3 col-md-3': 'fluid-panel-page-list-hidden'">
                 <div ng-if="task.showPageList" class="input-group ">
                     <input class="form-control" ng-model="task.searchPage" placeholder="Page"/>
