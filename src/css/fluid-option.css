@@ -1,0 +1,15 @@
+.fluid-option {
+    width: 100%;
+    background: rgba(192, 192, 192, 0.3);
+    z-index: 10;
+    position: absolute;
+    top: 43.5px;
+    -webkit-transition: height 0.2s;
+    transition: height 0.2s;
+    overflow-y: auto;
+}
+
+
+.fluid-option-bottom {
+    bottom: 0;
+}

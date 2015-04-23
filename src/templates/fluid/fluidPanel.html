@@ -1,6 +1,9 @@
 <div id='_id_fp_{{task.id}}' task
-     class="panel {{!fluidFrameService.fullScreen ? 'panel-primary' : 'panel-default frame-fullscreen'}}">
+     class="panel {{!fluidFrameService.fullScreen ? 'panel-default' : 'panel-default frame-fullscreen'}}">
+
     <div class='panel-heading' ng-show="!task.locked">
+
+        <!-- Title-->
         <div class="panel-title"><a ng-if="!fluidFrameService.fullScreen " data-toggle='collapse'
                                     data-target='#_{{task.id}}'
                                     href='#'
@@ -14,13 +17,14 @@
             <img ng-if="!task.loaded && fluidFrameService.fullScreen"
                  src="../assets/loader/loader2.GIF"/>
         </div>
+
+        <!-- Control -->
         <div class="{{task.useImg ? 'panel-control-img': 'panel-control-glyph'}} pull-right">
-            <div class="btn-group btn-group-lg hidden-lg {{!task.useImg?'fluid-icon-right-glyph':''}}"><a href='#'
-                                                                                                          class='dropdown-toggle'
-                                                                                                          data-toggle='dropdown'>
-                <fluid-task-icon task="task"
-                                 class=" {{!fluidFrameService.fullScreen ? 'fa-inverse' : 'text-primary'}} fluid-panel-icon-control"></fluid-task-icon>
-            </a>
+            <div class="btn-group btn-group-lg hidden-lg {{!task.useImg ?'fluid-icon-right-glyph':''}}">
+                <a href='#' class='dropdown-toggle' data-toggle='dropdown'>
+                    <fluid-task-icon task="task"
+                                     class="{{!fluidFrameService.fullScreen ? '' : 'text-primary'}} fluid-panel-icon-control"></fluid-task-icon>
+                </a>
                 <ul class='dropdown-menu dropdown-menu-right dropdown-menu-inverse'>
                     <li><a href='#' ng-click='task.refresh()'>Refresh</a></li>
                     <li class='divider hidden-lg hidden-sm hidden-xs'></li>
@@ -32,13 +36,15 @@
                     </li>
                     <li class='hidden-lg'><a href='#' ng-click='task.hide(task)'>Minimize</a>
                     </li>
-                    <li ng-class="task.locked ?
+                    <li ng-if="task.closeable==undefined || task.closeable==true" ng-class="task.locked ?
                         'hidden-sm hidden-md hidden-xs' : ''" class='divider'></li>
-                    <li><a ng-class="task.locked ? 'hidden-sm hidden-md hidden-xs' : ''" href='#'
-                           ng-click='task.close()'>Close</a></li>
+                    <li ng-if="!task.closeable==undefined || task.closeable==true"><a
+                            ng-class="task.locked ? 'hidden-sm hidden-md hidden-xs' : ''" href='#'
+                            ng-click='task.close()'>Close</a></li>
                 </ul>
             </div>
-            <div class="hidden-md hidden-xs hidden-sm btn-group btn-group-xs {{!fluidFrameService.fullScreen? 'panel-tools' :''}}">
+            <div class="hidden-md hidden-xs hidden-sm btn-group btn-group-xs {{fluidFrameService.fullScreen && !task.useImg ? 'panel-control-fullscreen' :''}}
+             {{!fluidFrameService.fullScreen && !task.useImg ? 'panel-tools' :''}} {{!fluidFrameService.fullScreen && task.useImg ? 'panel-tools-img' :''}}">
                 <!-- ToDo: Allow panel to freeze. <button class='btn btn-info fa fa-paperclip' ng-click='freeze(task)'ng-class=\"task.freeze ? 'active' :''\" title='Clip'></button>-->
                 <!-- <button ng-class="task.pinned ?
                          'active' :''" title='Pin' type="button" class="btn btn-info" ng-click='task.pin()' >
@@ -83,19 +89,35 @@
                     <i title="Refresh" class="element-center fa "
                        ng-class="task.loaded ? 'fa-refresh' : 'fa-spin fa-refresh'"></i>
                 </button>
-                <button class="btn {{fluidFrameService.fullScreen ? 'btn-default' : 'btn-danger'}}"
+                <button ng-if="task.closeable==undefined || task.closeable==true"
+                        class="btn {{fluidFrameService.fullScreen ? 'btn-default' : 'btn-danger'}}"
                         ng-disabled='task.pinned||task.locked' ng-click='task.close()'>
                     <i class='element-center fa fa-close' title="Close"
                        title='close'></i>
                 </button>
 
             </div>
+
         </div>
     </div>
     <div id='_{{task.id}}' class='panel-collapse collapse in'>
         <div id='_id_fpb_{{task.id}}'
              class="panel-body minHeight fluid-panel container-fluid"
              ng-disabled='!task.loaded'>
+            <fluid-option>
+                <div class="input-group">
+                    <input class="form-control" ng-model="task.searchPage" placeholder="Page"/>
+                    <span class="input-group-addon"><i class="fa fa-search"></i></span>
+                </div>
+                <ul class="list-group">
+                    <li class="list-group-item" ng-repeat="page in task.pages | filter: task.searchPage"
+                        ng-click="fluid.goTo(page.name);fluidOptionService.closeOption()"
+                        style="cursor: pointer"
+                        ng-class="task.page.name == page.name ? 'active':''">
+                        {{page.title}}
+                    </li>
+                </ul>
+            </fluid-option>
             <fluid-message id="{{fluid.getElementFlowId('pnl_msg')}}"></fluid-message>
             <fluid-tool size="large" fluid="fluid"
                         id="{{fluid.getElementFlowId('flw_tl')}}"
@@ -104,10 +126,12 @@
 
             <div class="hidden50" show-on-fullscreen="true"
                  ng-class="task.showPageList?'fluid-panel-page-list col-lg-3 col-md-3': 'fluid-panel-page-list-hidden'">
+
                 <div ng-if="task.showPageList" class="input-group ">
                     <input class="form-control" ng-model="task.searchPage" placeholder="Page"/>
                     <span class="input-group-addon"><i class="fa fa-search"></i></span>
                 </div>
+
                 <ul ng-if="task.showPageList" class="list-group">
                     <li class="list-group-item" ng-repeat="page in task.pages | filter: task.searchPage"
                         ng-click="fluid.goTo(page.name)"
@@ -117,8 +141,8 @@
                     </li>
                 </ul>
             </div>
-            <div class="fluid-panel-content"
-                 ng-class="task.showPageList ? 'col-lg-9 col-md-9':'col-lg-12 col-md-12'">
+            <!-- ng-class="task.showPageList ? 'col-lg-9 col-md-9':'col-lg-12 col-md-12'"-->
+            <div class="fluid-panel-content" column="{{task.showPageList ? 9 : 12}}">
                 <div ng-if='task.pageLoaded && !task.page.static' id='page_div_{{task.id}}'
                      class="fluid-panel-page animated {{task.pageTransition ? task.pageTransition : 'fadeIn'}}"
                      ng-include='task.page.home'></div>
@@ -130,4 +154,6 @@
         </div>
 
     </div>
+
+
 </div>

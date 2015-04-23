@@ -1,6 +1,6 @@
 <div class='container-fluid animated fadeIn anim-dur' style='overflow: auto'>
     <div class="ndg-breadcrumb">
-        <ul class='breadcrumb hidden-xs hidden-sm hidden50'>
+        <ul class='breadcrumb hidden-xs hidden-sm hidden50' show-on-fullscreen="true">
 
             <li class="pull-left"
                 ng-repeat='page in task.navPages'>
@@ -12,7 +12,7 @@
                     <button id='btn_tool_{{control.id}}_{{task.id}}' ng-repeat='control in controls'
                             title='{{control.label}}'
                             class='btn button-tool' ng-class='getClass(control.uiType)'
-                            ng-click='runEvent(control)'
+                            ng-click='runEvent(control,$event)'
                             ng-disabled='control.disabled' type='button'><span ng-class='control.glyph'></span></button>
                 </div>
             </div>
@@ -26,13 +26,13 @@
                    ng-click='goToEvent(task.navPages[0].name,task.navPages[0].param)'>{{task.navPages[0].title}}</a>
                 <a ng-if="task.navPages.length > 1" href="#"><i class="fa fa-caret-down"></i></a>
             </div>
-
+            <!-- TODO: create fluidOption template tag -->
             <div class='form-group pull-right'>
                 <div class='btn-group {{group-size}}'>
                     <button id='btn_tool_{{control.id}}_{{task.id}}' ng-repeat='control in controls'
                             title='{{control.label}}'
                             class='btn button-tool' ng-class='getClass(control.uiType)'
-                            ng-click='runEvent(control)'
+                            ng-click='runEvent(control,$event)'
                             ng-disabled='control.disabled' type='button'><span ng-class='control.glyph'></span></button>
                 </div>
             </div>

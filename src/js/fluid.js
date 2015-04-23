@@ -14,8 +14,8 @@ fluidComponents.run([function () {
 }]);
 fluidComponents
     .directive("fluidPanel", ["fluidFrameService", "fluidHttpService", "$templateCache", "$compile",
-        "fluidMessageService", "$rootScope", "$q", "$timeout", "$ocLazyLoad", "sessionService",
-        function (f, f2, tc, c, ms, rs, q, t, oc, ss) {
+        "fluidMessageService", "$rootScope", "$q", "$timeout", "$ocLazyLoad", "sessionService", "fluidOptionService",
+        function (f, f2, tc, c, ms, rs, q, t, oc, ss, fos) {
             return {
                 scope: {task: '='},
                 restrict: "E",
@@ -53,9 +53,10 @@ fluidComponents
                                 "disabled": false,
                                 "uiType": "success",
                                 "action": function ($event) {
-                                    if (rs.viewport === 'sm' || rs.viewport === 'xs') {
+                                    if (!f.fullScreen && (rs.viewport === 'sm' || rs.viewport === 'xs' || (rs.viewport === 'lg' && (scope.task.size === 50 || scope.task.size === 25)))) {
                                         var source = $event.target;
-                                        console.info("source", source);
+                                        fos.open = !fos.open;
+                                        scope.task.showPageList = false;
 
                                     } else {
                                         scope.task.showPageList = !scope.task.showPageList;
@@ -878,8 +879,6 @@ fluidComponents
                                             generateTask(scope, t, f2);
                                         });
                                     }
-
-
                                     scope.task.refresh = function () {
                                         if (scope.task.page.autoGet) {
                                             scope.task.loaded = false;
@@ -907,6 +906,7 @@ fluidComponents
                                         parent.removeClass("col-lg-8");
                                         parent.removeClass("col-lg-6");
                                         parent.addClass("col-lg-4");
+                                        task.showPageList = false;
                                         if (clientState === undefined || clientState === false) {
                                             if (scope.task.page && scope.task) {
                                                 rs.$broadcast(scope.fluid.event.getResizeEventId(), scope.task.page.name, scope.task.size);
@@ -930,6 +930,7 @@ fluidComponents
                                         parent.removeClass("col-lg-8");
                                         parent.removeClass("col-lg-4");
                                         parent.addClass("col-lg-6");
+                                        task.showPageList = false;
                                         if (clientState === undefined || clientState === false) {
                                             if (scope.task.page && scope.task) {
                                                 rs.$broadcast(scope.fluid.event.getResizeEventId(), scope.task.page.name, scope.task.size);
@@ -951,6 +952,7 @@ fluidComponents
                                         parent.removeClass("col-lg-6");
                                         parent.removeClass("col-lg-4");
                                         parent.addClass("col-lg-8");
+                                        fos.closeOption();
                                         if (clientState === undefined || clientState === false) {
                                             if (scope.task.page && scope.task) {
                                                 rs.$broadcast(scope.fluid.event.getResizeEventId(), scope.task.page.name, scope.task.size);
@@ -973,6 +975,7 @@ fluidComponents
                                         parent.removeClass("col-lg-6");
                                         parent.removeClass("col-lg-4");
                                         parent.addClass("col-lg-12");
+                                        fos.closeOption();
                                         if (clientState === undefined || clientState === false) {
                                             if (scope.task.page && scope.task) {
                                                 rs.$broadcast(scope.fluid.event.getResizeEventId(), scope.task.page.name, scope.task.size);
@@ -1064,12 +1067,16 @@ fluidComponents
                                         if (!rs.$$phase) {
                                             scope.$apply();
                                         }
+                                        task.showPageList = false;
+                                        fos.closeOption();
                                     };
                                     scope.task.fluidScreen = function () {
                                         f.toggleFluidscreen();
                                         if (!rs.$$phase) {
                                             scope.$apply();
                                         }
+                                        task.showPageList = false;
+                                        fos.closeOption();
                                     };
                                     if (scope.task && !scope.fluidFrameService.fullscreen) {
                                         if (scope.task.size) {
@@ -2392,7 +2399,17 @@ fluidComponents
     .directive("fluidTaskIcon", ["$templateCache", function (tc) {
         return {
             restrict: "AE",
-            scope: {task: "="},
+            scope: false,
+            link: function (scope, element, attr) {
+
+                if (attr.height) {
+                    scope.height = attr.height;
+                }
+
+                if (attr.width) {
+                    scope.width = attr.width;
+                }
+            },
             template: tc.get("templates/fluid/fluidTaskIcon.html"),
             replace: true
         }
@@ -2400,20 +2417,29 @@ fluidComponents
     .directive("column", ["$rootScope", function (rs) {
         return {
             restrict: "A",
-            scope: {task: "="},
+            scope: false,
             link: function (scope, element, attr) {
 
                 if (attr.column) {
                     scope.column = attr.column;
                 }
 
-                if (scope.column) {
-                    element.addClass("col-lg-" + scope.column)
-                        .addClass("col-md-12")
-                        .addClass("col-sm-12")
-                        .addClass("col-xs-12")
-                }
 
+                scope.$watch(function (scope) {
+                        return attr.column;
+                    }, function (column, oldColumn) {
+                        console.info("column-old", oldColumn);
+                        console.info("column", column);
+                        element.removeClass("col-lg-" + oldColumn);
+                        element.addClass("col-lg-" + column);
+                        scope.column = column;
+                    }
+                );
+
+                element
+                    .addClass("col-md-12")
+                    .addClass("col-sm-12")
+                    .addClass("col-xs-12");
 
                 scope.$watch(function (scope) {
                     if (scope.task) {
@@ -2423,6 +2449,7 @@ fluidComponents
                 }, function (size) {
                     switch (size) {
                         case 25:
+                            element.removeClass("col-lg-" + scope.column);
                             element.addClass("col-lg-12")
                                 .addClass("col-md-12")
                                 .addClass("col-sm-12")
@@ -2430,41 +2457,86 @@ fluidComponents
                             break;
                         case 50:
                             if (rs.viewport === "lg") {
+                                element.removeClass("col-md-" + scope.column);
                                 element.addClass("col-lg-" + scope.column);
                             } else if (rs.viewport === "md") {
+                                element.removeClass("col-lg-" + scope.column);
                                 element.addClass("col-md-" + scope.column);
                             } else if (rs.viewport === "sm") {
+                                element.removeClass("col-lg-" + scope.column);
+                                element.removeClass("col-md-" + scope.column);
                                 element.addClass("col-sm-12");
                             } else if (rs.viewport === "xs") {
+                                element.removeClass("col-lg-" + scope.column);
+                                element.removeClass("col-md-" + scope.column);
                                 element.addClass("col-xs-12");
                             }
                             break;
                         case 75:
                             if (rs.viewport === "lg") {
+                                element.removeClass("col-md-" + scope.column);
                                 element.addClass("col-lg-" + scope.column);
                             } else if (rs.viewport === "md") {
+                                element.removeClass("col-lg-" + scope.column);
                                 element.addClass("col-md-12");
                             } else if (rs.viewport === "sm") {
+                                element.removeClass("col-lg-" + scope.column);
+                                element.removeClass("col-md-" + scope.column);
                                 element.addClass("col-sm-12");
                             } else if (rs.viewport === "xs") {
+                                element.removeClass("col-lg-" + scope.column);
+                                element.removeClass("col-md-" + scope.column);
                                 element.addClass("col-xs-12");
                             }
                             break;
                         case 100:
                             if (rs.viewport === "lg") {
+                                element.removeClass("col-md-" + scope.column);
                                 element.addClass("col-lg-" + scope.column);
                             } else if (rs.viewport === "md") {
                                 element.addClass("col-md-" + scope.column);
+                                element.removeClass("col-lg-" + scope.column);
                             } else if (rs.viewport === "sm") {
+                                element.removeClass("col-lg-" + scope.column);
+                                element.removeClass("col-md-" + scope.column);
                                 element.addClass("col-sm-12");
                             } else if (rs.viewport === "xs") {
+                                element.removeClass("col-lg-" + scope.column);
+                                element.removeClass("col-md-" + scope.column);
                                 element.addClass("col-xs-12");
                             }
                             break;
                     }
+
+                    console.info("column-size", size);
                 });
 
 
+            }
+        }
+    }])
+    .directive("fluidOption", ["$templateCache", "fluidOptionService", function (tc, fos) {
+        return {
+            restrict: "AE",
+            scope: false,
+            replace: true,
+            transclude: true,
+            template: tc.get("templates/fluid/fluidOption.html"),
+            link: function (scope, element, attr) {
+                scope.fluidOptionService = fos;
+                if(attr.id){
+                    scope.id = attr.id;
+                }
+                scope.$watch(function (scope) {
+                    return element.parent().height();
+                }, function (height) {
+                    console.info("fluidOption-parent-task", scope.task);
+                    console.info("fluidOption-parent-height", height);
+                    scope.parentHeight = height;
+                    element.css("max-height", height - 20);
+                    element.css("width", element.parent().width());
+
+                });
             }
         }
     }]);
@@ -3204,6 +3276,21 @@ fluidComponents
             }
         }
 
+    }])
+    .service("fluidOptionService", [function () {
+        this.templateUrl = undefined;
+        this.open = false;
+
+        this.openOption = function (templateUrl) {
+            this.templateUrl = templateUrl;
+            this.open = true;
+        }
+
+        this.closeOption = function () {
+            this.open = false;
+            this.templateUrl = undefined;
+        }
+
     }]);
 
 fluidComponents
@@ -3415,162 +3502,91 @@ fluidComponents.directive("fluidVisible", ["$rootScope", "$window", function (rs
     }
 
 }])
-fluidComponents.directive("hidden25", [function () {
-    return {
-        restrict: "AC",
-        scope: false,
-        link: function (scope, element, attr) {
+fluidComponents
+    .directive("hidden50", ["fluidFrameService", function (f) {
+        return {
+            restrict: "AC",
+            scope: false,
+            link: function (scope, element, attr) {
+                if (f.fullScreen && (!attr.showOnFullscreen || attr.showOnFullscreen === "false")) {
+                    element.hide();
+                } else if (f.fullScreen && attr.showOnFullscreen === "true") {
+                    element.show();
+                }
+                else if (scope.task) {
+                    scope.$watch(function (scope) {
+                        return scope.task.size;
+                    }, function (value) {
+                        switch (value) {
+                            case 25:
+                                if (!element.attr("hidden25")) {
+                                    element.show();
+                                }
+                                break;
+                            case 50:
+                                console.info("hidden50-hidden", element);
+                                element.hide();
+                                break;
+                            case 75:
+                                if (!element.attr("hidden75")) {
+                                    element.show();
+                                }
+                                break;
+                            case 100:
+                                if (!element.attr("hidden100")) {
+                                    element.show();
+                                }
+                                break;
+                        }
+                    });
 
-            if (scope.task) {
-                scope.$watch(function (scope) {
-                    return scope.task.size;
-                }, function (value) {
-                    switch (value) {
-                        case 25:
-                            element.hide();
-                            break;
-                        case 50:
-                            if (!element.attr("hidden50")) {
-                                element.show();
-                            }
-                            break;
-                        case 75:
-                            if (!element.attr("hidden75")) {
-                                element.show();
-                            }
-                            break;
-                        case 100:
-                            if (!element.attr("hidden100")) {
-                                element.show();
-                            }
-                            break;
-                    }
-
-                });
+                }
 
             }
-
         }
-    }
-}])
-fluidComponents.directive("hidden50", ["fluidFrameService", function (f) {
-    return {
-        restrict: "AC",
-        scope: false,
-        link: function (scope, element, attr) {
-            if (f.fullScreen && (!attr.showOnFullscreen || attr.showOnFullscreen === "false")) {
-                element.hide();
-            } else if (f.fullScreen && attr.showOnFullscreen === "true") {
-                element.show();
-            }
-            else if (scope.task) {
-                scope.$watch(function (scope) {
-                    return scope.task.size;
-                }, function (value) {
-                    switch (value) {
-                        case 25:
-                            if (!element.attr("hidden25")) {
-                                element.show();
-                            }
-                            break;
-                        case 50:
-                            console.info("hidden50-hidden", element);
-                            element.hide();
-                            break;
-                        case 75:
-                            if (!element.attr("hidden75")) {
-                                element.show();
-                            }
-                            break;
-                        case 100:
-                            if (!element.attr("hidden100")) {
-                                element.show();
-                            }
-                            break;
-                    }
-                });
+    }])
+    .directive("hidden100", ["fluidFrameService", function (f) {
+        return {
+            restrict: "AC",
+            scope: false,
+            link: function (scope, element, attr) {
+                if (f.fullScreen && (!attr.showOnFullscreen || attr.showOnFullscreen === "false")) {
+                    element.hide();
+                } else if (f.fullScreen && attr.showOnFullscreen === "true") {
+                    element.show();
+                }
+                else if (scope.task) {
+                    scope.$watch(function (scope) {
+                        return scope.task.size;
+                    }, function (value) {
+                        switch (value) {
+                            case 25:
+                                if (!element.attr("hidden25")) {
+                                    element.show();
+                                }
+                                break;
+                            case 50:
+                                if (!element.attr("hidden50")) {
+                                    element.show();
+                                }
+                                break;
+                            case 75:
+                                if (!element.attr("hidden75")) {
+                                    element.show();
+                                }
+                                break;
+                            case 100:
+                                element.hide();
+                                break;
+                        }
+                    });
+
+                }
 
             }
-
         }
-    }
-}])
-fluidComponents.directive("hidden75", [function () {
-    return {
-        restrict: "AC", scope: false,
-        link: function (scope, element, attr) {
+    }]);
 
-            if (scope.task) {
-                scope.$watch(function (scope) {
-                    return scope.task.size;
-                }, function (value) {
-                    switch (value) {
-                        case 25:
-                            if (!element.attr("hidden25")) {
-                                element.show();
-                            }
-                            break;
-                        case 50:
-                            if (!element.attr("hidden50")) {
-                                element.show();
-                            }
-                            break;
-                        case 75:
-                            element.hide();
-                            break;
-                        case 100:
-                            if (!element.attr("hidden100")) {
-                                element.show();
-                            }
-                            break;
-                    }
-                });
-
-            }
-
-        }
-    }
-}])
-fluidComponents.directive("hidden100", [function () {
-    return {
-        restrict: "AC", scope: false,
-        link: function (scope, element, attr) {
-            if (f.fullScreen && (!attr.showOnFullscreen || attr.showOnFullscreen === "false")) {
-                element.hide();
-            } else if (f.fullScreen && attr.showOnFullscreen === "true") {
-                element.show();
-            }
-            else if (scope.task) {
-                scope.$watch(function (scope) {
-                    return scope.task.size;
-                }, function (value) {
-                    switch (value) {
-                        case 25:
-                            if (!element.attr("hidden25")) {
-                                element.show();
-                            }
-                            break;
-                        case 50:
-                            if (!element.attr("hidden50")) {
-                                element.show();
-                            }
-                            break;
-                        case 75:
-                            if (!element.attr("hidden75")) {
-                                element.show();
-                            }
-                            break;
-                        case 100:
-                            element.hide();
-                            break;
-                    }
-                });
-
-            }
-
-        }
-    }
-}])
 /**Prototypes**/
 function Task() {
     var task = {};

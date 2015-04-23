@@ -60,7 +60,7 @@ module.exports = function (grunt) {
                     files: [
                         {
                             expand: true,
-                            cwd: 'src/css',
+                            cwd: 'dist/css',
                             src: ['*.css'],
                             dest: 'dist/css',
                             ext: '.min.css'
@@ -136,5 +136,5 @@ module.exports = function (grunt) {
      grunt.registerTask('package', ['bower', 'jshint', 'karma:unit', 'html2js:dist', 'concat:dist', 'uglify:dist',
      'clean:temp', 'compress:dist']);*/
     grunt.registerTask('package', ['bower', 'html2js:dist', 'concat:dist', 'uglify:dist',
-        'clean:temp', 'compress:dist', 'cssmin', 'concat_css']);
+        'clean:temp', 'compress:dist', 'concat_css','cssmin']);
 }

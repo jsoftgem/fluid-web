@@ -1,0 +1,10 @@
+<div id="fluid_option_{{task.id}}" class="fluid-option" ng-style="!fluidOptionService.open?{height:0}:{}"
+     click-outside="fluidOptionService.closeOption()">
+    <ng-transclude ng-if="!fluidOptionService.templateUrl && fluidOptionService.open"></ng-transclude>
+    <div ng-if="fluidOptionService.templateUrl && fluidOptionService.open"
+         ng-include="fluidOptionService.templateUrl"></div>
+
+    <span class="pull-right"><a href="#" title="close" ng-click="fluidOptionService.closeOption()"><i
+            class="fa fa-close"></i> close</a></span>
+
+</div>

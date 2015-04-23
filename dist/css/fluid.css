@@ -1,3 +1,18 @@
+.fluid-option {
+    width: 100%;
+    background: rgba(192, 192, 192, 0.3);
+    z-index: 10;
+    position: absolute;
+    top: 43.5px;
+    -webkit-transition: height 0.2s;
+    transition: height 0.2s;
+    overflow-y: auto;
+}
+
+
+.fluid-option-bottom {
+    bottom: 0;
+}
 /*
 To change this license header, choose License Headers in Project Properties.
 To change this template file, choose Tools | Templates
@@ -186,7 +201,8 @@ and open the template in the editor.
 
 .fluid-panel-icon-control {
     margin-right: 5px;
-    transform: scale(1.5, 1.5);
+  /*  -webkit-transform: scale(0.7,0.7);
+    transform: scale(0.7, 0.7);*/
 }
 
 .fluid-panel-page {
@@ -289,6 +305,10 @@ div.fluid-form label {
     margin-right: -9px;
 }
 
+.panel-control-fullscreen {
+    margin-top: -10px;
+}
+
 .panel-control-img {
     margin-top: -22px;
     margin-right: -9px;
@@ -299,8 +319,13 @@ div.fluid-form label {
     margin-right: -9px;
 }
 
+.panel-tools-img {
+    margin-top: -22px;
+    margin-right: -5px;
+}
+
 .panel-tools {
-    margin-top: -30px;
+    margin-top: -32px;
     margin-right: -5px;
 }
 
