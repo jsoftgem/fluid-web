@@ -56,6 +56,7 @@ fluidComponents
                                     if (!f.fullScreen && (rs.viewport === 'sm' || rs.viewport === 'xs' || (rs.viewport === 'lg' && (scope.task.size === 50 || scope.task.size === 25)))) {
                                         var source = $event.target;
                                         fos.open = !fos.open;
+                                        scope.fluid.fluidOptionTemplate =  "pageList";
                                         scope.task.showPageList = false;
 
                                     } else {
@@ -2523,10 +2524,24 @@ fluidComponents
             transclude: true,
             template: tc.get("templates/fluid/fluidOption.html"),
             link: function (scope, element, attr) {
+
                 scope.fluidOptionService = fos;
-                if(attr.id){
+
+
+                if (attr.useTemplate) {
+                    scope.useTemplate = attr.useTemplate === "true";
+                }
+
+                if (attr.id) {
                     scope.id = attr.id;
                 }
+
+                scope.$watch(function (scope) {
+                    return attr.templateName;
+                }, function (template) {
+                    scope.templateName = scope.task.id + "_" + template;
+                });
+
                 scope.$watch(function (scope) {
                     return element.parent().height();
                 }, function (height) {
@@ -2539,7 +2554,21 @@ fluidComponents
                 });
             }
         }
-    }]);
+    }])
+    .directive("fluidTemplate", ["$templateCache", function (tc) {
+        return {
+            restrict: "AE",
+            scope: false,
+            template: tc.get("templates/fluid/fluidTemplate.html"),
+            transclude: true,
+            replace:true,
+            link: function (scope, element, attr) {
+                if (attr.templateName) {
+                    scope.templateId = scope.task.id + "_" + attr.templateName;
+                }
+            }
+        }
+    }])
 
 function setChildIndexIds(element, taskId, suffix, depth) {
     var children = $(element).children();

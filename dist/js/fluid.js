@@ -56,6 +56,7 @@ fluidComponents
                                     if (!f.fullScreen && (rs.viewport === 'sm' || rs.viewport === 'xs' || (rs.viewport === 'lg' && (scope.task.size === 50 || scope.task.size === 25)))) {
                                         var source = $event.target;
                                         fos.open = !fos.open;
+                                        scope.fluid.fluidOptionTemplate =  "pageList";
                                         scope.task.showPageList = false;
 
                                     } else {
@@ -2523,10 +2524,24 @@ fluidComponents
             transclude: true,
             template: tc.get("templates/fluid/fluidOption.html"),
             link: function (scope, element, attr) {
+
                 scope.fluidOptionService = fos;
-                if(attr.id){
+
+
+                if (attr.useTemplate) {
+                    scope.useTemplate = attr.useTemplate === "true";
+                }
+
+                if (attr.id) {
                     scope.id = attr.id;
                 }
+
+                scope.$watch(function (scope) {
+                    return attr.templateName;
+                }, function (template) {
+                    scope.templateName = scope.task.id + "_" + template;
+                });
+
                 scope.$watch(function (scope) {
                     return element.parent().height();
                 }, function (height) {
@@ -2539,7 +2554,21 @@ fluidComponents
                 });
             }
         }
-    }]);
+    }])
+    .directive("fluidTemplate", ["$templateCache", function (tc) {
+        return {
+            restrict: "AE",
+            scope: false,
+            template: tc.get("templates/fluid/fluidTemplate.html"),
+            transclude: true,
+            replace:true,
+            link: function (scope, element, attr) {
+                if (attr.templateName) {
+                    scope.templateId = scope.task.id + "_" + attr.templateName;
+                }
+            }
+        }
+    }])
 
 function setChildIndexIds(element, taskId, suffix, depth) {
     var children = $(element).children();
@@ -3782,7 +3811,7 @@ function autoSizePanel(task) {
     panelBody.css("overflow", "auto");
 
 
-};angular.module('templates-dist', ['templates/fluid/fluidBar.html', 'templates/fluid/fluidCheckbox.html', 'templates/fluid/fluidDatePicker.html', 'templates/fluid/fluidField.html', 'templates/fluid/fluidFrame.html', 'templates/fluid/fluidImage.html', 'templates/fluid/fluidLookup.html', 'templates/fluid/fluidModal.html', 'templates/fluid/fluidNotify.html', 'templates/fluid/fluidOption.html', 'templates/fluid/fluidPanel.html', 'templates/fluid/fluidRadio.html', 'templates/fluid/fluidReportTable.html', 'templates/fluid/fluidSelect.html', 'templates/fluid/fluidTaskIcon.html', 'templates/fluid/fluidTextArea.html', 'templates/fluid/fluidToolbar.html', 'templates/fluid/fluidUploader.html']);
+};angular.module('templates-dist', ['templates/fluid/fluidBar.html', 'templates/fluid/fluidCheckbox.html', 'templates/fluid/fluidDatePicker.html', 'templates/fluid/fluidField.html', 'templates/fluid/fluidFrame.html', 'templates/fluid/fluidImage.html', 'templates/fluid/fluidLookup.html', 'templates/fluid/fluidModal.html', 'templates/fluid/fluidNotify.html', 'templates/fluid/fluidOption.html', 'templates/fluid/fluidPanel.html', 'templates/fluid/fluidRadio.html', 'templates/fluid/fluidReportTable.html', 'templates/fluid/fluidSelect.html', 'templates/fluid/fluidTaskIcon.html', 'templates/fluid/fluidTemplate.html', 'templates/fluid/fluidTextArea.html', 'templates/fluid/fluidToolbar.html', 'templates/fluid/fluidUploader.html']);
 
 angular.module("templates/fluid/fluidBar.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("templates/fluid/fluidBar.html",
@@ -3966,9 +3995,13 @@ angular.module("templates/fluid/fluidOption.html", []).run(["$templateCache", fu
   $templateCache.put("templates/fluid/fluidOption.html",
     "<div id=\"fluid_option_{{task.id}}\" class=\"fluid-option\" ng-style=\"!fluidOptionService.open?{height:0}:{}\"\n" +
     "     click-outside=\"fluidOptionService.closeOption()\">\n" +
-    "    <ng-transclude ng-if=\"!fluidOptionService.templateUrl && fluidOptionService.open\"></ng-transclude>\n" +
-    "    <div ng-if=\"fluidOptionService.templateUrl && fluidOptionService.open\"\n" +
+    "\n" +
+    "    <ng-transclude ng-if=\"!useTemplate && !fluidOptionService.templateUrl && fluidOptionService.open\"></ng-transclude>\n" +
+    "\n" +
+    "    <div ng-if=\"!useTemplate && fluidOptionService.templateUrl && fluidOptionService.open\"\n" +
     "         ng-include=\"fluidOptionService.templateUrl\"></div>\n" +
+    "\n" +
+    "    <div ng-if=\"useTemplate\" ng-include src=\"templateName\"></div>\n" +
     "\n" +
     "    <span class=\"pull-right\"><a href=\"#\" title=\"close\" ng-click=\"fluidOptionService.closeOption()\"><i\n" +
     "            class=\"fa fa-close\"></i> close</a></span>\n" +
@@ -4084,19 +4117,8 @@ angular.module("templates/fluid/fluidPanel.html", []).run(["$templateCache", fun
     "        <div id='_id_fpb_{{task.id}}'\n" +
     "             class=\"panel-body minHeight fluid-panel container-fluid\"\n" +
     "             ng-disabled='!task.loaded'>\n" +
-    "            <fluid-option>\n" +
-    "                <div class=\"input-group\">\n" +
-    "                    <input class=\"form-control\" ng-model=\"task.searchPage\" placeholder=\"Page\"/>\n" +
-    "                    <span class=\"input-group-addon\"><i class=\"fa fa-search\"></i></span>\n" +
-    "                </div>\n" +
-    "                <ul class=\"list-group\">\n" +
-    "                    <li class=\"list-group-item\" ng-repeat=\"page in task.pages | filter: task.searchPage\"\n" +
-    "                        ng-click=\"fluid.goTo(page.name);fluidOptionService.closeOption()\"\n" +
-    "                        style=\"cursor: pointer\"\n" +
-    "                        ng-class=\"task.page.name == page.name ? 'active':''\">\n" +
-    "                        {{page.title}}\n" +
-    "                    </li>\n" +
-    "                </ul>\n" +
+    "            <fluid-option use-template=\"true\" template-name=\"{{fluid.fluidOptionTemplate}}\">\n" +
+    "\n" +
     "            </fluid-option>\n" +
     "            <fluid-message id=\"{{fluid.getElementFlowId('pnl_msg')}}\"></fluid-message>\n" +
     "            <fluid-tool size=\"large\" fluid=\"fluid\"\n" +
@@ -4134,6 +4156,21 @@ angular.module("templates/fluid/fluidPanel.html", []).run(["$templateCache", fun
     "        </div>\n" +
     "\n" +
     "    </div>\n" +
+    "\n" +
+    "    <fluid-template template-name=\"pageList\">\n" +
+    "        <div class=\"input-group\">\n" +
+    "            <input class=\"form-control\" ng-model=\"task.searchPage\" placeholder=\"Page\"/>\n" +
+    "            <span class=\"input-group-addon\"><i class=\"fa fa-search\"></i></span>\n" +
+    "        </div>\n" +
+    "        <ul class=\"list-group\">\n" +
+    "            <li class=\"list-group-item\" ng-repeat=\"page in task.pages | filter: task.searchPage\"\n" +
+    "                ng-click=\"fluid.goTo(page.name);fluidOptionService.closeOption()\"\n" +
+    "                style=\"cursor: pointer\"\n" +
+    "                ng-class=\"task.page.name == page.name ? 'active':''\">\n" +
+    "                {{page.title}}\n" +
+    "            </li>\n" +
+    "        </ul>\n" +
+    "    </fluid-template>\n" +
     "\n" +
     "\n" +
     "</div>\n" +
@@ -4291,6 +4328,13 @@ angular.module("templates/fluid/fluidTaskIcon.html", []).run(["$templateCache", 
     "                                     ng-src=\"{{task.imgSrc}}\"></span><i\n" +
     "        ng-if=\"!task.useImg\"\n" +
     "        ng-class=\"task.glyph\"></i></span>");
+}]);
+
+angular.module("templates/fluid/fluidTemplate.html", []).run(["$templateCache", function($templateCache) {
+  $templateCache.put("templates/fluid/fluidTemplate.html",
+    "<script type=\"text/ng-template\" id=\"{{templateId}}\">\n" +
+    "    <ng-transclude></ng-transclude>\n" +
+    "</script>");
 }]);
 
 angular.module("templates/fluid/fluidTextArea.html", []).run(["$templateCache", function($templateCache) {

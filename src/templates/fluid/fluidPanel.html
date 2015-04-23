@@ -104,19 +104,8 @@
         <div id='_id_fpb_{{task.id}}'
              class="panel-body minHeight fluid-panel container-fluid"
              ng-disabled='!task.loaded'>
-            <fluid-option>
-                <div class="input-group">
-                    <input class="form-control" ng-model="task.searchPage" placeholder="Page"/>
-                    <span class="input-group-addon"><i class="fa fa-search"></i></span>
-                </div>
-                <ul class="list-group">
-                    <li class="list-group-item" ng-repeat="page in task.pages | filter: task.searchPage"
-                        ng-click="fluid.goTo(page.name);fluidOptionService.closeOption()"
-                        style="cursor: pointer"
-                        ng-class="task.page.name == page.name ? 'active':''">
-                        {{page.title}}
-                    </li>
-                </ul>
+            <fluid-option use-template="true" template-name="{{fluid.fluidOptionTemplate}}">
+
             </fluid-option>
             <fluid-message id="{{fluid.getElementFlowId('pnl_msg')}}"></fluid-message>
             <fluid-tool size="large" fluid="fluid"
@@ -154,6 +143,21 @@
         </div>
 
     </div>
+
+    <fluid-template template-name="pageList">
+        <div class="input-group">
+            <input class="form-control" ng-model="task.searchPage" placeholder="Page"/>
+            <span class="input-group-addon"><i class="fa fa-search"></i></span>
+        </div>
+        <ul class="list-group">
+            <li class="list-group-item" ng-repeat="page in task.pages | filter: task.searchPage"
+                ng-click="fluid.goTo(page.name);fluidOptionService.closeOption()"
+                style="cursor: pointer"
+                ng-class="task.page.name == page.name ? 'active':''">
+                {{page.title}}
+            </li>
+        </ul>
+    </fluid-template>
 
 
 </div>
