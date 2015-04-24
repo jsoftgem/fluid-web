@@ -8,7 +8,7 @@
         </div>
         <ul class="list-group">
             <li class="list-group-item" ng-repeat="page in task.pages | filter: task.searchPage"
-                ng-click="fluid.goTo(page.name);fluidOptionService.closeOption()"
+                ng-click="fluid.goTo(page.name);fluid.closeOption()"
                 style="cursor: pointer"
                 ng-class="task.page.name == page.name ? 'active':''">
                 {{page.title}}
@@ -49,8 +49,8 @@
                     </li>
                     <li class='hidden-lg'><a href='#' ng-click='task.hide(task)'>Minimize</a>
                     </li>
-                    <li ng-if="!task.closeable == undefined || task.closeable==true" class='divider'></li>
-                    <li ng-if="!task.closeable == undefined || task.closeable==true"><a
+                    <li ng-if="task.closeable==undefined || task.closeable==true" class='divider'></li>
+                    <li ng-if="task.closeable==undefined || task.closeable==true"><a
                             ng-class="task.locked ? 'hidden-sm hidden-md hidden-xs' : ''" href='#'
                             ng-click='task.close()'>Close</a></li>
                 </ul>

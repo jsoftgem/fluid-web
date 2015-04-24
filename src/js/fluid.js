@@ -1,7 +1,7 @@
 /**Fluid Web v0.0.1
  * Created by Jerico de Guzman
  * October 2014**/
-var fluidComponents = angular.module("fluid", ["angularFileUpload", "oc.lazyLoad", "LocalStorageModule", "templates-dist", "ngSanitize"]);
+var fluidComponents = angular.module("fluid", ["angularFileUpload", "oc.lazyLoad", "LocalStorageModule", "templates-dist", "ngSanitize", "mouse.utils"]);
 
 fluidComponents.config(["$httpProvider", "localStorageServiceProvider", function (h, ls) {
     ls.setPrefix("fluid")
@@ -3532,12 +3532,13 @@ fluidComponents.directive("fluidVisible", ["$rootScope", "$window", function (rs
 
 }])
 fluidComponents
-    .directive("hidden50", ["$rootScope", "fluidFrameService", function (rs, f) {
+    .directive("hidden50", ["$rootScope", "fluidFrameService", "$window", function (rs, f, w) {
         return {
             restrict: "AC",
             scope: false,
             link: function (scope, element, attr) {
                 scope.rs = rs;
+
                 if (rs.viewport === 'lg' && !f.fullScreen) {
                     if (scope.task.size === 50) {
                         element.addClass("hideSize50");
@@ -3561,14 +3562,11 @@ fluidComponents
                         } else {
                             element.removeClass("hideSize50");
                         }
-
                     });
-
                 }
-                scope.$watch(function (scope) {
-                    return scope.rs.viewport;
-                }, function (viewport) {
-                    if (viewport === 'lg' && !f.fullScreen) {
+
+                $(w).on("resize", function () {
+                    if (scope.rs.viewport === 'lg' && !f.fullScreen) {
                         console.info("hidden50-viewport", rs.viewport);
                         console.info("hidden50-size", scope.task.size);
                         if (scope.task.size === 50) {
@@ -3581,15 +3579,18 @@ fluidComponents
                         element.removeClass("hideSize50");
                     }
                 });
+
+
             }
         }
     }])
-    .directive("hidden100", ["$rootScope", "fluidFrameService", function (rs, f) {
+    .directive("hidden100", ["$rootScope", "fluidFrameService", "$window", function (rs, f, w) {
         return {
             restrict: "AC",
             scope: false,
             link: function (scope, element, attr) {
                 scope.rs = rs;
+
                 if (rs.viewport === 'lg' && !f.fullScreen) {
                     if (scope.task.size === 100) {
                         element.addClass("hideSize100");
@@ -3605,21 +3606,7 @@ fluidComponents
                         return scope.task.size;
                     }, function (value) {
                         if (rs.viewport === 'lg' && !f.fullScreen) {
-                            if (scope.task.size === 100) {
-                                element.addClass("hideSize100");
-                            } else {
-                                element.removeClass("hideSize100");
-                            }
-                        } else {
-                            element.removeClass("hideSize100");
-                        }
-                    });
-
-                    scope.$watch(function (scope) {
-                        return scope.rs.viewport;
-                    }, function (viewport) {
-                        if (viewport === 'lg' && !f.fullScreen) {
-                            if (scope.task.size === 100) {
+                            if (value === 100) {
                                 element.addClass("hideSize100");
                             } else {
                                 element.removeClass("hideSize100");
@@ -3629,6 +3616,22 @@ fluidComponents
                         }
                     });
                 }
+
+                $(w).on("resize", function () {
+                    if (scope.rs.viewport === 'lg' && !f.fullScreen) {
+                        console.info("hidden100-viewport", rs.viewport);
+                        console.info("hidden100-size", scope.task.size);
+                        if (scope.task.size === 100) {
+                            element.addClass("hideSize100");
+                        } else {
+                            element.removeClass("hideSize100");
+                        }
+
+                    } else {
+                        element.removeClass("hideSize100");
+                    }
+                });
+
 
             }
         }
