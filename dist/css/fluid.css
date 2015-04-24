@@ -1,17 +1,31 @@
 .fluid-option {
     width: 100%;
-    background: rgba(192, 192, 192, 0.3);
+    max-height: 0;
+    background: rgba(228, 228, 228, 0.8);
     z-index: 10;
     position: absolute;
     top: 43.5px;
-    -webkit-transition: height 0.2s;
-    transition: height 0.2s;
-    overflow-y: auto;
+    -webkit-transition: max-height 0.5s;
+    transition: max-height 0.5s;
+    -moz-transition: max-height 0.5s;
 }
-
 
 .fluid-option-bottom {
     bottom: 0;
+}
+
+.fluid-option-bottom a i {
+    margin-right: 5px;
+    margin-bottom: 2px;
+}
+
+.fluid-option-template {
+    width: 100%;
+    max-height: 0;
+    -webkit-transition: max-height 0.5s;
+    transition: max-height 0.5s;
+    -moz-transition: max-height 0.5s;
+    overflow-y: auto;
 }
 /*
 To change this license header, choose License Headers in Project Properties.
@@ -201,8 +215,8 @@ and open the template in the editor.
 
 .fluid-panel-icon-control {
     margin-right: 5px;
-  /*  -webkit-transform: scale(0.7,0.7);
-    transform: scale(0.7, 0.7);*/
+    /*  -webkit-transform: scale(0.7,0.7);
+      transform: scale(0.7, 0.7);*/
 }
 
 .fluid-panel-page {
@@ -484,4 +498,36 @@ div.fluid-form label {
     .fluid-view-lg {
         display: block
     }
+}
+
+.hideSize25 {
+    display: none;
+}
+
+.hideSize50 {
+    display: none;
+}
+
+.hideSize75 {
+    display: none;
+}
+
+.hideSize100 {
+    display: none;
+}
+
+.hideFullscreenXs {
+    display: none;
+}
+
+.hideFullscreenSm {
+    display: none;
+}
+
+.hideFullscreenMd {
+    display: none;
+}
+
+.hideFullscreenLg {
+    display: none;
 }

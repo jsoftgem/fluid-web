@@ -76,7 +76,7 @@ module.exports = function (grunt) {
             }
             , clean: {
                 temp: {
-                    src: ['tmp']
+                    src: ['tmp','dist/css/*.css']
                 }
             },
             watch: {

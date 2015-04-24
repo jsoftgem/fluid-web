@@ -1,12 +1,14 @@
 <div class='container-fluid animated fadeIn anim-dur' style='overflow: auto'>
     <div class="ndg-breadcrumb">
-        <ul class='breadcrumb hidden-xs hidden-sm hidden50' show-on-fullscreen="true">
+        <ul class='breadcrumb hidden-xs hidden-sm hidden50 hidden-fullscreen-xs hidden-fullscreen-sm'>
 
             <li class="pull-left"
                 ng-repeat='page in task.navPages'>
                 <a ng-class="task.page.name == page.name ? 'plain-text':''" title='{{page.title}}' href='#'
                    ng-click='goToEvent(page.name,page.param)'>{{page.title}}</a>
             </li>
+
+
             <div class='form-group pull-right'>
                 <div class='btn-group {{group-size}}'>
                     <button id='btn_tool_{{control.id}}_{{task.id}}' ng-repeat='control in controls'
@@ -18,15 +20,16 @@
             </div>
             <div class="clearfix"></div>
         </ul>
-        <div class='breadcrumb hidden100'>
-            <!--TODO: create modal for fluidTask-->
-            <div class="pull-left">
+        <ul class='breadcrumb hidden-md hidden100 hidden-fullscreen-lg hidden-fullscreen-md'>
+
+            <li class="pull-left">
                 <a ng-class="task.page.name == task.navPages[0].name ? 'plain-text':''"
                    title='{{task.navPages[0].title}}' href='#'
                    ng-click='goToEvent(task.navPages[0].name,task.navPages[0].param)'>{{task.navPages[0].title}}</a>
-                <a ng-if="task.navPages.length > 1" href="#"><i class="fa fa-caret-down"></i></a>
-            </div>
-            <!-- TODO: create fluidOption template tag -->
+                <a ng-if="task.navPages.length > 1" href="#" title="more"
+                   ng-click="fluid.openOption(fluid.getElementFlowId('breadcrumb'))">...</a>
+            </li>
+
             <div class='form-group pull-right'>
                 <div class='btn-group {{group-size}}'>
                     <button id='btn_tool_{{control.id}}_{{task.id}}' ng-repeat='control in controls'
@@ -37,7 +40,18 @@
                 </div>
             </div>
             <div class="clearfix"></div>
-        </div>
+        </ul>
     </div>
 
+
+    <script type="text/ng-template" id="{{fluid.getElementFlowId('breadcrumb')}}">
+        <ul class="breadcrumb">
+            <li class="pull-left" ng-if="$index > 0"
+                ng-repeat='page in task.navPages'>
+                <a ng-class="task.page.name == page.name ? 'plain-text':''" title='{{page.title}}' href='#'
+                   ng-click='goToEvent(page.name,page.param)'>{{page.title}}</a>
+            </li>
+
+        </ul>
+    </script>
 </div>

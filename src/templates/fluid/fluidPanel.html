@@ -1,8 +1,21 @@
 <div id='_id_fp_{{task.id}}' task
      class="panel {{!fluidFrameService.fullScreen ? 'panel-default' : 'panel-default frame-fullscreen'}}">
 
+    <script id="{{fluid.getElementFlowId('pageList')}}" type="text/ng-template">
+        <div class="input-group">
+            <input class="form-control" ng-model="task.searchPage" placeholder="Page"/>
+            <span class="input-group-addon"><i class="fa fa-search"></i></span>
+        </div>
+        <ul class="list-group">
+            <li class="list-group-item" ng-repeat="page in task.pages | filter: task.searchPage"
+                ng-click="fluid.goTo(page.name);fluidOptionService.closeOption()"
+                style="cursor: pointer"
+                ng-class="task.page.name == page.name ? 'active':''">
+                {{page.title}}
+            </li>
+        </ul>
+    </script>
     <div class='panel-heading' ng-show="!task.locked">
-
         <!-- Title-->
         <div class="panel-title"><a ng-if="!fluidFrameService.fullScreen " data-toggle='collapse'
                                     data-target='#_{{task.id}}'
@@ -36,9 +49,8 @@
                     </li>
                     <li class='hidden-lg'><a href='#' ng-click='task.hide(task)'>Minimize</a>
                     </li>
-                    <li ng-if="task.closeable==undefined || task.closeable==true" ng-class="task.locked ?
-                        'hidden-sm hidden-md hidden-xs' : ''" class='divider'></li>
-                    <li ng-if="!task.closeable==undefined || task.closeable==true"><a
+                    <li ng-if="!task.closeable == undefined || task.closeable==true" class='divider'></li>
+                    <li ng-if="!task.closeable == undefined || task.closeable==true"><a
                             ng-class="task.locked ? 'hidden-sm hidden-md hidden-xs' : ''" href='#'
                             ng-click='task.close()'>Close</a></li>
                 </ul>
@@ -104,16 +116,15 @@
         <div id='_id_fpb_{{task.id}}'
              class="panel-body minHeight fluid-panel container-fluid"
              ng-disabled='!task.loaded'>
-            <fluid-option use-template="true" template-name="{{fluid.fluidOptionTemplate}}">
+            <fluid-option></fluid-option>
+            <fluid-message id="{{fluid.get('pnl_msg')}}"></fluid-message>
 
-            </fluid-option>
-            <fluid-message id="{{fluid.getElementFlowId('pnl_msg')}}"></fluid-message>
             <fluid-tool size="large" fluid="fluid"
                         id="{{fluid.getElementFlowId('flw_tl')}}"
                         ng-if='task.showToolBar' controls='toolbars'
                         task='task' pages='task.navPages'></fluid-tool>
 
-            <div class="hidden50" show-on-fullscreen="true"
+            <div class="hidden50"
                  ng-class="task.showPageList?'fluid-panel-page-list col-lg-3 col-md-3': 'fluid-panel-page-list-hidden'">
 
                 <div ng-if="task.showPageList" class="input-group ">
@@ -130,8 +141,7 @@
                     </li>
                 </ul>
             </div>
-            <!-- ng-class="task.showPageList ? 'col-lg-9 col-md-9':'col-lg-12 col-md-12'"-->
-            <div class="fluid-panel-content" column="{{task.showPageList ? 9 : 12}}">
+            <div class="fluid-panel-content" ng-class="task.showPageList ? 'col-lg-9 col-md-9':'col-lg-12 col-md-12'">
                 <div ng-if='task.pageLoaded && !task.page.static' id='page_div_{{task.id}}'
                      class="fluid-panel-page animated {{task.pageTransition ? task.pageTransition : 'fadeIn'}}"
                      ng-include='task.page.home'></div>
@@ -143,21 +153,4 @@
         </div>
 
     </div>
-
-    <fluid-template template-name="pageList">
-        <div class="input-group">
-            <input class="form-control" ng-model="task.searchPage" placeholder="Page"/>
-            <span class="input-group-addon"><i class="fa fa-search"></i></span>
-        </div>
-        <ul class="list-group">
-            <li class="list-group-item" ng-repeat="page in task.pages | filter: task.searchPage"
-                ng-click="fluid.goTo(page.name);fluidOptionService.closeOption()"
-                style="cursor: pointer"
-                ng-class="task.page.name == page.name ? 'active':''">
-                {{page.title}}
-            </li>
-        </ul>
-    </fluid-template>
-
-
 </div>
