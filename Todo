@@ -13,7 +13,8 @@ New Task Model
   "imgSrc":"app/img/src/icon.png", //Image icon src
   "size": 50, // Task panel width 25, 50, 75 and 100 percent
   "locked":false, // Lock the task panel (Task panel cannot be resized, minimized, closed & pinned)
-  "pinned":false,//If true, pin the task panel (glue the task panel on screen)
+  "pinnable":false// TODO: Enable to control pinning.
+  "pinned":false,//TODO: If true, pin the task panel (glue the task panel on screen)
   "active": true,//If true, shows the task panel on fluidFrame
   "showToolBar":true,// If true, shows the toolbar & page breadcrumb
   "pageTransition":"fadeInRight",
@@ -33,10 +34,11 @@ New Task Model
       "get": "app/Module1/pages/page1-data.json", //preset get uri
       "post": "services/page/post", //preset post uri
       "delURL": "services/page/delete", //preset delete uri
-     TODO: "requiredParam":["id","option:['Good','Better','Best']"],// add param requirements
+      "showOnList": default true,
+      TODO: "requiredParam":["id","option:['Good','Better','Best']"],// add param requirements
       "put": "services/page/put",//preset put uri
-      TODO: "static":false, // page will use static html
-      TODO: "html":"<div></div>",// static html, angular el will not work for now
+      "static":false, // page will use static html
+      "html":"<div></div>",// static html, angular el will not work for now. Note: import NgSanitize
       "autoGet": true,//If TRUE, will get the result data from get uri
       "isHome": true,//Will be the main page of the task (must only specifiy one home page per task)
       "actions": [
@@ -59,7 +61,7 @@ New Task Model
 }
 
 
-//TODO: fix toolbar
+//fix toolbar
 //TODO: use template cache in for pages
-//TODO: Menu toolbar in FluidPanel
+//Menu toolbar in FluidPanel
 //TODO: FluidToolbar mobile responsive

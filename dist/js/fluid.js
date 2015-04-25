@@ -45,6 +45,9 @@ fluidComponents
                         scope.userTask = {};
                         scope.userTask.closed = false;
                         scope.fluid = {};
+                        scope.filterPage = function(page){
+                            return (page.showOnList === undefined || page.showOnList == true);
+                        }
                         scope.toolbars = [
                             {
                                 "id": 'showPageList',
@@ -488,9 +491,13 @@ fluidComponents
                             return q(function (resolve, reject) {
                                 angular.forEach(scope.task.pages, function (page) {
                                         if (name === page.name) {
+
                                             scope.task.prevPage = {};
+
                                             angular.copy(scope.task.page, scope.task.prevPage);
+
                                             scope.task.page = page;
+
                                             var uri = page.get;
 
                                             if (param !== undefined && param !== "null") {
@@ -760,7 +767,6 @@ fluidComponents
                                             angular.copy(scope.task, scope.copy);
                                             console.info("generated-taskp", d);
                                             if (!f.fullScreen) {
-
                                                 angular.forEach(f.taskList, function (task, key) {
 
                                                     if (task.id === scope.task.id) {
@@ -769,7 +775,6 @@ fluidComponents
                                                     }
 
                                                 }, $task);
-
                                                 f.taskList[$task.index] = f.buildTask(d);
                                                 f.taskList[$task.index].id = f.taskList[$task.index].id + "_" + $task.index;
                                                 f.taskList[$task.index].origin = scope.task.origin;
@@ -1142,19 +1147,27 @@ fluidComponents
                             var viewport = rs.viewport;
 
                             if (viewport === 'xs') {
-                                scope.task.showPageList = false;
-                                if (!rs.$$phase) {
-                                    scope.$apply();
+                                if (scope) {
+                                    scope.task.showPageList = false;
+                                    if (!rs.$$phase) {
+                                        scope.$apply();
+                                    }
                                 }
                             } else if (viewport === 'sm') {
-                                scope.task.showPageList = false;
-                                if (!rs.$$phase) {
-                                    scope.$apply();
+                                if (scope) {
+                                    scope.task.showPageList = false;
+                                    if (!rs.$$phase) {
+                                        scope.$apply();
+                                    }
                                 }
                             } else if (viewport === 'md') {
-                                fos.closeOption(scope.fluid.getElementFlowId('fluid_option'));
+                                if (scope) {
+                                    fos.closeOption(scope.fluid.getElementFlowId('fluid_option'));
+                                }
                             } else if (viewport === 'lg') {
-                                fos.closeOption(scope.fluid.getElementFlowId('fluid_option'));
+                                if (scope) {
+                                    fos.closeOption(scope.fluid.getElementFlowId('fluid_option'));
+                                }
                             }
 
                         });
@@ -3351,6 +3364,9 @@ fluidComponents
             c(fluidTemplate.html(""))(fluidScope);
         }
 
+    }])
+    .service("fluidMonitorService", [function () {
+
     }]);
 
 fluidComponents
@@ -3672,7 +3688,7 @@ fluidComponents
             restrict: "AC",
             scope: false,
             link: function (scope, element, attr) {
-                
+
                 var viewport = rs.viewport;
 
                 if (viewport === 'xs' && f.fullScreen) {
@@ -3737,7 +3753,6 @@ fluidComponents
 
                 $(w).on("resize", function () {
                     var viewport = rs.viewport;
-
                     if (viewport === 'md' && f.fullScreen) {
                         element.addClass("hideFullscreenMd");
                     } else {
@@ -3814,13 +3829,13 @@ var EVENT_NOT_ALLOWED = "not_allowed_";
 var AUTHORIZATION = "authorization";
 
 function estimateHeight(height) {
-    var _pc = window.innerWidth < 450 ? 55 : window.innerWidth < 768 ? 55 : window.innerWidth < 1200 ? 73 : 50;
+    var _pc = window.innerWidth < 450 ? 55 : window.innerWidth < 768 ? 55 : window.innerWidth < 1200 ? 60 : 50;
     /*var _pc = height >= 768 ? height * 0.055 : height <= 768 && height > 600 ? height * 0.065 : height <= 600 && height > 400 ? height * 0.09 : height * 0.15;*/
     return height - _pc
 }
 
 function estimatedFrameHeight(height) {
-    var _pc = window.innerWidth < 450 ? 60 : window.innerWidth < 768 ? 60 : window.innerWidth < 1200 ? 80 : 50;
+    var _pc = window.innerWidth < 450 ? 60 : window.innerWidth < 768 ? 60 : window.innerWidth < 1200 ? 65 : 50;
     /*var _pc = height >= 768 ? height * 0.055 : height <= 768 && height > 600 ? height * 0.065 : height <= 600 && height > 400 ? height * 0.09 : height * 0.15;*/
     return height - _pc
 }
@@ -3960,12 +3975,12 @@ function autoSizePanel(task) {
     height = estimateHeight(height) - 30;
     var panel = $("#_id_fp_" + task.id + ".panel");
     var panelBody = $("#_id_fp_" + task.id + ".panel div.fluid-panel-content");
-    console.info("fluid-panel-fullscreen-height", height);
+    //console.info("fluid-panel-fullscreen-height", height);
     panel.height(height);
-    var headerHeight = /* panel.find("div.panel-heading").height()*/ 114;
-    console.info("fluid-panel-fullscreen-header-height", headerHeight);
+    var headerHeight = /* panel.find("div.panel-heading").height()*/ 119;
+    //console.info("fluid-panel-fullscreen-header-height", headerHeight);
     var bodyHeight = height - headerHeight;
-    console.info("fluid-panel-fullscreen-body-height", bodyHeight);
+    //console.info("fluid-panel-fullscreen-body-height", bodyHeight);
     panelBody.css("height", bodyHeight, "important");
     panelBody.css("overflow", "auto");
 
@@ -4105,9 +4120,9 @@ angular.module("templates/fluid/fluidFrame.html", []).run(["$templateCache", fun
     "         ng-show=\"fluidFrameService.fullScreen\" style=\"padding: 0;\">\n" +
     "        <fluid-panel task='fluidFrameService.fullScreenTask'></fluid-panel>\n" +
     "    </div>\n" +
-    "    <div ng-if=\"!fluidFrameService.fullScreen\" class=\"container-fluid frame-content-div\"\n" +
+    "    <div ng-if=\"!fluidFrameService.fullScreen\" class=\"container-fluid frame-content-div fluid-frame-div\"\n" +
     "         ng-hide=\"fluidFrameService.fullScreen\">\n" +
-    "        <div ng-init=\"initTask(task)\" class=\"fluid-panel-transition\"\n" +
+    "        <div ng-init=\"initTask(task)\" class=\"fluid-panel-transition fluid-frame-task\"\n" +
     "             ng-repeat='task in fluidFrameService.taskList | filter:{active:true, title:fluidFrameService.searchTask}'>\n" +
     "            <fluid-panel task='task'></fluid-panel>\n" +
     "        </div>\n" +
@@ -4214,7 +4229,7 @@ angular.module("templates/fluid/fluidOption.html", []).run(["$templateCache", fu
 angular.module("templates/fluid/fluidPanel.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("templates/fluid/fluidPanel.html",
     "<div id='_id_fp_{{task.id}}' task\n" +
-    "     class=\"panel {{!fluidFrameService.fullScreen ? 'panel-default' : 'panel-default frame-fullscreen'}}\">\n" +
+    "     class=\"panel {{!fluidFrameService.fullScreen ? 'panel-default fluid-task' : 'panel-default frame-fullscreen'}}\">\n" +
     "\n" +
     "    <script id=\"{{fluid.getElementFlowId('pageList')}}\" type=\"text/ng-template\">\n" +
     "        <div class=\"input-group\">\n" +
@@ -4222,7 +4237,7 @@ angular.module("templates/fluid/fluidPanel.html", []).run(["$templateCache", fun
     "            <span class=\"input-group-addon\"><i class=\"fa fa-search\"></i></span>\n" +
     "        </div>\n" +
     "        <ul class=\"list-group\">\n" +
-    "            <li class=\"list-group-item\" ng-repeat=\"page in task.pages | filter: task.searchPage\"\n" +
+    "            <li class=\"list-group-item\" ng-repeat=\"page in task.pages | filter: {'title':task.searchPage} | filter: filterPage\"\n" +
     "                ng-click=\"fluid.goTo(page.name);fluid.closeOption()\"\n" +
     "                style=\"cursor: pointer\"\n" +
     "                ng-class=\"task.page.name == page.name ? 'active':''\">\n" +
@@ -4304,7 +4319,7 @@ angular.module("templates/fluid/fluidPanel.html", []).run(["$templateCache", fun
     "                       class='element-center fa fa-angle-down'></i>\n" +
     "                </button>\n" +
     "                <button ng-if=\"!fluidFrameService.fullScreen\" class=\"btn btn-info\" ng-click='task.fullScreen()'>\n" +
-    "                    <i title=\"Full screen\" class=\"element-center glyphicon glyphicon-fullscreen\"></i>\n" +
+    "                    <i title=\"Full screen\" class=\"element-center fa fa-expand\"></i>\n" +
     "                </button>\n" +
     "                <button ng-if='fluidFrameService.fullScreen'\n" +
     "                        class=\"btn {{fluidFrameService.fullScreen ? 'btn-default' : 'btn-info'}}\"\n" +
@@ -4347,7 +4362,8 @@ angular.module("templates/fluid/fluidPanel.html", []).run(["$templateCache", fun
     "                </div>\n" +
     "\n" +
     "                <ul ng-if=\"task.showPageList\" class=\"list-group\">\n" +
-    "                    <li class=\"list-group-item\" ng-repeat=\"page in task.pages | filter: task.searchPage\"\n" +
+    "                    <li class=\"list-group-item\"\n" +
+    "                        ng-repeat=\"page in task.pages |  filter: {'title':task.searchPage} | filter: filterPage\"\n" +
     "                        ng-click=\"fluid.goTo(page.name)\"\n" +
     "                        style=\"cursor: pointer\"\n" +
     "                        ng-class=\"task.page.name == page.name ? 'active':''\">\n" +
@@ -4544,7 +4560,7 @@ angular.module("templates/fluid/fluidTextArea.html", []).run(["$templateCache", 
 
 angular.module("templates/fluid/fluidToolbar.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("templates/fluid/fluidToolbar.html",
-    "<div class='container-fluid animated fadeIn anim-dur' style='overflow: auto'>\n" +
+    "<div class='container-fluid animated fadeIn anim-dur' style=\"padding: 0\">\n" +
     "    <div class=\"ndg-breadcrumb\">\n" +
     "        <ul class='breadcrumb hidden-xs hidden-sm hidden50 hidden-fullscreen-xs hidden-fullscreen-sm'>\n" +
     "\n" +

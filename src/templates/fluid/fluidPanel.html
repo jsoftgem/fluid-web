@@ -1,5 +1,5 @@
 <div id='_id_fp_{{task.id}}' task
-     class="panel {{!fluidFrameService.fullScreen ? 'panel-default' : 'panel-default frame-fullscreen'}}">
+     class="panel {{!fluidFrameService.fullScreen ? 'panel-default fluid-task' : 'panel-default frame-fullscreen'}}">
 
     <script id="{{fluid.getElementFlowId('pageList')}}" type="text/ng-template">
         <div class="input-group">
@@ -7,7 +7,7 @@
             <span class="input-group-addon"><i class="fa fa-search"></i></span>
         </div>
         <ul class="list-group">
-            <li class="list-group-item" ng-repeat="page in task.pages | filter: task.searchPage"
+            <li class="list-group-item" ng-repeat="page in task.pages | filter: {'title':task.searchPage} | filter: filterPage"
                 ng-click="fluid.goTo(page.name);fluid.closeOption()"
                 style="cursor: pointer"
                 ng-class="task.page.name == page.name ? 'active':''">
@@ -89,7 +89,7 @@
                        class='element-center fa fa-angle-down'></i>
                 </button>
                 <button ng-if="!fluidFrameService.fullScreen" class="btn btn-info" ng-click='task.fullScreen()'>
-                    <i title="Full screen" class="element-center glyphicon glyphicon-fullscreen"></i>
+                    <i title="Full screen" class="element-center fa fa-expand"></i>
                 </button>
                 <button ng-if='fluidFrameService.fullScreen'
                         class="btn {{fluidFrameService.fullScreen ? 'btn-default' : 'btn-info'}}"
@@ -132,7 +132,8 @@
                 </div>
 
                 <ul ng-if="task.showPageList" class="list-group">
-                    <li class="list-group-item" ng-repeat="page in task.pages | filter: task.searchPage"
+                    <li class="list-group-item"
+                        ng-repeat="page in task.pages |  filter: {'title':task.searchPage} | filter: filterPage"
                         ng-click="fluid.goTo(page.name)"
                         style="cursor: pointer"
                         ng-class="task.page.name == page.name ? 'active':''">

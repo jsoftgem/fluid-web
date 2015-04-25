@@ -6,9 +6,9 @@
          ng-show="fluidFrameService.fullScreen" style="padding: 0;">
         <fluid-panel task='fluidFrameService.fullScreenTask'></fluid-panel>
     </div>
-    <div ng-if="!fluidFrameService.fullScreen" class="container-fluid frame-content-div"
+    <div ng-if="!fluidFrameService.fullScreen" class="container-fluid frame-content-div fluid-frame-div"
          ng-hide="fluidFrameService.fullScreen">
-        <div ng-init="initTask(task)" class="fluid-panel-transition"
+        <div ng-init="initTask(task)" class="fluid-panel-transition fluid-frame-task"
              ng-repeat='task in fluidFrameService.taskList | filter:{active:true, title:fluidFrameService.searchTask}'>
             <fluid-panel task='task'></fluid-panel>
         </div>

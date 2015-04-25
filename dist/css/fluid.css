@@ -1,7 +1,7 @@
 .fluid-option {
     width: 100%;
     max-height: 0;
-    background: rgba(228, 228, 228, 0.8);
+    background: rgba(228, 228, 228, 0.8) !important;
     z-index: 10;
     position: absolute;
     top: 43.5px;
@@ -532,4 +532,31 @@ div.fluid-form label {
 
 .hideFullscreenLg {
     display: none;
+}
+
+.fluid-frame-task {
+    padding-top: 0px !important;
+    padding-bottom: 0px !important;
+    padding-left: 2px !important;
+    padding-right: 2px !important;
+}
+
+.fluid-frame-div {
+    padding-left: 0px !important;
+    padding-right: 0px !important;
+}
+
+/*add glows to fluid panel*/
+div.fluid-task:hover {
+    -webkit-transition: all 0.10s ease-in-out;
+    -moz-transition: all 0.10s ease-in-out;
+    -ms-transition: all 0.10s ease-in-out;
+    -o-transition: all 0.10s ease-in-out;
+    outline: none;
+    /*padding: 3px 0px 3px 3px;
+    margin: 5px 1px 3px 0px;*/
+    box-shadow: 0 0 5px rgba(81, 203, 238, 1);
+    /*padding: 3px 0px 3px 3px;*/
+    /*margin: 5px 1px 3px 0px;*/
+    border: 1px solid rgba(81, 203, 238, 1);
 }

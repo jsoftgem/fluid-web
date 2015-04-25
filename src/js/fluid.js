@@ -45,6 +45,9 @@ fluidComponents
                         scope.userTask = {};
                         scope.userTask.closed = false;
                         scope.fluid = {};
+                        scope.filterPage = function(page){
+                            return (page.showOnList === undefined || page.showOnList == true);
+                        }
                         scope.toolbars = [
                             {
                                 "id": 'showPageList',
@@ -488,9 +491,13 @@ fluidComponents
                             return q(function (resolve, reject) {
                                 angular.forEach(scope.task.pages, function (page) {
                                         if (name === page.name) {
+
                                             scope.task.prevPage = {};
+
                                             angular.copy(scope.task.page, scope.task.prevPage);
+
                                             scope.task.page = page;
+
                                             var uri = page.get;
 
                                             if (param !== undefined && param !== "null") {
@@ -760,7 +767,6 @@ fluidComponents
                                             angular.copy(scope.task, scope.copy);
                                             console.info("generated-taskp", d);
                                             if (!f.fullScreen) {
-
                                                 angular.forEach(f.taskList, function (task, key) {
 
                                                     if (task.id === scope.task.id) {
@@ -769,7 +775,6 @@ fluidComponents
                                                     }
 
                                                 }, $task);
-
                                                 f.taskList[$task.index] = f.buildTask(d);
                                                 f.taskList[$task.index].id = f.taskList[$task.index].id + "_" + $task.index;
                                                 f.taskList[$task.index].origin = scope.task.origin;
@@ -1142,19 +1147,27 @@ fluidComponents
                             var viewport = rs.viewport;
 
                             if (viewport === 'xs') {
-                                scope.task.showPageList = false;
-                                if (!rs.$$phase) {
-                                    scope.$apply();
+                                if (scope) {
+                                    scope.task.showPageList = false;
+                                    if (!rs.$$phase) {
+                                        scope.$apply();
+                                    }
                                 }
                             } else if (viewport === 'sm') {
-                                scope.task.showPageList = false;
-                                if (!rs.$$phase) {
-                                    scope.$apply();
+                                if (scope) {
+                                    scope.task.showPageList = false;
+                                    if (!rs.$$phase) {
+                                        scope.$apply();
+                                    }
                                 }
                             } else if (viewport === 'md') {
-                                fos.closeOption(scope.fluid.getElementFlowId('fluid_option'));
+                                if (scope) {
+                                    fos.closeOption(scope.fluid.getElementFlowId('fluid_option'));
+                                }
                             } else if (viewport === 'lg') {
-                                fos.closeOption(scope.fluid.getElementFlowId('fluid_option'));
+                                if (scope) {
+                                    fos.closeOption(scope.fluid.getElementFlowId('fluid_option'));
+                                }
                             }
 
                         });
@@ -3351,6 +3364,9 @@ fluidComponents
             c(fluidTemplate.html(""))(fluidScope);
         }
 
+    }])
+    .service("fluidMonitorService", [function () {
+
     }]);
 
 fluidComponents
@@ -3737,7 +3753,6 @@ fluidComponents
 
                 $(w).on("resize", function () {
                     var viewport = rs.viewport;
-
                     if (viewport === 'md' && f.fullScreen) {
                         element.addClass("hideFullscreenMd");
                     } else {
@@ -3814,13 +3829,13 @@ var EVENT_NOT_ALLOWED = "not_allowed_";
 var AUTHORIZATION = "authorization";
 
 function estimateHeight(height) {
-    var _pc = window.innerWidth < 450 ? 55 : window.innerWidth < 768 ? 55 : window.innerWidth < 1200 ? 73 : 50;
+    var _pc = window.innerWidth < 450 ? 55 : window.innerWidth < 768 ? 55 : window.innerWidth < 1200 ? 60 : 50;
     /*var _pc = height >= 768 ? height * 0.055 : height <= 768 && height > 600 ? height * 0.065 : height <= 600 && height > 400 ? height * 0.09 : height * 0.15;*/
     return height - _pc
 }
 
 function estimatedFrameHeight(height) {
-    var _pc = window.innerWidth < 450 ? 60 : window.innerWidth < 768 ? 60 : window.innerWidth < 1200 ? 80 : 50;
+    var _pc = window.innerWidth < 450 ? 60 : window.innerWidth < 768 ? 60 : window.innerWidth < 1200 ? 65 : 50;
     /*var _pc = height >= 768 ? height * 0.055 : height <= 768 && height > 600 ? height * 0.065 : height <= 600 && height > 400 ? height * 0.09 : height * 0.15;*/
     return height - _pc
 }
@@ -3960,12 +3975,12 @@ function autoSizePanel(task) {
     height = estimateHeight(height) - 30;
     var panel = $("#_id_fp_" + task.id + ".panel");
     var panelBody = $("#_id_fp_" + task.id + ".panel div.fluid-panel-content");
-    console.info("fluid-panel-fullscreen-height", height);
+    //console.info("fluid-panel-fullscreen-height", height);
     panel.height(height);
-    var headerHeight = /* panel.find("div.panel-heading").height()*/ 114;
-    console.info("fluid-panel-fullscreen-header-height", headerHeight);
+    var headerHeight = /* panel.find("div.panel-heading").height()*/ 119;
+    //console.info("fluid-panel-fullscreen-header-height", headerHeight);
     var bodyHeight = height - headerHeight;
-    console.info("fluid-panel-fullscreen-body-height", bodyHeight);
+    //console.info("fluid-panel-fullscreen-body-height", bodyHeight);
     panelBody.css("height", bodyHeight, "important");
     panelBody.css("overflow", "auto");
 
