@@ -1,7 +1,7 @@
 /**Fluid Web v0.0.1
  * Created by Jerico de Guzman
  * October 2014**/
-var fluidComponents = angular.module("fluid", ["angularFileUpload", "oc.lazyLoad", "LocalStorageModule", "templates-dist", "ngSanitize", "mouse.utils"]);
+var fluidComponents = angular.module("fluid", ["angularFileUpload", "oc.lazyLoad", "LocalStorageModule", "templates-dist", "ngSanitize"]);
 
 fluidComponents.config(["$httpProvider", "localStorageServiceProvider", function (h, ls) {
     ls.setPrefix("fluid")
@@ -54,8 +54,9 @@ fluidComponents
                                 "uiType": "success",
                                 "action": function ($event) {
                                     if (rs.viewport === 'sm' || rs.viewport === 'xs' || (rs.viewport === 'lg' && (!f.fullScreen && (scope.task.size === 50 || scope.task.size === 25)))) {
-                                        var source = $event.target;
-                                        fos.openOption(scope.fluid.getElementFlowId('fluid_option'), scope.fluid.getElementFlowId('pageList'));
+                                        var source = $event.currentTarget;
+                                        console.info("showPageList-event", $event);
+                                        fos.openOption(scope.fluid.getElementFlowId('fluid_option'), scope.fluid.getElementFlowId('pageList'), source);
                                     } else {
                                         scope.task.showPageList = !scope.task.showPageList;
                                     }
@@ -107,8 +108,8 @@ fluidComponents
                             }
                         ];
                         /* Page Event */
-                        scope.fluid.openOption = function (templateId) {
-                            fos.openOption(scope.fluid.getElementFlowId('fluid_option'), templateId);
+                        scope.fluid.openOption = function (templateId, $event) {
+                            fos.openOption(scope.fluid.getElementFlowId('fluid_option'), templateId, $event.currentTarget);
                         }
                         scope.fluid.closeOption = function () {
                             fos.closeOption(scope.fluid.getElementFlowId('fluid_option'));
@@ -1131,27 +1132,31 @@ fluidComponents
 
                         });
 
-                        scope.$watch(function (scope) {
-                            return rs.viewport;
-                        }, function (viewport) {
-                            console.info("task-viewport", viewport);
-                            if (viewport === 'xs') {
-                                scope.task.showPageList = false;
-                            } else if (viewport === 'sm') {
-                                scope.task.showPageList = false;
-                            } else if (viewport === 'md') {
-                                fos.closeOption(scope.fluid.getElementFlowId('fluid_option'));
-                            } else if (viewport === 'lg') {
-                                fos.closeOption(scope.fluid.getElementFlowId('fluid_option'));
-                            }
-                        });
 
                         $(window).on("resize", function () {
                             if (scope.fluidFrameService.fullScreen) {
                                 scope.fluidFrameService.getFrame().css("overflow", "hidden");
                                 autoSizePanel(scope.task);
-
                             }
+
+                            var viewport = rs.viewport;
+
+                            if (viewport === 'xs') {
+                                scope.task.showPageList = false;
+                                if (!rs.$$phase) {
+                                    scope.$apply();
+                                }
+                            } else if (viewport === 'sm') {
+                                scope.task.showPageList = false;
+                                if (!rs.$$phase) {
+                                    scope.$apply();
+                                }
+                            } else if (viewport === 'md') {
+                                fos.closeOption(scope.fluid.getElementFlowId('fluid_option'));
+                            } else if (viewport === 'lg') {
+                                fos.closeOption(scope.fluid.getElementFlowId('fluid_option'));
+                            }
+
                         });
 
 
@@ -2528,7 +2533,7 @@ fluidComponents
             }
         }
     }])
-    .directive("fluidOption", ["$templateCache", "fluidOptionService", function (tc, fos) {
+    .directive("fluidOption", ["$templateCache", "fluidOptionService", "$window", function (tc, fos, w) {
         return {
             restrict: "AE",
             scope: false,
@@ -2549,10 +2554,16 @@ fluidComponents
 
                 });
 
-
                 scope.close = function () {
                     fos.closeOption(element.attr("id"));
                 }
+
+                $(w).on("resize", function () {
+                    var template = element.find(".fluid-option-template");
+                    template.css("width", element.parent().width());
+                    element.css("width", element.parent().width());
+                });
+
             }
         }
     }]);
@@ -3295,29 +3306,49 @@ fluidComponents
     }])
     .service("fluidOptionService", ["$compile", function (c) {
 
-        this.openOption = function (optionId, template) {
+        this.openOption = function (optionId, template, source) {
+            console.info("fluidOptionService-openOption-source", source);
+
             var fluidOption = $("#" + optionId);
             var content = $("#" + template);
             var fluidScope = angular.element(fluidOption).scope();
             var fluidTemplate = fluidOption.find(".fluid-option-template");
             var fluidBottom = fluidOption.find(".fluid-option-bottom");
             var contentScope = angular.element(content).scope();
+            var sourceID = $(source).attr("id");
+
+            console.info("fluidOptionService-openOption-pre-sourceID", sourceID);
+
+            if (!sourceID) {
+                var eventSourceCount = $("[id*='_event_source_id']").length;
+                sourceID = fluidOption.attr("id") + "_event_source_id_" + eventSourceCount;
+                $(source).attr("id", sourceID);
+            }
+
+            console.info("fluidOptionService-openOption-sourceID", sourceID);
+
             fluidOption.css("max-height", fluidScope.parentHeight);
+
             fluidTemplate.css("max-height", fluidScope.parentHeight - 15);
-            fluidBottom.removeClass("hidden");
+
+            fluidOption.attr("source-event", sourceID);
+
+            fluidBottom.removeClass("hidden")
+
             c(fluidTemplate.html(content.html()))(contentScope);
 
         }
 
         this.closeOption = function (optionId) {
-
             var fluidOption = $("#" + optionId);
             var fluidTemplate = fluidOption.find(".fluid-option-template");
             var fluidBottom = fluidOption.find(".fluid-option-bottom");
+            var fluidScope = angular.element(fluidOption).scope();
             fluidOption.css("max-height", 0);
             fluidTemplate.css("max-height", 0);
+            fluidOption.removeAttr("source-event");
             fluidBottom.addClass("hidden");
-            fluidTemplate.html("");
+            c(fluidTemplate.html(""))(fluidScope);
         }
 
     }]);
@@ -3636,65 +3667,105 @@ fluidComponents
             }
         }
     }])
-    .directive("hiddenFullscreenXs", ["$rootScope", "fluidFrameService", function (rs, f) {
+    .directive("hiddenFullscreenXs", ["$rootScope", "fluidFrameService", "$window", function (rs, f, w) {
         return {
             restrict: "AC",
             scope: false,
             link: function (scope, element, attr) {
-                scope.$watch(function () {
-                    return rs.viewport;
-                }, function (viewport) {
+                
+                var viewport = rs.viewport;
+
+                if (viewport === 'xs' && f.fullScreen) {
+                    element.addClass("hideFullscreenXs");
+                } else {
+                    element.removeClass("hideFullscreenXs");
+                }
+
+                $(w).on("resize", function () {
+                    var viewport = rs.viewport;
+
                     if (viewport === 'xs' && f.fullScreen) {
                         element.addClass("hideFullscreenXs");
                     } else {
                         element.removeClass("hideFullscreenXs");
                     }
+
                 });
+
             }
         }
     }])
-    .directive("hiddenFullscreenSm", ["$rootScope", "fluidFrameService", function (rs, f) {
+    .directive("hiddenFullscreenSm", ["$rootScope", "fluidFrameService", "$window", function (rs, f, w) {
         return {
             restrict: "AC",
             scope: false,
             link: function (scope, element, attr) {
-                scope.$watch(function () {
-                    return rs.viewport;
-                }, function (viewport) {
+
+                var viewport = rs.viewport;
+
+                if (viewport === 'sm' && f.fullScreen) {
+                    element.addClass("hideFullscreenSm");
+                } else {
+                    element.removeClass("hideFullscreenSm");
+                }
+
+                $(w).on("resize", function () {
+                    var viewport = rs.viewport;
+
                     if (viewport === 'sm' && f.fullScreen) {
                         element.addClass("hideFullscreenSm");
                     } else {
                         element.removeClass("hideFullscreenSm");
                     }
+
                 });
             }
         }
     }])
-    .directive("hiddenFullscreenMd", ["$rootScope", "fluidFrameService", function (rs, f) {
+    .directive("hiddenFullscreenMd", ["$rootScope", "fluidFrameService", "$window", function (rs, f, w) {
         return {
             restrict: "AC",
             scope: false,
             link: function (scope, element, attr) {
-                scope.$watch(function () {
-                    return rs.viewport;
-                }, function (viewport) {
+                var viewport = rs.viewport;
+
+                if (viewport === 'md' && f.fullScreen) {
+                    element.addClass("hideFullscreenMd");
+                } else {
+                    element.removeClass("hideFullscreenMd");
+                }
+
+                $(w).on("resize", function () {
+                    var viewport = rs.viewport;
+
                     if (viewport === 'md' && f.fullScreen) {
                         element.addClass("hideFullscreenMd");
                     } else {
                         element.removeClass("hideFullscreenMd");
                     }
+
                 });
             }
         }
     }])
-    .directive("hiddenFullscreenLg", ["$rootScope", "fluidFrameService", function (rs, f) {
+    .directive("hiddenFullscreenLg", ["$rootScope", "fluidFrameService", "$window", function (rs, f, w) {
         return {
             restrict: "AC",
             scope: false,
             link: function (scope, element, attr) {
-                scope.$watch(function () {
-                    return rs.viewport;
-                }, function (viewport) {
+
+                var viewport = rs.viewport;
+
+                if (viewport === 'lg' && f.fullScreen) {
+                    element.addClass("hideFullscreenLg");
+                } else {
+                    element.removeClass("hideFullscreenLg");
+                }
+
+
+                $(w).on("resize", function () {
+                    var viewport = rs.viewport;
+
                     if (viewport === 'lg' && f.fullScreen) {
                         element.addClass("hideFullscreenLg");
                     } else {
@@ -3899,7 +3970,58 @@ function autoSizePanel(task) {
     panelBody.css("overflow", "auto");
 
 
-};angular.module('templates-dist', ['templates/fluid/fluidBar.html', 'templates/fluid/fluidCheckbox.html', 'templates/fluid/fluidDatePicker.html', 'templates/fluid/fluidField.html', 'templates/fluid/fluidFrame.html', 'templates/fluid/fluidImage.html', 'templates/fluid/fluidLookup.html', 'templates/fluid/fluidModal.html', 'templates/fluid/fluidNotify.html', 'templates/fluid/fluidOption.html', 'templates/fluid/fluidPanel.html', 'templates/fluid/fluidRadio.html', 'templates/fluid/fluidReportTable.html', 'templates/fluid/fluidSelect.html', 'templates/fluid/fluidTaskIcon.html', 'templates/fluid/fluidTemplate.html', 'templates/fluid/fluidTextArea.html', 'templates/fluid/fluidToolbar.html', 'templates/fluid/fluidUploader.html']);
+}
+
+
+//handles document here
+
+$(document).ready(function () {
+
+    var infoSig = "fluidDocumentHandler";
+
+    $(this).click(function (e) {
+        $(".fluid-option").each(function (index, element) {
+            var fluidOptionScope = angular.element($(element)).scope();
+            if (fluidOptionScope) {
+                var sourceId = $(e.target).attr("id");
+                var elementSourceEvent = $(element).attr("source-event");
+
+                // console.info(infoSig + ".sourceId", sourceId);
+
+                // console.info(infoSig + ".element", element);
+
+                if ($.contains(element, e.target)) {
+                    // console.info(infoSig + ".contains", e.target);
+                    return;
+                }
+
+                if (elementSourceEvent) {
+
+                    var elementSource = $("[id='" + elementSourceEvent + "']");
+
+                    var activeElementSource = elementSource.context.activeElement;
+
+                    if (elementSource.find(e.target).length > 0) {
+                        //console.info(infoSig + ".contains.elementSourceEvent", e.target);
+                        return;
+                    }
+
+                    if (elementSource.is(e.target)) {
+                        // console.info(infoSig + ".is.elementSourceEvent", e.target);
+                        return;
+                    }
+
+                    if (elementSourceEvent !== sourceId) {
+                        fluidOptionScope.close();
+                    }
+                }
+
+
+            }
+        });
+    });
+
+});;angular.module('templates-dist', ['templates/fluid/fluidBar.html', 'templates/fluid/fluidCheckbox.html', 'templates/fluid/fluidDatePicker.html', 'templates/fluid/fluidField.html', 'templates/fluid/fluidFrame.html', 'templates/fluid/fluidImage.html', 'templates/fluid/fluidLookup.html', 'templates/fluid/fluidModal.html', 'templates/fluid/fluidNotify.html', 'templates/fluid/fluidOption.html', 'templates/fluid/fluidPanel.html', 'templates/fluid/fluidRadio.html', 'templates/fluid/fluidReportTable.html', 'templates/fluid/fluidSelect.html', 'templates/fluid/fluidTaskIcon.html', 'templates/fluid/fluidTemplate.html', 'templates/fluid/fluidTextArea.html', 'templates/fluid/fluidToolbar.html', 'templates/fluid/fluidUploader.html']);
 
 angular.module("templates/fluid/fluidBar.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("templates/fluid/fluidBar.html",
@@ -4082,10 +4204,10 @@ angular.module("templates/fluid/fluidNotify.html", []).run(["$templateCache", fu
 angular.module("templates/fluid/fluidOption.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("templates/fluid/fluidOption.html",
     "<div id=\"{{fluid.getElementFlowId('fluid_option')}}\" class=\"fluid-option\">\n" +
-    "    <div id=\"{{fluid.getElementFlowId('fluid_option_template')}}\" class=\"fluid-option-template\"  click-outside=\"close()\"></div>\n" +
-    "    <div class=\"fluid-option-bottom hidden\">\n" +
-    "        <span class=\"pull-right\"><a href=\"#\" ng-click=\"close()\"><i class=\"text-danger fa fa-close\"></i></a></span>\n" +
-    "    </div>\n" +
+    "    <div id=\"{{fluid.getElementFlowId('fluid_option_template')}}\" class=\"fluid-option-template\"></div>\n" +
+    "    <!-- <div class=\"fluid-option-bottom hidden\">\n" +
+    "         <span class=\"pull-right\"><a href=\"#\" ng-click=\"close()\"><i class=\"text-danger fa fa-close\"></i></a></span>\n" +
+    "     </div>-->\n" +
     "</div>");
 }]);
 
@@ -4216,11 +4338,10 @@ angular.module("templates/fluid/fluidPanel.html", []).run(["$templateCache", fun
     "                        id=\"{{fluid.getElementFlowId('flw_tl')}}\"\n" +
     "                        ng-if='task.showToolBar' controls='toolbars'\n" +
     "                        task='task' pages='task.navPages'></fluid-tool>\n" +
-    "\n" +
-    "            <div class=\"hidden50\"\n" +
+    "            <div class=\"hidden50 fluid-page-list\"\n" +
     "                 ng-class=\"task.showPageList?'fluid-panel-page-list col-lg-3 col-md-3': 'fluid-panel-page-list-hidden'\">\n" +
     "\n" +
-    "                <div ng-if=\"task.showPageList\" class=\"input-group \">\n" +
+    "                <div ng-if=\"task.showPageList\" class=\"input-group\">\n" +
     "                    <input class=\"form-control\" ng-model=\"task.searchPage\" placeholder=\"Page\"/>\n" +
     "                    <span class=\"input-group-addon\"><i class=\"fa fa-search\"></i></span>\n" +
     "                </div>\n" +
@@ -4452,7 +4573,7 @@ angular.module("templates/fluid/fluidToolbar.html", []).run(["$templateCache", f
     "                   title='{{task.navPages[0].title}}' href='#'\n" +
     "                   ng-click='goToEvent(task.navPages[0].name,task.navPages[0].param)'>{{task.navPages[0].title}}</a>\n" +
     "                <a ng-if=\"task.navPages.length > 1\" href=\"#\" title=\"more\"\n" +
-    "                   ng-click=\"fluid.openOption(fluid.getElementFlowId('breadcrumb'))\">...</a>\n" +
+    "                   ng-click=\"fluid.openOption(fluid.getElementFlowId('breadcrumb'),$event)\">...</a>\n" +
     "            </li>\n" +
     "\n" +
     "            <div class='form-group pull-right'>\n" +

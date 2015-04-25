@@ -385,15 +385,17 @@ div.fluid-form label {
 .fluid-panel-page-list {
     border: none;
     margin-top: -16px;
-    -webkit-transition: width 0.2s;
-    transition: width 0.2s;
+}
+
+.fluid-page-list {
+    -webkit-transition: max-width 0.2s;
+    transition: max-width 0.2s;
 }
 
 .fluid-panel-page-list-hidden {
     width: 0px;
+    max-width: 0px;
     height: 0px;
-    -webkit-transition: width 0.2s;
-    transition: width 0.2s;
 }
 
 .fluid-nowidth {

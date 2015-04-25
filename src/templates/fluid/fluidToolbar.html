@@ -27,7 +27,7 @@
                    title='{{task.navPages[0].title}}' href='#'
                    ng-click='goToEvent(task.navPages[0].name,task.navPages[0].param)'>{{task.navPages[0].title}}</a>
                 <a ng-if="task.navPages.length > 1" href="#" title="more"
-                   ng-click="fluid.openOption(fluid.getElementFlowId('breadcrumb'))">...</a>
+                   ng-click="fluid.openOption(fluid.getElementFlowId('breadcrumb'),$event)">...</a>
             </li>
 
             <div class='form-group pull-right'>
