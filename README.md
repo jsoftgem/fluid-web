@@ -1,7 +1,5 @@
 # fluid-web
-Portlet Style Web Application Framework based for AngularJS.
-
-##Key Features
+Portlet Web Application Client Framework for AngularJS.
 
 ## Usage
 bower install -g fluid-web
