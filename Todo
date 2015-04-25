@@ -7,6 +7,7 @@ New Task Model
   "fluidId": "fluidId", // Auto generated Task Id from web Client
   "name": "taskName", // Task name (unique) (required)
   "title": "taskTitle", // Task title display
+  "limit": 1 //TODO: number to tasks allowed to be opened; default: unlimited
   "glyph": "fa fa-gears", // Task icon
   "closeable":"false",
   "useImg": false //if True will use img src instead of glyphicon

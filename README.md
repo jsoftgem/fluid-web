@@ -1,5 +1,5 @@
 # fluid-web
-Web Application Platform based on AngularJS and Twitter Bootstrap.
+Portlet Style Web Application Framework based for AngularJS.
 
 ##Key Features
 

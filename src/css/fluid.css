@@ -388,13 +388,12 @@ div.fluid-form label {
 }
 
 .fluid-page-list {
-    -webkit-transition: max-width 0.2s;
-    transition: max-width 0.2s;
+    -webkit-transition: width 0.2s;
+    transition: width 0.2s;
 }
 
 .fluid-panel-page-list-hidden {
     width: 0px;
-    max-width: 0px;
     height: 0px;
 }
 

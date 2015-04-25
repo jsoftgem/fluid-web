@@ -1,5 +1,6 @@
 <div id='_id_fp_{{task.id}}' task
-     class="panel {{!fluidFrameService.fullScreen ? 'panel-default fluid-task' : 'panel-default frame-fullscreen'}}">
+     class="panel {{!fluidFrameService.fullScreen ? 'panel-default fluid-task' : 'panel-default frame-fullscreen'}}"
+     task-origin-id="{{task.signature.id}}" task-url="{{task.signature.url}}">
 
     <script id="{{fluid.getElementFlowId('pageList')}}" type="text/ng-template">
         <div class="input-group">
@@ -7,7 +8,8 @@
             <span class="input-group-addon"><i class="fa fa-search"></i></span>
         </div>
         <ul class="list-group">
-            <li class="list-group-item" ng-repeat="page in task.pages | filter: {'title':task.searchPage} | filter: filterPage"
+            <li class="list-group-item"
+                ng-repeat="page in task.pages | filter: {'title':task.searchPage} | filter: filterPage"
                 ng-click="fluid.goTo(page.name);fluid.closeOption()"
                 style="cursor: pointer"
                 ng-class="task.page.name == page.name ? 'active':''">

@@ -10,6 +10,10 @@
     -moz-transition: max-height 0.5s;
 }
 
+.locked {
+    top: 2px !important;
+}
+
 .fluid-option-bottom {
     bottom: 0;
 }
