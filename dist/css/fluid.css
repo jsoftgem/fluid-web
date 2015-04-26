@@ -549,6 +549,16 @@ div.fluid-form label {
     padding-right: 0px !important;
 }
 
+.fluid-panel-loader {
+    margin-top: -17px;
+    margin-left: 12px;
+}
+
+.fluid-panel-loader-fullscreen {
+
+}
+
+
 /*add glows to fluid panel*/
 div.fluid-task:hover {
     -webkit-transition: all 0.10s ease-in-out;

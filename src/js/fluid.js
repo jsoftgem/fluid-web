@@ -2269,38 +2269,6 @@ fluidComponents
             }
         }
     }])
-    .directive("fluidLoader", ["fluidLoaderService", function (fls) {
-
-        return {
-            restrict: "AE",
-            scope: {loaderClass: "@"},
-            transclude: true,
-            template: "<span><i class='text-inverse' ng-show='!fluidLoaderService.loaded' ng-class='loaderClass'></i><span ng-show='fluidLoaderService.loaded' ng-transclude></span></span>",
-            replace: true,
-            link: function (scope, element) {
-                scope.fluidLoaderService = fls;
-                scope.fluidLoaderService.loaded = true;
-            }
-
-        }
-
-    }])
-    .directive("fluidLoader", ["fluidLoaderService", function (fls) {
-
-        return {
-            restrict: "AE",
-            scope: {idleClass: "@"},
-            transclude: true,
-            template: "<span><i class='text-inverse' ng-show='fluidLoaderService.loaded' ng-class='idleClass'></i><span ng-show='!fluidLoaderService.loaded' ng-transclude></span></span>",
-            replace: true,
-            link: function (scope, element) {
-                scope.fluidLoaderService = fls;
-                scope.fluidLoaderService.loaded = true;
-            }
-
-        }
-
-    }])
     .directive("fluidDatePicker", ["$filter", "$templateCache", function (f, tc) {
         return {
             restrict: "AE",
@@ -2587,7 +2555,15 @@ fluidComponents
 
             }
         }
-    }]);
+    }])
+    .directive("fluidLoader", ["$templateCache", function (tc) {
+        return {
+            restrict: "AE",
+            scope: false,
+            template: tc.get("templates/fluid/fluidLoader.html"),
+            replace: true
+        }
+    }])
 
 function setChildIndexIds(element, taskId, suffix, depth) {
     var children = $(element).children();

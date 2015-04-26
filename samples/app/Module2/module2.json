@@ -5,25 +5,25 @@
   "size": 50,
   "glyph": "fa fa-gears",
   "useImg": true,
-  "imgSrc": "app/Module2/icon.png",
+  "imgSrc": "samples/app/Module2/icon.png",
   "active": true,
   "lazyLoad": true,
   "showToolBar": true,
   "moduleJS": "module2",
-  "moduleFiles": "app/Module2/module2-controller.js",
+  "moduleFiles": "samples/app/Module2/module2-controller.js",
   "pages": [
     {
       "name": "page1",
       "title": "Home",
-      "home": "app/Module2/pages/page1.html",
-      "get": "app/Module2/pages/page1-data.json",
+      "home": "samples/app/Module2/pages/page1.html",
+      "get": "samples/app/Module2/pages/page1-data.json",
       "isHome": true,
       "autoGet": true
     },
     {
       "name": "page2",
       "title": "Edit",
-      "home": "app/Module2/pages/page2.html",
+      "home": "samples/app/Module2/pages/page2.html",
       "isHome": false
     },
     {
@@ -73,12 +73,6 @@
       "title": "page10",
       "static": true,
       "html": "<div>page10</div>"
-    },
-    {
-      "name": "page11",
-      "title": "page11",
-      "static": true,
-      "html": "<div>page11</div>"
     }
   ]
 }

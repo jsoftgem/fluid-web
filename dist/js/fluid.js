@@ -2269,38 +2269,6 @@ fluidComponents
             }
         }
     }])
-    .directive("fluidLoader", ["fluidLoaderService", function (fls) {
-
-        return {
-            restrict: "AE",
-            scope: {loaderClass: "@"},
-            transclude: true,
-            template: "<span><i class='text-inverse' ng-show='!fluidLoaderService.loaded' ng-class='loaderClass'></i><span ng-show='fluidLoaderService.loaded' ng-transclude></span></span>",
-            replace: true,
-            link: function (scope, element) {
-                scope.fluidLoaderService = fls;
-                scope.fluidLoaderService.loaded = true;
-            }
-
-        }
-
-    }])
-    .directive("fluidLoader", ["fluidLoaderService", function (fls) {
-
-        return {
-            restrict: "AE",
-            scope: {idleClass: "@"},
-            transclude: true,
-            template: "<span><i class='text-inverse' ng-show='fluidLoaderService.loaded' ng-class='idleClass'></i><span ng-show='!fluidLoaderService.loaded' ng-transclude></span></span>",
-            replace: true,
-            link: function (scope, element) {
-                scope.fluidLoaderService = fls;
-                scope.fluidLoaderService.loaded = true;
-            }
-
-        }
-
-    }])
     .directive("fluidDatePicker", ["$filter", "$templateCache", function (f, tc) {
         return {
             restrict: "AE",
@@ -2587,7 +2555,15 @@ fluidComponents
 
             }
         }
-    }]);
+    }])
+    .directive("fluidLoader", ["$templateCache", function (tc) {
+        return {
+            restrict: "AE",
+            scope: false,
+            template: tc.get("templates/fluid/fluidLoader.html"),
+            replace: true
+        }
+    }])
 
 function setChildIndexIds(element, taskId, suffix, depth) {
     var children = $(element).children();
@@ -3941,7 +3917,7 @@ $(document).ready(function () {
         });
     });
 
-});;angular.module('templates-dist', ['templates/fluid/fluidBar.html', 'templates/fluid/fluidCheckbox.html', 'templates/fluid/fluidDatePicker.html', 'templates/fluid/fluidField.html', 'templates/fluid/fluidFrame.html', 'templates/fluid/fluidImage.html', 'templates/fluid/fluidLookup.html', 'templates/fluid/fluidModal.html', 'templates/fluid/fluidNotify.html', 'templates/fluid/fluidOption.html', 'templates/fluid/fluidPanel.html', 'templates/fluid/fluidRadio.html', 'templates/fluid/fluidReportTable.html', 'templates/fluid/fluidSelect.html', 'templates/fluid/fluidTaskIcon.html', 'templates/fluid/fluidTemplate.html', 'templates/fluid/fluidTextArea.html', 'templates/fluid/fluidToolbar.html', 'templates/fluid/fluidUploader.html']);
+});;angular.module('templates-dist', ['templates/fluid/fluidBar.html', 'templates/fluid/fluidCheckbox.html', 'templates/fluid/fluidDatePicker.html', 'templates/fluid/fluidField.html', 'templates/fluid/fluidFrame.html', 'templates/fluid/fluidImage.html', 'templates/fluid/fluidLoader.html', 'templates/fluid/fluidLookup.html', 'templates/fluid/fluidModal.html', 'templates/fluid/fluidNotify.html', 'templates/fluid/fluidOption.html', 'templates/fluid/fluidPanel.html', 'templates/fluid/fluidRadio.html', 'templates/fluid/fluidReportTable.html', 'templates/fluid/fluidSelect.html', 'templates/fluid/fluidTaskIcon.html', 'templates/fluid/fluidTemplate.html', 'templates/fluid/fluidTextArea.html', 'templates/fluid/fluidToolbar.html', 'templates/fluid/fluidUploader.html']);
 
 angular.module("templates/fluid/fluidBar.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("templates/fluid/fluidBar.html",
@@ -4067,6 +4043,198 @@ angular.module("templates/fluid/fluidImage.html", []).run(["$templateCache", fun
     "</div>");
 }]);
 
+angular.module("templates/fluid/fluidLoader.html", []).run(["$templateCache", function($templateCache) {
+  $templateCache.put("templates/fluid/fluidLoader.html",
+    "<div>\n" +
+    "<style>\n" +
+    "    #{{fluid.getElementFlowId('followingBallsG')}} {\n" +
+    "        position:relative;\n" +
+    "        width:205px;\n" +
+    "        height:16px;\n" +
+    "    }\n" +
+    "\n" +
+    "    .followingBallsG{\n" +
+    "        background-color:#3647FF;\n" +
+    "        position:absolute;\n" +
+    "        top:0;\n" +
+    "        left:0;\n" +
+    "        width:16px;\n" +
+    "        height:16px;\n" +
+    "        -moz-border-radius:8px;\n" +
+    "        -moz-animation-name:bounce_followingBallsG;\n" +
+    "        -moz-animation-duration:2.2s;\n" +
+    "        -moz-animation-iteration-count:infinite;\n" +
+    "        -moz-animation-direction:normal;\n" +
+    "        -webkit-border-radius:8px;\n" +
+    "        -webkit-animation-name:bounce_followingBallsG;\n" +
+    "        -webkit-animation-duration:2.2s;\n" +
+    "        -webkit-animation-iteration-count:infinite;\n" +
+    "        -webkit-animation-direction:normal;\n" +
+    "        -ms-border-radius:8px;\n" +
+    "        -ms-animation-name:bounce_followingBallsG;\n" +
+    "        -ms-animation-duration:2.2s;\n" +
+    "        -ms-animation-iteration-count:infinite;\n" +
+    "        -ms-animation-direction:normal;\n" +
+    "        -o-border-radius:8px;\n" +
+    "        -o-animation-name:bounce_followingBallsG;\n" +
+    "        -o-animation-duration:2.2s;\n" +
+    "        -o-animation-iteration-count:infinite;\n" +
+    "        -o-animation-direction:normal;\n" +
+    "        border-radius:8px;\n" +
+    "        animation-name:bounce_followingBallsG;\n" +
+    "        animation-duration:2.2s;\n" +
+    "        animation-iteration-count:infinite;\n" +
+    "        animation-direction:normal;\n" +
+    "    }\n" +
+    "\n" +
+    "    #{{fluid.getElementFlowId('followingBallsG_1')}} {\n" +
+    "        -moz-animation-delay:0s;\n" +
+    "    }\n" +
+    "\n" +
+    "    #{{fluid.getElementFlowId('followingBallsG_1')}} {\n" +
+    "        -webkit-animation-delay:0s;\n" +
+    "    }\n" +
+    "\n" +
+    "    #{{fluid.getElementFlowId('followingBallsG_1')}} {\n" +
+    "        -ms-animation-delay:0s;\n" +
+    "    }\n" +
+    "\n" +
+    "    #{{fluid.getElementFlowId('followingBallsG_1')}} {\n" +
+    "        -o-animation-delay:0s;\n" +
+    "    }\n" +
+    "\n" +
+    "    #{{fluid.getElementFlowId('followingBallsG_1')}} {\n" +
+    "        animation-delay:0s;\n" +
+    "    }\n" +
+    "\n" +
+    "    #{{fluid.getElementFlowId('followingBallsG_2')}} {\n" +
+    "        -moz-animation-delay:0.22s;\n" +
+    "        -webkit-animation-delay:0.22s;\n" +
+    "        -ms-animation-delay:0.22s;\n" +
+    "        -o-animation-delay:0.22s;\n" +
+    "        animation-delay:0.22s;\n" +
+    "    }\n" +
+    "\n" +
+    "    #{{fluid.getElementFlowId('followingBallsG_3')}} {\n" +
+    "        -moz-animation-delay:0.44s;\n" +
+    "        -webkit-animation-delay:0.44s;\n" +
+    "        -ms-animation-delay:0.44s;\n" +
+    "        -o-animation-delay:0.44s;\n" +
+    "        animation-delay:0.44s;\n" +
+    "    }\n" +
+    "\n" +
+    "    #{{fluid.getElementFlowId('followingBallsG_4')}} {\n" +
+    "        -moz-animation-delay:0.66s;\n" +
+    "        -webkit-animation-delay:0.66s;\n" +
+    "        -ms-animation-delay:0.66s;\n" +
+    "        -o-animation-delay:0.66s;\n" +
+    "        animation-delay:0.66s;\n" +
+    "    }\n" +
+    "\n" +
+    "    @-moz-keyframes bounce_followingBallsG{\n" +
+    "        0%{\n" +
+    "            left:0px;\n" +
+    "            background-color:#3647FF;\n" +
+    "        }\n" +
+    "\n" +
+    "        50%{\n" +
+    "            left:189px;\n" +
+    "            background-color:#B5D0FF;\n" +
+    "        }\n" +
+    "\n" +
+    "        100%{\n" +
+    "            left:0px;\n" +
+    "            background-color:#3647FF;\n" +
+    "        }\n" +
+    "\n" +
+    "    }\n" +
+    "\n" +
+    "    @-webkit-keyframes bounce_followingBallsG{\n" +
+    "        0%{\n" +
+    "            left:0px;\n" +
+    "            background-color:#3647FF;\n" +
+    "        }\n" +
+    "\n" +
+    "        50%{\n" +
+    "            left:189px;\n" +
+    "            background-color:#B5D0FF;\n" +
+    "        }\n" +
+    "\n" +
+    "        100%{\n" +
+    "            left:0px;\n" +
+    "            background-color:#3647FF;\n" +
+    "        }\n" +
+    "\n" +
+    "    }\n" +
+    "\n" +
+    "    @-ms-keyframes bounce_followingBallsG{\n" +
+    "        0%{\n" +
+    "            left:0px;\n" +
+    "            background-color:#3647FF;\n" +
+    "        }\n" +
+    "\n" +
+    "        50%{\n" +
+    "            left:189px;\n" +
+    "            background-color:#B5D0FF;\n" +
+    "        }\n" +
+    "\n" +
+    "        100%{\n" +
+    "            left:0px;\n" +
+    "            background-color:#3647FF;\n" +
+    "        }\n" +
+    "\n" +
+    "    }\n" +
+    "\n" +
+    "    @-o-keyframes bounce_followingBallsG{\n" +
+    "        0%{\n" +
+    "            left:0px;\n" +
+    "            background-color:#3647FF;\n" +
+    "        }\n" +
+    "\n" +
+    "        50%{\n" +
+    "            left:189px;\n" +
+    "            background-color:#B5D0FF;\n" +
+    "        }\n" +
+    "\n" +
+    "        100%{\n" +
+    "            left:0px;\n" +
+    "            background-color:#3647FF;\n" +
+    "        }\n" +
+    "\n" +
+    "    }\n" +
+    "\n" +
+    "    @keyframes bounce_followingBallsG{\n" +
+    "        0%{\n" +
+    "            left:0px;\n" +
+    "            background-color:#3647FF;\n" +
+    "        }\n" +
+    "\n" +
+    "        50%{\n" +
+    "            left:189px;\n" +
+    "            background-color:#B5D0FF;\n" +
+    "        }\n" +
+    "\n" +
+    "        100%{\n" +
+    "            left:0px;\n" +
+    "            background-color:#3647FF;\n" +
+    "        }\n" +
+    "\n" +
+    "    }\n" +
+    "\n" +
+    "</style>\n" +
+    "<div id=\"{{fluid.getElementFlowId('followingBallsG')}}\">\n" +
+    "    <span id=\"{{fluid.getElementFlowId('followingBallsG_1')}}\" class=\"followingBallsG\">\n" +
+    "    </span>\n" +
+    "    <span id=\"{{fluid.getElementFlowId('followingBallsG_2')}}\" class=\"followingBallsG\">\n" +
+    "    </span>\n" +
+    "    <span id=\"{{fluid.getElementFlowId('followingBallsG_3')}}\" class=\"followingBallsG\">\n" +
+    "    </span>\n" +
+    "    <span id=\"{{fluid.getElementFlowId('followingBallsG_4')}}\" class=\"followingBallsG\">\n" +
+    "    </span>\n" +
+    "</div>\n" +
+    "</div>");
+}]);
+
 angular.module("templates/fluid/fluidLookup.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("templates/fluid/fluidLookup.html",
     "<div class=\"form-group flow-form\">\n" +
@@ -4152,20 +4320,19 @@ angular.module("templates/fluid/fluidPanel.html", []).run(["$templateCache", fun
     "            </li>\n" +
     "        </ul>\n" +
     "    </script>\n" +
+    "\n" +
     "    <div class='panel-heading' ng-show=\"!task.locked\">\n" +
     "        <!-- Title-->\n" +
     "        <div class=\"panel-title\"><a ng-if=\"!fluidFrameService.fullScreen \" data-toggle='collapse'\n" +
     "                                    data-target='#_{{task.id}}'\n" +
     "                                    href='#'\n" +
     "                                    class=\"fluid-panel-heading-title\">\n" +
+    "\n" +
+    "\n" +
     "            <fluid-task-icon class=\"fluid-icon-left hidden-sm hidden-md hidden-xs\" task=\"task\"></fluid-task-icon><span\n" +
     "                ng-if=\"task.loaded\">&nbsp;{{task.title}} - {{task.page.title}}</span></a>\n" +
     "            <span ng-if=\"task.loaded && fluidFrameService.fullScreen\">&nbsp;{{task.title}} - {{task.page.title}}</span>\n" +
-    "\n" +
-    "            <img ng-if=\"!task.loaded && !fluidFrameService.fullScreen\"\n" +
-    "                 src=\"../assets/loader/loader1.GIF\"/>\n" +
-    "            <img ng-if=\"!task.loaded && fluidFrameService.fullScreen\"\n" +
-    "                 src=\"../assets/loader/loader2.GIF\"/>\n" +
+    "            <fluid-loader class=\"{{!fluidFrameService.fullScreen ? 'fluid-panel-loader':''}}\" ng-if=\"!task.loaded\"></fluid-loader>\n" +
     "        </div>\n" +
     "\n" +
     "        <!-- Control -->\n" +

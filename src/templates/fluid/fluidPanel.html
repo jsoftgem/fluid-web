@@ -17,20 +17,19 @@
             </li>
         </ul>
     </script>
+
     <div class='panel-heading' ng-show="!task.locked">
         <!-- Title-->
         <div class="panel-title"><a ng-if="!fluidFrameService.fullScreen " data-toggle='collapse'
                                     data-target='#_{{task.id}}'
                                     href='#'
                                     class="fluid-panel-heading-title">
+
+
             <fluid-task-icon class="fluid-icon-left hidden-sm hidden-md hidden-xs" task="task"></fluid-task-icon><span
                 ng-if="task.loaded">&nbsp;{{task.title}} - {{task.page.title}}</span></a>
             <span ng-if="task.loaded && fluidFrameService.fullScreen">&nbsp;{{task.title}} - {{task.page.title}}</span>
-
-            <img ng-if="!task.loaded && !fluidFrameService.fullScreen"
-                 src="../assets/loader/loader1.GIF"/>
-            <img ng-if="!task.loaded && fluidFrameService.fullScreen"
-                 src="../assets/loader/loader2.GIF"/>
+            <fluid-loader class="{{!fluidFrameService.fullScreen ? 'fluid-panel-loader':''}}" ng-if="!task.loaded"></fluid-loader>
         </div>
 
         <!-- Control -->

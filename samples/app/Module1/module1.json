@@ -12,14 +12,14 @@
   "closeable":false,
   "showToolBar": true,
   "moduleJS": "module1",
-  "moduleFiles": "app/Module1/module1-controller.js",
+  "moduleFiles": "samples/app/Module1/module1-controller.js",
   "pages": [
     {
       "id": 1,
       "name": "page1",
       "title": "Home",
-      "home": "app/Module1/pages/page1.html",
-      "get": "app/Module1/pages/page1-data.json",
+      "home": "samples/app/Module1/pages/page1.html",
+      "get": "samples/app/Module1/pages/page1-data.json",
       "isHome": true,
       "autoGet": true
     },
@@ -27,14 +27,14 @@
       "id": 2,
       "name": "page2",
       "title": "Edit",
-      "home": "app/Module1/pages/page2.html",
+      "home": "samples/app/Module1/pages/page2.html",
       "isHome": false
     },
     {
       "id": 3,
       "name": "page3",
       "title": "Page 3",
-      "home": "app/Module1/pages/page3.html"
+      "home": "samples/app/Module1/pages/page3.html"
     },
     {
       "id": 4,
