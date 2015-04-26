@@ -1,5 +1,8 @@
 # fluid-web
 Portlet Web Application Client Framework for AngularJS.
 
-## Usage
+## Description
+Build modular web application with JSON.
+
+## Installation
 bower install -g fluid-web
