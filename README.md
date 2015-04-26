@@ -26,9 +26,7 @@ Install the prerequisite libraries. Header must look like the ff:
 
     <script src="bower_components/angular-local-storage/dist/angular-local-storage.min.js"
             type="text/javascript"></script>
-
-    <script src="bower_components/angular-file-upload/angular-file-upload.min.js" type="text/javascript"></script>
-
+            
     <script src="bower_components/oclazyload/dist/ocLazyLoad.min.js" type="text/javascript"></script>
 
     <script src="bower_components/bootstrap/dist/js/bootstrap.js" type="text/javascript"></script>
