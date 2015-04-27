@@ -1,0 +1,23 @@
+{
+  "id": "moduleBasic",
+  "name": "module_basic",
+  "title": "Basic - Locked",
+  "size": 100,
+  "glyph": "fa fa-gears",
+  "useImg": true,
+  "imgSrc": "app/module_basic/icon.png",
+  "active": true,
+  "locked": false,
+  "closeable": false,
+  "showToolBar": false,
+  "pages": [
+    {
+      "id": 1,
+      "name": "page1",
+      "title": "Home",
+      "static": true,
+      "html": "<div><h1>Basic Fluid Task</h1><div><h6>Task Configuration using <b>Static</b> page</h6><div bgcolor='#cccccc'><p>{\"id\":\"module1\",<br/>\"name\":\"module_basic\",<br/>\"title\":\"Basic\",<br/>\"size\":100,<br/>\"glyph\":\"fafa-gears\",<br/>\"useImg\":false,<br/>\"imgSrc\":\"app/module_basic/icon.png\",<br/>\"active\":true,<br/>\"locked\":true,<br/>\"closeable\":false,<br/>\"showToolBar\":false,<br/>\"pages\":[/*pagehere*/] }</p></div></div></div>",
+      "isHome": true
+    }
+  ]
+}

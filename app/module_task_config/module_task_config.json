@@ -1,0 +1,33 @@
+{
+  "id": "moduleTaskConfig",
+  "name": "moduleTaskConfig",
+  "title": "Task Configurator",
+  "size": 100,
+  "glyph": "fa fa-gears",
+  "useImg": false,
+  "imgSrc": "",
+  "active": true,
+  "locked": false,
+  "closeable": false,
+  "showToolBar": false,
+  "lazyLoad": true,
+  "moduleJS": "moduleTaskConfig",
+  "moduleFiles": "app/module_task_config/module-task-config.js",
+  "pages": [
+    {
+      "id": "pageConfigurator",
+      "name": "pageConfigurator",
+      "title": "Home",
+      "home": "app/module_task_config/pages/configurator.html",
+      "get": "",
+      "post": "",
+      "delURL": "",
+      "put": "",
+      "showOnList": true,
+      "static": false,
+      "html": "<div><!--Static html goes here--></div>",
+      "autoGet": false,
+      "isHome": true
+    }
+  ]
+}

@@ -11,7 +11,8 @@
 
             <div class='form-group pull-right'>
                 <div class='btn-group {{group-size}}'>
-                    <button id='btn_tool_{{control.id}}_{{task.id}}' ng-repeat='control in controls'
+                    <button ng-if="control.visible() == undefined || control.visible()"
+                            id='btn_tool_{{control.id}}_{{task.id}}' ng-repeat='control in controls'
                             title='{{control.label}}'
                             class='btn button-tool' ng-class='getClass(control.uiType)'
                             ng-click='runEvent(control,$event)'
@@ -32,7 +33,8 @@
 
             <div class='form-group pull-right'>
                 <div class='btn-group {{group-size}}'>
-                    <button id='btn_tool_{{control.id}}_{{task.id}}' ng-repeat='control in controls'
+                    <button ng-if="control.visible() == undefined || control.visible()"
+                            id='btn_tool_{{control.id}}_{{task.id}}' ng-repeat='control in controls'
                             title='{{control.label}}'
                             class='btn button-tool' ng-class='getClass(control.uiType)'
                             ng-click='runEvent(control,$event)'

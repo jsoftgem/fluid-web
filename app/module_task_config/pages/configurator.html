@@ -1,0 +1,194 @@
+<div ng-controller="moduleTaskConfigCtrl" id="taskConfigSideBar" class="container-fluid">
+    <form style="margin-top: 10px" class="form-horizontal" role="form">
+        <fluid-message id="taskConfigMessage"></fluid-message>
+        <div class="col-lg-6">
+            <div class="form-group">
+                <label for="selectTask">
+                    Select task</label>
+                <select ng-model="newTask" id="selectTask" class="form-control"
+                        ng-options="selectedTask as selectedTask.title for selectedTask in fluidFrameService.taskList track by selectedTask.id | filter:{'name': '!moduleTaskConfig'}">
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="taskName">
+                    Name:
+                </label>
+                <input id="taskName" class="form-control" type="text" ng-model="newTask.name">
+            </div>
+
+            <div class="form-group">
+                <label for="taskTitle">
+                    Title:
+                </label>
+                <input id="taskTitle" class="form-control" type="text" ng-model="newTask.title">
+            </div>
+
+            <div class="form-group">
+                <label for="taskGlyph">Glyph:</label>
+                <input id="taskGlyph" ng-readonly="newTask.useImg" class="form-control" type="text"
+                       ng-model="newTask.glyph">
+            </div>
+
+            <div class="form-group">
+                <label for="taskSize">
+                    Size</label>
+                <select ng-model="newTask.size" id="taskSize" class="form-control">
+                    <option>50</option>
+                    <option>100</option>
+                </select>
+            </div>
+        </div>
+        <div class="col-lg-5 col-lg-offset-1 jumbotron">
+            <fieldset>
+                <legend>Flags</legend>
+                <div class="form-group">
+                    <label for="taskImgSrc">
+                        <input type="checkbox"
+                               ng-model="newTask.useImg">
+                        {{newTask.useImg ? 'Image Source': 'Use Image?'}}
+                    </label>
+                    <input id="taskImgSrc" ng-if="newTask.useImg" class="form-control" type="text"
+                           ng-model="newTask.imgSrc">
+                </div>
+
+                <div class="form-group">
+                    <label>
+                        <input type="checkbox"
+                               ng-model="newTask.locked">
+                        Locked
+                    </label>
+                </div>
+
+                <div class="form-group">
+                    <label class="control-label">
+                        <input type="checkbox"
+                               ng-model="newTask.active">
+                        Active
+                    </label>
+                </div>
+
+                <div class="form-group">
+                    <label class="control-label">
+                        <input type="checkbox"
+                               ng-model="newTask.showToolBar">
+                        Toolbar
+                    </label>
+                </div>
+
+                <div class="form-group">
+                    <label class="control-label">
+                        <input type="checkbox"
+                               ng-model="newTask.closeable">
+                        Closeable
+                    </label>
+                </div>
+
+                <div class="form-group">
+                    <div class="form-horizontal">
+                        <label>
+                            <input type="checkbox"
+                                   ng-model="newTask.lazyLoad">
+                            Lazy
+                        </label>
+
+                        <div class="form-group">
+                            <input ng-if="newTask.lazyLoad" class="form-control" type="text"
+                                   ng-model="newTask.moduleJS" placeholder="Module Name">
+                        </div>
+
+                        <div ng-if="newTask.lazyLoad" class="form-group">
+                            <label for="taskModuleFiles">
+                                Files
+                            </label>
+                            <textarea class="form-control" rows="5" id="taskModuleFiles"
+                                      ng-model="newTask.moduleFiles"></textarea>
+                        </div>
+                    </div>
+                </div>
+
+            </fieldset>
+        </div>
+        <div class="col-lg-12" style="padding: 0">
+            <h4>Pages</h4>
+
+            <div class="form-group">
+                <div class="btn-group btn-group-xs">
+                    <button class="btn btn-info" title="new page"
+                            ng-click="newTask.pages.push({name:'newPage'+$index,title:'new page title'+$index})"><i
+                            class="fa fa-plus"></i>New
+                    </button>
+                </div>
+            </div>
+
+
+            <div class="container-fluid" ng-repeat="page in newTask.pages"
+                 ng-class="$index % 2 == 0 ? 'even' :'odd'">
+
+                <div style="margin-top:5px" class="pull-right">
+                    <button class="btn btn-xs btn-danger" title="remove" ng-click="newTask.pages.splice($index,1)"><i
+                            class="fa fa-close"></i></button>
+                </div>
+
+                <div style="margin-top:15px" class="container-fluid">
+
+                    <div class="form-group">
+                        <label for="pageName">
+                            Name:
+                        </label>
+                        <input id="pageName" class="form-control" type="text" ng-model="newTask.pages[$index].name">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="pageName">
+                            Title:
+                        </label>
+                        <input id="pageName" class="form-control" type="text" ng-model="newTask.pages[$index].title">
+                    </div>
+
+                    <div class="form-group">
+                        <label>
+                            <input type="checkbox"
+                                   ng-model="newTask.pages[$index].static">
+                            Static
+                        </label>
+
+                        <div ng-if="newTask.pages[$index].static" class="container-fluid">
+                            <label for="pageHtml">
+                                Html
+                            </label>
+                                 <textarea class="form-control" rows="5" id="pageHtml"
+                                           ng-model="newTask.pages[$index].html"></textarea>
+                        </div>
+
+                    </div>
+
+                    <div ng-if="!newTask.pages[$index].static" class="form-group">
+                        <label for="pageHome">
+                            Home URL
+                        </label>
+                        <input type="text" class="form-control" id="pageHome"
+                               ng-model="newTask.pages[$index].home"></input>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="control-label">
+                            <input type="checkbox"
+                                   ng-model="newTask.pages[$index].isHome">
+                            Is Home?
+                        </label>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label">
+                            <input type="checkbox"
+                                   ng-model="newTask.pages[$index].showOnList">
+                            Show on Page List
+                        </label>
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+    </form>
+</div>
