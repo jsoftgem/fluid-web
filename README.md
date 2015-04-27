@@ -3,7 +3,7 @@ Fluid-web is an intuitive and powerful framework for developing portlet applicat
 
 ## Quick start
 ```
-install with bower install -g fluid-web
+bower install -g fluid-web
 ```
 ## Building Fluid-web
 - [Grunt:](http://gruntjs.com/) We use Grunt as our build system. 
