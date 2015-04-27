@@ -87,7 +87,7 @@ fluid-web/
   </body>
   
 ```
-Note: fluid-frame tag must be added only once to the body, fluid-web does not support multiple frame instances yet.
+Note: fluid-frame tag must be added to the body only <b>once</b>, fluid-web does not support multiple frame instances yet.
 
 - Create task json file or javascript object:
 ```
