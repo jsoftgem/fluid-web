@@ -135,7 +135,7 @@ Note: fluid-frame tag must be added to the body only <b>once</b>, fluid-web does
       "name": "page1",
       "title": "Home",
       "static": true,
-      "html":"<div class='jumbotron'><h1>Welcome to fluid-web!</h1><p>This is the sample of a static page.</p><div>",
+      "html":"<div class='jumbotron'><h1>Welcome to fluid-web!</h1><p>This is a static page.</p><div>",
       "isHome":true
      }
    ]
