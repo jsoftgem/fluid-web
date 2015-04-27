@@ -2,7 +2,7 @@
 Portlet Web Application Client Framework for AngularJS.
 
 ## Features
-- Build modular static web application with JSON.
+- Build modular static web application using only JSON files.
 
 ## Installation
 
