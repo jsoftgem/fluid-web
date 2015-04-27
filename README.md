@@ -45,6 +45,33 @@ fluid-web/
 |_ README.md
 
 ```
+### Getting Started
+- Add the following libraries to header:
+```
+<link href="bower_components/dist/css/fluid.min.css" rel="stylesheet">
+<link href="bower_components/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
+<link href="docs/themes/yeti/bootstrap.min.css" rel="stylesheet">
+<link href="bower_components/font-awesome/css/font-awesome.min.css" rel="stylesheet">
+<link href="bower_components/animate.css/animate.min.css" rel="stylesheet">
+<script src="bower_components/jquery/dist/jquery.min.js" type="text/javascript"></script>
+<script src="bower_components/angular/angular.min.js" type="text/javascript"></script>
+<script src="bower_components/angular-local-storage/dist/angular-local-storage.min.js"
+            type="text/javascript"></script>
+<script src="bower_components/oclazyload/dist/ocLazyLoad.min.js" type="text/javascript"></script>
+<script src="bower_components/bootstrap/dist/js/bootstrap.js" type="text/javascript"></script>
+<script src="bower_components/jquery.scrollTo/jquery.scrollTo.min.js" type="text/javascript"></script>
+<script src="bower_components/angular-sanitize/angular-sanitize.min.js" type="text/javascript"></script>
+<script src="bower_components/dist/js/fluid.js" type="text/javascript"></script>
+
+```
+- Add ```<fluid-frame></fluid-frame>``` to the body:
+```
+  <body>
+    <fluid-frame></fluid-frame>
+  </body>
+  
+```
+Note: fluid-frame tag must be added only once to the body, fluid-web does not support multiple frame instances yet.
 
 ### Documentation
 Coming very soon.
