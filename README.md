@@ -50,7 +50,7 @@ fluid-web/
 Coming very soon.
 
 ### Authors and Contributors
-In 2015, Jerico de Guzman (@jsoftgem) founded Fluid-web.
+[Jerico de Guzman](@jsoftgem) - Senior Software Engineer.
 
 ### Support or Contact
-Coming very soon.
+[jerico@jsofttechnologies.com](@jsoftgem)
