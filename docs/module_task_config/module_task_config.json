@@ -12,13 +12,13 @@
   "showToolBar": false,
   "lazyLoad": true,
   "moduleJS": "moduleTaskConfig",
-  "moduleFiles": "app/module_task_config/module-task-config.js",
+  "moduleFiles": "docs/module_task_config/module-task-config.js",
   "pages": [
     {
       "id": "pageConfigurator",
       "name": "pageConfigurator",
       "title": "Home",
-      "home": "app/module_task_config/pages/configurator.html",
+      "home": "docs/module_task_config/pages/configurator.html",
       "get": "",
       "post": "",
       "delURL": "",

@@ -1,6 +1,8 @@
 /**Fluid Web v0.0.1
  * Created by Jerico de Guzman
  * October 2014**/
+'use strict';
+
 var fluidComponents = angular.module("fluid", ["oc.lazyLoad", "LocalStorageModule", "templates-dist", "ngSanitize"]);
 
 fluidComponents.config(["$httpProvider", "localStorageServiceProvider", function (h, ls) {
@@ -2917,7 +2919,7 @@ function getPageIndexFromTaskPages(name, task) {
 }
 
 function getPageIndexFromPages(name, pages) {
-    var $index = -1;
+    var $index = {index: -1};
     angular.forEach(pages, function (page, key) {
         if (page != null) {
             if (page.name === name) {
@@ -2974,9 +2976,7 @@ function autoSizePanel(task) {
 
 }
 
-
 //handles document here
-
 $(document).ready(function () {
 
     var infoSig = "fluidDocumentHandler";

@@ -16,8 +16,8 @@ angular.module("mainApp", ["fluid"])
         }
 
         /*adds module json config here using href*/
-        ffs.addTask("app/module_basic/module_basic.json");
-        ffs.addTask("app/module_task_config/module_task_config.json");
+        ffs.addTask("docs/module_basic/module_basic.json");
+        ffs.addTask("docs/module_task_config/module_task_config.json");
 
 
     }]);

@@ -5,7 +5,7 @@
   "size": 100,
   "glyph": "fa fa-gears",
   "useImg": true,
-  "imgSrc": "app/module_basic/icon.png",
+  "imgSrc": "docs/module_basic/icon.png",
   "active": true,
   "locked": false,
   "closeable": false,
