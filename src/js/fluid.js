@@ -52,7 +52,7 @@ fluidComponents
                         scope.filterPage = function (page) {
                             return (page.showOnList === undefined || page.showOnList == true);
                         }
-                        scope.showList = function(){
+                        scope.showList = function () {
                             var result = {count: 0};
 
                             angular.forEach(scope.task.pages, function (page) {
@@ -975,9 +975,9 @@ fluidComponents
                                     scope.task.max25 = function (clientState) {
                                         scope.task.size = 25;
                                         parent.removeClass("col-lg-12");
-                                        parent.removeClass("col-lg-8");
+                                        parent.removeClass("col-lg-9");
                                         parent.removeClass("col-lg-6");
-                                        parent.addClass("col-lg-4");
+                                        parent.addClass("col-lg-3");
                                         task.showPageList = false;
                                         if (clientState === undefined || clientState === false) {
                                             if (scope.task.page && scope.task) {
@@ -999,8 +999,8 @@ fluidComponents
                                     scope.task.max50 = function (clientState) {
                                         scope.task.size = 50;
                                         parent.removeClass("col-lg-12");
-                                        parent.removeClass("col-lg-8");
-                                        parent.removeClass("col-lg-4");
+                                        parent.removeClass("col-lg-9");
+                                        parent.removeClass("col-lg-3");
                                         parent.addClass("col-lg-6");
                                         task.showPageList = false;
                                         if (clientState === undefined || clientState === false) {
@@ -1022,8 +1022,8 @@ fluidComponents
                                         scope.task.size = 75;
                                         parent.removeClass("col-lg-12");
                                         parent.removeClass("col-lg-6");
-                                        parent.removeClass("col-lg-4");
-                                        parent.addClass("col-lg-8");
+                                        parent.removeClass("col-lg-3");
+                                        parent.addClass("col-lg-9");
                                         if (clientState === undefined || clientState === false) {
                                             if (scope.task.page && scope.task) {
                                                 rs.$broadcast(scope.fluid.event.getResizeEventId(), scope.task.page.name, scope.task.size);
@@ -1042,9 +1042,9 @@ fluidComponents
                                     };
                                     scope.task.max100 = function (clientState) {
                                         scope.task.size = 100;
-                                        parent.removeClass("col-lg-8");
+                                        parent.removeClass("col-lg-9");
                                         parent.removeClass("col-lg-6");
-                                        parent.removeClass("col-lg-4");
+                                        parent.removeClass("col-lg-3");
                                         parent.addClass("col-lg-12");
                                         if (clientState === undefined || clientState === false) {
                                             if (scope.task.page && scope.task) {
@@ -1163,8 +1163,8 @@ fluidComponents
 
                                 if (scope.fluidFrameService.fullScreen) {
                                     parent.addClass("col-lg-12");
-                                    parent.removeClass("col-lg-8");
-                                    parent.removeClass("col-lg-4");
+                                    parent.removeClass("col-lg-9");
+                                    parent.removeClass("col-lg-3");
                                     parent.removeClass("col-lg-6");
                                 }
 
@@ -1544,8 +1544,6 @@ fluidComponents
                 scope.$watch(function (scope) {
                     return element.parent().height();
                 }, function (height) {
-                    console.info("fluidOption-parent-task", scope.task);
-                    console.info("fluidOption-parent-height", height);
                     scope.parentHeight = height;
                     var template = element.find(".fluid-option-template");
                     template.css("width", element.parent().width());
@@ -1556,14 +1554,13 @@ fluidComponents
                 scope.close = function () {
                     fos.closeOption(element.attr("id"));
                 }
-                /*
 
-                 $(w).on("resize", function () {
-                 var template = element.find(".fluid-option-template");
-                 template.css("width", element.parent().width());
-                 element.css("width", element.parent().width());
-                 });
-                 */
+                $(w).on("resize", function () {
+                    var template = element.find(".fluid-option-template");
+                    template.css("width", element.parent().width());
+                    element.css("width", element.parent().width());
+                });
+
 
             }
         }
@@ -2422,12 +2419,10 @@ fluidComponents
             var fluidOption = $("#" + optionId);
             var fluidTemplate = fluidOption.find(".fluid-option-template");
             var fluidBottom = fluidOption.find(".fluid-option-bottom");
-            var fluidScope = angular.element(fluidOption).scope();
             fluidOption.css("max-height", 0);
             fluidTemplate.css("max-height", 0);
             fluidOption.removeAttr("source-event");
             fluidBottom.addClass("hidden");
-            c(fluidTemplate.html(""))(fluidScope);
         }
 
     }])
@@ -2541,6 +2536,58 @@ fluidComponents.directive("bootstrapViewport", ["$rootScope", "$window", functio
     }
 }]);
 fluidComponents
+    .directive("hidden25", ["$rootScope", "fluidFrameService", "$window", function (rs, f, w) {
+        return {
+            restrict: "AC",
+            scope: false,
+            link: function (scope, element, attr) {
+                scope.rs = rs;
+
+                if (rs.viewport === 'lg' && !f.fullScreen) {
+                    if (scope.task.size === 25) {
+                        element.addClass("hideSize25");
+                    } else {
+                        element.removeClass("hideSize25");
+                    }
+                } else {
+                    element.removeClass("hideSize25");
+                }
+
+                if (scope.task) {
+                    scope.$watch(function (scope) {
+                        return scope.task.size;
+                    }, function (value) {
+                        if (rs.viewport === 'lg' && !f.fullScreen) {
+                            if (value === 25) {
+                                element.addClass("hideSize25");
+                            } else {
+                                element.removeClass("hideSize25");
+                            }
+                        } else {
+                            element.removeClass("hideSize25");
+                        }
+                    });
+                }
+
+                $(w).on("resize", function () {
+                    if (scope) {
+                        if (scope.rs.viewport === 'lg' && !f.fullScreen) {
+                            if (scope.task.size === 25) {
+                                element.addClass("hideSize25");
+                            } else {
+                                element.removeClass("hideSize25");
+                            }
+
+                        } else {
+                            element.removeClass("hideSize25");
+                        }
+                    }
+                });
+
+
+            }
+        }
+    }])
     .directive("hidden50", ["$rootScope", "fluidFrameService", "$window", function (rs, f, w) {
         return {
             restrict: "AC",
@@ -2587,6 +2634,58 @@ fluidComponents
 
                         } else {
                             element.removeClass("hideSize50");
+                        }
+                    }
+                });
+
+
+            }
+        }
+    }])
+    .directive("hidden75", ["$rootScope", "fluidFrameService", "$window", function (rs, f, w) {
+        return {
+            restrict: "AC",
+            scope: false,
+            link: function (scope, element, attr) {
+                scope.rs = rs;
+
+                if (rs.viewport === 'lg' && !f.fullScreen) {
+                    if (scope.task.size === 75) {
+                        element.addClass("hideSize75");
+                    } else {
+                        element.removeClass("hideSize75");
+                    }
+                } else {
+                    element.removeClass("hideSize75");
+                }
+
+                if (scope.task) {
+                    scope.$watch(function (scope) {
+                        return scope.task.size;
+                    }, function (value) {
+                        if (rs.viewport === 'lg' && !f.fullScreen) {
+                            if (value === 75) {
+                                element.addClass("hideSize75");
+                            } else {
+                                element.removeClass("hideSize75");
+                            }
+                        } else {
+                            element.removeClass("hideSize75");
+                        }
+                    });
+                }
+
+                $(w).on("resize", function () {
+                    if (scope) {
+                        if (scope.rs.viewport === 'lg' && !f.fullScreen) {
+                            if (scope.task.size === 75) {
+                                element.addClass("hideSize75");
+                            } else {
+                                element.removeClass("hideSize75");
+                            }
+
+                        } else {
+                            element.removeClass("hideSize75");
                         }
                     }
                 });

@@ -52,7 +52,7 @@ fluidComponents
                         scope.filterPage = function (page) {
                             return (page.showOnList === undefined || page.showOnList == true);
                         }
-                        scope.showList = function(){
+                        scope.showList = function () {
                             var result = {count: 0};
 
                             angular.forEach(scope.task.pages, function (page) {
@@ -975,9 +975,9 @@ fluidComponents
                                     scope.task.max25 = function (clientState) {
                                         scope.task.size = 25;
                                         parent.removeClass("col-lg-12");
-                                        parent.removeClass("col-lg-8");
+                                        parent.removeClass("col-lg-9");
                                         parent.removeClass("col-lg-6");
-                                        parent.addClass("col-lg-4");
+                                        parent.addClass("col-lg-3");
                                         task.showPageList = false;
                                         if (clientState === undefined || clientState === false) {
                                             if (scope.task.page && scope.task) {
@@ -999,8 +999,8 @@ fluidComponents
                                     scope.task.max50 = function (clientState) {
                                         scope.task.size = 50;
                                         parent.removeClass("col-lg-12");
-                                        parent.removeClass("col-lg-8");
-                                        parent.removeClass("col-lg-4");
+                                        parent.removeClass("col-lg-9");
+                                        parent.removeClass("col-lg-3");
                                         parent.addClass("col-lg-6");
                                         task.showPageList = false;
                                         if (clientState === undefined || clientState === false) {
@@ -1022,8 +1022,8 @@ fluidComponents
                                         scope.task.size = 75;
                                         parent.removeClass("col-lg-12");
                                         parent.removeClass("col-lg-6");
-                                        parent.removeClass("col-lg-4");
-                                        parent.addClass("col-lg-8");
+                                        parent.removeClass("col-lg-3");
+                                        parent.addClass("col-lg-9");
                                         if (clientState === undefined || clientState === false) {
                                             if (scope.task.page && scope.task) {
                                                 rs.$broadcast(scope.fluid.event.getResizeEventId(), scope.task.page.name, scope.task.size);
@@ -1042,9 +1042,9 @@ fluidComponents
                                     };
                                     scope.task.max100 = function (clientState) {
                                         scope.task.size = 100;
-                                        parent.removeClass("col-lg-8");
+                                        parent.removeClass("col-lg-9");
                                         parent.removeClass("col-lg-6");
-                                        parent.removeClass("col-lg-4");
+                                        parent.removeClass("col-lg-3");
                                         parent.addClass("col-lg-12");
                                         if (clientState === undefined || clientState === false) {
                                             if (scope.task.page && scope.task) {
@@ -1163,8 +1163,8 @@ fluidComponents
 
                                 if (scope.fluidFrameService.fullScreen) {
                                     parent.addClass("col-lg-12");
-                                    parent.removeClass("col-lg-8");
-                                    parent.removeClass("col-lg-4");
+                                    parent.removeClass("col-lg-9");
+                                    parent.removeClass("col-lg-3");
                                     parent.removeClass("col-lg-6");
                                 }
 
@@ -1544,8 +1544,6 @@ fluidComponents
                 scope.$watch(function (scope) {
                     return element.parent().height();
                 }, function (height) {
-                    console.info("fluidOption-parent-task", scope.task);
-                    console.info("fluidOption-parent-height", height);
                     scope.parentHeight = height;
                     var template = element.find(".fluid-option-template");
                     template.css("width", element.parent().width());
@@ -1556,14 +1554,13 @@ fluidComponents
                 scope.close = function () {
                     fos.closeOption(element.attr("id"));
                 }
-                /*
 
-                 $(w).on("resize", function () {
-                 var template = element.find(".fluid-option-template");
-                 template.css("width", element.parent().width());
-                 element.css("width", element.parent().width());
-                 });
-                 */
+                $(w).on("resize", function () {
+                    var template = element.find(".fluid-option-template");
+                    template.css("width", element.parent().width());
+                    element.css("width", element.parent().width());
+                });
+
 
             }
         }
@@ -2422,12 +2419,10 @@ fluidComponents
             var fluidOption = $("#" + optionId);
             var fluidTemplate = fluidOption.find(".fluid-option-template");
             var fluidBottom = fluidOption.find(".fluid-option-bottom");
-            var fluidScope = angular.element(fluidOption).scope();
             fluidOption.css("max-height", 0);
             fluidTemplate.css("max-height", 0);
             fluidOption.removeAttr("source-event");
             fluidBottom.addClass("hidden");
-            c(fluidTemplate.html(""))(fluidScope);
         }
 
     }])
@@ -2541,6 +2536,58 @@ fluidComponents.directive("bootstrapViewport", ["$rootScope", "$window", functio
     }
 }]);
 fluidComponents
+    .directive("hidden25", ["$rootScope", "fluidFrameService", "$window", function (rs, f, w) {
+        return {
+            restrict: "AC",
+            scope: false,
+            link: function (scope, element, attr) {
+                scope.rs = rs;
+
+                if (rs.viewport === 'lg' && !f.fullScreen) {
+                    if (scope.task.size === 25) {
+                        element.addClass("hideSize25");
+                    } else {
+                        element.removeClass("hideSize25");
+                    }
+                } else {
+                    element.removeClass("hideSize25");
+                }
+
+                if (scope.task) {
+                    scope.$watch(function (scope) {
+                        return scope.task.size;
+                    }, function (value) {
+                        if (rs.viewport === 'lg' && !f.fullScreen) {
+                            if (value === 25) {
+                                element.addClass("hideSize25");
+                            } else {
+                                element.removeClass("hideSize25");
+                            }
+                        } else {
+                            element.removeClass("hideSize25");
+                        }
+                    });
+                }
+
+                $(w).on("resize", function () {
+                    if (scope) {
+                        if (scope.rs.viewport === 'lg' && !f.fullScreen) {
+                            if (scope.task.size === 25) {
+                                element.addClass("hideSize25");
+                            } else {
+                                element.removeClass("hideSize25");
+                            }
+
+                        } else {
+                            element.removeClass("hideSize25");
+                        }
+                    }
+                });
+
+
+            }
+        }
+    }])
     .directive("hidden50", ["$rootScope", "fluidFrameService", "$window", function (rs, f, w) {
         return {
             restrict: "AC",
@@ -2587,6 +2634,58 @@ fluidComponents
 
                         } else {
                             element.removeClass("hideSize50");
+                        }
+                    }
+                });
+
+
+            }
+        }
+    }])
+    .directive("hidden75", ["$rootScope", "fluidFrameService", "$window", function (rs, f, w) {
+        return {
+            restrict: "AC",
+            scope: false,
+            link: function (scope, element, attr) {
+                scope.rs = rs;
+
+                if (rs.viewport === 'lg' && !f.fullScreen) {
+                    if (scope.task.size === 75) {
+                        element.addClass("hideSize75");
+                    } else {
+                        element.removeClass("hideSize75");
+                    }
+                } else {
+                    element.removeClass("hideSize75");
+                }
+
+                if (scope.task) {
+                    scope.$watch(function (scope) {
+                        return scope.task.size;
+                    }, function (value) {
+                        if (rs.viewport === 'lg' && !f.fullScreen) {
+                            if (value === 75) {
+                                element.addClass("hideSize75");
+                            } else {
+                                element.removeClass("hideSize75");
+                            }
+                        } else {
+                            element.removeClass("hideSize75");
+                        }
+                    });
+                }
+
+                $(w).on("resize", function () {
+                    if (scope) {
+                        if (scope.rs.viewport === 'lg' && !f.fullScreen) {
+                            if (scope.task.size === 75) {
+                                element.addClass("hideSize75");
+                            } else {
+                                element.removeClass("hideSize75");
+                            }
+
+                        } else {
+                            element.removeClass("hideSize75");
                         }
                     }
                 });
@@ -3289,8 +3388,8 @@ angular.module("templates/fluid/fluidPanel.html", []).run(["$templateCache", fun
     "                                    class=\"fluid-panel-heading-title\">\n" +
     "\n" +
     "\n" +
-    "            <fluid-task-icon class=\"fluid-icon-left hidden-sm hidden-md hidden-xs\" task=\"task\"></fluid-task-icon><span\n" +
-    "                ng-if=\"task.loaded\">&nbsp;{{task.title}} - {{task.page.title}}</span></a>\n" +
+    "            <fluid-task-icon class=\"fluid-icon-left hidden-sm hidden-md hidden-xs\" task=\"task\"></fluid-task-icon>\n" +
+    "            <span ng-if=\"task.loaded\" class=\"hidden25\">&nbsp;{{task.title}} - {{task.page.title}}</span></a>\n" +
     "            <span ng-if=\"task.loaded && fluidFrameService.fullScreen\">&nbsp;{{task.title}} - {{task.page.title}}</span>\n" +
     "            <fluid-loader class=\"{{!fluidFrameService.fullScreen ? 'fluid-panel-loader':''}}\"\n" +
     "                          ng-if=\"!task.loaded\"></fluid-loader>\n" +
@@ -3329,21 +3428,21 @@ angular.module("templates/fluid/fluidPanel.html", []).run(["$templateCache", fun
     "                      ></i>\n" +
     "                 </button>-->\n" +
     "\n" +
-    "                <!--  <button ng-hide='fluidFrameService.fullScreen' ng-disabled='task.pinned' type=\"button\"\n" +
-    "                          class=\"btn btn-info\" ng-click='task.max25()' title=\"Maximize - 25\">\n" +
-    "                      <i><span class='fa fa-arrows-h' style=\"transform: scaleX(0.8)\"></span></i>\n" +
-    "                  </button>-->\n" +
+    "                <button ng-hide='fluidFrameService.fullScreen' ng-disabled='task.pinned' type=\"button\"\n" +
+    "                        class=\"btn btn-info\" ng-click='task.max25()' title=\"Maximize - 25\">\n" +
+    "                    <i><span class='fa fa-arrows-h' style=\"transform: scaleX(0.8)\"></span></i>\n" +
+    "                </button>\n" +
     "\n" +
     "                <button ng-hide='fluidFrameService.fullScreen' ng-disabled='task.pinned' title=\"Maximize - 50\"\n" +
     "                        class=\"btn btn-info\"\n" +
     "                        ng-click='task.max50()'>\n" +
     "                    <i class='element-center fa fa-arrows-h' style=\"transform: scaleX(0.9)\"></i>\n" +
     "                </button>\n" +
-    "                <!--<button ng-hide='fluidFrameService.fullScreen' ng-disabled='task.pinned' ng-click='task.max75()'\n" +
+    "                <button ng-hide='fluidFrameService.fullScreen' ng-disabled='task.pinned' ng-click='task.max75()'\n" +
     "                        class=\"btn btn-info\">\n" +
     "                    <i title=\"Maximize - 75\"\n" +
     "                            ><span class='fa fa-arrows-h' style=\"transform: scaleX(1.1)\"></span></i>\n" +
-    "                </button>-->\n" +
+    "                </button>\n" +
     "                <button ng-hide='fluidFrameService.fullScreen' ng-disabled='task.pinned' ng-click='task.max100()'\n" +
     "                        class=\"btn btn-info\">\n" +
     "                    <i title=\"Maximize - 100\" class='element-center fa fa-arrows-h' style=\"transform: scaleX(1.3)\"></i>\n" +
@@ -3434,7 +3533,7 @@ angular.module("templates/fluid/fluidToolbar.html", []).run(["$templateCache", f
   $templateCache.put("templates/fluid/fluidToolbar.html",
     "<div class='container-fluid animated fadeIn anim-dur' style=\"padding: 0\">\n" +
     "    <div class=\"ndg-breadcrumb\">\n" +
-    "        <ul class='breadcrumb hidden-xs hidden-sm hidden50 hidden-fullscreen-xs hidden-fullscreen-sm'>\n" +
+    "        <ul class='breadcrumb hidden-xs hidden-sm hidden25 hidden50 hidden-fullscreen-xs hidden-fullscreen-sm'>\n" +
     "\n" +
     "            <li class=\"pull-left\"\n" +
     "                ng-repeat='page in task.navPages'>\n" +
@@ -3455,7 +3554,7 @@ angular.module("templates/fluid/fluidToolbar.html", []).run(["$templateCache", f
     "            </div>\n" +
     "            <div class=\"clearfix\"></div>\n" +
     "        </ul>\n" +
-    "        <ul class='breadcrumb hidden-md hidden100 hidden-fullscreen-lg hidden-fullscreen-md'>\n" +
+    "        <ul class='breadcrumb hidden-md hidden100 hidden75 hidden-fullscreen-lg hidden-fullscreen-md'>\n" +
     "\n" +
     "            <li class=\"pull-left\">\n" +
     "                <a ng-class=\"task.page.name == task.navPages[0].name ? 'plain-text':''\"\n" +

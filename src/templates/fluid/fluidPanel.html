@@ -26,8 +26,8 @@
                                     class="fluid-panel-heading-title">
 
 
-            <fluid-task-icon class="fluid-icon-left hidden-sm hidden-md hidden-xs" task="task"></fluid-task-icon><span
-                ng-if="task.loaded">&nbsp;{{task.title}} - {{task.page.title}}</span></a>
+            <fluid-task-icon class="fluid-icon-left hidden-sm hidden-md hidden-xs" task="task"></fluid-task-icon>
+            <span ng-if="task.loaded" class="hidden25">&nbsp;{{task.title}} - {{task.page.title}}</span></a>
             <span ng-if="task.loaded && fluidFrameService.fullScreen">&nbsp;{{task.title}} - {{task.page.title}}</span>
             <fluid-loader class="{{!fluidFrameService.fullScreen ? 'fluid-panel-loader':''}}"
                           ng-if="!task.loaded"></fluid-loader>
@@ -66,21 +66,21 @@
                       ></i>
                  </button>-->
 
-                <!--  <button ng-hide='fluidFrameService.fullScreen' ng-disabled='task.pinned' type="button"
-                          class="btn btn-info" ng-click='task.max25()' title="Maximize - 25">
-                      <i><span class='fa fa-arrows-h' style="transform: scaleX(0.8)"></span></i>
-                  </button>-->
+                <button ng-hide='fluidFrameService.fullScreen' ng-disabled='task.pinned' type="button"
+                        class="btn btn-info" ng-click='task.max25()' title="Maximize - 25">
+                    <i><span class='fa fa-arrows-h' style="transform: scaleX(0.8)"></span></i>
+                </button>
 
                 <button ng-hide='fluidFrameService.fullScreen' ng-disabled='task.pinned' title="Maximize - 50"
                         class="btn btn-info"
                         ng-click='task.max50()'>
                     <i class='element-center fa fa-arrows-h' style="transform: scaleX(0.9)"></i>
                 </button>
-                <!--<button ng-hide='fluidFrameService.fullScreen' ng-disabled='task.pinned' ng-click='task.max75()'
+                <button ng-hide='fluidFrameService.fullScreen' ng-disabled='task.pinned' ng-click='task.max75()'
                         class="btn btn-info">
                     <i title="Maximize - 75"
                             ><span class='fa fa-arrows-h' style="transform: scaleX(1.1)"></span></i>
-                </button>-->
+                </button>
                 <button ng-hide='fluidFrameService.fullScreen' ng-disabled='task.pinned' ng-click='task.max100()'
                         class="btn btn-info">
                     <i title="Maximize - 100" class='element-center fa fa-arrows-h' style="transform: scaleX(1.3)"></i>
