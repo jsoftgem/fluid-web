@@ -1,4 +1,4 @@
-### Fluid-web
+# What is Fluid-web?
 Fluid-web is an intuitive and powerful framework for developing portlet applications with AngularJs.
 
 ## Quick start
