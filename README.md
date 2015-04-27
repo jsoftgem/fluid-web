@@ -79,7 +79,7 @@ fluid-web/
 ```
 Note: fluid-frame tag must be added only once to the body, fluid-web does not support multiple frame instances yet.
 
-- Create a Task JSON file or a Javascript object:
+- Create task json file or javascript object:
 ```
   //docs/module_basic/module_basic.json
   {
@@ -105,6 +105,33 @@ Note: fluid-frame tag must be added only once to the body, fluid-web does not su
   }]);
 
 ```
+- Add a static page:
+```
+ {
+  "id": "moduleBasic",
+  "name": "module_basic",
+  "title": "Basic - Locked",
+  "size": 100,
+  "glyph": "fa fa-gears",
+  "useImg": true,
+  "imgSrc": "docs/module_basic/icon.png",
+  "active": true,
+  "locked": false,
+  "closeable": false,
+  "showToolBar": false,
+  "pages":[
+     {
+     "id": 1,
+      "name": "page1",
+      "title": "Home",
+      "static": true,
+      "html":"<div class='jumbotron'><h1>Welcome to fluid-web!</h1><p>This is the sample of a static page.</p><div>",
+      "isHome":true
+     }
+   ]
+  }
+```
+Note: One home page (isHome=true) only is required.
 
 ### Demo
 Coming very soon.
