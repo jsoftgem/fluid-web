@@ -64,7 +64,13 @@ fluid-web/
 <script src="bower_components/dist/js/fluid.js" type="text/javascript"></script>
 
 ```
-- Add ```<fluid-frame></fluid-frame>``` to the body:
+
+- Import ```fluid``` module to your app:
+```
+  anuglar.module("mainApp",["fluid"])
+
+```
+- Add ```<fluid-frame></fluid-frame>` `` to the body:
 ```
   <body>
     <fluid-frame></fluid-frame>
@@ -73,6 +79,36 @@ fluid-web/
 ```
 Note: fluid-frame tag must be added only once to the body, fluid-web does not support multiple frame instances yet.
 
+- Create a Task JSON file or a Javascript object:
+- 
+```
+  //docs/module_basic/module_basic.json
+  {
+  "id": "moduleBasic",
+  "name": "module_basic",
+  "title": "Basic - Locked",
+  "size": 100,
+  "glyph": "fa fa-gears",
+  "useImg": true,
+  "imgSrc": "docs/module_basic/icon.png",
+  "active": true,
+  "locked": false,
+  "closeable": false,
+  "showToolBar": false
+  }
+```
+
+- On your main controller inject the ```fluidFrameService```:
+```
+   anuglar.module("mainApp",["fluid"])
+            .run(["fluidFrameService",function(ffs){
+               /*adds module json config here using url*/
+              ffs.addTask("docs/module_basic/module_basic.json");
+  }]);
+
+```
+### Demo
+Coming very soon.
 ### Documentation
 Coming very soon.
 
