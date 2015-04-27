@@ -1,9 +1,9 @@
-### Fluid-web
+# What is Fluid-web?
 Fluid-web is an intuitive and powerful framework for developing portlet applications with AngularJs.
 
 ## Quick start
 ```
-install with bower install -g fluid-web
+bower install -g fluid-web
 ```
 ## Building Fluid-web
 - [Grunt:](http://gruntjs.com/) We use Grunt as our build system. 
@@ -50,7 +50,7 @@ fluid-web/
 Coming very soon.
 
 ### Authors and Contributors
-In 2015, Jerico de Guzman (@jsoftgem) founded Fluid-web.
+[Jerico de Guzman](@jsoftgem) - Senior Software Engineer.
 
 ### Support or Contact
-Coming very soon.
+[jerico@jsofttechnologies.com](@jsoftgem)
