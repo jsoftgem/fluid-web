@@ -28,7 +28,17 @@ fluid-web/
 |   |    |─── fluid.css
 |   |    |___ fluid-option.css
 |   |__ js/
+|   |    |___ modules/
+|   |    |    |─── fluid-frame.js
+|   |    |    |─── fluid-http.js
+|   |    |    |─── fluid-message.js
+|   |    |    |─── fluid-option.js
+|   |    |    |─── fluid-page.js
+|   |    |    |─── fluid-panel.js
+|   |    |    |─── fluid-session.js
+|   |    |    |___ fluid-tool.js
 |   |    |___ fluid.js
+|   |    |___ util.js
 |   |__ templates/
 |        |___ fluid/
 |             |─── fluidFrame.html
