@@ -68,9 +68,9 @@ fluid-web/
 - Import ```fluid``` module to your app:
 ```
   anuglar.module("mainApp",["fluid"])
-
 ```
-- Add ```<fluid-frame></fluid-frame>` `` to the body:
+
+- Add ```<fluid-frame></fluid-frame>``` to the body:
 ```
   <body>
     <fluid-frame></fluid-frame>
@@ -80,7 +80,6 @@ fluid-web/
 Note: fluid-frame tag must be added only once to the body, fluid-web does not support multiple frame instances yet.
 
 - Create a Task JSON file or a Javascript object:
-- 
 ```
   //docs/module_basic/module_basic.json
   {
@@ -97,8 +96,7 @@ Note: fluid-frame tag must be added only once to the body, fluid-web does not su
   "showToolBar": false
   }
 ```
-
-- On your main controller inject the ```fluidFrameService```:
+-  Inject the ```fluidFrameService```:
 ```
    anuglar.module("mainApp",["fluid"])
             .run(["fluidFrameService",function(ffs){
@@ -107,6 +105,7 @@ Note: fluid-frame tag must be added only once to the body, fluid-web does not su
   }]);
 
 ```
+
 ### Demo
 Coming very soon.
 ### Documentation
