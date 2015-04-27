@@ -41,7 +41,7 @@ module.exports = function (grunt) {
                     separator: ';'
                 },
                 dist: {
-                    src: ['src/js/*.js', 'tmp/*.js'],
+                    src: ['src/js/*.js','src/js/modules/*.js', 'tmp/*.js'],
                     dest: 'dist/js/fluid.js'
                 }
             },

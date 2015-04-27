@@ -116,7 +116,7 @@
     </div>
     <div id='_{{task.id}}' class='panel-collapse collapse in'>
         <div id='_id_fpb_{{task.id}}'
-             class="panel-body minHeight fluid-panel container-fluid"
+             class="panel-body fluid-panel container-fluid"
              ng-disabled='!task.loaded'>
             <fluid-option></fluid-option>
             <fluid-message id="{{fluid.get('pnl_msg')}}"></fluid-message>
@@ -144,12 +144,9 @@
                 </ul>
             </div>
             <div class="fluid-panel-content" ng-class="task.showPageList ? 'col-lg-9 col-md-9':'col-lg-12 col-md-12'">
-                <div ng-if='task.pageLoaded && !task.page.static' id='page_div_{{task.id}}'
+                <div ng-if='task.pageLoaded' id='page_div_{{task.id}}'
                      class="fluid-panel-page animated {{task.pageTransition ? task.pageTransition : 'fadeIn'}}"
-                     ng-include='task.page.home'></div>
-                <div ng-if='task.pageLoaded && task.page.static' id='page_div_{{task.id}}'
-                     class="fluid-panel-page animated {{task.pageTransition ? task.pageTransition : 'fadeIn'}}"
-                     ng-bind-html='task.page.html'></div>
+                     ng-include='fluidPageService.renderPage(task,fluid).home'></div>
             </div>
 
         </div>
