@@ -399,13 +399,10 @@ angular.module("fluidHttp", ["fluidSession"])
             return {"fluid-container-id": "_id_fpb_" + task.id, "Content-type": "application/json"};
         }
         this.query = function (query, task) {
-
             if (task) {
                 task.loaded = false;
             }
-
             var promise = h(query);
-
             promise.error(function (data, status, headers, config) {
                 if (task) {
                     task.loaded = true;
@@ -416,8 +413,6 @@ angular.module("fluidHttp", ["fluidSession"])
                     rs.$broadcast(EVENT_NOT_ALLOWED + task.id, data.msg);
                 }
             });
-
-
             promise.then(function () {
                 if (task) {
                     task.loaded = true;
@@ -427,6 +422,19 @@ angular.module("fluidHttp", ["fluidSession"])
 
             return promise;
         }
+
+        this.queryLocal = function (query) {
+            var promise = h(query);
+            promise.error(function (data, status, headers, config) {
+                if (status === 401) {
+                    rs.$broadcast("NOT_AUTHENTICATED");
+                } else if (status === 403) {
+                    rs.$broadcast(EVENT_NOT_ALLOWED + task.id, data.msg);
+                }
+            });
+            return promise;
+        }
+
         return this;
     }])
     .service("fluidLoaderService", [function () {

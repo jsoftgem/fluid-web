@@ -14,6 +14,11 @@ angular.module("fluidSession", ["LocalStorageModule"])
             return ls.get(AUTHORIZATION) !== null;
         }
 
+
+        this.containsKey = function (key) {
+            return !(!this.getSessionProperty(key));
+        }
+
         this.addSessionProperty = function (key, value) {
             if (this.isSessionSupported) {
                 ls.set(key, value);

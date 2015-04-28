@@ -22,23 +22,23 @@ angular.module("fluidFrame", ["fluidHttp"])
                     if (!fullScreen) {
                         var height = window.innerHeight;
                         height = estimatedFrameHeight(height);
-                        var frameHeight = height - 22;
+                        var frameHeight = height;
                         if (scope.fluidFrameService.isSearch) {
                             frameDiv.attr("style", "height:" + frameHeight + "px;overflow:auto");
                         } else {
                             element.attr("style", "height:" + frameHeight + "px;overflow:auto");
                         }
-                        $("body").attr("style", "height: " + height + "px;overflow:hidden");
+                        $("body").attr("style", "height: " + window.innerHeight + "px;overflow:hidden");
                     } else {
                         var height = window.innerHeight;
                         height = estimatedFrameHeight(height);
-                        var frameHeight = height - 22;
+                        var frameHeight = height;
                         if (scope.fluidFrameService.isSearch) {
                             frameDiv.attr("style", "height:" + frameHeight + "px;overflow:hidden");
                         } else {
                             element.attr("style", "height:" + frameHeight + "px;overflow:hidden");
                         }
-                        $("body").attr("style", "height: " + height + "px;overflow:hidden");
+                        $("body").attr("style", "height: " + window.innerHeight + "px;overflow:hidden");
                     }
                 });
 
@@ -54,7 +54,7 @@ angular.module("fluidFrame", ["fluidHttp"])
                         if (!scope.fluidFrameService.fullScreen) {
                             var height = window.innerHeight;
                             height = estimatedFrameHeight(height);
-                            var frameHeight = height - 22;
+                            var frameHeight = height;
                             if (scope.fluidFrameService.isSearch) {
                                 frameDiv.attr("style", "height:" + frameHeight + "px;overflow:auto");
                             } else {
@@ -62,7 +62,7 @@ angular.module("fluidFrame", ["fluidHttp"])
                             }
                         } else {
                             var height = window.innerHeight;
-                            height = estimatedFrameHeight(height) - 22;
+                            height = estimatedFrameHeight(height);
                             if (scope.fluidFrameService.isSearch) {
                                 frameDiv.attr("style", "height:" + frameHeight + "px;overflow:hidden");
                             } else {
@@ -70,7 +70,7 @@ angular.module("fluidFrame", ["fluidHttp"])
                             }
                         }
 
-                        $("body").attr("style", "height: " + height + "px;overflow:hidden");
+                        $("body").attr("style", "height: " + window.innerHeight + "px;overflow:hidden");
                     }
                 });
 
@@ -106,6 +106,7 @@ angular.module("fluidFrame", ["fluidHttp"])
             task.generic = true;
             this.taskList.push(task);
         };
+
         this.addTask = function (url, origin, newTask) {
             //TODO: remove newTask
 

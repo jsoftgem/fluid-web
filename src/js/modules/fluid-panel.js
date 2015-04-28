@@ -901,7 +901,6 @@ angular.module("fluidPanel", ["oc.lazyLoad", "fluidHttp", "fluidFrame", "fluidMe
                             return;
                         }, function (task) {
                             if (task) {
-                                console.info("post-task-watcher", task);
                                 if (task.generic === false) {
                                     if (task.lazyLoad === true) {
                                         var pathArr = undefined;
@@ -1095,6 +1094,7 @@ angular.module("fluidPanel", ["oc.lazyLoad", "fluidHttp", "fluidFrame", "fluidMe
                                         }
 
                                     };
+
                                     scope.task.pin = function () {
                                         scope.task.pinned = !scope.task.pinned;
                                         if (scope.task.pinned === true) {
@@ -1138,6 +1138,16 @@ angular.module("fluidPanel", ["oc.lazyLoad", "fluidHttp", "fluidFrame", "fluidMe
                                                 scope.task.max100(true);
                                             }
                                         }
+                                    }
+                                }
+
+
+                                scope.task.open = function (index) {
+                                    if (scope.task.active) {
+                                        $(".frame-content").scrollTo($("div.panel[task]:eq(" + index + ")"), 200);
+                                    } else {
+                                        scope.task.active = true;
+                                        t($(".frame-content").scrollTo($("div.panel[task]:eq(" + index + ")"), 200), 300)
                                     }
                                 }
 

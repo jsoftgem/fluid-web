@@ -2,15 +2,10 @@
  * Created by Jerico on 4/16/2015.
  */
 angular.module("mainApp", ["fluid"])
-    .controller("mainCtrl", ["$scope", "fluidHttpService", "fluidFrameService", "fluidOptionService", "fluidMessageService", "$rootScope", function (s, fhs, ffs, fos, ms, rs) {
+    .controller("mainCtrl", ["$scope", "fluidHttpService", "fluidFrameService", "fluidOptionService", "fluidMessageService", "$rootScope", "fluidTasknavService", function (s, fhs, ffs, fos, ms, rs, fts) {
 
         s.toggleMenu = function () {
-            s.menu = !s.menu;
-            if (s.menu) {
-                $("body").addClass("toggle-offcanvas")
-            } else {
-                $("body").removeClass("toggle-offcanvas");
-            }
+            fts.toggle("taskSideBarId");
         }
 
         s.frameService = ffs;

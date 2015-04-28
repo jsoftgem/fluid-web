@@ -1,0 +1,153 @@
+
+
+body {
+    -moz-transition: all 0.3s;
+    -webkit-transition: all 0.3s;
+    transform: all 0.3s;
+}
+
+#offcanvas {
+    overflow-y: auto;
+}
+
+@media (max-width: 767px) {
+    #offcanvas {
+        margin-left: -80px;
+        max-width: 80px;
+        position: absolute;
+    }
+
+    .toggle-offcanvas {
+        padding-left: 80px;
+    }
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+    #offcanvas {
+        margin-left: -80px;
+        max-width: 80px;
+        position: absolute;
+    }
+
+    .toggle-offcanvas {
+        padding-left: 80px;
+    }
+}
+
+@media (min-width: 992px) and (max-width: 1199px) {
+    #offcanvas {
+        margin-left: -300px;
+        width: 300px;
+        position: absolute;
+    }
+
+    .toggle-offcanvas {
+        padding-left: 300px;
+    }
+}
+
+@media (min-width: 1200px) {
+    #offcanvas {
+        margin-left: -300px;
+        width: 300px;
+        position: absolute;
+    }
+
+    .toggle-offcanvas {
+        padding-left: 300px;
+    }
+}
+
+.navbar-brand:hover {
+    -webkit-transition: all 0.3s;
+    transition: all 0.3;
+    border: 1px solid #00b3ee;
+    box-shadow: #0079a1;
+    font-size: 24px;
+}
+
+.fillHeight {
+    height: 45px;
+}
+
+.even {
+    background: #87e1ff;
+}
+
+.odd {
+    background: #85d0a1;
+}
+
+.sidebar {
+    display: block;
+    float: left;
+    width: 250px;
+    background: #333;
+}
+
+.content {
+    display: block;
+    overflow: hidden;
+    width: auto;
+}
+
+.sidebar-nav {
+    border-bottom: 1px solid rgba(0, 0, 0, 0.3);
+    background-image: -webkit-linear-gradient(left, color-stop(#333333 10px), color-stop(#222222 10px));
+    background-image: linear-gradient(to right, #333333 10px, #222222 10px);
+    background-repeat: repeat-x;
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ff333333', endColorstr='#ff222222', GradientType=1);
+}
+
+.sidebar-nav ul {
+    padding: 0;
+    margin: 0;
+    list-style: none;
+}
+
+.sidebar-nav a,
+.sidebar-nav a:hover,
+.sidebar-nav a:focus,
+.sidebar-nav a:active {
+    outline: none;
+}
+
+.sidebar-nav ul li,
+.sidebar-nav ul a {
+    display: block;
+}
+
+.sidebar-nav ul a {
+    padding: 10px 20px;
+    color: #aaa;
+    border-top: 1px solid rgba(0, 0, 0, 0.3);
+    box-shadow: 0px 1px 0px rgba(255, 255, 255, 0.05) inset;
+    text-shadow: 0px 1px 0px rgba(0, 0, 0, 0.5);
+}
+
+.sidebar-nav ul a:hover,
+.sidebar-nav ul a:focus,
+.sidebar-nav ul a:active {
+    color: #fff;
+    text-decoration: none;
+}
+
+.sidebar-nav ul ul a {
+    padding: 10px 30px;
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+.sidebar-nav ul ul a:hover,
+.sidebar-nav ul ul a:focus,
+.sidebar-nav ul ul a:active {
+    background-color: rgba(255, 255, 255, 0.2);
+}
+
+.sidebar-nav-item {
+    padding-left: 5px;
+}
+
+.sidebar-nav-item-icon {
+    padding-right: 5px;
+}
+

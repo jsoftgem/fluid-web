@@ -207,7 +207,7 @@ function saveTaskSate(task, userTask, fluidHttpService, field) {
 function autoSizePanel(task) {
     console.info("autoSizePanel", task);
     var height = window.innerHeight;
-    height = estimateHeight(height) - 30;
+    height = estimateHeight(height);
 
     var panel = $("#_id_fp_" + task.id + ".panel");
     var panelBody = $("#_id_fp_" + task.id + ".panel div.fluid-panel-content");
