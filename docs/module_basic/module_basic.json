@@ -13,6 +13,7 @@
   "lazyLoad": true,
   "moduleJS": "moduleBasic",
   "moduleFiles": "docs/module_basic/module-basic.js",
+  "pageTransition":"bounceIn",
   "pages": [
     {
       "id": 1,

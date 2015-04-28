@@ -17,6 +17,8 @@
 
     <link href="bower_components/animate.css/animate.min.css" rel="stylesheet">
 
+    <link href="bower_components/metisMenu/dist/metisMenu.css" rel="stylesheet">
+
     <script src="bower_components/jquery/dist/jquery.js" type="text/javascript"></script>
 
     <script src="bower_components/angular/angular.js" type="text/javascript"></script>
@@ -32,13 +34,82 @@
 
     <script src="bower_components/angular-sanitize/angular-sanitize.min.js" type="text/javascript"></script>
 
+    <script type="text/javascript" src="bower_components/metisMenu/dist/metisMenu.min.js"></script>
+
     <script src="dist/js/fluid.js" type="text/javascript"></script>
 
     <script src="docs/js/app.js" type="text/javascript"></script>
     <style>
 
+
+        body {
+            -moz-transition: all 0.3s;
+            -webkit-transition: all 0.3s;
+            transform: all 0.3s;
+        }
+
+        #offcanvas {
+            overflow-y: auto;
+        }
+
+        @media (max-width: 767px) {
+            #offcanvas {
+                margin-left: -80px;
+                max-width: 80px;
+                position: absolute;
+            }
+
+            .toggle-offcanvas {
+                padding-left: 80px;
+            }
+        }
+
+        @media (min-width: 768px) and (max-width: 991px) {
+            #offcanvas {
+                margin-left: -80px;
+                max-width: 80px;
+                position: absolute;
+            }
+
+            .toggle-offcanvas {
+                padding-left: 80px;
+            }
+        }
+
+        @media (min-width: 992px) and (max-width: 1199px) {
+            #offcanvas {
+                margin-left: -300px;
+                width: 300px;
+                position: absolute;
+            }
+
+            .toggle-offcanvas {
+                padding-left: 300px;
+            }
+        }
+
+        @media (min-width: 1200px) {
+            #offcanvas {
+                margin-left: -300px;
+                width: 300px;
+                position: absolute;
+            }
+
+            .toggle-offcanvas {
+                padding-left: 300px;
+            }
+        }
+
+        .navbar-brand:hover {
+            -webkit-transition: all 0.3s;
+            transition: all 0.3;
+            border: 1px solid #00b3ee;
+            box-shadow: #0079a1;
+            font-size: 24px;
+        }
+
         .fillHeight {
-            height: 43px;
+            height: 45px;
         }
 
         .even {
@@ -49,11 +120,84 @@
             background: #85d0a1;
         }
 
+        .sidebar {
+            display: block;
+            float: left;
+            width: 250px;
+            background: #333;
+        }
+
+        .content {
+            display: block;
+            overflow: hidden;
+            width: auto;
+        }
+
+        .sidebar-nav {
+            border-bottom: 1px solid rgba(0, 0, 0, 0.3);
+            background-image: -webkit-linear-gradient(left, color-stop(#333333 10px), color-stop(#222222 10px));
+            background-image: linear-gradient(to right, #333333 10px, #222222 10px);
+            background-repeat: repeat-x;
+            filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ff333333', endColorstr='#ff222222', GradientType=1);
+        }
+
+        .sidebar-nav ul {
+            padding: 0;
+            margin: 0;
+            list-style: none;
+        }
+
+        .sidebar-nav a,
+        .sidebar-nav a:hover,
+        .sidebar-nav a:focus,
+        .sidebar-nav a:active {
+            outline: none;
+        }
+
+        .sidebar-nav ul li,
+        .sidebar-nav ul a {
+            display: block;
+        }
+
+        .sidebar-nav ul a {
+            padding: 10px 20px;
+            color: #aaa;
+            border-top: 1px solid rgba(0, 0, 0, 0.3);
+            box-shadow: 0px 1px 0px rgba(255, 255, 255, 0.05) inset;
+            text-shadow: 0px 1px 0px rgba(0, 0, 0, 0.5);
+        }
+
+        .sidebar-nav ul a:hover,
+        .sidebar-nav ul a:focus,
+        .sidebar-nav ul a:active {
+            color: #fff;
+            text-decoration: none;
+        }
+
+        .sidebar-nav ul ul a {
+            padding: 10px 30px;
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+
+        .sidebar-nav ul ul a:hover,
+        .sidebar-nav ul ul a:focus,
+        .sidebar-nav ul ul a:active {
+            background-color: rgba(255, 255, 255, 0.2);
+        }
+
+        .sidebar-nav-item {
+            padding-left: 5px;
+        }
+
+        .sidebar-nav-item-icon {
+            padding-right: 5px;
+        }
+
+
     </style>
 
 </head>
-<body ng-controller="mainCtrl" ng-init="showSideBar = false">
-
+<body class="bg-warning" ng-controller="mainCtrl" ng-init="showSideBar = false">
 <div class="navbar navbar-default navbar-fixed-top">
     <div class="container-fluid">
         <div class="navbar-header">
@@ -70,7 +214,8 @@
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
             </button>
-            <a class="navbar-brand" href="#">@Fluid-web</a>
+            <a class="navbar-brand" ng-click="toggleMenu()" title="toogle menu"
+               href="#">@Fluid-web</a>
         </div>
         <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
             <ul class="nav navbar-nav">
@@ -84,10 +229,43 @@
     </div>
 </div>
 <div class="fillHeight"></div>
+<nav id="offcanvas" class="sidebar-nav">
+    <ul id="menu">
+        <li>
+            <a href="#">
+                <span class="sidebar-nav-item-icon fa fa-github fa-lg"></span>
+                <span class="hidden-sm hidden-xs sidebar-nav-item">Getting Started</span>
+                <span class="hidden-sm hidden-xs fa arrow"></span>
+            </a>
+            <ul class="collapse">
+                <li>
+                    <a href="#">
+                        <span class="fa fa-code"></span>
+                        <span class="hidden-xs hidden-sm">Basic</span>
+                    </a>
+                </li>
+            </ul>
+        </li>
+        <li>
+            <a href="#">
+                <span class="sidebar-nav-item-icon fa fa-github fa-lg"></span>
+                <span class="hidden-sm hidden-xs sidebar-nav-item">Getting Started</span>
+                <span class="hidden-sm hidden-xs fa arrow"></span>
+            </a>
+            <ul class="collapse">
+                <li>
+                    <a href="#">
+                        <span class="sidebar-nav-item-icon fa fa-code"></span>
+                        <span class="hidden-xs hidden-sm">Basic</span>
+                    </a>
+                </li>
+            </ul>
+        </li>
+    </ul>
+</nav>
+<!--TODO: <fluid-frame by-pass-height="1,2"></fluid-frame>-->
 <fluid-frame></fluid-frame>
-
 </body>
-
 
 <script id="fullScreenNavMenu" type="text/ng-template">
 
@@ -110,5 +288,26 @@
     </div>
 
 </script>
+<script type="text/javascript">
 
+    $(document).ready(function () {
+        var height = $(".frame-content").outerHeight()
+
+        $("#offcanvas").height(height);
+
+        $(window).on("resize", function () {
+            var height = $(".frame-content").outerHeight()
+
+            $("#offcanvas").height(height);
+
+        });
+
+
+    });
+
+    $(function () {
+        $("#menu").metisMenu();
+    });
+
+</script>
 </html>

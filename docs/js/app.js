@@ -2,7 +2,16 @@
  * Created by Jerico on 4/16/2015.
  */
 angular.module("mainApp", ["fluid"])
-    .controller("mainCtrl", ["$scope", "fluidHttpService", "fluidFrameService", "fluidOptionService", "fluidMessageService", function (s, fhs, ffs, fos, ms) {
+    .controller("mainCtrl", ["$scope", "fluidHttpService", "fluidFrameService", "fluidOptionService", "fluidMessageService", "$rootScope", function (s, fhs, ffs, fos, ms, rs) {
+
+        s.toggleMenu = function () {
+            s.menu = !s.menu;
+            if (s.menu) {
+                $("body").addClass("toggle-offcanvas")
+            } else {
+                $("body").removeClass("toggle-offcanvas");
+            }
+        }
 
         s.frameService = ffs;
 

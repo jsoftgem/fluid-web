@@ -49,15 +49,30 @@ var AUTHORIZATION = "authorization";
 
 function estimateHeight(height) {
     var _pc = window.innerWidth < 450 ? 55 : window.innerWidth < 768 ? 55 : window.innerWidth < 1200 ? 60 : 50;
-    /*var _pc = height >= 768 ? height * 0.055 : height <= 768 && height > 600 ? height * 0.065 : height <= 600 && height > 400 ? height * 0.09 : height * 0.15;*/
     return height - _pc
 }
 
 function estimatedFrameHeight(height) {
+    console.info("estimatedFrameHeight.getHeadingHeight",getHeadingHeight());
     var _pc = window.innerWidth < 450 ? 60 : window.innerWidth < 768 ? 60 : window.innerWidth < 1200 ? 65 : 50;
-    /*var _pc = height >= 768 ? height * 0.055 : height <= 768 && height > 600 ? height * 0.065 : height <= 600 && height > 400 ? height * 0.09 : height * 0.15;*/
     return height - _pc
 }
+
+//TODO: body height
+function getHeadingHeight(){
+    var height = 0;
+    $("body").children().each(function(){
+        if(!$(this).hasClass("frame-content")){
+            height+=$(this).outerHeight();
+        }else{
+            return false;
+        }
+    });
+
+    return height;
+}
+
+
 
 function generateTask(scope, t, f2) {
     console.info("generateTask > scope.task.page", scope.task.page);
@@ -231,13 +246,7 @@ $(document).ready(function () {
             if (fluidOptionScope) {
                 var sourceId = $(e.target).attr("id");
                 var elementSourceEvent = $(element).attr("source-event");
-
-                // console.info(infoSig + ".sourceId", sourceId);
-
-                // console.info(infoSig + ".element", element);
-
                 if ($.contains(element, e.target)) {
-                    // console.info(infoSig + ".contains", e.target);
                     return;
                 }
 
@@ -248,12 +257,10 @@ $(document).ready(function () {
                     var activeElementSource = elementSource.context.activeElement;
 
                     if (elementSource.find(e.target).length > 0) {
-                        //console.info(infoSig + ".contains.elementSourceEvent", e.target);
                         return;
                     }
 
                     if (elementSource.is(e.target)) {
-                        // console.info(infoSig + ".is.elementSourceEvent", e.target);
                         return;
                     }
 
