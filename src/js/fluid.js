@@ -3,7 +3,7 @@
  * October 2014**/
 'use strict';
 
-var fluidComponents = angular.module("fluid", ["oc.lazyLoad", "LocalStorageModule", "templates-dist", "ngSanitize", "fluidSession",
+var fluidComponents = angular.module("fluid", ["oc.lazyLoad", "LocalStorageModule", "fluidSession",
     "fluidHttp", "fluidFrame", "fluidMessage", "fluidOption", "fluidTool", "fluidPage", "fluidPanel","fluidTasknav"]);
 
 fluidComponents.config(["$httpProvider", "localStorageServiceProvider", function (h, ls) {

@@ -3,7 +3,7 @@
  * October 2014**/
 'use strict';
 
-var fluidComponents = angular.module("fluid", ["oc.lazyLoad", "LocalStorageModule", "templates-dist", "ngSanitize", "fluidSession",
+var fluidComponents = angular.module("fluid", ["oc.lazyLoad", "LocalStorageModule", "templates-dist", "fluidSession",
     "fluidHttp", "fluidFrame", "fluidMessage", "fluidOption", "fluidTool", "fluidPage", "fluidPanel","fluidTasknav"]);
 
 fluidComponents.config(["$httpProvider", "localStorageServiceProvider", function (h, ls) {
@@ -1812,9 +1812,12 @@ angular.module("fluidPanel", ["oc.lazyLoad", "fluidHttp", "fluidFrame", "fluidMe
                 replace: true,
                 link: {
                     pre: function (scope, element) {
+
                         /* Initialize variables*/
                         scope.pathRegexPattern = /{[\w|\d]*}/;
+
                         scope.fluidPageService = fps;
+
                         scope.generateUrl = function (url, param) {
                             if (isJson(param)) {
                                 param = JSON.parse(param);
@@ -1827,16 +1830,19 @@ angular.module("fluidPanel", ["oc.lazyLoad", "fluidHttp", "fluidFrame", "fluidMe
                             }
                             return url;
                         }
+
                         scope.fluidFrameService = f;
 
-                        console.info("fullScreen", scope.fluidFrameService.fullScreen);
-                        console.info("fluidPanel-task", scope.task);
                         scope.userTask = {};
+
                         scope.userTask.closed = false;
+
                         scope.fluid = {};
+
                         scope.filterPage = function (page) {
                             return (page.showOnList === undefined || page.showOnList == true);
                         }
+
                         scope.showList = function () {
                             var result = {count: 0};
 
@@ -1848,6 +1854,7 @@ angular.module("fluidPanel", ["oc.lazyLoad", "fluidHttp", "fluidFrame", "fluidMe
 
                             return result.count > 1;
                         }
+
                         scope.toolbars = [
                             {
                                 "id": 'showPageList',
@@ -1922,29 +1929,38 @@ angular.module("fluidPanel", ["oc.lazyLoad", "fluidHttp", "fluidFrame", "fluidMe
                                 }
                             }
                         ];
+
                         /* Page Event */
                         scope.fluid.openOption = function (templateId, $event) {
                             fos.openOption(scope.fluid.getElementFlowId('fluid_option'), templateId, $event.currentTarget);
                         }
+
                         scope.fluid.closeOption = function () {
                             fos.closeOption(scope.fluid.getElementFlowId('fluid_option'));
                         }
+
                         scope.fluid.event = {};
+
                         scope.fluid.message = {};
+
                         scope.fluid.message.duration = 3000;
+
                         scope.http = {};
+
                         scope.currentPageIndex = 0;
-                        /*   scope.fluid.pageCallBack = function (page, data) {
-                         console.info("generic callBack", page);
-                         };*/
+
+
                         scope.fluid.onPageChanging = function (page, param) {
                             return true;
                         }
+
                         scope.fluid.onRefreshed = function () {
                         };
+
                         scope.fluid.onOpenPinned = function (page, param) {
 
                         };
+
                         scope.fluid.navToTask = function (task) {
 
                             var $index = {index: 0};
@@ -1959,7 +1975,9 @@ angular.module("fluidPanel", ["oc.lazyLoad", "fluidHttp", "fluidFrame", "fluidMe
                                 $(".frame-content").scrollTo($("div.panel[task]:eq(" + $index.index + ") div"), 200);
                             });
                         }
-                        scope.fluid.openTaskBaseUrl = "services/fluid_task_service/getTask?";
+
+                        scope.fluid.openTaskBaseUrl = "";
+
                         scope.fluid.openTask = function (name, page, param, newTask, origin, size) {
 
                             var url = scope.fluid.openTaskBaseUrl;
@@ -1982,11 +2000,11 @@ angular.module("fluidPanel", ["oc.lazyLoad", "fluidHttp", "fluidFrame", "fluidMe
                             if (newTask) {
                                 url += "&newTask=" + newTask;
                             }
-                            console.info("openTask", url);
-
                             f.addTask(url, origin ? origin : scope.task, true);
                         }
+
                         var parent = element.parent();
+
                         /***********/
                         /* Getters for IDs */
                         scope.fluid.getHomeUrl = function () {
@@ -2066,7 +2084,6 @@ angular.module("fluidPanel", ["oc.lazyLoad", "fluidHttp", "fluidFrame", "fluidMe
                                 } else {
                                     url = url + param;
                                 }
-
                             }
                             return f2.get(url, scope.task);
                         };
@@ -2108,7 +2125,7 @@ angular.module("fluidPanel", ["oc.lazyLoad", "fluidHttp", "fluidFrame", "fluidMe
 
                         /* Action */
                         scope.loadGet = function () {
-                            //adds control for page
+
                             if (!rs.$$phase) {
                                 scope.$apply();
                             }
@@ -2183,10 +2200,6 @@ angular.module("fluidPanel", ["oc.lazyLoad", "fluidHttp", "fluidFrame", "fluidMe
 
                                         }
 
-                                        /*if (scope.task.page.load) {
-                                         scope.task.page.load(data.value);
-                                         }*/
-
                                     }, 400);
                                 });
                             });
@@ -2256,20 +2269,6 @@ angular.module("fluidPanel", ["oc.lazyLoad", "fluidHttp", "fluidFrame", "fluidMe
 
                                         scope.homeUrl = uri;
 
-                                        if (scope.task.pinned === true) {
-                                            scope.userTask.page = scope.task.page.name;
-                                            scope.userTask.param = scope.task.page.param;
-
-                                            if (scope.task.generic === false) {
-                                                if (scope.task.id.indexOf("gen") === -1) {
-                                                    scope.userTask.fluidTaskId = scope.task.id.split("_")[0];
-                                                    scope.userTask.fluidId = scope.task.fluidId;
-                                                    scope.userTask.pinned = scope.task.pinned;
-                                                    f2.post("services/fluid_user_task_crud/save_task_state?field=pin", scope.userTask, scope.task);
-                                                }
-                                            }
-                                        }
-
                                         for (var i = 0; i < scope.task.navPages.length; i++) {
                                             if (scope.task.navPages[i].name === name) {
                                                 scope.currentPageIndex = i;
@@ -2290,11 +2289,13 @@ angular.module("fluidPanel", ["oc.lazyLoad", "fluidHttp", "fluidFrame", "fluidMe
                                 });
                             });
                         };
+
                         scope.fluid.navTo = function (name) {
                             if (scope.fluid.onPageChanging(name)) {
                                 return scope.navToPage(name).then(scope.loadGet());
                             }
                         };
+
                         scope.getToPage = function (name, param) {
                             console.info("getToPage", scope.task.pages);
                             return q(function (resolve, reject) {
@@ -2371,12 +2372,14 @@ angular.module("fluidPanel", ["oc.lazyLoad", "fluidHttp", "fluidFrame", "fluidMe
                                 )
                             });
                         };
+
                         scope.fluid.goTo = function (name, param) {
                             console.info("goTo", name);
                             if (scope.fluid.onPageChanging(name, param)) {
                                 return scope.getToPage(name, param).then(scope.loadGet());
                             }
                         };
+
                         scope.$watch(function (scope) {
                                 return scope.task.currentPage;
                             },
@@ -2522,8 +2525,6 @@ angular.module("fluidPanel", ["oc.lazyLoad", "fluidHttp", "fluidFrame", "fluidMe
 
                         };
 
-                        /*********************/
-
                         /*Instance creation*/
                         scope.$watch(function (scope) {
                                 return scope.task;
@@ -2637,9 +2638,6 @@ angular.module("fluidPanel", ["oc.lazyLoad", "fluidHttp", "fluidFrame", "fluidMe
 
                             }
                         );
-
-                        /*********************/
-
                     },
                     post: function (scope, element) {
 
@@ -2669,12 +2667,7 @@ angular.module("fluidPanel", ["oc.lazyLoad", "fluidHttp", "fluidFrame", "fluidMe
                         });
 
                         scope.$on(scope.fluid.event.getOnTaskLoadedEventId(), function (event) {
-
                         });
-
-                        /*scope.$on(scope.fluid.event.getPageCallBackEventId, function (event, page, data) {
-                         scope.fluid.pageCallBack(page, data);
-                         });*/
 
                         scope.$on(EVENT_NOT_ALLOWED + scope.task.id, function (event, msg) {
                             scope.fluid.message.danger(msg);
@@ -2687,9 +2680,6 @@ angular.module("fluidPanel", ["oc.lazyLoad", "fluidHttp", "fluidFrame", "fluidMe
                             });
 
                         });
-
-                        /*******************/
-
 
                         /* Post creation */
 
@@ -3053,9 +3043,6 @@ angular.module("fluidPanel", ["oc.lazyLoad", "fluidHttp", "fluidFrame", "fluidMe
                                 console.info("ajax-" + scope.task.name + "stopped:", scope.task);
                             });
                         })
-
-
-                        /********************/
                     }
 
                 }
@@ -3145,6 +3132,109 @@ angular.module("fluidSession", ["LocalStorageModule"])
         }
 
     }]);
+;/**
+ * Created by Jerico on 4/29/2015.
+ */
+//TODO: create state manager for task; task should not be altered with scope.
+angular.module("fluidTask", ["oc.lazyLoad", "LocalStorageModule"])
+    .service("fluidTaskService", [function () {
+        this.pathRegexPattern = /{[\w|\d]*}/;
+        this.toolbars = [
+            {
+                "id": 'showPageList',
+                "glyph": "fa fa-th-list",
+                "label": "Menu",
+                "disabled": false,
+                "uiType": "success",
+                "action": function ($event) {
+                    if (rs.viewport === 'sm' || rs.viewport === 'xs' || (rs.viewport === 'lg' && (!f.fullScreen && (scope.task.size === 50 || scope.task.size === 25)))) {
+                        var source = $event.currentTarget;
+                        console.info("showPageList-event", $event);
+                        fos.openOption(scope.fluid.getElementFlowId('fluid_option'), scope.fluid.getElementFlowId('pageList'), source);
+                    } else {
+                        scope.task.showPageList = !scope.task.showPageList;
+                    }
+
+                },
+                "visible": function () {
+
+                    var result = {count: 0};
+
+                    angular.forEach(scope.task.pages, function (page) {
+                        if (page.showOnList) {
+                            this.count++;
+                        }
+                    }, result)
+
+                    return result.count > 1;
+                }
+            },
+            {
+                "id": 'home',
+                "glyph": "fa fa-home",
+                "label": "home",
+                "disabled": false,
+                "uiType": "info",
+                "action": function () {
+                    scope.fluid.goToHome();
+                }
+            },
+            {
+                "id": 'back',
+                "glyph": "fa fa-arrow-left",
+                "label": "back",
+                "disabled": true,
+                "uiType": "info",
+                "action": function () {
+                    if (scope.task.navPages.length > 0 && scope.task.navPages.length > scope.currentPageIndex) {
+                        var i = --scope.currentPageIndex;
+                        var count = scope.task.navPages.length - (i + 1);
+                        var page = scope.task.navPages[i];
+                        scope.task.navPages.splice((i + 1), count);
+                        scope.fluid.navTo(page.name);
+                    } else {
+                        this.disabled = true;
+                    }
+                }
+            },
+            {
+                "id": 'forward',
+                "glyph": "fa fa-arrow-right",
+                "label": "forward",
+                "disabled": true,
+                "uiType": "info",
+                "action": function () {
+                    if (scope.task.navPages.length - 1 > scope.currentPageIndex) {
+                        var page = scope.task.navPages[++scope.currentPageIndex];
+                        scope.fluid.navTo(page.name);
+                    } else {
+                        this.disabled = true;
+                    }
+                }
+            }
+        ];
+        this.generateUrl = function (url, param) {
+            if (isJson(param)) {
+                param = JSON.parse(param);
+            }
+            for (var key in param) {
+                if (param.hasOwnProperty(key)) {
+                    var reg = new RegExp("{" + key + "}", "g");
+                    url = url.replace(reg, param[key]);
+                }
+            }
+            return url;
+        }
+    }])
+    .service("fluidStateService", [function () {
+        return {
+            getTask: function (url) {
+
+            }
+        }
+    }]);
+
+
 ;/**
  * Created by jerico on 4/29/2015.
  */

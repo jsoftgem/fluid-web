@@ -2,7 +2,7 @@
  * Created by Jerico on 4/29/2015.
  */
 //TODO: create state manager for task; task should not be altered with scope.
-angular.module("fluidTask", ["oc.lazyLoad", "LocalStorageModule"])
+angular.module("fluidTask", ["oc.lazyLoad", "fluidSession"])
     .service("fluidTaskService", [function () {
         this.pathRegexPattern = /{[\w|\d]*}/;
         this.toolbars = [
@@ -92,10 +92,21 @@ angular.module("fluidTask", ["oc.lazyLoad", "LocalStorageModule"])
             return url;
         }
     }])
-    .service("fluidStateService", [function () {
+    .service("fluidStateService", ["$http", "sessionService", function (h, ss) {
         return {
             getTask: function (url) {
-
+                console.log("fluidTask-fluidStateService-getTask.url:" + url);
+                if (ss.containsKey(url)) {
+                    return ss.getSessionProperty(url);
+                } else {
+                    h.get(url).success(function (task) {
+                        ss.addSessionProperty(url, task);
+                        console.log("fluidTask-fluidStateService-getTask.success:" + task);
+                    }).error(function (msg) {
+                        console.log("fluidTask-fluidStateService-getTask.error:" + msg);
+                        return;
+                    });
+                }
             }
         }
     }]);
