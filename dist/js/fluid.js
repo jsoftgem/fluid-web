@@ -1566,13 +1566,10 @@ angular.module("fluidHttp", ["fluidSession"])
             return {"fluid-container-id": "_id_fpb_" + task.id, "Content-type": "application/json"};
         }
         this.query = function (query, task) {
-
             if (task) {
                 task.loaded = false;
             }
-
             var promise = h(query);
-
             promise.error(function (data, status, headers, config) {
                 if (task) {
                     task.loaded = true;
@@ -1583,8 +1580,6 @@ angular.module("fluidHttp", ["fluidSession"])
                     rs.$broadcast(EVENT_NOT_ALLOWED + task.id, data.msg);
                 }
             });
-
-
             promise.then(function () {
                 if (task) {
                     task.loaded = true;
@@ -1594,6 +1589,19 @@ angular.module("fluidHttp", ["fluidSession"])
 
             return promise;
         }
+
+        this.queryLocal = function (query) {
+            var promise = h(query);
+            promise.error(function (data, status, headers, config) {
+                if (status === 401) {
+                    rs.$broadcast("NOT_AUTHENTICATED");
+                } else if (status === 403) {
+                    rs.$broadcast(EVENT_NOT_ALLOWED + task.id, data.msg);
+                }
+            });
+            return promise;
+        }
+
         return this;
     }])
     .service("fluidLoaderService", [function () {
@@ -3097,6 +3105,11 @@ angular.module("fluidSession", ["LocalStorageModule"])
             return ls.get(AUTHORIZATION) !== null;
         }
 
+
+        this.containsKey = function (key) {
+            return !(!this.getSessionProperty(key));
+        }
+
         this.addSessionProperty = function (key, value) {
             if (this.isSessionSupported) {
                 ls.set(key, value);
@@ -3136,7 +3149,7 @@ angular.module("fluidSession", ["LocalStorageModule"])
  * Created by jerico on 4/29/2015.
  */
 angular.module("fluidTasknav", ["fluidHttp", "fluidSession"])
-    .directive("fluidTasknav", ["$templateCache", function (tc) {
+    .directive("fluidTasknav", ["$templateCache", "sessionService", "fluidHttpService", function (tc, ss, fhs) {
         return {
             restrict: "AE",
             scope: false,
@@ -3149,7 +3162,7 @@ angular.module("fluidTasknav", ["fluidHttp", "fluidSession"])
                     $("body").addClass("toggle-offcanvas");
                 }
 
-
+                //TODO: position support: default is left
                 if (attr.position) {
                     console.info("attr.position", attr.position);
                     if (attr.position === "right") {
@@ -3160,10 +3173,38 @@ angular.module("fluidTasknav", ["fluidHttp", "fluidSession"])
                 }
 
 
+                if (attr.method) {
+                    scope.method = attr.method;
+                }
+
+                //TODO: ajax data
+                scope.$watch(function () {
+                    if (attr.url) {
+                        return attr.url
+                    }
+                }, function (url) {
+                    scope.loaded = false;
+                    if (ss.containsKey(url)) {
+                        scope.data = ss.getSessionProperty(url);
+                        scope.loaded = true;
+                    } else {
+                        var method = (scope.method ? scope.method : "get");
+                        scope.data = fhs.queryLocal({
+                            url: url,
+                            method: method
+                        }).success(function (data) {
+                            scope.data = data;
+                        }).then(function () {
+                            scope.loaded = true;
+                        });
+                    }
+                });
+
+
             }
         }
     }])
-    .service("fluidTasknavService", ["fluidHttpService", "sessionService", function (fhs, ss) {
+    .service("fluidTasknavService", ["sessionService", function (ss) {
 
         this.toggle = function (id) {
             if ($("body").hasClass("toggle-offcanvas")) {
@@ -3172,6 +3213,7 @@ angular.module("fluidTasknav", ["fluidHttp", "fluidSession"])
                 $("body").addClass("toggle-offcanvas");
             }
         }
+
 
         return this;
     }]);;/**
@@ -3239,7 +3281,8 @@ angular.module("fluidTool", [])
 angular.module("templates/fluid/fluid-tasknav.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("templates/fluid/fluid-tasknav.html",
     "<nav id class=\"fluid-tasknav\">\n" +
-    "    sample\n" +
+    "    <fluid-loader ng-if=\"loaded == undefined || loaded == true\"></fluid-loader>\n" +
+    "\n" +
     "</nav>");
 }]);
 

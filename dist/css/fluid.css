@@ -108,6 +108,7 @@ body {
 }
 
 @media (min-width: 1200px) {
+
     .fluid-tasknav {
         margin-left: -300px;
         width: 300px;
