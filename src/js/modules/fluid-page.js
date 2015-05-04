@@ -12,11 +12,9 @@ angular.module("fluidPage", ["fluidHttp"])
 
                 scope.fluidPageService = fps;
 
-                if (!scope.page) {
-                    throw "[fluidPage] Page is required.";
+                if (scope.page) {
+                    scope.fluidPage = new FluidPage(scope.page);
                 }
-
-                scope.fluidPage = new FluidPage(scope.page);
 
                 scope.load = function () {
                     //TODO: set load here
@@ -60,12 +58,15 @@ angular.module("fluidPage", ["fluidHttp"])
             if (fps.pages[page.name] != null) {
                 return fps.pages[page.name];
             } else {
-                this.preLoad = function () {
+                this.id = page.id;
+                this.title = page.title;
+                this.name = page.name;
 
+                this.preLoad = function (page) {
                 }
                 this.onLoad = function (data) {
-
                 }
+
                 fps.pages[page.name] = this;
             }
             return this;
@@ -73,8 +74,10 @@ angular.module("fluidPage", ["fluidHttp"])
 
         return fluidPage;
     }])
-    .service("fluidPageService", ["$templateCache", "fluidHttpService", function (tc, fhs) {
+
+    .service("fluidPageService", ["$templateCache", function (tc) {
         this.pages = [];
+        this.pageHomes = [];
         this.clear = function (page) {
             this.pages[page] = undefined;
         }
@@ -115,8 +118,11 @@ angular.module("fluidPage", ["fluidHttp"])
                         page.home = page.ajax.url;
                     }
                 }
+                this.pageHomes[page.home] = page;
+
+                return page.home;
             }
-            return page;
+
         }
         return this;
     }]);

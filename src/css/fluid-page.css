@@ -2,7 +2,6 @@
     background: #9fbbb4;
 }
 
-.fluid-panel .noToolbar .fluid-page {
-    margin-top: -20px;
+.noToolbar {
+    margin-top: -20px !important;
 }
-

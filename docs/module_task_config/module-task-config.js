@@ -2,9 +2,9 @@
  * Created by Jerico on 4/27/2015.
  */
 angular.module("moduleTaskConfig", ["fluid"])
-    .controller("moduleTaskConfigCtrl", ["$scope", "fluidFrameService", "TaskControl", function (s, ffs, TaskControl) {
-
-        var sample = new TaskControl(scope.task.name);
+    .controller("moduleTaskConfigCtrl", ["$scope", "fluidFrameService", "TaskControl", "FluidPage", function (s, ffs, TaskControl, FluidPage) {
+        console.info("moduleTaskConfigCtrl.task", s.task); //TODO: Task is not defined.
+        var sample = new TaskControl(s.task);
         sample.glyph = "fa fa-gears";
 
         s.fluidFrameScreen = ffs;

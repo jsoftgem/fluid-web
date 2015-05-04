@@ -4,10 +4,10 @@
         <div class="panel-title">
             <a href="#" class="fluid-panel-heading-title" data-toggle="collapse" data-target="#collapse_{{task.id}}">
                 <fluid-task-icon class="hidden-xs hidden-sm hidden25 btn-group btn-group-xs"></fluid-task-icon>
-                <span>{{task.title}}</span>
+                <span ng-if="fluidPanel.loaded">{{task.title}}</span>
             </a>
-
         </div>
+        <fluid-loader ng-if="!fluidPanel.loaded" class="fluid-panel-loader"></fluid-loader>
         <div class="fluid-panel controls">
             <fluid-taskcontrols></fluid-taskcontrols>
         </div>

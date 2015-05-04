@@ -4,7 +4,7 @@
 'use strict';
 
 var fluidComponents = angular.module("fluid", ["oc.lazyLoad", "LocalStorageModule", "templates-dist", "fluidSession",
-    "fluidHttp", "fluidFrame", "fluidMessage", "fluidOption", "fluidTool", "fluidPage", "fluidPanel", "fluidTasknav", "fluidTask","fluidTaskcontrols"]);
+    "fluidHttp", "fluidFrame", "fluidMessage", "fluidOption", "fluidTool", "fluidPage", "fluidPanel", "fluidTasknav", "fluidTask", "fluidTaskcontrols"]);
 
 fluidComponents.config(["$httpProvider", "localStorageServiceProvider", function (h, ls) {
     ls.setPrefix("fluid")
@@ -230,43 +230,48 @@ fluidComponents
     }]);
 
 fluidComponents
-    .factory("fluidInjector", ["$q", "$rootScope", "sessionService", "fluidLoaderService", "responseEvent", function (q, rs, ss, fls, r) {
+    .factory("fluidInjector", ["$q", "$rootScope", "sessionService", "fluidLoaderService", "responseEvent", "fluidPageService", "FluidPage",
+        function (q, rs, ss, fls, r, fps, FluidPage) {
 
-        return {
-            "request": function (config) {
-                if (fls.enabled) {
-                    fls.loaded = false;
-                }
+            return {
+                "request": function (config) {
+                    if (fls.enabled) {
+                        fls.loaded = false;
+                    }
 
-                config.headers["Access-Control-Allow-Origin"] = "*";
+                    config.headers["Access-Control-Allow-Origin"] = "*";
 
-                if (config.headers['fluid-container-id'] !== undefined) {
-                    // $('#' + config.headers['fluid-container-id']).loadingOverlay();
+                    console.info("fluidInjector-request.config", config);
+
+                    if (fps.pageHomes[config.url] !== null) {
+                        var page = new FluidPage(fps.pageHomes[config.url]);
+                        console.info("fluidInjector-request.page", page);
+                        page.preLoad(fps.pageHomes[config.url]);
+                    }
+
+                    if (ss.isSessionOpened()) {
+                        config.headers['Authorization'] = ss.getSessionProperty(AUTHORIZATION);
+                    }
+                    return config;
+                },
+                "requestError": function (rejection) {
+                    fls.loaded = true;
+                    fls.enabled = true;
+                    return q.reject(rejection);
+                },
+                "response": function (response) {
+                    fls.loaded = true;
+                    fls.enabled = true;
+                    r.callEvent(response);
+                    return response;
+                },
+                "responseError": function (rejection) {
+                    fls.loaded = true;
+                    fls.enabled = true;
+                    return q.reject(rejection);
                 }
-                if (ss.isSessionOpened()) {
-                    config.headers['Authorization'] = ss.getSessionProperty(AUTHORIZATION);
-                }
-                return config;
-            }
-            ,
-            "requestError": function (rejection) {
-                fls.loaded = true;
-                fls.enabled = true;
-                return q.reject(rejection);
-            },
-            "response": function (response) {
-                fls.loaded = true;
-                fls.enabled = true;
-                r.callEvent(response);
-                return response;
-            },
-            "responseError": function (rejection) {
-                fls.loaded = true;
-                fls.enabled = true;
-                return q.reject(rejection);
-            }
-        };
-    }])
+            };
+        }])
     .factory("responseEvent", ["$location", "$rootScope", function (l, rs) {
 
         var responseEvent = {};

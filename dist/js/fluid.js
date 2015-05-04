@@ -4,7 +4,7 @@
 'use strict';
 
 var fluidComponents = angular.module("fluid", ["oc.lazyLoad", "LocalStorageModule", "templates-dist", "fluidSession",
-    "fluidHttp", "fluidFrame", "fluidMessage", "fluidOption", "fluidTool", "fluidPage", "fluidPanel", "fluidTasknav", "fluidTask","fluidTaskcontrols"]);
+    "fluidHttp", "fluidFrame", "fluidMessage", "fluidOption", "fluidTool", "fluidPage", "fluidPanel", "fluidTasknav", "fluidTask", "fluidTaskcontrols"]);
 
 fluidComponents.config(["$httpProvider", "localStorageServiceProvider", function (h, ls) {
     ls.setPrefix("fluid")
@@ -230,43 +230,48 @@ fluidComponents
     }]);
 
 fluidComponents
-    .factory("fluidInjector", ["$q", "$rootScope", "sessionService", "fluidLoaderService", "responseEvent", function (q, rs, ss, fls, r) {
+    .factory("fluidInjector", ["$q", "$rootScope", "sessionService", "fluidLoaderService", "responseEvent", "fluidPageService", "FluidPage",
+        function (q, rs, ss, fls, r, fps, FluidPage) {
 
-        return {
-            "request": function (config) {
-                if (fls.enabled) {
-                    fls.loaded = false;
-                }
+            return {
+                "request": function (config) {
+                    if (fls.enabled) {
+                        fls.loaded = false;
+                    }
 
-                config.headers["Access-Control-Allow-Origin"] = "*";
+                    config.headers["Access-Control-Allow-Origin"] = "*";
 
-                if (config.headers['fluid-container-id'] !== undefined) {
-                    // $('#' + config.headers['fluid-container-id']).loadingOverlay();
+                    console.info("fluidInjector-request.config", config);
+
+                    if (fps.pageHomes[config.url] !== null) {
+                        var page = new FluidPage(fps.pageHomes[config.url]);
+                        console.info("fluidInjector-request.page", page);
+                        page.preLoad(fps.pageHomes[config.url]);
+                    }
+
+                    if (ss.isSessionOpened()) {
+                        config.headers['Authorization'] = ss.getSessionProperty(AUTHORIZATION);
+                    }
+                    return config;
+                },
+                "requestError": function (rejection) {
+                    fls.loaded = true;
+                    fls.enabled = true;
+                    return q.reject(rejection);
+                },
+                "response": function (response) {
+                    fls.loaded = true;
+                    fls.enabled = true;
+                    r.callEvent(response);
+                    return response;
+                },
+                "responseError": function (rejection) {
+                    fls.loaded = true;
+                    fls.enabled = true;
+                    return q.reject(rejection);
                 }
-                if (ss.isSessionOpened()) {
-                    config.headers['Authorization'] = ss.getSessionProperty(AUTHORIZATION);
-                }
-                return config;
-            }
-            ,
-            "requestError": function (rejection) {
-                fls.loaded = true;
-                fls.enabled = true;
-                return q.reject(rejection);
-            },
-            "response": function (response) {
-                fls.loaded = true;
-                fls.enabled = true;
-                r.callEvent(response);
-                return response;
-            },
-            "responseError": function (rejection) {
-                fls.loaded = true;
-                fls.enabled = true;
-                return q.reject(rejection);
-            }
-        };
-    }])
+            };
+        }])
     .factory("responseEvent", ["$location", "$rootScope", function (l, rs) {
 
         var responseEvent = {};
@@ -1888,11 +1893,9 @@ angular.module("fluidPage", ["fluidHttp"])
 
                 scope.fluidPageService = fps;
 
-                if (!scope.page) {
-                    throw "[fluidPage] Page is required.";
+                if (scope.page) {
+                    scope.fluidPage = new FluidPage(scope.page);
                 }
-
-                scope.fluidPage = new FluidPage(scope.page);
 
                 scope.load = function () {
                     //TODO: set load here
@@ -1936,12 +1939,15 @@ angular.module("fluidPage", ["fluidHttp"])
             if (fps.pages[page.name] != null) {
                 return fps.pages[page.name];
             } else {
-                this.preLoad = function () {
+                this.id = page.id;
+                this.title = page.title;
+                this.name = page.name;
 
+                this.preLoad = function (page) {
                 }
                 this.onLoad = function (data) {
-
                 }
+
                 fps.pages[page.name] = this;
             }
             return this;
@@ -1949,8 +1955,10 @@ angular.module("fluidPage", ["fluidHttp"])
 
         return fluidPage;
     }])
-    .service("fluidPageService", ["$templateCache", "fluidHttpService", function (tc, fhs) {
+
+    .service("fluidPageService", ["$templateCache", function (tc) {
         this.pages = [];
+        this.pageHomes = [];
         this.clear = function (page) {
             this.pages[page] = undefined;
         }
@@ -1991,8 +1999,11 @@ angular.module("fluidPage", ["fluidHttp"])
                         page.home = page.ajax.url;
                     }
                 }
+                this.pageHomes[page.home] = page;
+
+                return page.home;
             }
-            return page;
+
         }
         return this;
     }]);
@@ -3289,8 +3300,8 @@ angular.module("fluidPanel", ["oc.lazyLoad", "fluidHttp", "fluidFrame", "fluidMe
             replace: true
         }
     }])
-    .directive("fluidPanel2", ["$templateCache", "FluidPanelModel", "fluidControlService", "fluidToolbarService",
-        function (tc, FluidPanel, fcs, ftb) {
+    .directive("fluidPanel2", ["$templateCache", "FluidPanelModel", "fluidToolbarService", "$ocLazyLoad",
+        function (tc, FluidPanel, ftb, oc) {
             return {
                 require: "^fluidFrame2",
                 scope: {task: "="},
@@ -3299,18 +3310,43 @@ angular.module("fluidPanel", ["oc.lazyLoad", "fluidHttp", "fluidFrame", "fluidMe
                 link: {
                     pre: function (scope, element, attr) {
 
-                        scope.$watch(fcs.controls[scope.task.name], function (controls) {
-                            scope.task.taskControls = fcs.controls[scope.task.name];
-                        });
+                        if (scope.task.lazyLoad) {
+                            var pathArr = undefined;
+                            if (scope.task.moduleFiles.indexOf(",") > 0) {
+                                pathArr = scope.task.moduleFiles.split(",");
+                            }
+
+                            var files = [];
+                            if (pathArr) {
+                                for (var i = 0; i < pathArr.length; i++) {
+                                    files.push(pathArr[i]);
+                                }
+                            } else {
+                                files.push(scope.task.moduleFiles);
+                            }
+
+                            oc.load({
+                                name: scope.task.moduleJS,
+                                files: files,
+                                cache: true
+                            }).then(function () {
+                                scope.fluidPanel = new FluidPanel(scope.task);
+                            });
+                        } else {
+                            scope.fluidPanel = new FluidPanel(scope.task);
+                        }
+
+
+                    },
+                    post: function (scope, element, attr) {
+
+                        scope.getElementFlowId = function (id) {
+                            return id + "_" + scope.task.id;
+                        }
 
                         scope.$watch(ftb.toolbarItems[scope.task.name], function (toolbarItems) {
                             scope.task.controls = ftb.toolbarItems[scope.task.name];
                         });
-
-                        scope.fluidPanel = new FluidPanel(scope.task);
-                    },
-                    post: function (scope, element, attr) {
-
                     }
                 }
 
@@ -3323,6 +3359,16 @@ angular.module("fluidPanel", ["oc.lazyLoad", "fluidHttp", "fluidFrame", "fluidMe
         var fluidPanel = function (task) {
             var taskModel = new FluidTask(task);
             task.page = taskModel.page;
+            this.loaded = false;
+
+            var minimizeControl = new TaskControl(task);
+            minimizeControl.glyph = "fa fa-caret-down";
+            minimizeControl.uiClass = "btn btn-info";
+            minimizeControl.label = "Minimize";
+            minimizeControl.action = function (task, $event) {
+                task.active = false;
+            }
+
             var refreshControl = new TaskControl(task);
             refreshControl.glyph = "fa fa-refresh";
             refreshControl.uiClass = "btn btn-success";
@@ -3362,6 +3408,8 @@ angular.module("fluidPanel", ["oc.lazyLoad", "fluidHttp", "fluidFrame", "fluidMe
             nextToolBarItem.action = function (task, $event) {
 
             }
+
+
         }
         return fluidPanel;
     }])
@@ -3442,7 +3490,7 @@ angular.module("fluidSession", ["LocalStorageModule"])
 //TODO: create state manager for task; task should not be altered with scope.
 var taskKey = "$task_";
 
-angular.module("fluidTask", ["oc.lazyLoad", "fluidSession"])
+angular.module("fluidTask", ["fluidSession"])
     .provider("taskState", function () {
         var url, ajax, taskArray;
         return {
@@ -3484,9 +3532,7 @@ angular.module("fluidTask", ["oc.lazyLoad", "fluidSession"])
             if (task.stateAjax) {
                 var defaultTask = this.getDetaultTask();
             }
-
             // gets the homepage
-
             if (task.pages) {
                 angular.forEach(task.pages, function (page) {
                     if (page.isHome) {
@@ -3498,8 +3544,7 @@ angular.module("fluidTask", ["oc.lazyLoad", "fluidSession"])
 
         }
         return taskService;
-    }
-    ])
+    }])
     .service("fluidStateService", ["sessionService", "taskState", "$http", "Task", function (ss, tsp, h, Task) {
         this.loadTask = function () {
             if (tsp.ajax) {
@@ -3560,17 +3605,20 @@ angular.module("fluidTask", ["oc.lazyLoad", "fluidSession"])
  * Created by Jerico on 5/3/2015.
  */
 angular.module("fluidTaskcontrols", ["fluidTask"])
-    .directive("fluidTaskcontrols", ["$templateCache", "fluidTaskService", function (tc) {
+    .directive("fluidTaskcontrols", ["$templateCache", "fluidControlService", function (tc, fcs) {
         return {
             restrict: "E",
             template: tc.get("templates/fluid/fluidTaskcontrols.html"),
             scope: false,
             link: function (scope, element, attr) {
+                scope.fluidControlService = fcs;
                 if (scope.task) {
                     console.info("fluidTaskcontrols-fluidTaskcontrols.task", scope.task);
                 } else {
                     throw  "Task is required."
                 }
+
+
             },
             replace: true
         }
@@ -3834,7 +3882,7 @@ angular.module("templates/fluid/fluidLoader.html", []).run(["$templateCache", fu
   $templateCache.put("templates/fluid/fluidLoader.html",
     "<div>\n" +
     "<style>\n" +
-    "    #{{fluid.getElementFlowId('followingBallsG')}} {\n" +
+    "    #{{getElementFlowId('followingBallsG')}} {\n" +
     "        position:relative;\n" +
     "        width:205px;\n" +
     "        height:16px;\n" +
@@ -3874,27 +3922,27 @@ angular.module("templates/fluid/fluidLoader.html", []).run(["$templateCache", fu
     "        animation-direction:normal;\n" +
     "    }\n" +
     "\n" +
-    "    #{{fluid.getElementFlowId('followingBallsG_1')}} {\n" +
+    "    #{{getElementFlowId('followingBallsG_1')}} {\n" +
     "        -moz-animation-delay:0s;\n" +
     "    }\n" +
     "\n" +
-    "    #{{fluid.getElementFlowId('followingBallsG_1')}} {\n" +
+    "    #{{getElementFlowId('followingBallsG_1')}} {\n" +
     "        -webkit-animation-delay:0s;\n" +
     "    }\n" +
     "\n" +
-    "    #{{fluid.getElementFlowId('followingBallsG_1')}} {\n" +
+    "    #{{getElementFlowId('followingBallsG_1')}} {\n" +
     "        -ms-animation-delay:0s;\n" +
     "    }\n" +
     "\n" +
-    "    #{{fluid.getElementFlowId('followingBallsG_1')}} {\n" +
+    "    #{{getElementFlowId('followingBallsG_1')}} {\n" +
     "        -o-animation-delay:0s;\n" +
     "    }\n" +
     "\n" +
-    "    #{{fluid.getElementFlowId('followingBallsG_1')}} {\n" +
+    "    #{{getElementFlowId('followingBallsG_1')}} {\n" +
     "        animation-delay:0s;\n" +
     "    }\n" +
     "\n" +
-    "    #{{fluid.getElementFlowId('followingBallsG_2')}} {\n" +
+    "    #{{getElementFlowId('followingBallsG_2')}} {\n" +
     "        -moz-animation-delay:0.22s;\n" +
     "        -webkit-animation-delay:0.22s;\n" +
     "        -ms-animation-delay:0.22s;\n" +
@@ -3902,7 +3950,7 @@ angular.module("templates/fluid/fluidLoader.html", []).run(["$templateCache", fu
     "        animation-delay:0.22s;\n" +
     "    }\n" +
     "\n" +
-    "    #{{fluid.getElementFlowId('followingBallsG_3')}} {\n" +
+    "    #{{getElementFlowId('followingBallsG_3')}} {\n" +
     "        -moz-animation-delay:0.44s;\n" +
     "        -webkit-animation-delay:0.44s;\n" +
     "        -ms-animation-delay:0.44s;\n" +
@@ -3910,7 +3958,7 @@ angular.module("templates/fluid/fluidLoader.html", []).run(["$templateCache", fu
     "        animation-delay:0.44s;\n" +
     "    }\n" +
     "\n" +
-    "    #{{fluid.getElementFlowId('followingBallsG_4')}} {\n" +
+    "    #{{getElementFlowId('followingBallsG_4')}} {\n" +
     "        -moz-animation-delay:0.66s;\n" +
     "        -webkit-animation-delay:0.66s;\n" +
     "        -ms-animation-delay:0.66s;\n" +
@@ -4009,14 +4057,14 @@ angular.module("templates/fluid/fluidLoader.html", []).run(["$templateCache", fu
     "    }\n" +
     "\n" +
     "</style>\n" +
-    "<div id=\"{{fluid.getElementFlowId('followingBallsG')}}\">\n" +
-    "    <span id=\"{{fluid.getElementFlowId('followingBallsG_1')}}\" class=\"followingBallsG\">\n" +
+    "<div id=\"followingBallsG\">\n" +
+    "    <span id=\"followingBallsG_1\" class=\"followingBallsG\">\n" +
     "    </span>\n" +
-    "    <span id=\"{{fluid.getElementFlowId('followingBallsG_2')}}\" class=\"followingBallsG\">\n" +
+    "    <span id=\"followingBallsG_2\" class=\"followingBallsG\">\n" +
     "    </span>\n" +
-    "    <span id=\"{{fluid.getElementFlowId('followingBallsG_3')}}\" class=\"followingBallsG\">\n" +
+    "    <span id=\"followingBallsG_3\" class=\"followingBallsG\">\n" +
     "    </span>\n" +
-    "    <span id=\"{{fluid.getElementFlowId('followingBallsG_4')}}\" class=\"followingBallsG\">\n" +
+    "    <span id=\"followingBallsG_4\" class=\"followingBallsG\">\n" +
     "    </span>\n" +
     "</div>\n" +
     "</div>");
@@ -4031,7 +4079,9 @@ angular.module("templates/fluid/fluidOption.html", []).run(["$templateCache", fu
 
 angular.module("templates/fluid/fluidPage.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("templates/fluid/fluidPage.html",
-    "<ng-include class=\"fluid-page\" src=\"fluidPageService.render(page).home\" onload=\"load()\"></ng-include>\n" +
+    "<div>\n" +
+    "    <ng-include class=\"fluid-page\" src=\"fluidPageService.render(page)\" onload=\"load()\"></ng-include>\n" +
+    "</div>\n" +
     "");
 }]);
 
@@ -4199,10 +4249,10 @@ angular.module("templates/fluid/fluidPanel2.html", []).run(["$templateCache", fu
     "        <div class=\"panel-title\">\n" +
     "            <a href=\"#\" class=\"fluid-panel-heading-title\" data-toggle=\"collapse\" data-target=\"#collapse_{{task.id}}\">\n" +
     "                <fluid-task-icon class=\"hidden-xs hidden-sm hidden25 btn-group btn-group-xs\"></fluid-task-icon>\n" +
-    "                <span>{{task.title}}</span>\n" +
+    "                <span ng-if=\"fluidPanel.loaded\">{{task.title}}</span>\n" +
     "            </a>\n" +
-    "\n" +
     "        </div>\n" +
+    "        <fluid-loader ng-if=\"!fluidPanel.loaded\" class=\"fluid-panel-loader\"></fluid-loader>\n" +
     "        <div class=\"fluid-panel controls\">\n" +
     "            <fluid-taskcontrols></fluid-taskcontrols>\n" +
     "        </div>\n" +
@@ -4234,7 +4284,8 @@ angular.module("templates/fluid/fluidTaskcontrols.html", []).run(["$templateCach
     "<span>\n" +
     "      <div class=\"hidden-xs hidden-sm hidden-md hidden25 btn-group btn-group-xs\">\n" +
     "          <button type=\"button\" ng-if=\"control.visible()\" ng-disbabled=\"control.disabled()\" class=\"{{control.uiClass}}\"\n" +
-    "                  ng-repeat=\"control in task.taskControls\" ng-class=\"control.class\" ng-click=\"control.action(task,$event)\"><i\n" +
+    "                  ng-repeat=\"control in fluidControlService.controls[task.name]\" ng-class=\"control.class\"\n" +
+    "                  ng-click=\"control.action(task,$event)\"><i\n" +
     "                  class=\"{{control.glyph}}\"></i></button>\n" +
     "      </div>\n" +
     "      <div class=\"hidden100 hidden50 hidden75 btn-group btn-group-xs small\">\n" +
@@ -4242,7 +4293,8 @@ angular.module("templates/fluid/fluidTaskcontrols.html", []).run(["$templateCach
     "              <fluid-task-icon task=\"task\"></fluid-task-icon>\n" +
     "          </a>\n" +
     "          <ul class='dropdown-menu dropdown-menu-right dropdown-menu-inverse'>\n" +
-    "              <li ng-repeat=\"control in task.taskControls\" ng-if=\"control.visible() || control.disabled()\"\n" +
+    "              <li ng-repeat=\"control in fluidControlService.controls[task.name]\"\n" +
+    "                  ng-if=\"control.visible() || control.disabled()\"\n" +
     "                  ng-class=\"control.class\">\n" +
     "                  <a href=\"#\" ng-click=\"control.action(task,$event)\">{{control.label}}</a>\n" +
     "              </li>\n" +

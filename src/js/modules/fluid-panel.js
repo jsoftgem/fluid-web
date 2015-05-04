@@ -1278,8 +1278,8 @@ angular.module("fluidPanel", ["oc.lazyLoad", "fluidHttp", "fluidFrame", "fluidMe
             replace: true
         }
     }])
-    .directive("fluidPanel2", ["$templateCache", "FluidPanelModel", "fluidControlService", "fluidToolbarService",
-        function (tc, FluidPanel, fcs, ftb) {
+    .directive("fluidPanel2", ["$templateCache", "FluidPanelModel", "fluidToolbarService", "$ocLazyLoad",
+        function (tc, FluidPanel, ftb, oc) {
             return {
                 require: "^fluidFrame2",
                 scope: {task: "="},
@@ -1288,18 +1288,43 @@ angular.module("fluidPanel", ["oc.lazyLoad", "fluidHttp", "fluidFrame", "fluidMe
                 link: {
                     pre: function (scope, element, attr) {
 
-                        scope.$watch(fcs.controls[scope.task.name], function (controls) {
-                            scope.task.taskControls = fcs.controls[scope.task.name];
-                        });
+                        if (scope.task.lazyLoad) {
+                            var pathArr = undefined;
+                            if (scope.task.moduleFiles.indexOf(",") > 0) {
+                                pathArr = scope.task.moduleFiles.split(",");
+                            }
+
+                            var files = [];
+                            if (pathArr) {
+                                for (var i = 0; i < pathArr.length; i++) {
+                                    files.push(pathArr[i]);
+                                }
+                            } else {
+                                files.push(scope.task.moduleFiles);
+                            }
+
+                            oc.load({
+                                name: scope.task.moduleJS,
+                                files: files,
+                                cache: true
+                            }).then(function () {
+                                scope.fluidPanel = new FluidPanel(scope.task);
+                            });
+                        } else {
+                            scope.fluidPanel = new FluidPanel(scope.task);
+                        }
+
+
+                    },
+                    post: function (scope, element, attr) {
+
+                        scope.getElementFlowId = function (id) {
+                            return id + "_" + scope.task.id;
+                        }
 
                         scope.$watch(ftb.toolbarItems[scope.task.name], function (toolbarItems) {
                             scope.task.controls = ftb.toolbarItems[scope.task.name];
                         });
-
-                        scope.fluidPanel = new FluidPanel(scope.task);
-                    },
-                    post: function (scope, element, attr) {
-
                     }
                 }
 
@@ -1312,6 +1337,16 @@ angular.module("fluidPanel", ["oc.lazyLoad", "fluidHttp", "fluidFrame", "fluidMe
         var fluidPanel = function (task) {
             var taskModel = new FluidTask(task);
             task.page = taskModel.page;
+            this.loaded = false;
+
+            var minimizeControl = new TaskControl(task);
+            minimizeControl.glyph = "fa fa-caret-down";
+            minimizeControl.uiClass = "btn btn-info";
+            minimizeControl.label = "Minimize";
+            minimizeControl.action = function (task, $event) {
+                task.active = false;
+            }
+
             var refreshControl = new TaskControl(task);
             refreshControl.glyph = "fa fa-refresh";
             refreshControl.uiClass = "btn btn-success";
@@ -1351,6 +1386,8 @@ angular.module("fluidPanel", ["oc.lazyLoad", "fluidHttp", "fluidFrame", "fluidMe
             nextToolBarItem.action = function (task, $event) {
 
             }
+
+
         }
         return fluidPanel;
     }])

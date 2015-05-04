@@ -2,17 +2,20 @@
  * Created by Jerico on 5/3/2015.
  */
 angular.module("fluidTaskcontrols", ["fluidTask"])
-    .directive("fluidTaskcontrols", ["$templateCache", "fluidTaskService", function (tc) {
+    .directive("fluidTaskcontrols", ["$templateCache", "fluidControlService", function (tc, fcs) {
         return {
             restrict: "E",
             template: tc.get("templates/fluid/fluidTaskcontrols.html"),
             scope: false,
             link: function (scope, element, attr) {
+                scope.fluidControlService = fcs;
                 if (scope.task) {
                     console.info("fluidTaskcontrols-fluidTaskcontrols.task", scope.task);
                 } else {
                     throw  "Task is required."
                 }
+
+
             },
             replace: true
         }

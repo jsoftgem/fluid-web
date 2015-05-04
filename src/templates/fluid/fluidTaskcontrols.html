@@ -1,7 +1,8 @@
 <span>
       <div class="hidden-xs hidden-sm hidden-md hidden25 btn-group btn-group-xs">
           <button type="button" ng-if="control.visible()" ng-disbabled="control.disabled()" class="{{control.uiClass}}"
-                  ng-repeat="control in task.taskControls" ng-class="control.class" ng-click="control.action(task,$event)"><i
+                  ng-repeat="control in fluidControlService.controls[task.name]" ng-class="control.class"
+                  ng-click="control.action(task,$event)"><i
                   class="{{control.glyph}}"></i></button>
       </div>
       <div class="hidden100 hidden50 hidden75 btn-group btn-group-xs small">
@@ -9,7 +10,8 @@
               <fluid-task-icon task="task"></fluid-task-icon>
           </a>
           <ul class='dropdown-menu dropdown-menu-right dropdown-menu-inverse'>
-              <li ng-repeat="control in task.taskControls" ng-if="control.visible() || control.disabled()"
+              <li ng-repeat="control in fluidControlService.controls[task.name]"
+                  ng-if="control.visible() || control.disabled()"
                   ng-class="control.class">
                   <a href="#" ng-click="control.action(task,$event)">{{control.label}}</a>
               </li>

@@ -4,7 +4,7 @@
 //TODO: create state manager for task; task should not be altered with scope.
 var taskKey = "$task_";
 
-angular.module("fluidTask", ["oc.lazyLoad", "fluidSession"])
+angular.module("fluidTask", ["fluidSession"])
     .provider("taskState", function () {
         var url, ajax, taskArray;
         return {
@@ -46,9 +46,7 @@ angular.module("fluidTask", ["oc.lazyLoad", "fluidSession"])
             if (task.stateAjax) {
                 var defaultTask = this.getDetaultTask();
             }
-
             // gets the homepage
-
             if (task.pages) {
                 angular.forEach(task.pages, function (page) {
                     if (page.isHome) {
@@ -60,8 +58,7 @@ angular.module("fluidTask", ["oc.lazyLoad", "fluidSession"])
 
         }
         return taskService;
-    }
-    ])
+    }])
     .service("fluidStateService", ["sessionService", "taskState", "$http", "Task", function (ss, tsp, h, Task) {
         this.loadTask = function () {
             if (tsp.ajax) {
