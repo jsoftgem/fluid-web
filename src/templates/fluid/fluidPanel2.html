@@ -1,0 +1,26 @@
+<div id='_id_fp'
+     class="panel {{!frame.fullScreen ? 'panel-primary fluid-task' : 'panel-default frame-fullscreen'}} fluid-panel">
+    <div class="panel-heading" ng-show="!task.locked">
+        <div class="panel-title">
+            <a href="#" class="fluid-panel-heading-title" data-toggle="collapse" data-target="#collapse_{{task.id}}">
+                <fluid-task-icon class="hidden-xs hidden-sm hidden25 btn-group btn-group-xs"></fluid-task-icon>
+                <span>{{task.title}}</span>
+            </a>
+
+        </div>
+        <div class="fluid-panel controls">
+            <fluid-taskcontrols></fluid-taskcontrols>
+        </div>
+    </div>
+
+    <div id="collapse" class="panel-collapse collapse in">
+        <div id="_id_fpb" class="panel-body container-fluid">
+            <fluid-option></fluid-option>
+            <fluid-message id="fluidPanelMsg"></fluid-message>
+            <fluid-tool2 ng-if="task.showToolBar" class="width100pc"></fluid-tool2>
+            <fluid-page id="fluid_page" page="task.page"
+                        class="width100pc {{!task.showToolBar ?'noToolbar':''}}"></fluid-page>
+        </div>
+    </div>
+
+</div>

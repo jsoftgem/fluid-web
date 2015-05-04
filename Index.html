@@ -38,7 +38,7 @@
 
 
 </head>
-<body class="bg-warning" ng-controller="mainCtrl" ng-init="showSideBar = false">
+<body class="bg-warning" ng-controller="mainCtrl">
 <div class="navbar navbar-default navbar-fixed-top">
     <div class="container-fluid">
         <div class="navbar-header">
@@ -56,7 +56,7 @@
                 <span class="icon-bar"></span>
             </button>
             <a class="navbar-brand" ng-click="toggleMenu()" title="toogle menu"
-               href="#">@Fluid-web</a>
+               href="#"><span>@Fluid-web</span></a>
         </div>
         <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
             <ul class="nav navbar-nav">
@@ -69,10 +69,9 @@
         </div>
     </div>
 </div>
-<div class="fillHeight"></div>
-<fluid-tasknav id="taskSideBarId" position="right" show="true"></fluid-tasknav>
-<!--TODO: <fluid-frame by-pass-height="1,2"></fluid-frame>-->
-<fluid-frame></fluid-frame>
+<fluid-tasknav></fluid-tasknav>
+<fluid-frame2 name="appFrame" fill-height="true" offset="45"
+              style="background: #0079a1"></fluid-frame2>
 </body>
 
 <script id="fullScreenNavMenu" type="text/ng-template">
@@ -110,6 +109,16 @@
 
         });
 
+        $("a.navbar-brand").ready(function () {
+
+            $("a.navbar-brand span").hover(function () {
+
+                $("a.navbar-brand span").addClass("fa fa-ellipsis-v").html("");
+            }, function () {
+
+                $("a.navbar-brand span").removeClass("fa fa-ellipsis-v").html("@Fluid-web");
+            });
+        })
 
     });
 </script>

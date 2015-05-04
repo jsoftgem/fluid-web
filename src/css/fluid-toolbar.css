@@ -1,0 +1,7 @@
+.fluid-toolbar {
+    background-color: #9d9d9d;
+}
+
+.fluid-toolbar .btn-toolbar {
+    overflow-x: hidden;
+}

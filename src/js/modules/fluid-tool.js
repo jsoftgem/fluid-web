@@ -58,4 +58,49 @@ angular.module("fluidTool", [])
                 }
             }
         }
+    }])
+    .directive("fluidTool2", ["$templateCache", function (tc) {
+        return {
+            restrict: "E",
+            replace: true,
+            template: tc.get("templates/fluid/fluidToolbar2.html")
+        }
+    }])
+    .factory("ToolBarItem", ["fluidToolbarService", function (ts) {
+
+        var toolBarItem = function (task) {
+
+            this.glyph = "fa fa-question";
+            this.class = "";
+            this.uiClass = "btn btn-default";
+            this.label = "";
+            this.type = "buttom";
+            this.action = function (task, $event) {
+            }
+            this.showText = false;
+            this.disabled = function () {
+                return false;
+            }
+            this.visible = function () {
+                return true;
+            }
+
+            if (ts.toolbarItems[task.name] != null) {
+                ts.toolbarItems[task.name].push(this);
+            } else {
+                ts.toolbarItems[task.name] = [];
+                ts.toolbarItems[task.name].push(this);
+            }
+        }
+
+
+        return toolBarItem;
+
+    }])
+    .service("fluidToolbarService", [function () {
+        this.toolbarItems = [];
+        this.clear = function (page) {
+            this.toolbarItems[page] = undefined;
+        }
+
     }]);

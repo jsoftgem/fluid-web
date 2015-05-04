@@ -23,7 +23,8 @@ module.exports = function (config) {
             '../src/js/*.js',
             '../src/js/modules/*.js',
             // include unit test specs
-            '../test/unit/*.js'
+            '../test/unit/*.js',
+            '../test/unit/directives/*.js'
         ],
         /*// files to exclude
          exclude: [

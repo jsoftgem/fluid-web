@@ -53,25 +53,25 @@ function estimateHeight(height) {
 }
 
 function estimatedFrameHeight(height) {
-    console.info("estimatedFrameHeight.getHeadingHeight",getHeadingHeight());
+    console.info("estimatedFrameHeight.getHeadingHeight", getHeadingHeight());
     var _pc = window.innerWidth < 450 ? 60 : window.innerWidth < 768 ? 60 : window.innerWidth < 1200 ? 65 : 50;
     return height - _pc
 }
 
+
 //TODO: body height
-function getHeadingHeight(){
+function getHeadingHeight() {
     var height = 0;
-    $("body").children().each(function(){
-        if(!$(this).hasClass("frame-content")){
-            height+=$(this).outerHeight();
-        }else{
+    $("body").children().each(function () {
+        if (!$(this).hasClass("frame-content")) {
+            height += $(this).outerHeight();
+        } else {
             return false;
         }
     });
 
     return height;
 }
-
 
 
 function generateTask(scope, t, f2) {

@@ -1,7 +1,35 @@
 /**
  * Created by jerico on 4/28/2015.
+ * Fluid Frame Version 2.0 ff features:
+ *
+ * ** TODO: State Manager
+ *
+ * ** Detachable Frames
+ *
+ * ** Different Workspace
+ *
+ * ** Detachable Task
+ *
+ * ** Split Screen
  */
-angular.module("fluidFrame", ["fluidHttp"])
+
+var frameKey = "$frame_";
+angular.module("fluidFrame", ["fluidHttp", "fluidTask", "fluidSession"])
+    .directive("fluidFrame2", ["$templateCache", "$window", "fluidFrameService", function (tc, window, FrameService) {
+        return {
+            restrict: "E",
+            replace: true,
+            scope: {name: "@", fullScreen: "=", showWorkspace: "="},
+            controller: ["$scope", function (s) {
+                if (!s.name) {
+                    throw "'name' attribute is required.";
+                } else {
+                    s.frame = new FrameService(s.name);
+                }
+            }],
+            template: tc.get("templates/fluid/fluidFrame2.html"),
+        }
+    }])
     .directive("fluidFrame", ["fluidFrameService", "$window", "$rootScope", "$timeout", "$templateCache", function (f, w, rs, t, tc) {
         return {
             restrict: "AE",
@@ -9,6 +37,9 @@ angular.module("fluidFrame", ["fluidHttp"])
             scope: true,
             template: tc.get("templates/fluid/fluidFrame.html"),
             replace: true,
+            controller: function ($scope) {
+
+            },
             link: function (scope, element) {
 
                 scope.frame = {};
@@ -94,141 +125,215 @@ angular.module("fluidFrame", ["fluidHttp"])
             }
         };
     }])
-    .service("fluidFrameService", ["fluidHttpService", "$timeout", function (f, t) {
-        this.isSearch = false;
-        this.searchTask = "";
-        this.taskUrl = "services/fluid_task_service/getTask?name=";
-        this.fullScreen = false;
-        if (this.taskList === undefined) {
-            this.taskList = [];
-        }
-        this.pushTask = function (task) {
-            task.generic = true;
-            this.taskList.push(task);
-        };
+    .directive("fluidResizeFrame", ["$window", function ($w) {
+        return {
+            restrict: "A",
+            link: function (scope, element, attr) {
 
-        this.addTask = function (url, origin, newTask) {
-            //TODO: remove newTask
+                var w = angular.element($w);
 
-            var genericTask = this.createGenericTask();
-
-            genericTask.origin = origin;
-
-            this.taskList.push(genericTask);
-
-            genericTask.index = this.taskList.length - 1;
-
-            genericTask.url = url;
-
-            var index = this.taskList.length - 1;
-
-            if (this.fullScreen) {
-                this.toggleFluidscreen();
-            }
-
-            t(function () {
-                $(".frame-content").scrollTo($("div.panel[task]:eq(" + index + ")"), 200);
-            }, 300);
-        };
-        this.toggleSearch = function () {
-            this.isSearch = !this.isSearch;
-            if (this.isSearch === false) {
-                this.searchTask = "";
-            }
-        };
-        this.toggleFullscreen = function (task) {
-            this.fullScreen = true;
-            this.fullScreenTask = task;
-            t(function () {
-                $(".frame-content").scrollTop(0);
-            });
-        };
-        this.toggleFluidscreen = function () {
-            this.fullScreen = false;
-            this.fullScreenTask = undefined;
-        };
-        this.getFullTask = function (task) {
-            console.info("getFullTask", task);
-            var fullScreenTask = undefined;
-
-            if (task) {
-                var fullScreenTask = this.createGenericTask();
-
-                fullScreenTask.url = this.taskUrl + task.name;
-                fullScreenTask.size = 100;
-            }
-
-            return fullScreenTask;
-        };
-        this.createGenericTask = function () {
-
-            var genericTask = Task();
-
-            genericTask.id = "gen_id_";
-
-            var countGeneric = 0;
-
-            angular.forEach(this.taskList, function (task) {
-                if ((task.id + "").indexOf("gen_id_") > -1) {
-                    countGeneric++;
+                if (attr.offset) {
+                    scope.offset = attr.offset;
                 }
-            });
 
-            genericTask.id = genericTask.id + "" + countGeneric;
+                w.bind("resize", function () {
+                    autoSizeFrame(element, scope.offset, w.height());
+                });
 
+                autoSizeFrame(element, scope.offset, w.height());
 
-            genericTask.size = 50;
-
-            genericTask.active = true;
-
-            genericTask.glyph = "fa fa-tasks";
-
-            genericTask.title = "...";
-
-            genericTask.generic = true;
-
-
-            return genericTask;
-        };
-        this.getFrame = function () {
-            return $("div.frame-content.frame-fullscreen");
+            }
         }
-        this.buildTask = function (task) {
-
-            /* Task event */
-            task.preLoad = function () {
-            };
-            task.load = function () {
-            };
-            task.postLoad = function () {
-            }
-            task.onWindowClosing = function (page) {
-                return true;
-            }
-            task.onWindowHiding = function (page) {
-                return true;
-            }
-            task.onWindowOpening = function () {
-                return true;
-            }
-            task.onWindowOpened = function () {
-            }
-            task.onWindowPinned = function (page) {
-
-            }
-            task.onWindowActive = function (page) {
-            }
-
-            return task;
-        }
-        this.showActionBar = function () {
-            this.actionBarClass = "animated slideInUp";
-            this.actionBarShowing = true;
-        };
-        this.hideActionBar = function () {
-            this.actionBarClass = "animated slideOutDown";
-            this.actionBarShowing = false;
-        };
+    }])
+    .service("fluidFrameHandler", [function () {
+        this.frames = [];
         return this;
+    }])
+    .factory("fluidFrameService", ["Frame", "Task", function (Frame, Task) {
+        /*  this.isSearch = false;
+         this.searchTask = "";
+         this.taskUrl = "";
+         this.fullScreen = false;
+         this.openTask = function (name, workspace) {
+         //TODO: workspace
+         var task = new Task(name);
+         if (task) {
+         }
+         }
+         if (this.taskList === undefined) {
+         this.taskList = [];
+         }
+         this.pushTask = function (task) {
+         task.generic = true;
+         this.taskList.push(task);
+         };
+         this.addTask = function (url, origin) {
 
-    }]);
+         var genericTask = this.createGenericTask();
+
+         genericTask.origin = origin;
+
+         this.taskList.push(genericTask);
+
+         genericTask.index = this.taskList.length - 1;
+
+         genericTask.url = url;
+
+         var index = this.taskList.length - 1;
+
+         if (this.fullScreen) {
+         this.toggleFluidscreen();
+         }
+
+         t(function () {
+         $(".frame-content").scrollTo($("div.panel[task]:eq(" + index + ")"), 200);
+         }, 300);
+         };
+         this.toggleSearch = function () {
+         this.isSearch = !this.isSearch;
+         if (this.isSearch === false) {
+         this.searchTask = "";
+         }
+         };
+         this.toggleFullscreen = function (task) {
+         this.fullScreen = true;
+         this.fullScreenTask = task;
+         t(function () {
+         $(".frame-content").scrollTop(0);
+         });
+         };
+         this.toggleFluidscreen = function () {
+         this.fullScreen = false;
+         this.fullScreenTask = undefined;
+         };
+         this.getFullTask = function (task) {
+         console.info("getFullTask", task);
+         var fullScreenTask = undefined;
+
+         if (task) {
+         var fullScreenTask = this.createGenericTask();
+
+         fullScreenTask.url = this.taskUrl + task.name;
+         fullScreenTask.size = 100;
+         }
+
+         return fullScreenTask;
+         };
+         this.createGenericTask = function () {
+
+         var genericTask = Task();
+
+         genericTask.id = "gen_id_";
+
+         var countGeneric = 0;
+
+         angular.forEach(this.taskList, function (task) {
+         if ((task.id + "").indexOf("gen_id_") > -1) {
+         countGeneric++;
+         }
+         });
+
+         genericTask.id = genericTask.id + "" + countGeneric;
+
+
+         genericTask.size = 50;
+
+         genericTask.active = true;
+
+         genericTask.glyph = "fa fa-tasks";
+
+         genericTask.title = "...";
+
+         genericTask.generic = true;
+
+
+         return genericTask;
+         };
+         this.getFrame = function () {
+         return $("div.frame-content.frame-fullscreen");
+         }
+         this.buildTask = function (task) {
+
+         /!* Task event *!/
+         task.preLoad = function () {
+         };
+         task.load = function () {
+         };
+         task.postLoad = function () {
+         }
+         task.onWindowClosing = function (page) {
+         return true;
+         }
+         task.onWindowHiding = function (page) {
+         return true;
+         }
+         task.onWindowOpening = function () {
+         return true;
+         }
+         task.onWindowOpened = function () {
+         }
+         task.onWindowPinned = function (page) {
+
+         }
+         task.onWindowActive = function (page) {
+         }
+
+         return task;
+         }
+         this.showActionBar = function () {
+         this.actionBarClass = "animated slideInUp";
+         this.actionBarShowing = true;
+         };
+         this.hideActionBar = function () {
+         this.actionBarClass = "animated slideOutDown";
+         this.actionBarShowing = false;
+         };*/
+        var frameService = function (name) {
+            var frame = new Frame(name);
+            frame.openTask = function (taskName, workspace) {
+                if (workspace) {
+
+                }
+                var task = new Task(taskName);
+                var index = frame.tasks.length;
+                task.id = task.id + "_" + index;
+                this.tasks.push(task);
+            }
+
+            return frame;
+        }
+
+        return frameService;
+
+    }])
+    .provider("Frame", function () {
+        this.$get = ["$timeout", "fluidFrameHandler", function (t, fh) {
+            var frame = function Frame(name) {
+                var key = frameKey + name;
+                if (fh.frames[key] != null) {
+                    return fh.frames[key];
+                }
+                this.name = name;
+                this.fullScreen = false;
+                this.tasks = [];
+                this.workspaces = [];
+                this.showWorkspace = false;
+                fh.frames[key] = this;
+            };
+            return frame;
+        }];
+    });
+
+function autoSizeFrame(element, offset, height) {
+
+    console.info("autoSizeFrame.offset", offset);
+    var frameHeight = height - 1;
+    $("body").css("max-height", height).css("overflow-y", "none");
+
+    if (offset) {
+        frameHeight -= offset;
+    }
+    element.css("max-height",frameHeight);
+    element.css("margin-top",offset+"px");
+    element.height(frameHeight);
+}

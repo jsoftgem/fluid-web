@@ -2,7 +2,10 @@
  * Created by Jerico on 4/27/2015.
  */
 angular.module("moduleTaskConfig", ["fluid"])
-    .controller("moduleTaskConfigCtrl", ["$scope", "fluidFrameService", function (s, ffs) {
+    .controller("moduleTaskConfigCtrl", ["$scope", "fluidFrameService", "TaskControl", function (s, ffs, TaskControl) {
+
+        var sample = new TaskControl(scope.task.name);
+        sample.glyph = "fa fa-gears";
 
         s.fluidFrameScreen = ffs;
 

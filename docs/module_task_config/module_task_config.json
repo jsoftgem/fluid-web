@@ -9,7 +9,7 @@
   "active": true,
   "locked": false,
   "closeable": false,
-  "showToolBar": false,
+  "showToolBar": true,
   "lazyLoad": true,
   "moduleJS": "moduleTaskConfig",
   "moduleFiles": "docs/module_task_config/module-task-config.js",

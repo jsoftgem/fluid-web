@@ -1,0 +1,6 @@
+.fluid-frame {
+    margin: 0 auto;
+    clear: both;
+    overflow-y: auto;
+    padding-top: 10px;
+}

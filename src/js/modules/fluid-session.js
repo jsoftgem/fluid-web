@@ -45,6 +45,14 @@ angular.module("fluidSession", ["LocalStorageModule"])
             this.addSessionProperty(AUTHORIZATION, "Basic " + base64);
         }
 
+        this.removeSessionProperty = function (key) {
+            if (this.isSessionSupported) {
+                return ls.remove(key);
+            } else {
+                return ls.cookie.remove(key);
+            }
+        }
+
         this.logout = function () {
             if (this.isSessionSupported) {
                 ls.clearAll();

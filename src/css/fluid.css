@@ -165,34 +165,8 @@ and open the template in the editor.
     width: 30pc;
 }
 
-.fluid-panel-transition {
-    -webkit-transition: width 0.2s;
-    transition: width 0.2s;
-}
-
-.fluid-panel {
-    overfluid-x: auto;
-}
-
-.fluid-panel-heading-title {
-    margin-top: 2px;
-    margin-left: 2px;
-    color: white;
-}
-
 .active-color {
     color: rgba(2, 152, 210, 0.9);
-}
-
-.fluid-panel-icon-control {
-    margin-right: 5px;
-    /*  -webkit-transform: scale(0.7,0.7);
-      transform: scale(0.7, 0.7);*/
-}
-
-.fluid-panel-page {
-    border: none;
-    min-height: 250px;
 }
 
 .fluid-sub-table-control {
@@ -318,6 +292,7 @@ div.fluid-form label {
 .frame-content {
     margin: 0 auto;
     clear: both;
+    overflow-y: auto;
 }
 
 .frame-content-div {
@@ -370,6 +345,7 @@ div.fluid-form label {
 
 .fluid-task-icon {
     -webkit-transform: scale(1.7, 1.7);
+    margin-bottom: -3px;
 }
 
 .fluid-icon-left {
@@ -382,28 +358,14 @@ div.fluid-form label {
     margin-top: -15px;
 }
 
-.fluid-panel-page-list {
-    border: none;
-    margin-top: -16px;
-}
-
 .fluid-page-list {
     -webkit-transition: width 0.2s;
     transition: width 0.2s;
     padding: 0px !important;
 }
 
-.fluid-panel-page-list-hidden {
-    width: 0px;
-    height: 0px;
-}
-
 .fluid-nowidth {
     width: 0;
-}
-
-.fluid-panel-content {
-    margin-top: -16px;
 }
 
 /* BREADCRUMB */
@@ -474,35 +436,35 @@ div.fluid-form label {
 }
 
 .hideSize25 {
-    display: none;
+    display: none !important;
 }
 
 .hideSize50 {
-    display: none;
+    display: none !important;
 }
 
 .hideSize75 {
-    display: none;
+    display: none !important;
 }
 
 .hideSize100 {
-    display: none;
+    display: none !important;
 }
 
 .hideFullscreenXs {
-    display: none;
+    display: none !important;
 }
 
 .hideFullscreenSm {
-    display: none;
+    display: none !important;
 }
 
 .hideFullscreenMd {
-    display: none;
+    display: none !important;
 }
 
 .hideFullscreenLg {
-    display: none;
+    display: none !important;
 }
 
 .fluid-frame-task {
@@ -516,16 +478,6 @@ div.fluid-form label {
     padding-left: 0px !important;
     padding-right: 0px !important;
 }
-
-.fluid-panel-loader {
-    margin-top: -17px;
-    margin-left: 12px;
-}
-
-.fluid-panel-loader-fullscreen {
-
-}
-
 
 /*add glows to fluid panel*/
 div.fluid-task:hover {

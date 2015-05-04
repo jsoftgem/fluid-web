@@ -6,7 +6,7 @@ angular.module("fluidTasknav", ["fluidHttp", "fluidSession"])
         return {
             restrict: "AE",
             scope: false,
-            template: tc.get("templates/fluid/fluid-tasknav.html"),
+            template: tc.get("templates/fluid/fluidTasknav.html"),
             replace: true,
             link: function (scope, element, attr) {
 

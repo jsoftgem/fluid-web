@@ -1,0 +1,18 @@
+<div class="container-fluid fluid-frame" fluid-resize-frame>
+    <bootstrap-viewport></bootstrap-viewport>
+
+    <div ng-if="frame.fullScreen" class="frame-content-div" column="12"
+         ng-show="frame.fullScreen" style="padding: 0;">
+        <fluid-panel task='frame.fullScreenTask'></fluid-panel>
+    </div>
+
+    <div ng-if="!frame.fullScreen" class="container-fluid frame-content-div fluid-frame-div"
+         ng-hide="frame.fullScreen">
+        <div class="fluid-panel-transition fluid-frame-task"
+             ng-repeat='task in frame.tasks | filter:{active:true}'>
+            <fluid-panel2 task="task"></fluid-panel2>
+        </div>
+    </div>
+
+
+</div>

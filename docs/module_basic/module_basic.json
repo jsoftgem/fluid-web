@@ -20,7 +20,7 @@
       "name": "page1",
       "title": "Home",
       "static": true,
-      "html": "<div ng-controller='moduleBasicCtrl'><h1>{{header}}</h1><div><h6>Task Configuration using <b>Static</b> page</h6><div bgcolor='#cccccc'><p>{\"id\":\"module1\",<br/>\"name\":\"module_basic\",<br/>\"title\":\"Basic\",<br/>\"size\":100,<br/>\"glyph\":\"fafa-gears\",<br/>\"useImg\":false,<br/>\"imgSrc\":\"app/module_basic/icon.png\",<br/>\"active\":true,<br/>\"locked\":true,<br/>\"closeable\":false,<br/>\"showToolBar\":false,<br/>\"pages\":[/*pagehere*/] }</p></div></div></div>",
+      "html": "<div><h1>{{header}}</h1><div><h6>Task Configuration using <b>Static</b> page</h6><div bgcolor='#cccccc'><p>{\"id\":\"module1\",<br/>\"name\":\"module_basic\",<br/>\"title\":\"Basic\",<br/>\"size\":100,<br/>\"glyph\":\"fafa-gears\",<br/>\"useImg\":false,<br/>\"imgSrc\":\"app/module_basic/icon.png\",<br/>\"active\":true,<br/>\"locked\":true,<br/>\"closeable\":false,<br/>\"showToolBar\":false,<br/>\"pages\":[/*pagehere*/] }</p></div></div></div>",
       "isHome": true
     }
   ]

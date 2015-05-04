@@ -1,9 +1,10 @@
 /**
  * Created by jerico on 4/28/2015.
  */
-angular.module("fluidPanel", ["oc.lazyLoad", "fluidHttp", "fluidFrame", "fluidMessage", "fluidOption", "fluidSession", "fluidTool", "fluidPage"])
+angular.module("fluidPanel", ["oc.lazyLoad", "fluidHttp", "fluidFrame", "fluidMessage", "fluidOption", "fluidSession", "fluidTool", "fluidPage", "fluidTask", "fluidTaskcontrols"])
     .directive("fluidPanel", ["fluidFrameService", "fluidHttpService", "$templateCache", "$compile",
-        "fluidMessageService", "$rootScope", "$q", "$timeout", "$ocLazyLoad", "sessionService", "fluidOptionService", "fluidPageService",
+        "fluidMessageService", "$rootScope", "$q", "$timeout", "$ocLazyLoad",
+        "sessionService", "fluidOptionService", "fluidPageService",
         function (f, f2, tc, c, ms, rs, q, t, oc, ss, fos, fps) {
             return {
                 scope: {task: '='},
@@ -12,7 +13,6 @@ angular.module("fluidPanel", ["oc.lazyLoad", "fluidHttp", "fluidFrame", "fluidMe
                 replace: true,
                 link: {
                     pre: function (scope, element) {
-
                         /* Initialize variables*/
                         scope.pathRegexPattern = /{[\w|\d]*}/;
 
@@ -189,6 +189,7 @@ angular.module("fluidPanel", ["oc.lazyLoad", "fluidHttp", "fluidFrame", "fluidMe
                             }
 
                             url += "active=true&name=" + name;
+
                             if (page) {
 
                                 url += "&page=" + page;
@@ -200,6 +201,7 @@ angular.module("fluidPanel", ["oc.lazyLoad", "fluidHttp", "fluidFrame", "fluidMe
                             if (newTask) {
                                 url += "&newTask=" + newTask;
                             }
+
                             f.addTask(url, origin ? origin : scope.task, true);
                         }
 
@@ -1275,4 +1277,87 @@ angular.module("fluidPanel", ["oc.lazyLoad", "fluidHttp", "fluidFrame", "fluidMe
             template: tc.get("templates/fluid/fluidLoader.html"),
             replace: true
         }
+    }])
+    .directive("fluidPanel2", ["$templateCache", "FluidPanelModel", "fluidControlService", "fluidToolbarService",
+        function (tc, FluidPanel, fcs, ftb) {
+            return {
+                require: "^fluidFrame2",
+                scope: {task: "="},
+                restrict: "E",
+                template: tc.get("templates/fluid/fluidPanel2.html"),
+                link: {
+                    pre: function (scope, element, attr) {
+
+                        scope.$watch(fcs.controls[scope.task.name], function (controls) {
+                            scope.task.taskControls = fcs.controls[scope.task.name];
+                        });
+
+                        scope.$watch(ftb.toolbarItems[scope.task.name], function (toolbarItems) {
+                            scope.task.controls = ftb.toolbarItems[scope.task.name];
+                        });
+
+                        scope.fluidPanel = new FluidPanel(scope.task);
+                    },
+                    post: function (scope, element, attr) {
+
+                    }
+                }
+
+
+            }
+
+        }])
+    .factory("FluidPanelModel", ["TaskControl", "ToolBarItem", "fluidPanelService", "fluidTaskService", function (TaskControl, ToolBarItem,
+                                                                                                                  fluidPanelService, FluidTask) {
+        var fluidPanel = function (task) {
+            var taskModel = new FluidTask(task);
+            task.page = taskModel.page;
+            var refreshControl = new TaskControl(task);
+            refreshControl.glyph = "fa fa-refresh";
+            refreshControl.uiClass = "btn btn-success";
+            refreshControl.label = "Refresh";
+            refreshControl.action = function (task, $event) {
+
+            }
+
+            var closeControl = new TaskControl(task);
+            closeControl.glyph = "fa fa-close";
+            closeControl.uiClass = "btn btn-danger";
+            closeControl.label = "Close";
+            closeControl.action = function (task, $event) {
+
+            }
+
+            var homeToolBarItem = new ToolBarItem(task);
+            homeToolBarItem.glyph = "fa fa-home";
+            homeToolBarItem.uiClass = "btn btn-info";
+            homeToolBarItem.label = "Home";
+            homeToolBarItem.action = function (task, $event) {
+
+            }
+
+            var backToolBarItem = new ToolBarItem(task);
+            backToolBarItem.glyph = "fa fa-arrow-left";
+            backToolBarItem.uiClass = "btn btn-info";
+            backToolBarItem.label = "Back";
+            backToolBarItem.action = function (task, $event) {
+
+            }
+
+            var nextToolBarItem = new ToolBarItem(task);
+            nextToolBarItem.glyph = "fa fa-arrow-right";
+            nextToolBarItem.uiClass = "btn btn-info";
+            nextToolBarItem.label = "Next";
+            nextToolBarItem.action = function (task, $event) {
+
+            }
+        }
+        return fluidPanel;
+    }])
+    .service("fluidPanelService", [function () {
+        this.fluidPanel = [];
+        this.clear = function (name) {
+
+        }
+        return this;
     }]);

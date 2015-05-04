@@ -1,0 +1,76 @@
+.fluid-panel-transition {
+    -webkit-transition: width 0.2s;
+    transition: width 0.2s;
+}
+
+.fluid-panel {
+
+}
+
+.fluid-panel .panel-heading {
+    padding: 0;
+}
+
+.fluid-panel .panel-title {
+    margin-left: 5px;
+}
+
+.fluid-panel .controls {
+    float: right;
+    right: 1px;
+    padding: 0;
+    margin-top: -27px;
+}
+
+.fluid-panel .controls .small {
+    margin-right: 5px;
+    margin-bottom: -3px;
+}
+
+.fluid-panel .panel-body {
+    padding: 0px;
+}
+
+.noToolbar {
+
+}
+
+.fluid-panel-heading-title {
+    margin-top: 2px;
+    margin-left: 2px;
+    color: white;
+}
+
+.fluid-panel-icon-control {
+    margin-right: 5px;;
+}
+
+.fluid-panel-page {
+    border: none;
+    min-height: 250px;
+}
+
+.fluid-panel-page-list {
+    border: none;
+    margin-top: -16px;
+}
+
+.fluid-panel-page-list-hidden {
+    width: 0px;
+    height: 0px;
+}
+
+.fluid-panel-content {
+    margin-top: -16px;
+}
+
+.fluid-panel-loader {
+    margin-top: -17px;
+    margin-left: 12px;
+}
+
+
+
+.fluid-panel-loader-fullscreen {
+
+}
