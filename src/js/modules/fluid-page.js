@@ -13,7 +13,7 @@ angular.module("fluidPage", ["fluidHttp"])
                 scope.fluidPageService = fps;
 
                 if (scope.page) {
-                    scope.fluidPage = new FluidPage(scope.page);
+                    scope.fluidPage = new FluidPage(scope.page.name);
                 }
 
                 scope.load = function () {
@@ -53,21 +53,19 @@ angular.module("fluidPage", ["fluidHttp"])
         }
     }])
     .factory("FluidPage", ["fluidPageService", function (fps) {
-        var fluidPage = function (page) {
-            console.info("FluidPage-FluidPage.page", page);
-            if (fps.pages[page.name] != null) {
-                return fps.pages[page.name];
+        var fluidPage = function (name) {
+            console.info("FluidPage-FluidPage.page", name);
+            if (fps.pages[name] != null) {
+                return fps.pages[name];
             } else {
-                this.id = page.id;
-                this.title = page.title;
-                this.name = page.name;
+                this.name = name;
 
                 this.preLoad = function (page) {
                 }
                 this.onLoad = function (data) {
                 }
 
-                fps.pages[page.name] = this;
+                fps.pages[name] = this;
             }
             return this;
         }

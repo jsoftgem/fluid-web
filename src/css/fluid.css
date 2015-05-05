@@ -467,17 +467,7 @@ div.fluid-form label {
     display: none !important;
 }
 
-.fluid-frame-task {
-    padding-top: 0px !important;
-    padding-bottom: 0px !important;
-    padding-left: 2px !important;
-    padding-right: 2px !important;
-}
 
-.fluid-frame-div {
-    padding-left: 0px !important;
-    padding-right: 0px !important;
-}
 
 /*add glows to fluid panel*/
 div.fluid-task:hover {

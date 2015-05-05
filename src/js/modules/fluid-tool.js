@@ -59,11 +59,16 @@ angular.module("fluidTool", [])
             }
         }
     }])
-    .directive("fluidTool2", ["$templateCache", function (tc) {
+    .directive("fluidTool2", ["$templateCache", "fluidToolbarService", function (tc, fts) {
         return {
             restrict: "E",
             replace: true,
-            template: tc.get("templates/fluid/fluidToolbar2.html")
+            scope:false,
+            template: tc.get("templates/fluid/fluidToolbar2.html"),
+            link: function (scope, element, attr) {
+                console.info("fluidTool2.page",scope.task);
+                scope.fluidToolbarService = fts;
+            }
         }
     }])
     .factory("ToolBarItem", ["fluidToolbarService", function (ts) {
@@ -99,8 +104,8 @@ angular.module("fluidTool", [])
     }])
     .service("fluidToolbarService", [function () {
         this.toolbarItems = [];
-        this.clear = function (page) {
-            this.toolbarItems[page] = undefined;
+        this.clear = function (task) {
+            this.toolbarItems[task] = undefined;
         }
 
     }]);

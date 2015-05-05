@@ -1284,6 +1284,7 @@ angular.module("fluidPanel", ["oc.lazyLoad", "fluidHttp", "fluidFrame", "fluidMe
                 require: "^fluidFrame2",
                 scope: {task: "="},
                 restrict: "E",
+                replace: true,
                 template: tc.get("templates/fluid/fluidPanel2.html"),
                 link: {
                     pre: function (scope, element, attr) {
@@ -1314,6 +1315,46 @@ angular.module("fluidPanel", ["oc.lazyLoad", "fluidHttp", "fluidFrame", "fluidMe
                             scope.fluidPanel = new FluidPanel(scope.task);
                         }
 
+                        scope.setSize = function (size) {
+                            console.info("fluidPanel2-setSize.size", size);
+                            switch (size) {
+                                case 25:
+                                    element.addClass("col-lg-3");
+                                    element.removeClass("col-lg-6");
+                                    element.removeClass("col-lg-9");
+                                    element.removeClass("col-lg-12");
+                                    break;
+                                case 50:
+                                    element.addClass("col-lg-6")
+                                    element.removeClass("col-lg-3");
+                                    element.removeClass("col-lg-9");
+                                    element.removeClass("col-lg-12");
+                                    break;
+                                case 75:
+                                    element.addClass("col-lg-9");
+                                    element.removeClass("col-lg-3");
+                                    element.removeClass("col-lg-6");
+                                    element.removeClass("col-lg-12");
+                                    break;
+                                case 100:
+                                    element.addClass("col-lg-12");
+                                    element.removeClass("col-lg-3");
+                                    element.removeClass("col-lg-6");
+                                    element.removeClass("col-lg-9");
+                                    break;
+                                default:
+                                    element.addClass("col-lg-12");
+                                    element.removeClass("col-lg-3");
+                                    element.removeClass("col-lg-6");
+                                    element.removeClass("col-lg-9");
+                            }
+                        }
+
+                        scope.$watch(function (scope) {
+                            return scope.task.size;
+                        }, function (newSize, oldSize) {
+                            scope.setSize(newSize);
+                        });
 
                     },
                     post: function (scope, element, attr) {
@@ -1322,9 +1363,10 @@ angular.module("fluidPanel", ["oc.lazyLoad", "fluidHttp", "fluidFrame", "fluidMe
                             return id + "_" + scope.task.id;
                         }
 
-                        scope.$watch(ftb.toolbarItems[scope.task.name], function (toolbarItems) {
-                            scope.task.controls = ftb.toolbarItems[scope.task.name];
-                        });
+                        if(!scope.$$phase){
+                            scope.$apply();
+                        }
+
                     }
                 }
 
@@ -1338,6 +1380,13 @@ angular.module("fluidPanel", ["oc.lazyLoad", "fluidHttp", "fluidFrame", "fluidMe
             var taskModel = new FluidTask(task);
             task.page = taskModel.page;
             this.loaded = false;
+            var closeControl = new TaskControl(task);
+            closeControl.glyph = "fa fa-close";
+            closeControl.uiClass = "btn btn-danger";
+            closeControl.label = "Close";
+            closeControl.action = function (task, $event) {
+
+            }
 
             var minimizeControl = new TaskControl(task);
             minimizeControl.glyph = "fa fa-caret-down";
@@ -1347,27 +1396,59 @@ angular.module("fluidPanel", ["oc.lazyLoad", "fluidHttp", "fluidFrame", "fluidMe
                 task.active = false;
             }
 
+
             var refreshControl = new TaskControl(task);
             refreshControl.glyph = "fa fa-refresh";
-            refreshControl.uiClass = "btn btn-success";
+            refreshControl.uiClass = "btn btn-info";
             refreshControl.label = "Refresh";
             refreshControl.action = function (task, $event) {
 
             }
-
-            var closeControl = new TaskControl(task);
-            closeControl.glyph = "fa fa-close";
-            closeControl.uiClass = "btn btn-danger";
-            closeControl.label = "Close";
-            closeControl.action = function (task, $event) {
-
+            var size100ToolBarItem = new ToolBarItem(task);
+            size100ToolBarItem.glyph = "";
+            size100ToolBarItem.class = "hidden-xs hidden-sm hidden-md";
+            size100ToolBarItem.showText = true;
+            size100ToolBarItem.uiClass = "btn btn-info";
+            size100ToolBarItem.label = "100%";
+            size100ToolBarItem.action = function (task, $event) {
+                task.size = 100;
             }
 
-            var homeToolBarItem = new ToolBarItem(task);
-            homeToolBarItem.glyph = "fa fa-home";
-            homeToolBarItem.uiClass = "btn btn-info";
-            homeToolBarItem.label = "Home";
-            homeToolBarItem.action = function (task, $event) {
+            var size75ToolBarItem = new ToolBarItem(task);
+            size75ToolBarItem.glyph = "";
+            size75ToolBarItem.class = "hidden-xs hidden-sm hidden-md";
+            size75ToolBarItem.showText = true;
+            size75ToolBarItem.uiClass = "btn btn-info";
+            size75ToolBarItem.label = "75%";
+            size75ToolBarItem.action = function (task, $event) {
+                task.size = 75;
+            }
+
+            var size50ToolBarItem = new ToolBarItem(task);
+            size50ToolBarItem.glyph = "";
+            size50ToolBarItem.class = "hidden-xs hidden-sm hidden-md";
+            size50ToolBarItem.showText = true;
+            size50ToolBarItem.uiClass = "btn btn-info";
+            size50ToolBarItem.label = "50%";
+            size50ToolBarItem.action = function (task, $event) {
+                task.size = 50;
+            }
+
+            var size25ToolBarItem = new ToolBarItem(task);
+            size25ToolBarItem.glyph = "";
+            size25ToolBarItem.class = "hidden-xs hidden-sm hidden-md";
+            size25ToolBarItem.showText = true;
+            size25ToolBarItem.uiClass = "btn btn-info";
+            size25ToolBarItem.label = "25%";
+            size25ToolBarItem.action = function (task, $event) {
+                task.size = 25;
+            }
+
+            var nextToolBarItem = new ToolBarItem(task);
+            nextToolBarItem.glyph = "fa fa-arrow-right";
+            nextToolBarItem.uiClass = "btn btn-info";
+            nextToolBarItem.label = "Next";
+            nextToolBarItem.action = function (task, $event) {
 
             }
 
@@ -1378,12 +1459,11 @@ angular.module("fluidPanel", ["oc.lazyLoad", "fluidHttp", "fluidFrame", "fluidMe
             backToolBarItem.action = function (task, $event) {
 
             }
-
-            var nextToolBarItem = new ToolBarItem(task);
-            nextToolBarItem.glyph = "fa fa-arrow-right";
-            nextToolBarItem.uiClass = "btn btn-info";
-            nextToolBarItem.label = "Next";
-            nextToolBarItem.action = function (task, $event) {
+            var homeToolBarItem = new ToolBarItem(task);
+            homeToolBarItem.glyph = "fa fa-home";
+            homeToolBarItem.uiClass = "btn btn-info";
+            homeToolBarItem.label = "Home";
+            homeToolBarItem.action = function (task, $event) {
 
             }
 

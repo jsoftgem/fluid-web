@@ -4,7 +4,9 @@
 }
 
 .fluid-panel {
-
+    padding: 0px !important;
+    -webkit-transition: width 0.2s;
+    transition: width 0.2s;
 }
 
 .fluid-panel .panel-heading {
@@ -30,7 +32,6 @@
 .fluid-panel .panel-body {
     padding: 0px;
 }
-
 
 .fluid-panel-heading-title {
     margin-top: 2px;
@@ -65,8 +66,6 @@
     margin-top: -17px;
     margin-left: 28px;
 }
-
-
 
 .fluid-panel-loader-fullscreen {
 

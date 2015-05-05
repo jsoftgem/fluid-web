@@ -1,6 +1,6 @@
-<div id='_id_fp'
-     class="panel {{!frame.fullScreen ? 'panel-primary fluid-task' : 'panel-default frame-fullscreen'}} fluid-panel">
-    <div class="panel-heading" ng-show="!task.locked">
+<div id='_id_fp' ng-class="!frame.fullScreen ? 'panel-primary fluid-task' : 'panel-default frame-fullscreen'"
+     class="panel fluid-panel">
+    <div class="panel-heading" ng-if="!task.locked">
         <div class="panel-title">
             <a href="#" class="fluid-panel-heading-title" data-toggle="collapse" data-target="#collapse_{{task.id}}">
                 <fluid-task-icon class="hidden-xs hidden-sm hidden25 btn-group btn-group-xs"></fluid-task-icon>

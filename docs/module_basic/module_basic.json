@@ -2,7 +2,7 @@
   "id": "moduleBasic",
   "name": "module_basic",
   "title": "Basic - Locked",
-  "size": 100,
+  "size": 25,
   "glyph": "fa fa-gears",
   "useImg": true,
   "imgSrc": "docs/module_basic/icon.png",

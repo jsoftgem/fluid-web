@@ -1,8 +1,15 @@
 .fluid-frame {
     margin: 0 auto;
+    padding-left: 2px !important;
+    padding-right: 2px !important;
     clear: both;
     overflow-y: auto;
     padding-top: 10px;
+}
+
+.fluid-frame-task {
+   padding-right: 2px;
+    padding-left: 2px;
 }
 .fluid-option {
     width: 100%;
@@ -50,7 +57,9 @@
 }
 
 .fluid-panel {
-
+    padding: 0px !important;
+    -webkit-transition: width 0.2s;
+    transition: width 0.2s;
 }
 
 .fluid-panel .panel-heading {
@@ -76,7 +85,6 @@
 .fluid-panel .panel-body {
     padding: 0px;
 }
-
 
 .fluid-panel-heading-title {
     margin-top: 2px;
@@ -112,10 +120,16 @@
     margin-left: 28px;
 }
 
-
-
 .fluid-panel-loader-fullscreen {
 
+}
+.fluid-taskcontrols {
+
+}
+
+.fluid-taskcontrols .control-glyph {
+    transform: scale(1.2,1.2);
+    -webkit-transform: scale(1.2,1.2);
 }
 body {
     -moz-transition: all 0.3s;
@@ -691,17 +705,7 @@ div.fluid-form label {
     display: none !important;
 }
 
-.fluid-frame-task {
-    padding-top: 0px !important;
-    padding-bottom: 0px !important;
-    padding-left: 2px !important;
-    padding-right: 2px !important;
-}
 
-.fluid-frame-div {
-    padding-left: 0px !important;
-    padding-right: 0px !important;
-}
 
 /*add glows to fluid panel*/
 div.fluid-task:hover {

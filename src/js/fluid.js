@@ -243,7 +243,7 @@ fluidComponents
 
                     console.info("fluidInjector-request.config", config);
 
-                    if (fps.pageHomes[config.url] !== null) {
+                    if (fps.pageHomes[config.url]) {
                         var page = new FluidPage(fps.pageHomes[config.url]);
                         console.info("fluidInjector-request.page", page);
                         page.preLoad(fps.pageHomes[config.url]);
@@ -659,4 +659,13 @@ fluidComponents
             }
         }
     }]);
+
+fluidComponents
+    .filter('reverse', function () {
+        return function (items) {
+            if (items) {
+                return items.slice().reverse();
+            }
+        };
+    });
 /**Prototypes**/
