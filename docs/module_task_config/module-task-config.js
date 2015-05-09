@@ -2,19 +2,22 @@
  * Created by Jerico on 4/27/2015.
  */
 angular.module("moduleTaskConfig", ["fluid"])
-    .controller("moduleTaskConfigCtrl", ["$scope", "fluidFrameService", "TaskControl", "FluidPage", "Task", function (s, ffs, TaskControl, FluidPage, Task) {
+    .controller("moduleTaskConfigCtrl", ["$scope", "TaskControl", "FluidPage", "Task", "ToolBarItem", function (s, TaskControl, FluidPage, Task, ToolBarItem) {
         s.task = new Task("moduleTaskConfig");
-
-        console.info("moduleTaskConfigCtrl.task", s.task); //TODO: Task is not defined.
-
-        var sample = new TaskControl(s.task);
-        sample.glyph = "fa fa-gears";
-
-        s.fluidFrameScreen = ffs;
 
         s.generic = {};
 
-        s.newTask = {pages: []};
+        s.newTask = [];
+
+        s.fluidPage = new FluidPage(s.page);
+
+        s.fluidPage.preLoad = function () {
+            console.info("moduleTaskConfig#moduleTaskConfigCtrl-preLoad.fluidPage", this);
+        }
+        s.fluidPage.onLoad = function (data) {
+            console.info("moduleTaskConfig#moduleTaskConfigCtrl-onLoad.fluidPage", this);
+        }
+        console.info("moduleTaskConfig#moduleTaskConfigCtrl.fluidPage", s.fluidPage);
 
         s.addTask = function (task) {
 

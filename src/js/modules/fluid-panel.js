@@ -1362,11 +1362,6 @@ angular.module("fluidPanel", ["oc.lazyLoad", "fluidHttp", "fluidFrame", "fluidMe
                         scope.getElementFlowId = function (id) {
                             return id + "_" + scope.task.id;
                         }
-
-                        if(!scope.$$phase){
-                            scope.$apply();
-                        }
-
                     }
                 }
 
@@ -1378,8 +1373,12 @@ angular.module("fluidPanel", ["oc.lazyLoad", "fluidHttp", "fluidFrame", "fluidMe
                                                                                                                   fluidPanelService, FluidTask) {
         var fluidPanel = function (task) {
             var taskModel = new FluidTask(task);
-            task.page = taskModel.page;
+
+            this.page = taskModel.page;
+
             this.loaded = false;
+
+
             var closeControl = new TaskControl(task);
             closeControl.glyph = "fa fa-close";
             closeControl.uiClass = "btn btn-danger";
@@ -1387,7 +1386,13 @@ angular.module("fluidPanel", ["oc.lazyLoad", "fluidHttp", "fluidFrame", "fluidMe
             closeControl.action = function (task, $event) {
 
             }
+            var expandControl = new TaskControl(task);
+            expandControl.glyph = "fa  fa-expand";
+            expandControl.uiClass = "btn btn-info";
+            expandControl.label = "Expand";
+            expandControl.action = function (task, $event) {
 
+            }
             var minimizeControl = new TaskControl(task);
             minimizeControl.glyph = "fa fa-caret-down";
             minimizeControl.uiClass = "btn btn-info";
@@ -1397,66 +1402,11 @@ angular.module("fluidPanel", ["oc.lazyLoad", "fluidHttp", "fluidFrame", "fluidMe
             }
 
 
-            var refreshControl = new TaskControl(task);
-            refreshControl.glyph = "fa fa-refresh";
-            refreshControl.uiClass = "btn btn-info";
-            refreshControl.label = "Refresh";
-            refreshControl.action = function (task, $event) {
-
-            }
-            var size100ToolBarItem = new ToolBarItem(task);
-            size100ToolBarItem.glyph = "";
-            size100ToolBarItem.class = "hidden-xs hidden-sm hidden-md";
-            size100ToolBarItem.showText = true;
-            size100ToolBarItem.uiClass = "btn btn-info";
-            size100ToolBarItem.label = "100%";
-            size100ToolBarItem.action = function (task, $event) {
-                task.size = 100;
-            }
-
-            var size75ToolBarItem = new ToolBarItem(task);
-            size75ToolBarItem.glyph = "";
-            size75ToolBarItem.class = "hidden-xs hidden-sm hidden-md";
-            size75ToolBarItem.showText = true;
-            size75ToolBarItem.uiClass = "btn btn-info";
-            size75ToolBarItem.label = "75%";
-            size75ToolBarItem.action = function (task, $event) {
-                task.size = 75;
-            }
-
-            var size50ToolBarItem = new ToolBarItem(task);
-            size50ToolBarItem.glyph = "";
-            size50ToolBarItem.class = "hidden-xs hidden-sm hidden-md";
-            size50ToolBarItem.showText = true;
-            size50ToolBarItem.uiClass = "btn btn-info";
-            size50ToolBarItem.label = "50%";
-            size50ToolBarItem.action = function (task, $event) {
-                task.size = 50;
-            }
-
-            var size25ToolBarItem = new ToolBarItem(task);
-            size25ToolBarItem.glyph = "";
-            size25ToolBarItem.class = "hidden-xs hidden-sm hidden-md";
-            size25ToolBarItem.showText = true;
-            size25ToolBarItem.uiClass = "btn btn-info";
-            size25ToolBarItem.label = "25%";
-            size25ToolBarItem.action = function (task, $event) {
-                task.size = 25;
-            }
-
-            var nextToolBarItem = new ToolBarItem(task);
-            nextToolBarItem.glyph = "fa fa-arrow-right";
-            nextToolBarItem.uiClass = "btn btn-info";
-            nextToolBarItem.label = "Next";
-            nextToolBarItem.action = function (task, $event) {
-
-            }
-
-            var backToolBarItem = new ToolBarItem(task);
-            backToolBarItem.glyph = "fa fa-arrow-left";
-            backToolBarItem.uiClass = "btn btn-info";
-            backToolBarItem.label = "Back";
-            backToolBarItem.action = function (task, $event) {
+            var pageToolBarItem = new ToolBarItem(task);
+            pageToolBarItem.glyph = "fa fa-th-list";
+            pageToolBarItem.uiClass = "btn btn-success";
+            pageToolBarItem.label = "Menu";
+            pageToolBarItem.action = function (task, $event) {
 
             }
             var homeToolBarItem = new ToolBarItem(task);
@@ -1466,7 +1416,28 @@ angular.module("fluidPanel", ["oc.lazyLoad", "fluidHttp", "fluidFrame", "fluidMe
             homeToolBarItem.action = function (task, $event) {
 
             }
+            var backToolBarItem = new ToolBarItem(task);
+            backToolBarItem.glyph = "fa fa-arrow-left";
+            backToolBarItem.uiClass = "btn btn-info";
+            backToolBarItem.label = "Back";
+            backToolBarItem.action = function (task, $event) {
 
+            }
+            var nextToolBarItem = new ToolBarItem(task);
+            nextToolBarItem.glyph = "fa fa-arrow-right";
+            nextToolBarItem.uiClass = "btn btn-info";
+            nextToolBarItem.label = "Next";
+            nextToolBarItem.action = function (task, $event) {
+
+            }
+
+            var refreshToolBarItem = new ToolBarItem(task);
+            refreshToolBarItem.glyph = "fa fa-refresh";
+            refreshToolBarItem.uiClass = "btn btn-info";
+            refreshToolBarItem.label = "Refresh";
+            refreshToolBarItem.action = function (task, $event) {
+
+            }
 
         }
         return fluidPanel;

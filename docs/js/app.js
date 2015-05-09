@@ -8,16 +8,13 @@ angular.module("mainApp", ["fluid"])
             {
                 name: "module_basic",
                 url: "docs/module_basic/module_basic.json"
-            }
-            ,
+            },
             {
                 name: "moduleTaskConfig",
                 url: "docs/module_task_config/module_task_config.json"
             }
-        ])
-    }])
-    .run(["fluidStateService", function (fss) {
-        fss.loadTask();
+        ]);
+
     }])
     .controller("mainCtrl", ["$scope", "fluidHttpService", "fluidFrameService", "fluidOptionService", "fluidMessageService", "$rootScope", "fluidTasknavService", function (s, fhs, FrameSerivce, fos, ms, rs, fts) {
 
@@ -30,7 +27,6 @@ angular.module("mainApp", ["fluid"])
         }
 
         var frame = new FrameSerivce("appFrame");
-
 
         frame.openTask("module_basic")
 

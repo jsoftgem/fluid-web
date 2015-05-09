@@ -70,3 +70,13 @@
 .fluid-panel-loader-fullscreen {
 
 }
+
+.fluid-panel .popover-content {
+    padding: 0 !important;
+    margin-bottom: -20px !important;
+}
+
+.popover-resize {
+    width: 100px;
+  /*  margin: 0px -15px -200px -15px;*/
+}

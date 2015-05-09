@@ -1,8 +1,8 @@
 <div id='_id_fp' ng-class="!frame.fullScreen ? 'panel-primary fluid-task' : 'panel-default frame-fullscreen'"
      class="panel fluid-panel">
     <div class="panel-heading" ng-if="!task.locked">
-        <div class="panel-title">
-            <a href="#" class="fluid-panel-heading-title" data-toggle="collapse" data-target="#collapse_{{task.id}}">
+        <div class="panel-title" data-toggle="collapse" data-target="#collapse_{{task.id}}">
+            <a href="#" class="fluid-panel-heading-title">
                 <fluid-task-icon class="hidden-xs hidden-sm hidden25 btn-group btn-group-xs"></fluid-task-icon>
                 <span ng-if="fluidPanel.loaded">{{task.title}}</span>
             </a>
@@ -18,9 +18,13 @@
             <fluid-option></fluid-option>
             <fluid-message id="fluidPanelMsg"></fluid-message>
             <fluid-tool2 ng-if="task.showToolBar" class="width100pc"></fluid-tool2>
-            <fluid-page id="fluid_page" page="task.page"
+            <fluid-page id="fluid_page" page="fluidPanel.page" fluid-panel="fluidPanel"
                         class="width100pc {{!task.showToolBar ?'noToolbar':''}}"></fluid-page>
         </div>
     </div>
 
+
+    <script id="menu_option" type="text/ng-template">
+        <div class="container-fluid"></div>
+    </script>
 </div>

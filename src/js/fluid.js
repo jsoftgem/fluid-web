@@ -243,15 +243,20 @@ fluidComponents
 
                     console.info("fluidInjector-request.config", config);
 
-                    if (fps.pageHomes[config.url]) {
-                        var page = new FluidPage(fps.pageHomes[config.url]);
-                        console.info("fluidInjector-request.page", page);
-                        page.preLoad(fps.pageHomes[config.url]);
+                    console.info("fluidInjector-request.pages", fps.pages);
+
+                    if (fps.pages[config.url]) {
+                        var fluidPage = new FluidPage(fps.pages[config.url]);
+                        console.info("fluidInjector-request.fluidPage", fluidPage);
+                        fluidPage.preLoad();
+                        config.url = fluidPage.home;
                     }
 
                     if (ss.isSessionOpened()) {
                         config.headers['Authorization'] = ss.getSessionProperty(AUTHORIZATION);
                     }
+
+                    console.info("fluidInjector-request.config-altered", config);
                     return config;
                 },
                 "requestError": function (rejection) {
@@ -276,8 +281,8 @@ fluidComponents
 
         var responseEvent = {};
         responseEvent.responses = [];
-        responseEvent.addResponse = function (evt, statusCode, redirect, path) {
 
+        responseEvent.addResponse = function (evt, statusCode, redirect, path) {
             responseEvent.responses.push({
                 "evt": evt,
                 "statusCode": statusCode,
@@ -288,7 +293,6 @@ fluidComponents
         }
 
         responseEvent.callEvent = function (res) {
-
             angular.forEach(responseEvent.responses, function (response) {
                 if (response.statusCode === res.statusCode) {
                     if (response.evt) {

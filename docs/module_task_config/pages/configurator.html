@@ -4,13 +4,6 @@
         <fluid-message id="taskConfigMessage"></fluid-message>
         <div class="col-lg-6">
             <div class="form-group">
-                <label for="selectTask">
-                    Select task</label>
-                <select ng-model="newTask" id="selectTask" class="form-control"
-                        ng-options="selectedTask as selectedTask.title for selectedTask in fluidFrameService.taskList track by selectedTask.id | filter:{'name': '!moduleTaskConfig'}">
-                </select>
-            </div>
-            <div class="form-group">
                 <label for="taskName">
                     Name:
                 </label>

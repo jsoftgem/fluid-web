@@ -149,7 +149,7 @@ angular.module("fluidFrame", ["fluidHttp", "fluidTask", "fluidSession"])
         this.frames = [];
         return this;
     }])
-    .factory("fluidFrameService", ["Frame", "Task", function (Frame, Task) {
+    .factory("fluidFrameService", ["Frame", "Task", "fluidStateService", "$timeout", "$q", function (Frame, Task, fss, t, q) {
         /*  this.isSearch = false;
          this.searchTask = "";
          this.taskUrl = "";
@@ -294,12 +294,34 @@ angular.module("fluidFrame", ["fluidHttp", "fluidTask", "fluidSession"])
                 if (workspace) {
 
                 }
-                var task = new Task(taskName);
-                var index = frame.tasks.length;
-                task.id = task.id + "_" + index;
-                this.tasks.push(task);
-            }
 
+                q(function (resolve, reject) {
+                    var task = new Task(taskName);
+
+                    function waitForTask(counter) {
+                        if (counter === timeout) {
+                            reject("WAIT_TASK_TIME_OUT");
+                        }
+                        t(function () {
+                            counter++;
+                            if (task) {
+                                resolve(task);
+                            } else {
+                                waitForTask(counter);
+                            }
+                        }, 1000);
+                    }
+
+                    waitForTask(0);
+
+                }).then(function (task) {
+                    console.info("fluidFrame-fluidFrameService.task", task);
+                    var index = frame.tasks.length;
+                    task.id = task.id + "_" + index;
+                    frame.tasks.push(task);
+
+                });
+            }
             return frame;
         }
 
@@ -307,7 +329,7 @@ angular.module("fluidFrame", ["fluidHttp", "fluidTask", "fluidSession"])
 
     }])
     .provider("Frame", function () {
-        this.$get = ["$timeout", "fluidFrameHandler", function (t, fh) {
+        this.$get = ["$timeout", "fluidFrameHandler", "fluidStateService", function (t, fh, fts) {
             var frame = function Frame(name) {
                 var key = frameKey + name;
                 if (fh.frames[key] != null) {
@@ -333,7 +355,7 @@ function autoSizeFrame(element, offset, height) {
     if (offset) {
         frameHeight -= offset;
     }
-    element.css("max-height",frameHeight);
-    element.css("margin-top",offset+"px");
+    element.css("max-height", frameHeight);
+    element.css("margin-top", offset + "px");
     element.height(frameHeight);
 }

@@ -5,22 +5,39 @@ angular.module("fluidPage", ["fluidHttp"])
     .directive("fluidPage", ["$templateCache", "fluidPageService", "FluidPage", function (tc, fps, FluidPage) {
         return {
             restrict: "E",
-            scope: {page: "="},
-            replace: true,
+            scope: {page: "=", fluidPanel: "="},
             template: tc.get("templates/fluid/fluidPage.html"),
-            link: function (scope, element, attr) {
+            link: {
+                pre: function (scope, element, attr) {
 
-                scope.fluidPageService = fps;
+                    scope.fluidPageService = fps;
 
-                if (scope.page) {
-                    scope.fluidPage = new FluidPage(scope.page.name);
+                    scope.$watch(function (scope) {
+                        return scope.page;
+                    }, function (newPage, oldPage) {
+                        if (newPage) {
+                            scope.fluidPage = new FluidPage(newPage);
+                        }
+                        console.info("fluidPage-fluidpage>load", scope.fluidPage);
+                    });
+
+
+                },
+                post: function (scope, element, attr) {
+
+                    scope.onLoad = function () {
+
+                        //TODO: set load here
+                        if (scope.page.autoGet) {
+
+                        } else {
+                            scope.fluidPage.load()
+                            scope.fluidPanel.loaded = true;
+                        }
+                    }
                 }
-
-                scope.load = function () {
-                    //TODO: set load here
-                }
-
-            }
+            },
+            replace: true
 
         }
     }])
@@ -53,29 +70,33 @@ angular.module("fluidPage", ["fluidHttp"])
         }
     }])
     .factory("FluidPage", ["fluidPageService", function (fps) {
-        var fluidPage = function (name) {
-            console.info("FluidPage-FluidPage.page", name);
-            if (fps.pages[name] != null) {
-                return fps.pages[name];
+        var fluidPage = function (page) {
+            console.info("FluidPage-FluidPage.page", page);
+            if (fps.pages[page.name]) {
+                return fps.pages[page.name];
             } else {
-                this.name = name;
 
-                this.preLoad = function (page) {
+                this.name = page.name;
+                this.id = page.id;
+                this.title = page.title;
+                this.static = page.static;
+                this.html = page.html;
+                this.home = page.home;
+                this.ajax = page.ajax;
+
+                this.preLoad = function () {
                 }
                 this.onLoad = function (data) {
                 }
 
-                fps.pages[name] = this;
+                fps.pages[page.name] = this;
             }
-            return this;
         }
 
         return fluidPage;
     }])
-
     .service("fluidPageService", ["$templateCache", function (tc) {
         this.pages = [];
-        this.pageHomes = [];
         this.clear = function (page) {
             this.pages[page] = undefined;
         }
@@ -100,6 +121,7 @@ angular.module("fluidPage", ["fluidHttp"])
             return page;
         }
         this.render = function (page) {
+            console.info("fluidPage-fluidPageService-render.page", page);
             if (page) {
                 if (page.static) {
                     page.home = "template_" + page.id;
@@ -116,9 +138,7 @@ angular.module("fluidPage", ["fluidHttp"])
                         page.home = page.ajax.url;
                     }
                 }
-                this.pageHomes[page.home] = page;
-
-                return page.home;
+                return page.name;
             }
 
         }

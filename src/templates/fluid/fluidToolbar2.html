@@ -2,7 +2,7 @@
     <div class="btn-toolbar hidden-xs hidden-sm hidden-md" role="toolbar">
         <div class="btn-group btn-group-sm">
             <button ng-if="control.visible()" ng-disabled="control.disabled()" class="{{control.class}}"
-                    ng-repeat="control in fluidToolbarService.toolbarItems[task.name] | reverse"
+                    ng-repeat="control in fluidToolbarService.toolbarItems[task.name]"
                     ng-class="control.uiClass"
                     type="{{control.type}}" title="{{control.label}}"
                     ng-click="control.action(task,$event)"><i class="{{control.glyph}}"></i>{{control.showText ?
@@ -13,11 +13,13 @@
 
     <div class="btn-group btn-group-md hidden-lg">
         <button ng-if="control.visible()" ng-disabled="control.disabled()" class="{{control.class}}"
-                ng-repeat="control in fluidToolbarService.toolbarItems[task.name] | reverse"
+                ng-repeat="control in fluidToolbarService.toolbarItems[task.name]"
                 ng-class="control.uiClass"
                 type="{{control.type}}" title="{{control.label}}"
                 ng-click="control.action(task,$event)"><i class="{{control.glyph}}"></i>{{control.showText ?
             control.label : ''}}
         </button>
     </div>
+
+
 </div>
