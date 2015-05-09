@@ -2,18 +2,11 @@
  * Created by Jerico on 4/27/2015.
  */
 angular.module("moduleTaskConfig", ["fluid"])
-    .controller("moduleTaskConfigCtrl", ["$scope", "TaskControl", "FluidPage", "Task", "ToolBarItem", function (s, TaskControl, FluidPage, Task, ToolBarItem) {
-        s.task = new Task("moduleTaskConfig");
-
+    .controller("moduleTaskConfigCtrl", ["$scope", "TaskControl", "FluidPage", "ToolBarItem", function (s, TaskControl, FluidPage, ToolBarItem) {
         s.generic = {};
-
         s.newTask = [];
-
         s.fluidPage = new FluidPage(s.page);
 
-        s.fluidPage.preLoad = function () {
-            console.info("moduleTaskConfig#moduleTaskConfigCtrl-preLoad.fluidPage", this);
-        }
         s.fluidPage.onLoad = function (data) {
             console.info("moduleTaskConfig#moduleTaskConfigCtrl-onLoad.fluidPage", this);
         }

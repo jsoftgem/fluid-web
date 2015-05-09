@@ -3,8 +3,9 @@
  * October 2014**/
 'use strict';
 
-var fluidComponents = angular.module("fluid", ["oc.lazyLoad", "LocalStorageModule", "templates-dist", "fluidSession",
+var fluidComponents = angular.module("fluid", ["oc.lazyLoad", "LocalStorageModule", "ngResource", "templates-dist", "fluidSession",
     "fluidHttp", "fluidFrame", "fluidMessage", "fluidOption", "fluidTool", "fluidPage", "fluidPanel", "fluidTasknav", "fluidTask", "fluidTaskcontrols"]);
+var EVENT_TIME_OUT = "TIME_OUT", EVENT_TASK_LOADED = "TASK_LOAD";
 
 fluidComponents.config(["$httpProvider", "localStorageServiceProvider", function (h, ls) {
     ls.setPrefix("fluid")
@@ -13,7 +14,7 @@ fluidComponents.config(["$httpProvider", "localStorageServiceProvider", function
     h.interceptors.push("fluidInjector");
 }]);
 
-fluidComponents.run([function () {
+fluidComponents.run(["taskState", function (ts) {
 }]);
 
 fluidComponents
@@ -1100,7 +1101,7 @@ angular.module("fluidFrame", ["fluidHttp", "fluidTask", "fluidSession"])
         this.frames = [];
         return this;
     }])
-    .factory("fluidFrameService", ["Frame", "Task", "fluidStateService", "$timeout", "$q", function (Frame, Task, fss, t, q) {
+    .factory("fluidFrameService", ["Frame", "fluidTaskService", function (Frame, taskService) {
         /*  this.isSearch = false;
          this.searchTask = "";
          this.taskUrl = "";
@@ -1246,32 +1247,15 @@ angular.module("fluidFrame", ["fluidHttp", "fluidTask", "fluidSession"])
 
                 }
 
-                q(function (resolve, reject) {
-                    var task = new Task(taskName);
+                taskService.findTaskByName(taskName)
+                    .then(function (task) {
+                        var index = frame.tasks.length;
+                        console.info("fluidFrame-fluidFrameService.task", task);
+                        task.id = task.id + "_" + index;
+                        frame.tasks.push(task);
 
-                    function waitForTask(counter) {
-                        if (counter === timeout) {
-                            reject("WAIT_TASK_TIME_OUT");
-                        }
-                        t(function () {
-                            counter++;
-                            if (task) {
-                                resolve(task);
-                            } else {
-                                waitForTask(counter);
-                            }
-                        }, 1000);
-                    }
+                    });
 
-                    waitForTask(0);
-
-                }).then(function (task) {
-                    console.info("fluidFrame-fluidFrameService.task", task);
-                    var index = frame.tasks.length;
-                    task.id = task.id + "_" + index;
-                    frame.tasks.push(task);
-
-                });
             }
             return frame;
         }
@@ -1301,12 +1285,13 @@ function autoSizeFrame(element, offset, height) {
 
     console.info("autoSizeFrame.offset", offset);
     var frameHeight = height - 1;
-    $("body").css("max-height", height).css("overflow-y", "none");
+    $("body").css("max-height", height).css("overflow-y", "hidden");
 
     if (offset) {
         frameHeight -= offset;
+        frameHeight -= 10;
     }
-    element.css("max-height", frameHeight);
+
     element.css("margin-top", offset + "px");
     element.height(frameHeight);
 }
@@ -1935,6 +1920,7 @@ angular.module("fluidPage", ["fluidHttp"])
                             scope.fluidPage = new FluidPage(newPage);
                         }
                         console.info("fluidPage-fluidpage>load", scope.fluidPage);
+                        console.info("<ng-include class='fluid-page' src='fluidPageService.render(fluidPage)' onload='load()'></ng-include>");
                     });
 
 
@@ -1943,11 +1929,11 @@ angular.module("fluidPage", ["fluidHttp"])
 
                     scope.onLoad = function () {
 
-                        //TODO: set load here
+
                         if (scope.page.autoGet) {
 
                         } else {
-                            scope.fluidPage.load()
+                            scope.fluidPage.onLoad();
                             scope.fluidPanel.loaded = true;
                         }
                     }
@@ -1991,7 +1977,6 @@ angular.module("fluidPage", ["fluidHttp"])
             if (fps.pages[page.name]) {
                 return fps.pages[page.name];
             } else {
-
                 this.name = page.name;
                 this.id = page.id;
                 this.title = page.title;
@@ -1999,11 +1984,10 @@ angular.module("fluidPage", ["fluidHttp"])
                 this.html = page.html;
                 this.home = page.home;
                 this.ajax = page.ajax;
-
-                this.preLoad = function () {
-                }
                 this.onLoad = function (data) {
                 }
+
+
 
                 fps.pages[page.name] = this;
             }
@@ -3445,14 +3429,18 @@ angular.module("fluidPanel", ["oc.lazyLoad", "fluidHttp", "fluidFrame", "fluidMe
 
         }])
     .factory("FluidPanelModel", ["TaskControl", "ToolBarItem", "fluidPanelService", "fluidTaskService", function (TaskControl, ToolBarItem,
-                                                                                                                  fluidPanelService, FluidTask) {
+                                                                                                                  fluidPanelService, TaskService) {
         var fluidPanel = function (task) {
-            var taskModel = new FluidTask(task);
 
-            this.page = taskModel.page;
+            if (task.pages) {
+                angular.forEach(task.pages, function (page) {
+                    if (page.isHome) {
+                        this.page = page;
+                    }
+                }, this);
+            }
 
             this.loaded = false;
-
 
             var closeControl = new TaskControl(task);
             closeControl.glyph = "fa fa-close";
@@ -3608,7 +3596,7 @@ angular.module("fluidTask", ["fluidSession"])
             setTasks: function (value) {
                 taskArray = value
             },
-            $get: ["$http", "sessionService", "$q", "$rootScope", "$timeout", function (h, ss, q, rs, t) {
+            $get: ["$http", "sessionService", "$q", "$rootScope", "$timeout", "fluidTaskService", function (h, ss, q, rs, t, taskService) {
 
                 ajax = (url ? true : false) || ajax;
 
@@ -3622,14 +3610,7 @@ angular.module("fluidTask", ["fluidSession"])
                             angular.forEach(taskArray, function (task, $index) {
                                 if (!ss.containsKey(taskKey + task.name)) {
                                     if (task.url) {
-                                        h.get(task.url)
-                                            .success(function (dt) {
-                                                var taskName = dt.name;
-                                                if (task.name) {
-                                                    taskName = task.name;
-                                                }
-                                                ss.addSessionProperty(taskKey + taskName, dt);
-                                            });
+                                        taskService.findTaskByUrl(task.url);
                                     } else {
                                         ss.addSessionProperty(taskKey + task.name, task);
                                     }
@@ -3645,10 +3626,10 @@ angular.module("fluidTask", ["fluidSession"])
                             function timeOut() {
                                 t(function () {
                                     if (counter === timeout) {
-                                        reject("TIME_OUT");
+                                        reject(EVENT_TIME_OUT);
                                     }
                                     if (value.done) {
-                                        resolve("TASK_LOADED");
+                                        resolve(EVENT_TASK_LOADED);
                                     } else {
                                         timeOut();
                                     }
@@ -3667,50 +3648,75 @@ angular.module("fluidTask", ["fluidSession"])
         }
 
     })
-    .provider("Task", function () {
-        this.$get = ["sessionService", function (ss) {
+    .factory("fluidTaskService", ["sessionService", "$http", "$q", "fluidStateService", "$rootScope", "$timeout", function (ss, h, q, fss, rs, t) {
+        var taskService = {};
 
-            var task = function (name) {
-                var key = taskKey + name;
-                if (ss.containsKey(key)) {
-                   return ss.getSessionProperty(key);
-                }
-                return undefined;
+
+        function timeoutEvent(data) {
+            if (data === EVENT_TIME_OUT) {
+                rs.$broadcast(EVENT_TIME_OUT, "Task name not found.");
+            }else{
+                return data;
             }
-
-            return task;
-
-        }];
-    })
-    .factory("fluidTaskService", ["Task", function (Task) {
-        var taskService = function (task) {
-
-            this.getDetaultTask = function () {
-                var defaultTask = new Task(task.name);
-                return defaultTask;
-            }
-
-            if (task.stateAjax) {
-                var defaultTask = this.getDetaultTask();
-            }
-            // gets the homepage
-            if (task.pages) {
-                angular.forEach(task.pages, function (page) {
-                    if (page.isHome) {
-                        this.page = page;
-                    }
-                }, this);
-            }
-
-
         }
+
+        taskService.findTaskByName = function (name) {
+            console.info("fluidTask-fluidTaskService-findTaskByName.name", name);
+            var key = taskKey + name;
+            return q(function (resolve, reject) {
+
+                function waitForTask(counter) {
+                    console.info("fluidTask-fluidTaskService-findTaskByName-waitForTask.key", counter);
+                    console.info("fluidTask-fluidTaskService-findTaskByName-waitForTask.counter", counter);
+                    console.info("fluidTask-fluidTaskService-findTaskByName-waitForTask.fss", fss);
+
+                    t(function () {
+                        if (ss.containsKey(key)) {
+                            console.info("fluidTask-fluidTaskService-findTaskByName-waitForTask.getSessionProperty", ss.getSessionProperty(key));
+                            resolve(ss.getSessionProperty(key));
+                        } else if (counter === timeout) {
+                            reject(EVENT_TIME_OUT);
+                        } else {
+                            counter++;
+                            waitForTask(counter);
+                        }
+                    }, 1000);
+                }
+
+                if (ss.containsKey(key)) {
+                    resolve(ss.getSessionProperty(key));
+                } else {
+                    waitForTask(0);
+                }
+
+            }).then(timeoutEvent);
+        }
+        taskService.findTaskByUrl = function (url) {
+            console.info("fluidTask-fluidTaskService-findTaskByUrl.url", url);
+            var deferred = q.defer();
+
+            if (fss.urlKeys[url] != null) {
+                var key = this.urlKeys[url];
+                if (ss.containsKey(key)) {
+                    deferred.resolve(ss.getSessionProperty(key));
+                }
+            } else {
+                return h.get(url).success(function (data) {
+                    var key = taskKey + data.name;
+                    fss.urlKeys[url] = key;
+                    ss.addSessionProperty(key, data);
+                    console.info("fluidTask-fluidTaskService.cacheTask.data", data);
+                });
+            }
+
+            return deferred.promise;
+        }
+
         return taskService;
     }])
-    .service("fluidStateService", ["sessionService", "$http", "Task", "$q", "taskState", "$rootScope", function (ss, h, Task, q, taskState, rs) {
+    .service("fluidStateService", [function () {
         this.loaded = false;
-        rs.$on("TASK_LOADED", function () {
-            console.info("fluidTask-fluidStateService.taskLoaded", this);
-        });
+        this.urlKeys = [];
         return this;
     }])
     .directive("id", [function () {
@@ -4210,7 +4216,6 @@ angular.module("templates/fluid/fluidOption.html", []).run(["$templateCache", fu
 angular.module("templates/fluid/fluidPage.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("templates/fluid/fluidPage.html",
     "<div>\n" +
-    "    <ng-include class=\"fluid-page\" src=\"fluidPageService.render(fluidPage)\" onload=\"load()\"></ng-include>\n" +
     "</div>\n" +
     "");
 }]);

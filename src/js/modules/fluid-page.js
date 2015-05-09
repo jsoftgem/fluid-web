@@ -19,6 +19,7 @@ angular.module("fluidPage", ["fluidHttp"])
                             scope.fluidPage = new FluidPage(newPage);
                         }
                         console.info("fluidPage-fluidpage>load", scope.fluidPage);
+                        console.info("<ng-include class='fluid-page' src='fluidPageService.render(fluidPage)' onload='load()'></ng-include>");
                     });
 
 
@@ -27,11 +28,11 @@ angular.module("fluidPage", ["fluidHttp"])
 
                     scope.onLoad = function () {
 
-                        //TODO: set load here
+
                         if (scope.page.autoGet) {
 
                         } else {
-                            scope.fluidPage.load()
+                            scope.fluidPage.onLoad();
                             scope.fluidPanel.loaded = true;
                         }
                     }
@@ -69,12 +70,24 @@ angular.module("fluidPage", ["fluidHttp"])
             }
         }
     }])
-    .factory("FluidPage", ["fluidPageService", function (fps) {
+    .factory("FluidPage", ["fluidPageService", "$resource", function (fps, r) {
         var fluidPage = function (page) {
             console.info("FluidPage-FluidPage.page", page);
             if (fps.pages[page.name]) {
                 return fps.pages[page.name];
             } else {
+
+                if (page.ajax) {
+                    if (page.ajax.url) {
+                        if (page.ajax.param) {
+                            this.resource = r(page.ajax.url, page.ajax.param);
+                        } else {
+                            this.resource = r(page.ajax.url);
+                        }
+                    } else {
+                        throw "Page ajax.url is required!";
+                    }
+                }
 
                 this.name = page.name;
                 this.id = page.id;
@@ -83,12 +96,9 @@ angular.module("fluidPage", ["fluidHttp"])
                 this.html = page.html;
                 this.home = page.home;
                 this.ajax = page.ajax;
-
-                this.preLoad = function () {
-                }
                 this.onLoad = function (data) {
-                }
 
+                }
                 fps.pages[page.name] = this;
             }
         }

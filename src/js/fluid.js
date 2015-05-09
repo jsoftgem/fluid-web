@@ -3,8 +3,9 @@
  * October 2014**/
 'use strict';
 
-var fluidComponents = angular.module("fluid", ["oc.lazyLoad", "LocalStorageModule", "templates-dist", "fluidSession",
+var fluidComponents = angular.module("fluid", ["oc.lazyLoad", "LocalStorageModule", "ngResource", "templates-dist", "fluidSession",
     "fluidHttp", "fluidFrame", "fluidMessage", "fluidOption", "fluidTool", "fluidPage", "fluidPanel", "fluidTasknav", "fluidTask", "fluidTaskcontrols"]);
+var EVENT_TIME_OUT = "TIME_OUT", EVENT_TASK_LOADED = "TASK_LOAD";
 
 fluidComponents.config(["$httpProvider", "localStorageServiceProvider", function (h, ls) {
     ls.setPrefix("fluid")
@@ -13,7 +14,7 @@ fluidComponents.config(["$httpProvider", "localStorageServiceProvider", function
     h.interceptors.push("fluidInjector");
 }]);
 
-fluidComponents.run([function () {
+fluidComponents.run(["taskState", function (ts) {
 }]);
 
 fluidComponents

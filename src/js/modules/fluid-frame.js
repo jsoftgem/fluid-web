@@ -149,7 +149,7 @@ angular.module("fluidFrame", ["fluidHttp", "fluidTask", "fluidSession"])
         this.frames = [];
         return this;
     }])
-    .factory("fluidFrameService", ["Frame", "Task", "fluidStateService", "$timeout", "$q", function (Frame, Task, fss, t, q) {
+    .factory("fluidFrameService", ["Frame", "fluidTaskService", function (Frame, taskService) {
         /*  this.isSearch = false;
          this.searchTask = "";
          this.taskUrl = "";
@@ -295,32 +295,15 @@ angular.module("fluidFrame", ["fluidHttp", "fluidTask", "fluidSession"])
 
                 }
 
-                q(function (resolve, reject) {
-                    var task = new Task(taskName);
+                taskService.findTaskByName(taskName)
+                    .then(function (task) {
+                        var index = frame.tasks.length;
+                        console.info("fluidFrame-fluidFrameService.task", task);
+                        task.id = task.id + "_" + index;
+                        frame.tasks.push(task);
 
-                    function waitForTask(counter) {
-                        if (counter === timeout) {
-                            reject("WAIT_TASK_TIME_OUT");
-                        }
-                        t(function () {
-                            counter++;
-                            if (task) {
-                                resolve(task);
-                            } else {
-                                waitForTask(counter);
-                            }
-                        }, 1000);
-                    }
+                    });
 
-                    waitForTask(0);
-
-                }).then(function (task) {
-                    console.info("fluidFrame-fluidFrameService.task", task);
-                    var index = frame.tasks.length;
-                    task.id = task.id + "_" + index;
-                    frame.tasks.push(task);
-
-                });
             }
             return frame;
         }
@@ -350,12 +333,13 @@ function autoSizeFrame(element, offset, height) {
 
     console.info("autoSizeFrame.offset", offset);
     var frameHeight = height - 1;
-    $("body").css("max-height", height).css("overflow-y", "none");
+    $("body").css("max-height", height).css("overflow-y", "hidden");
 
     if (offset) {
         frameHeight -= offset;
+        frameHeight -= 10;
     }
-    element.css("max-height", frameHeight);
+
     element.css("margin-top", offset + "px");
     element.height(frameHeight);
 }

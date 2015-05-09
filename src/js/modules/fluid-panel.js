@@ -1370,14 +1370,18 @@ angular.module("fluidPanel", ["oc.lazyLoad", "fluidHttp", "fluidFrame", "fluidMe
 
         }])
     .factory("FluidPanelModel", ["TaskControl", "ToolBarItem", "fluidPanelService", "fluidTaskService", function (TaskControl, ToolBarItem,
-                                                                                                                  fluidPanelService, FluidTask) {
+                                                                                                                  fluidPanelService, TaskService) {
         var fluidPanel = function (task) {
-            var taskModel = new FluidTask(task);
 
-            this.page = taskModel.page;
+            if (task.pages) {
+                angular.forEach(task.pages, function (page) {
+                    if (page.isHome) {
+                        this.page = page;
+                    }
+                }, this);
+            }
 
             this.loaded = false;
-
 
             var closeControl = new TaskControl(task);
             closeControl.glyph = "fa fa-close";
