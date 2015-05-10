@@ -1,7 +1,7 @@
 /**
  * Created by jerico on 4/28/2015.
  */
-angular.module("fluidPanel", ["oc.lazyLoad", "fluidHttp", "fluidFrame", "fluidMessage", "fluidOption", "fluidSession", "fluidTool", "fluidPage", "fluidTask", "fluidTaskcontrols"])
+angular.module("fluidPanel", ["oc.lazyLoad", "fluidHttp", "fluidFrame", "fluidMessage", "fluidOption", "fluidSession", "fluidTool", "fluidPage", "fluidTask", "fluidTaskcontrols", "fluidBreadcrumb"])
     .directive("fluidPanel", ["fluidFrameService", "fluidHttpService", "$templateCache", "$compile",
         "fluidMessageService", "$rootScope", "$q", "$timeout", "$ocLazyLoad",
         "sessionService", "fluidOptionService", "fluidPageService",
@@ -1372,7 +1372,7 @@ angular.module("fluidPanel", ["oc.lazyLoad", "fluidHttp", "fluidFrame", "fluidMe
     .factory("FluidPanelModel", ["TaskControl", "ToolBarItem", "fluidPanelService", "fluidTaskService", function (TaskControl, ToolBarItem,
                                                                                                                   fluidPanelService, TaskService) {
         var fluidPanel = function (task) {
-
+            this.id = task.id;
             if (task.pages) {
                 angular.forEach(task.pages, function (page) {
                     if (page.isHome) {

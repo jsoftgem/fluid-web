@@ -1,64 +1,71 @@
 /**
  * Created by jerico on 4/28/2015.
  */
-angular.module("fluidPage", ["fluidHttp"])
-    .directive("fluidPage", ["$templateCache", "fluidPageService", "FluidPage", "$compile", function (tc, fps, FluidPage, c) {
-        return {
-            restrict: "E",
-            scope: {page: "=", fluidPanel: "="},
-            template: tc.get("templates/fluid/fluidPage.html"),
-            link: {
-                pre: function (scope, element, attr) {
+angular.module("fluidPage", ["fluidHttp", "fluidBreadcrumb"])
+    .directive("fluidPage", ["$templateCache", "fluidPageService", "FluidPage", "$compile", "FluidBreadcrumb",
+        function (tc, fps, FluidPage, c, FluidBreadcrumb) {
+            return {
+                restrict: "E",
+                scope: {page: "=", fluidPanel: "="},
+                template: tc.get("templates/fluid/fluidPage.html"),
+                link: {
+                    pre: function (scope, element, attr) {
 
-                    scope.fluidPageService = fps;
+                        scope.fluidPageService = fps;
 
-                    scope.loadPage = function (page) {
-                        scope.fluidPage = new FluidPage(page);
-                        scope.fluidPanel.loaded = false;
-                        element.find("div.fluid-page").remove();
-                        if (scope.fluidPage.ajax) {
-                            fps.loadAjax(scope.fluidPage)
-                                .then(function (data) {
-                                    scope.data = data;
-                                    element.append("<ng-include class='fluid-page' src='fluidPageService.render(fluidPage)' onload='onLoad()'></ng-include>");
-                                    c(element.contents())(scope);
-                                });
-                        } else {
-                            element.append("<ng-include class='fluid-page' src='fluidPageService.render(fluidPage)' onload='onLoad()'></ng-include>");
-                            c(element.contents())(scope);
+                        scope.loadPage = function (page) {
+                            scope.fluidPage = new FluidPage(page);
+                            scope.fluidPanel.loaded = false;
+                            element.find("div.fluid-page").remove();
+                            if (scope.fluidPage.ajax) {
+                                fps.loadAjax(scope.fluidPage)
+                                    .then(function (data) {
+                                        scope.data = data;
+                                        element.append("<ng-include class='fluid-page' src='fluidPageService.render(fluidPage)' onload='onLoad()'></ng-include>");
+                                        c(element.contents())(scope);
+                                    });
+                            } else {
+                                element.append("<ng-include class='fluid-page' src='fluidPageService.render(fluidPage)' onload='onLoad()'></ng-include>");
+                                c(element.contents())(scope);
+                            }
                         }
-                    }
 
-                    scope.$watch(function (scope) {
-                        return scope.page;
-                    }, function (newPage, oldPage) {
-                        if (newPage) {
-                            if (oldPage) {
-                                if (newPage.name !== oldPage.name) {
+                        scope.$watch(function (scope) {
+                            return scope.page;
+                        }, function (newPage, oldPage) {
+                            if (newPage) {
+                                if (oldPage) {
+                                    if (newPage.name !== oldPage.name) {
+                                        scope.loadPage(newPage);
+                                    }
+                                } else {
                                     scope.loadPage(newPage);
                                 }
-                            } else {
-                                scope.loadPage(newPage);
+
                             }
+                        });
+
+
+                    },
+                    post: function (scope, element, attr) {
+
+                        scope.onLoad = function () {
+
+                            var fluidBreadcrumb = new FluidBreadcrumb(scope.fluidPanel);
+
+                            scope.fluidPage.onLoad();
+
+                            scope.fluidPanel.loaded = true;
+
+                            fluidBreadcrumb.addPage(scope.fluidPage);
 
                         }
-                    });
-
-
-                },
-                post: function (scope, element, attr) {
-
-                    scope.onLoad = function () {
-                        scope.fluidPage.onLoad();
-                        scope.fluidPanel.loaded = true;
-
                     }
-                }
-            },
-            replace: true
+                },
+                replace: true
 
-        }
-    }])
+            }
+        }])
     .directive("fluidResizePage", ["$window", function ($w) {
         return {
             restrict: "A",
@@ -96,11 +103,14 @@ angular.module("fluidPage", ["fluidHttp"])
 
                 if (page.ajax) {
                     if (page.ajax.url) {
-                        if (page.ajax.param) {
-                            this.resource = r(page.ajax.url, page.ajax.param);
-                        } else {
-                            this.resource = r(page.ajax.url);
+                        if (!page.actions) {
+                            page.actions = [];
                         }
+                        if (!page.ajax.param) {
+                            page.ajax.param = {};
+                        }
+                        this.resource = r(page.ajax.url, page.ajax.param, page.actions);
+
                     } else {
                         throw "Page ajax.url is required!";
                     }
@@ -200,7 +210,5 @@ function autoSizePage(element, parent, id) {
             element.height(height);
         }
         offsetHeight += $(value).innerHeight();
-    })
-    /* var pageWidth = parent.innerWidth() - 2;
-     element.width(pageWidth);*/
+    });
 }

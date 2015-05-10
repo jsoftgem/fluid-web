@@ -4,7 +4,9 @@
         <div class="panel-title" data-toggle="collapse" data-target="#collapse_{{task.id}}">
             <a href="#" class="fluid-panel-heading-title">
                 <fluid-task-icon class="hidden-xs hidden-sm hidden25 btn-group btn-group-xs"></fluid-task-icon>
-                <span ng-if="fluidPanel.loaded">{{task.title}}</span>
+                <span ng-if="fluidPanel.loaded">{{task.title}}</span> {{' - '}}
+                <fluid-breadcrumb fluid-panel="fluidPanel"></fluid-breadcrumb>
+
             </a>
         </div>
         <fluid-loader ng-if="!fluidPanel.loaded" class="fluid-panel-loader"></fluid-loader>
@@ -12,7 +14,6 @@
             <fluid-taskcontrols></fluid-taskcontrols>
         </div>
     </div>
-
     <div id="collapse" class="panel-collapse collapse in">
         <div id="_id_fpb" class="panel-body container-fluid">
             <fluid-option></fluid-option>
@@ -22,8 +23,6 @@
                         class="width100pc"></fluid-page>
         </div>
     </div>
-
-
     <script id="menu_option" type="text/ng-template">
         <div class="container-fluid"></div>
     </script>

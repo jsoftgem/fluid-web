@@ -1,3 +1,9 @@
+.fluid-breadcrumb {
+    overflow: hidden;
+}
+.fluid-breadcrumb .item {
+
+}
 .fluid-frame {
     margin: 0 auto;
     padding-left: 2px !important;
