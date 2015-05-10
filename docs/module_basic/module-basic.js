@@ -3,5 +3,10 @@
  */
 angular.module("moduleBasic", [])
     .controller("moduleBasicCtrl", ["$scope", function (s) {
-        s.header = "Scope was initialized!";
+
+
+        s.save = function(resources){
+            console.info("moduleBasic-moduleBasicCtrl.resources",resources);
+            resources.$save();
+        }
     }]);

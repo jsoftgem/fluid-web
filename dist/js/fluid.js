@@ -231,8 +231,8 @@ fluidComponents
     }]);
 
 fluidComponents
-    .factory("fluidInjector", ["$q", "$rootScope", "sessionService", "fluidLoaderService", "responseEvent", "fluidPageService", "FluidPage",
-        function (q, rs, ss, fls, r, fps, FluidPage) {
+    .factory("fluidInjector", ["$q", "$rootScope", "sessionService", "fluidLoaderService", "responseEvent",
+        function (q, rs, ss, fls, r) {
 
             return {
                 "request": function (config) {
@@ -242,7 +242,7 @@ fluidComponents
 
                     config.headers["Access-Control-Allow-Origin"] = "*";
 
-                    console.info("fluidInjector-request.config", config);
+                  /*  console.info("fluidInjector-request.config", config);
 
                     console.info("fluidInjector-request.pages", fps.pages);
 
@@ -251,7 +251,7 @@ fluidComponents
                         console.info("fluidInjector-request.fluidPage", fluidPage);
                         fluidPage.preLoad();
                         config.url = fluidPage.home;
-                    }
+                    }*/
 
                     if (ss.isSessionOpened()) {
                         config.headers['Authorization'] = ss.getSessionProperty(AUTHORIZATION);
@@ -1903,7 +1903,7 @@ angular.module("fluidOption", [])
  * Created by jerico on 4/28/2015.
  */
 angular.module("fluidPage", ["fluidHttp"])
-    .directive("fluidPage", ["$templateCache", "fluidPageService", "FluidPage", function (tc, fps, FluidPage) {
+    .directive("fluidPage", ["$templateCache", "fluidPageService", "FluidPage", "$compile", function (tc, fps, FluidPage, c) {
         return {
             restrict: "E",
             scope: {page: "=", fluidPanel: "="},
@@ -1913,14 +1913,38 @@ angular.module("fluidPage", ["fluidHttp"])
 
                     scope.fluidPageService = fps;
 
+                    scope.loadPage = function (page) {
+                        scope.fluidPage = new FluidPage(page);
+                        scope.fluidPanel.loaded = false;
+                        element.find("div.fluid-page").remove();
+                        if (scope.fluidPage.ajax) {
+                            fps.loadAjax(scope.fluidPage)
+                                .then(function (data) {
+                                    scope.data = data;
+                                    element.append("<ng-include class='fluid-page' src='fluidPageService.render(fluidPage)' onload='onLoad()'></ng-include>");
+                                    c(element.contents())(scope);
+                                });
+                        } else {
+                            element.append("<ng-include class='fluid-page' src='fluidPageService.render(fluidPage)' onload='onLoad()'></ng-include>");
+                            c(element.contents())(scope);
+                        }
+                    }
+
                     scope.$watch(function (scope) {
                         return scope.page;
                     }, function (newPage, oldPage) {
+                        console.info("fluidPage-newPage",newPage);
+                        console.info("fluidPage-oldPage",oldPage);
                         if (newPage) {
-                            scope.fluidPage = new FluidPage(newPage);
+                            if (oldPage) {
+                                if (newPage.name !== oldPage.name) {
+                                    scope.loadPage(newPage);
+                                }
+                            } else {
+                                scope.loadPage(newPage);
+                            }
+
                         }
-                        console.info("fluidPage-fluidpage>load", scope.fluidPage);
-                        console.info("<ng-include class='fluid-page' src='fluidPageService.render(fluidPage)' onload='load()'></ng-include>");
                     });
 
 
@@ -1928,14 +1952,9 @@ angular.module("fluidPage", ["fluidHttp"])
                 post: function (scope, element, attr) {
 
                     scope.onLoad = function () {
+                        scope.fluidPage.onLoad();
+                        scope.fluidPanel.loaded = true;
 
-
-                        if (scope.page.autoGet) {
-
-                        } else {
-                            scope.fluidPage.onLoad();
-                            scope.fluidPanel.loaded = true;
-                        }
                     }
                 }
             },
@@ -1971,12 +1990,24 @@ angular.module("fluidPage", ["fluidHttp"])
             }
         }
     }])
-    .factory("FluidPage", ["fluidPageService", function (fps) {
+    .factory("FluidPage", ["fluidPageService", "$resource", function (fps, r) {
         var fluidPage = function (page) {
             console.info("FluidPage-FluidPage.page", page);
             if (fps.pages[page.name]) {
                 return fps.pages[page.name];
             } else {
+
+                if (page.ajax) {
+                    if (page.ajax.url) {
+                        if (page.ajax.param) {
+                            this.resource = r(page.ajax.url, page.ajax.param);
+                        } else {
+                            this.resource = r(page.ajax.url);
+                        }
+                    } else {
+                        throw "Page ajax.url is required!";
+                    }
+                }
                 this.name = page.name;
                 this.id = page.id;
                 this.title = page.title;
@@ -1984,19 +2015,37 @@ angular.module("fluidPage", ["fluidHttp"])
                 this.html = page.html;
                 this.home = page.home;
                 this.ajax = page.ajax;
-                this.onLoad = function (data) {
+                this.onLoad = function () {
+
                 }
-
-
-
                 fps.pages[page.name] = this;
             }
         }
 
         return fluidPage;
     }])
-    .service("fluidPageService", ["$templateCache", function (tc) {
+    .service("fluidPageService", ["$templateCache", "$q", function (tc, q) {
         this.pages = [];
+        this.loadAjax = function (fluidPage) {
+            return q(function (resolve, reject) {
+                if (fluidPage.ajax) {
+                    var ajax = fluidPage.ajax;
+                    if (ajax.auto) {
+                        if (ajax.isArray) {
+                            var query = fluidPage.resource.query(function () {
+                                resolve(query);
+                            });
+                        } else {
+                            fluidPage.resource.get(function (data) {
+                                resolve(data);
+                            });
+                        }
+                    } else {
+                        resolve();
+                    }
+                }
+            });
+        }
         this.clear = function (page) {
             this.pages[page] = undefined;
         }
@@ -2038,7 +2087,7 @@ angular.module("fluidPage", ["fluidHttp"])
                         page.home = page.ajax.url;
                     }
                 }
-                return page.name;
+                return page.home;
             }
 
         }
@@ -4399,7 +4448,7 @@ angular.module("templates/fluid/fluidPanel2.html", []).run(["$templateCache", fu
     "            <fluid-message id=\"fluidPanelMsg\"></fluid-message>\n" +
     "            <fluid-tool2 ng-if=\"task.showToolBar\" class=\"width100pc\"></fluid-tool2>\n" +
     "            <fluid-page id=\"fluid_page\" page=\"fluidPanel.page\" fluid-panel=\"fluidPanel\"\n" +
-    "                        class=\"width100pc {{!task.showToolBar ?'noToolbar':''}}\"></fluid-page>\n" +
+    "                        class=\"width100pc\"></fluid-page>\n" +
     "        </div>\n" +
     "    </div>\n" +
     "\n" +

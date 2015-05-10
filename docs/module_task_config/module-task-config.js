@@ -7,10 +7,11 @@ angular.module("moduleTaskConfig", ["fluid"])
         s.newTask = [];
         s.fluidPage = new FluidPage(s.page);
 
-        s.fluidPage.onLoad = function (data) {
+        s.fluidPage.onLoad = function () {
             console.info("moduleTaskConfig#moduleTaskConfigCtrl-onLoad.fluidPage", this);
         }
-        console.info("moduleTaskConfig#moduleTaskConfigCtrl.fluidPage", s.fluidPage);
+
+
 
         s.addTask = function (task) {
 

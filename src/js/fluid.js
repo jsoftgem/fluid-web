@@ -231,8 +231,8 @@ fluidComponents
     }]);
 
 fluidComponents
-    .factory("fluidInjector", ["$q", "$rootScope", "sessionService", "fluidLoaderService", "responseEvent", "fluidPageService", "FluidPage",
-        function (q, rs, ss, fls, r, fps, FluidPage) {
+    .factory("fluidInjector", ["$q", "$rootScope", "sessionService", "fluidLoaderService", "responseEvent",
+        function (q, rs, ss, fls, r) {
 
             return {
                 "request": function (config) {
@@ -242,7 +242,7 @@ fluidComponents
 
                     config.headers["Access-Control-Allow-Origin"] = "*";
 
-                    console.info("fluidInjector-request.config", config);
+                  /*  console.info("fluidInjector-request.config", config);
 
                     console.info("fluidInjector-request.pages", fps.pages);
 
@@ -251,7 +251,7 @@ fluidComponents
                         console.info("fluidInjector-request.fluidPage", fluidPage);
                         fluidPage.preLoad();
                         config.url = fluidPage.home;
-                    }
+                    }*/
 
                     if (ss.isSessionOpened()) {
                         config.headers['Authorization'] = ss.getSessionProperty(AUTHORIZATION);

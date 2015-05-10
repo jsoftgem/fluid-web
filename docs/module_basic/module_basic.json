@@ -13,15 +13,20 @@
   "lazyLoad": true,
   "moduleJS": "moduleBasic",
   "moduleFiles": "docs/module_basic/module-basic.js",
-  "pageTransition":"bounceIn",
+  "pageTransition": "bounceIn",
   "pages": [
     {
       "id": 1,
       "name": "page1",
       "title": "Home",
       "static": true,
-      "html": "<div><h1>{{header}}</h1><div><h6>Task Configuration using <b>Static</b> page</h6><div bgcolor='#cccccc'><p>{\"id\":\"module1\",<br/>\"name\":\"module_basic\",<br/>\"title\":\"Basic\",<br/>\"size\":100,<br/>\"glyph\":\"fafa-gears\",<br/>\"useImg\":false,<br/>\"imgSrc\":\"app/module_basic/icon.png\",<br/>\"active\":true,<br/>\"locked\":true,<br/>\"closeable\":false,<br/>\"showToolBar\":false,<br/>\"pages\":[/*pagehere*/] }</p></div></div></div>",
-      "isHome": true
+      "html": "<div ng-controller='moduleBasicCtrl'><ul class='list-group'><li ng-repeat='pg in data'><p>id: {{pg.id}} <br/> name: {{pg.name}} <br/> title: {{pg.title}} <br/></p> <button class='btn btn-info' type='button' ng-click='pg.$save()'><i class='fa fa-save'></i></button></li></ul></div>",
+      "isHome": true,
+      "ajax": {
+        "isArray": true,
+        "auto": true,
+        "url": "docs/module_basic/pages/page1-data.json"
+      }
     }
   ]
 }
