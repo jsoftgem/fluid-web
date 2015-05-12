@@ -2,14 +2,14 @@
   "id": "moduleBasic",
   "name": "module_basic",
   "title": "Basic - Locked",
-  "size": 25,
+  "size": 100,
   "glyph": "fa fa-gears",
   "useImg": true,
   "imgSrc": "docs/module_basic/icon.png",
   "active": true,
   "locked": false,
   "closeable": false,
-  "showToolBar": false,
+  "showToolBar": true,
   "lazyLoad": true,
   "moduleJS": "moduleBasic",
   "moduleFiles": "docs/module_basic/module-basic.js",
@@ -20,13 +20,41 @@
       "name": "page1",
       "title": "Home",
       "static": true,
-      "html": "<div ng-controller='moduleBasicCtrl'><ul class='list-group'><li ng-repeat='pg in data'><p>id: {{pg.id}} <br/> name: {{pg.name}} <br/> title: {{pg.title}} <br/></p> <button class='btn btn-info' type='button' ng-click='pg.$save()'><i class='fa fa-save'></i></button></li></ul></div>",
+      "html": "<div ng-controller='moduleBasicCtrl'><ul class='list-group'><li ng-repeat='pg in data'><p>id: {{pg.id}} <br/> name: {{pg.name}} <br/> title: {{pg.title}} <br/></p> <button type='button' class='btn btn-warning' ng-click='fluidPanel.goTo(pg.name)'><i class='fa fa-search'></i></button><button class='btn btn-info' type='button' ng-click='pg.$save()'><i class='fa fa-save'></i></button></li></ul></div>",
       "isHome": true,
       "ajax": {
         "isArray": true,
         "auto": true,
         "url": "docs/module_basic/pages/page1-data.json"
       }
+    },
+    {
+      "id": 2,
+      "name": "page2",
+      "title": "Editor",
+      "static": true,
+      "html": "<div ng-controller='moduleBasicCtrl'><h1>Editor</h1><div><button class='btn btn-info' type='button' ng-click=\"fluidPanel.goTo('page3')\">Next</button></div></div>"
+    },
+    {
+      "id": 3,
+      "name": "page3",
+      "title": "Page 3",
+      "static": true,
+      "html": "<div ng-controller='moduleBasicCtrl'><h1>Page3</h1><div><button class='btn btn-info' type='button' ng-click=\"fluidPanel.goTo('page4')\">Next</button></div></div>"
+    },
+    {
+      "id": 4,
+      "name": "page4",
+      "title": "Page 4",
+      "static": true,
+      "html": "<div ng-controller='moduleBasicCtrl'><h1>Page4</h1><div><button class='btn btn-info' type='button' ng-click=\"fluidPanel.goTo('page5')\">Next</button></div></div>"
+    },
+    {
+      "id": 5,
+      "name": "page5",
+      "title": "Page 5",
+      "static": true,
+      "html": "<div ng-controller='moduleBasicCtrl'><h1>Page5</h1><div><button class='btn btn-info' type='button'>Prev</button></div></div>"
     }
   ]
 }

@@ -1,7 +1,7 @@
 /**
  * Created by jerico on 4/28/2015.
  */
-angular.module("fluidPage", ["fluidHttp", "fluidBreadcrumb"])
+angular.module("fluidPage", ["fluidHttp"])
     .directive("fluidPage", ["$templateCache", "fluidPageService", "FluidPage", "$compile", "FluidBreadcrumb",
         function (tc, fps, FluidPage, c, FluidBreadcrumb) {
             return {
@@ -14,91 +14,60 @@ angular.module("fluidPage", ["fluidHttp", "fluidBreadcrumb"])
                         scope.fluidPageService = fps;
 
                         scope.loadPage = function (page) {
-                            scope.fluidPage = new FluidPage(page);
+                            console.info("fluidPage-loadPage.page", page);
+                            if (scope.fluidPanel.pages[scope.page.name] != null) {
+                                scope.fluidPage = scope.fluidPanel.pages[scope.page.name];
+                            } else {
+                                scope.fluidPanel.pages[scope.page.name] = new FluidPage(page);
+                                scope.fluidPage = scope.fluidPanel.pages[scope.page.name];
+                                scope.fluidPage.fluidId = scope.fluidPanel.id;
+
+                            }
                             scope.fluidPanel.loaded = false;
-                            element.find("div.fluid-page").remove();
                             if (scope.fluidPage.ajax) {
                                 fps.loadAjax(scope.fluidPage)
                                     .then(function (data) {
                                         scope.data = data;
-                                        element.append("<ng-include class='fluid-page' src='fluidPageService.render(fluidPage)' onload='onLoad()'></ng-include>");
+                                        element.html("<ng-include class='fluid-page' src='fluidPageService.render(fluidPage)' onload='onLoad()'></ng-include>");
                                         c(element.contents())(scope);
                                     });
                             } else {
-                                element.append("<ng-include class='fluid-page' src='fluidPageService.render(fluidPage)' onload='onLoad()'></ng-include>");
+                                element.html("<ng-include class='fluid-page' src='fluidPageService.render(fluidPage)' onload='onLoad()'></ng-include>");
                                 c(element.contents())(scope);
                             }
                         }
 
+                        console.info("fluidPage.fluidPanel", scope.fluidPanel);
+
                         scope.$watch(function (scope) {
                             return scope.page;
                         }, function (newPage, oldPage) {
-                            if (newPage) {
-                                if (oldPage) {
-                                    if (newPage.name !== oldPage.name) {
-                                        scope.loadPage(newPage);
-                                    }
-                                } else {
-                                    scope.loadPage(newPage);
-                                }
-
-                            }
+                            scope.loadPage(newPage);
                         });
 
 
                     },
                     post: function (scope, element, attr) {
-
+                        //TODO: page onLeave handling
                         scope.onLoad = function () {
-
-                            var fluidBreadcrumb = new FluidBreadcrumb(scope.fluidPanel);
-                            console.info("fluidPage-fluidPage.fluidBreadcrumb", fluidBreadcrumb);
+                            scope.fluidPage.false;
+                            //TODO: page onLoad error handling
                             scope.fluidPage.onLoad();
-
                             scope.fluidPanel.loaded = true;
-                            fluidBreadcrumb.addPage(scope.fluidPage);
+                            scope.fluidPage.true;
+                            scope.fluidPanel.goTo(scope.fluidPage.name);
                         }
                     }
                 },
                 replace: true
-
             }
         }])
-    .directive("fluidResizePage", ["$window", function ($w) {
-        return {
-            restrict: "A",
-            scope: false,
-            link: function (scope, element, attr) {
-
-                if (!scope.task) {
-                    throw "[fluidResizePage] Task is required.";
-                }
-
-                var w = angular.element($w);
-                var parent = element.parent();
-
-                w.bind("resize", function () {
-                    autoSizePage(element, parent, scope.task.id);
-                });
-
-
-                scope.$watch(function (scope) {
-                    return scope.task.size;
-                }, function (newSize, oldSize) {
-                    autoSizePage(element, parent, scope.task.id);
-                });
-
-                autoSizePage(element, parent, scope.task.id);
-            }
-        }
-    }])
     .factory("FluidPage", ["fluidPageService", "$resource", function (fps, r) {
         var fluidPage = function (page) {
             console.info("FluidPage-FluidPage.page", page);
             if (fps.pages[page.name]) {
                 return fps.pages[page.name];
             } else {
-
                 if (page.ajax) {
                     if (page.ajax.url) {
                         if (!page.actions) {
@@ -113,6 +82,7 @@ angular.module("fluidPage", ["fluidHttp", "fluidBreadcrumb"])
                         throw "Page ajax.url is required!";
                     }
                 }
+                //TODO: this.$ = $("div#_id_fp_" + fluidPanel.id + " .fluid-breadcrumb");
                 this.name = page.name;
                 this.id = page.id;
                 this.title = page.title;
@@ -121,12 +91,11 @@ angular.module("fluidPage", ["fluidHttp", "fluidBreadcrumb"])
                 this.home = page.home;
                 this.ajax = page.ajax;
                 this.onLoad = function () {
-
+                    return true;
                 }
                 fps.pages[page.name] = this;
             }
         }
-
         return fluidPage;
     }])
     .service("fluidPageService", ["$templateCache", "$q", function (tc, q) {
@@ -199,14 +168,3 @@ angular.module("fluidPage", ["fluidHttp", "fluidBreadcrumb"])
         return this;
     }]);
 
-function autoSizePage(element, parent, id) {
-    var offsetHeight = 0;
-    parent.each(function (index, value) {
-        var id = $(value).attr("id");
-        if (id === "fluid_page_" + id) {
-            var height = parent.innerHeight() - offsetHeight;
-            element.height(height);
-        }
-        offsetHeight += $(value).innerHeight();
-    });
-}

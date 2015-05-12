@@ -5,8 +5,13 @@ angular.module("moduleBasic", [])
     .controller("moduleBasicCtrl", ["$scope", function (s) {
 
 
-        s.save = function(resources){
-            console.info("moduleBasic-moduleBasicCtrl.resources",resources);
+        s.fluidPage.onLoad = function () {
+        }
+
+        s.save = function (resources) {
+            console.info("moduleBasic-moduleBasicCtrl.resources", resources);
             resources.$save();
         }
+
+
     }]);

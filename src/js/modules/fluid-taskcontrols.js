@@ -9,19 +9,12 @@ angular.module("fluidTaskcontrols", ["fluidTask"])
             scope: false,
             link: function (scope, element, attr) {
                 scope.fluidControlService = fcs;
-                if (scope.task) {
-                    console.info("fluidTaskcontrols-fluidTaskcontrols.task", scope.task);
-                } else {
-                    throw  "Task is required."
-                }
-
-
             },
             replace: true
         }
     }])
     .factory("TaskControl", ["fluidControlService", function (fcs) {
-        var control = function (task, type) {
+        var control = function (fluidPanel, type) {
 
             this.glyph = "fa fa-question";
             this.uiClass = "btn btn-default";
@@ -37,11 +30,11 @@ angular.module("fluidTaskcontrols", ["fluidTask"])
             this.visible = function () {
                 return true;
             }
-            if (fcs.controls[task.name] != null) {
-                fcs.controls[task.name].push(this);
+            if (fcs.controls[fluidPanel.id] != null) {
+                fcs.controls[fluidPanel.id].push(this);
             } else {
-                fcs.controls[task.name] = [];
-                fcs.controls[task.name].push(this);
+                fcs.controls[fluidPanel.id] = [];
+                fcs.controls[fluidPanel.id].push(this);
             }
 
         }
@@ -49,8 +42,8 @@ angular.module("fluidTaskcontrols", ["fluidTask"])
     }])
     .service("fluidControlService", [function () {
         this.controls = [];
-        this.clear = function (name) {
-            this.controls[name] = undefined;
+        this.clear = function (id) {
+            this.controls[id] = undefined;
         }
         return this;
     }]);

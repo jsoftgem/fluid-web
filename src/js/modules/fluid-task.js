@@ -73,11 +73,10 @@ angular.module("fluidTask", ["fluidSession"])
     .factory("fluidTaskService", ["sessionService", "$http", "$q", "fluidStateService", "$rootScope", "$timeout", function (ss, h, q, fss, rs, t) {
         var taskService = {};
 
-
         function timeoutEvent(data) {
             if (data === EVENT_TIME_OUT) {
                 rs.$broadcast(EVENT_TIME_OUT, "Task name not found.");
-            }else{
+            } else {
                 return data;
             }
         }
@@ -133,23 +132,11 @@ angular.module("fluidTask", ["fluidSession"])
 
             return deferred.promise;
         }
-
         return taskService;
     }])
     .service("fluidStateService", [function () {
         this.loaded = false;
         this.urlKeys = [];
         return this;
-    }])
-    .directive("id", [function () {
-        return {
-            restrict: "A",
-            scope: false,
-            link: function (scope, element, attr) {
-                if (scope.task) {
-                    element.attr("id", attr.id + "_" + scope.task.id)
-                }
-            }
-        }
     }]);
 

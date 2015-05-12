@@ -11,8 +11,6 @@ angular.module("moduleTaskConfig", ["fluid"])
             console.info("moduleTaskConfig#moduleTaskConfigCtrl-onLoad.fluidPage", this);
         }
 
-
-
         s.addTask = function (task) {
 
             console.info("addTask", task);

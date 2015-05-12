@@ -1278,17 +1278,17 @@ angular.module("fluidPanel", ["oc.lazyLoad", "fluidHttp", "fluidFrame", "fluidMe
             replace: true
         }
     }])
-    .directive("fluidPanel2", ["$templateCache", "FluidPanelModel", "fluidToolbarService", "$ocLazyLoad",
-        function (tc, FluidPanel, ftb, oc) {
+    .directive("fluidPanel2", ["$templateCache", "FluidPanelModel", "fluidToolbarService", "$ocLazyLoad", "$compile",
+        function (tc, FluidPanel, ftb, oc, c) {
             return {
                 require: "^fluidFrame2",
-                scope: {task: "="},
+                scope: {task: "=", frame: "@"},
                 restrict: "E",
                 replace: true,
                 template: tc.get("templates/fluid/fluidPanel2.html"),
                 link: {
                     pre: function (scope, element, attr) {
-
+                        scope.fluidPanel = undefined;
                         if (scope.task.lazyLoad) {
                             var pathArr = undefined;
                             if (scope.task.moduleFiles.indexOf(",") > 0) {
@@ -1310,9 +1310,13 @@ angular.module("fluidPanel", ["oc.lazyLoad", "fluidHttp", "fluidFrame", "fluidMe
                                 cache: true
                             }).then(function () {
                                 scope.fluidPanel = new FluidPanel(scope.task);
+                                scope.fluidPanel.loaded = false;
+                                scope.fluidPanel.frame = scope.frame;
                             });
                         } else {
                             scope.fluidPanel = new FluidPanel(scope.task);
+                            scope.fluidPanel.loaded = false;
+                            scope.fluidPanel.frame = scope.frame;
                         }
 
                         scope.setSize = function (size) {
@@ -1360,7 +1364,7 @@ angular.module("fluidPanel", ["oc.lazyLoad", "fluidHttp", "fluidFrame", "fluidMe
                     post: function (scope, element, attr) {
 
                         scope.getElementFlowId = function (id) {
-                            return id + "_" + scope.task.id;
+                            return id + "_" + scope.fluidPanel.id;
                         }
                     }
                 }
@@ -1369,87 +1373,153 @@ angular.module("fluidPanel", ["oc.lazyLoad", "fluidHttp", "fluidFrame", "fluidMe
             }
 
         }])
-    .factory("FluidPanelModel", ["TaskControl", "ToolBarItem", "fluidPanelService", "fluidTaskService", function (TaskControl, ToolBarItem,
-                                                                                                                  fluidPanelService, TaskService) {
+    .directive("id", [function () {
+        return {
+            restrict: "A",
+            scope: false,
+            link: function (scope, element, attr) {
+
+                if (scope.task) {
+                    element.attr("id", attr.id + "_" + scope.task.fluidId)
+                }
+                else if (scope.fluidPanel) {
+                    element.attr("id", attr.id + "_" + scope.fluidPanel.id)
+                }
+            }
+        }
+    }])
+    .factory("FluidPanelModel", ["TaskControl", "ToolBarItem", "fluidPanelService", "fluidTaskService", "FluidBreadcrumb", function (TaskControl, ToolBarItem, fluidPanelService, TaskService, FluidBreadcrumb) {
         var fluidPanel = function (task) {
-            this.id = task.id;
-            if (task.pages) {
-                angular.forEach(task.pages, function (page) {
-                    if (page.isHome) {
-                        this.page = page;
+            if (fluidPanelService.fluidPanel[task.fluidId] != null) {
+                return fluidPanelService.fluidPanel[task.fluidId];
+            } else {
+                this.pages = [];
+                this.id = task.fluidId;
+                this.$ = $("div#_id_fp_" + this.id);
+                if (!this.page) {
+                    if (task.pages) {
+                        angular.forEach(task.pages, function (page) {
+                            if (page.isHome) {
+                                this.page = page;
+                            }
+                        }, this);
                     }
-                }, this);
+                }
+
+                var closeControl = new TaskControl(this);
+                closeControl.glyph = "fa fa-close";
+                closeControl.uiClass = "btn btn-danger";
+                closeControl.label = "Close";
+                closeControl.action = function (task, $event) {
+
+                }
+
+                var expandControl = new TaskControl(this);
+                expandControl.glyph = "fa  fa-expand";
+                expandControl.uiClass = "btn btn-info";
+                expandControl.label = "Expand";
+                expandControl.action = function (task, $event) {
+
+                }
+
+                var minimizeControl = new TaskControl(this);
+                minimizeControl.glyph = "fa fa-caret-down";
+                minimizeControl.uiClass = "btn btn-info";
+                minimizeControl.label = "Minimize";
+                minimizeControl.action = function (task, $event) {
+                    task.active = false;
+                }
+
+                var pageToolBarItem = new ToolBarItem(this);
+                pageToolBarItem.glyph = "fa fa-th-list";
+                pageToolBarItem.uiClass = "btn btn-success";
+                pageToolBarItem.label = "Menu";
+                pageToolBarItem.action = function (task, $event) {
+
+                }
+
+                var homeToolBarItem = new ToolBarItem(this);
+                homeToolBarItem.glyph = "fa fa-home";
+                homeToolBarItem.uiClass = "btn btn-info";
+                homeToolBarItem.label = "Home";
+                homeToolBarItem.action = function (task, $event) {
+                    if (task.pages) {
+                        angular.forEach(task.pages, function (page) {
+                            if (page.isHome) {
+                                this.goTo(page.name);
+                            }
+                        }, this.fluidPanel);
+                    }
+                }
+
+                var backToolBarItem = new ToolBarItem(this);
+                backToolBarItem.glyph = "fa fa-arrow-left";
+                backToolBarItem.uiClass = "btn btn-info";
+                backToolBarItem.label = "Back";
+                backToolBarItem.action = function (task, $event) {
+                    this.fluidPanel.prevPage();
+                }
+                backToolBarItem.disabled = function () {
+                    var fluidBreadcrumb = new FluidBreadcrumb(this.fluidPanel);
+                    return !fluidBreadcrumb.hasPrevious();
+                }
+
+                var nextToolBarItem = new ToolBarItem(this);
+                nextToolBarItem.glyph = "fa fa-arrow-right";
+                nextToolBarItem.uiClass = "btn btn-info";
+                nextToolBarItem.label = "Next";
+                nextToolBarItem.action = function (task, $event) {
+                    this.fluidPanel.nextPage();
+                }
+                nextToolBarItem.disabled = function () {
+                    var fluidBreadcrumb = new FluidBreadcrumb(this.fluidPanel);
+                    return !fluidBreadcrumb.hasNext();
+                }
+
+                var refreshToolBarItem = new ToolBarItem(this);
+                refreshToolBarItem.glyph = "fa fa-refresh";
+                refreshToolBarItem.uiClass = "btn btn-info";
+                refreshToolBarItem.label = "Refresh";
+                refreshToolBarItem.action = function (task, $event) {
+
+                }
+
+                this.goTo = function (name) {
+                    angular.forEach(task.pages, function (page) {
+                        if (page.name === name) {
+                            var fluidBreadcrumb = new FluidBreadcrumb(this);
+                            fluidBreadcrumb.addPage(page);
+                            this.page = page;
+                        }
+                    }, this);
+                }
+
+                this.prevPage = function () {
+                    var fluidBreadcrumb = new FluidBreadcrumb(this);
+                    fluidBreadcrumb.previous();
+                    this.page = this.pages[fluidBreadcrumb.currentPage()];
+                }
+
+                this.nextPage = function () {
+                    var fluidBreadcrumb = new FluidBreadcrumb(this);
+                    fluidBreadcrumb.next();
+                    this.page = this.pages[fluidBreadcrumb.currentPage()];
+                }
+
+                fluidPanelService.fluidPanel[this.id] = this;
+
+                this.clear = function () {
+                    this.pages.clear();
+                }
             }
-
-            this.loaded = false;
-
-            var closeControl = new TaskControl(task);
-            closeControl.glyph = "fa fa-close";
-            closeControl.uiClass = "btn btn-danger";
-            closeControl.label = "Close";
-            closeControl.action = function (task, $event) {
-
-            }
-            var expandControl = new TaskControl(task);
-            expandControl.glyph = "fa  fa-expand";
-            expandControl.uiClass = "btn btn-info";
-            expandControl.label = "Expand";
-            expandControl.action = function (task, $event) {
-
-            }
-            var minimizeControl = new TaskControl(task);
-            minimizeControl.glyph = "fa fa-caret-down";
-            minimizeControl.uiClass = "btn btn-info";
-            minimizeControl.label = "Minimize";
-            minimizeControl.action = function (task, $event) {
-                task.active = false;
-            }
-
-
-            var pageToolBarItem = new ToolBarItem(task);
-            pageToolBarItem.glyph = "fa fa-th-list";
-            pageToolBarItem.uiClass = "btn btn-success";
-            pageToolBarItem.label = "Menu";
-            pageToolBarItem.action = function (task, $event) {
-
-            }
-            var homeToolBarItem = new ToolBarItem(task);
-            homeToolBarItem.glyph = "fa fa-home";
-            homeToolBarItem.uiClass = "btn btn-info";
-            homeToolBarItem.label = "Home";
-            homeToolBarItem.action = function (task, $event) {
-
-            }
-            var backToolBarItem = new ToolBarItem(task);
-            backToolBarItem.glyph = "fa fa-arrow-left";
-            backToolBarItem.uiClass = "btn btn-info";
-            backToolBarItem.label = "Back";
-            backToolBarItem.action = function (task, $event) {
-
-            }
-            var nextToolBarItem = new ToolBarItem(task);
-            nextToolBarItem.glyph = "fa fa-arrow-right";
-            nextToolBarItem.uiClass = "btn btn-info";
-            nextToolBarItem.label = "Next";
-            nextToolBarItem.action = function (task, $event) {
-
-            }
-
-            var refreshToolBarItem = new ToolBarItem(task);
-            refreshToolBarItem.glyph = "fa fa-refresh";
-            refreshToolBarItem.uiClass = "btn btn-info";
-            refreshToolBarItem.label = "Refresh";
-            refreshToolBarItem.action = function (task, $event) {
-
-            }
-
         }
         return fluidPanel;
     }])
     .service("fluidPanelService", [function () {
         this.fluidPanel = [];
-        this.clear = function (name) {
-
+        this.clear = function (id) {
+            this.fluidPanel[id] = undefined;
         }
         return this;
     }]);
+

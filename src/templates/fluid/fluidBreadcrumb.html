@@ -1,4 +1,5 @@
-<div class="fluid-breadcrumb">
+<div class="fluid-breadcrumb" fluid-resize-breadcrumb>
     <div class="item" ng-repeat="bread in breadcrumb.pages">
-        <span>{{bread}} {{$index < (breadcrumb.pages.length -1) ? '/':'' }}</span></div>
+        <span ng-class="breadcrumb.current === $index ?'active':''">{{bread}} {{$index < (breadcrumb.pages.length -1) ? '/':'' }}</span>
+    </div>
 </div>

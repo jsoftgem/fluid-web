@@ -8,7 +8,7 @@
 
     <div ng-if="!frame.fullScreen">
         <div class="fluid-frame-task">
-            <fluid-panel2 task="task"
+            <fluid-panel2 task="task" frame="{{frame.name}}"
                           ng-repeat='task in frame.tasks | filter:{active:true}'></fluid-panel2>
 
         </div>

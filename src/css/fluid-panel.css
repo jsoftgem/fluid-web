@@ -9,19 +9,31 @@
     transition: width 0.2s;
 }
 
+.fluid-panel .containter {
+    padding: 0;
+    margin: 0;
+}
+
 .fluid-panel .panel-heading {
     padding: 0;
+    min-height: 22px;
 }
 
 .fluid-panel .panel-title {
     margin-left: 5px;
 }
 
+.fluid-panel .panel-title .left {
+    float: left;
+    margin-right: 3px;
+}
+
 .fluid-panel .controls {
     float: right;
     right: 1px;
     padding: 0;
-    margin-top: -23px;
+    margin-top: -3px;
+    position: absolute;
 }
 
 .fluid-panel .controls .small {
@@ -31,6 +43,10 @@
 
 .fluid-panel .panel-body {
     padding: 0px;
+}
+
+.fluid-panel .toolbar {
+    padding-top: 30px;
 }
 
 .fluid-panel-heading-title {
@@ -63,8 +79,10 @@
 }
 
 .fluid-panel-loader {
-    margin-top: -17px;
-    margin-left: 28px;
+    margin-top: 5px;
+    margin-left: 15px;
+    float: left;
+    width: 200px;
 }
 
 .fluid-panel-loader-fullscreen {
@@ -78,5 +96,5 @@
 
 .popover-resize {
     width: 100px;
-  /*  margin: 0px -15px -200px -15px;*/
+    /*  margin: 0px -15px -200px -15px;*/
 }

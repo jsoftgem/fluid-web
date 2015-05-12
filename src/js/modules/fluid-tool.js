@@ -63,23 +63,24 @@ angular.module("fluidTool", [])
         return {
             restrict: "E",
             replace: true,
-            scope:false,
+            scope: false,
             template: tc.get("templates/fluid/fluidToolbar2.html"),
             link: function (scope, element, attr) {
-                console.info("fluidTool2.page",scope.task);
+                console.info("fluidTool2.page", scope.task);
                 scope.fluidToolbarService = fts;
             }
         }
     }])
     .factory("ToolBarItem", ["fluidToolbarService", function (ts) {
 
-        var toolBarItem = function (task) {
+        var toolBarItem = function (fluidPanel) {
 
             this.glyph = "fa fa-question";
             this.class = "";
             this.uiClass = "btn btn-default";
             this.label = "";
             this.type = "buttom";
+            this.fluidPanel = fluidPanel;
             this.action = function (task, $event) {
             }
             this.showText = false;
@@ -90,11 +91,11 @@ angular.module("fluidTool", [])
                 return true;
             }
 
-            if (ts.toolbarItems[task.name] != null) {
-                ts.toolbarItems[task.name].push(this);
+            if (ts.toolbarItems[fluidPanel.id] != null) {
+                ts.toolbarItems[fluidPanel.id].push(this);
             } else {
-                ts.toolbarItems[task.name] = [];
-                ts.toolbarItems[task.name].push(this);
+                ts.toolbarItems[fluidPanel.id] = [];
+                ts.toolbarItems[fluidPanel.id].push(this);
             }
         }
 
@@ -104,8 +105,8 @@ angular.module("fluidTool", [])
     }])
     .service("fluidToolbarService", [function () {
         this.toolbarItems = [];
-        this.clear = function (task) {
-            this.toolbarItems[task] = undefined;
+        this.clear = function (id) {
+            this.toolbarItems[id] = undefined;
         }
 
     }]);

@@ -2,8 +2,15 @@
     overflow: hidden;
     float: left;
     margin-right: -5px;
+    max-height: 22px;
 }
 
 .fluid-breadcrumb .item {
     float: left;
+    margin-left: 3px;
+}
+
+.fluid-breadcrumb .item .active {
+    color: #81d186;
+    background: none;
 }

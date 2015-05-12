@@ -29,9 +29,8 @@ angular.module("mainApp", ["fluid"])
         var frame = new FrameSerivce("appFrame");
 
         frame.openTask("module_basic")
-
         frame.openTask("moduleTaskConfig");
-
+        frame.openTask("moduleTaskConfig");
         s.frame = frame;
 
     }]);

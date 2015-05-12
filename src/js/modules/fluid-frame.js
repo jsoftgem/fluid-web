@@ -27,7 +27,7 @@ angular.module("fluidFrame", ["fluidHttp", "fluidTask", "fluidSession"])
                     s.frame = new FrameService(s.name);
                 }
             }],
-            template: tc.get("templates/fluid/fluidFrame2.html"),
+            template: tc.get("templates/fluid/fluidFrame2.html")
         }
     }])
     .directive("fluidFrame", ["fluidFrameService", "$window", "$rootScope", "$timeout", "$templateCache", function (f, w, rs, t, tc) {
@@ -299,7 +299,7 @@ angular.module("fluidFrame", ["fluidHttp", "fluidTask", "fluidSession"])
                     .then(function (task) {
                         var index = frame.tasks.length;
                         console.info("fluidFrame-fluidFrameService.task", task);
-                        task.id = task.id + "_" + index;
+                        task.fluidId = name + "_" + task.id + "_" + index;
                         frame.tasks.push(task);
 
                     });

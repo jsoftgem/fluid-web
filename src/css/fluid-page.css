@@ -2,6 +2,10 @@
     background: #9fbbb4;
 }
 
+.default-page {
+    min-height: 250px;
+}
+
 .noToolbar {
     margin-top: -20px !important;
 }

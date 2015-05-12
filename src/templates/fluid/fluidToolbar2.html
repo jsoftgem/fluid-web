@@ -1,19 +1,7 @@
 <div class="fluid-toolbar">
-    <div class="btn-toolbar hidden-xs hidden-sm hidden-md" role="toolbar">
-        <div class="btn-group btn-group-sm">
-            <button ng-if="control.visible()" ng-disabled="control.disabled()" class="{{control.class}}"
-                    ng-repeat="control in fluidToolbarService.toolbarItems[task.name]"
-                    ng-class="control.uiClass"
-                    type="{{control.type}}" title="{{control.label}}"
-                    ng-click="control.action(task,$event)"><i class="{{control.glyph}}"></i>{{control.showText ?
-                control.label : ''}}
-            </button>
-        </div>
-    </div>
-
-    <div class="btn-group btn-group-md hidden-lg">
+    <div class="btn-group btn-group-sm hidden-xs hidden-sm hidden-md">
         <button ng-if="control.visible()" ng-disabled="control.disabled()" class="{{control.class}}"
-                ng-repeat="control in fluidToolbarService.toolbarItems[task.name]"
+                ng-repeat="control in fluidToolbarService.toolbarItems[fluidPanel.id]"
                 ng-class="control.uiClass"
                 type="{{control.type}}" title="{{control.label}}"
                 ng-click="control.action(task,$event)"><i class="{{control.glyph}}"></i>{{control.showText ?
@@ -21,5 +9,13 @@
         </button>
     </div>
 
-
+    <div class="btn-group btn-group-md hidden-lg" role="toolbar">
+        <button ng-if="control.visible()" ng-disabled="control.disabled()" class="{{control.class}}"
+                ng-repeat="control in fluidToolbarService.toolbarItems[fluidPanel.id]"
+                ng-class="control.uiClass"
+                type="{{control.type}}" title="{{control.label}}"
+                ng-click="control.action(task,$event)"><i class="{{control.glyph}}"></i>{{control.showText ?
+            control.label : ''}}
+        </button>
+    </div>
 </div>
