@@ -1,6 +1,9 @@
 .fluid-breadcrumb {
     overflow: hidden;
+    float: left;
+    margin-right: -5px;
 }
-.fluid-breadcrumb .item {
 
+.fluid-breadcrumb .item {
+    float: left;
 }

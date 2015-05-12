@@ -962,6 +962,7 @@ angular.module("fluidBreadcrumb", [])
             scope: {fluidPanel: "="},
             link: function (scope, element, attr) {
                 scope.breadcrumb = new FluidBreadcrumb(scope.fluidPanel);
+                console.info("fluidBreadcrumb.breadcrumb",scope.breadcrumb);
             }
         }
     }])
@@ -969,7 +970,7 @@ angular.module("fluidBreadcrumb", [])
 
         var fluidBreadcrumb = function (fluidPanel) {
             if (bcs.breadcrumbs[fluidPanel.id] != null) {
-                return bcs[fluidPanel.id];
+                return bcs.breadcrumbs[fluidPanel.id];
             } else {
                 this.pages = [];
                 this.current = 0;
@@ -2015,13 +2016,11 @@ angular.module("fluidPage", ["fluidHttp", "fluidBreadcrumb"])
                         scope.onLoad = function () {
 
                             var fluidBreadcrumb = new FluidBreadcrumb(scope.fluidPanel);
-
+                            console.info("fluidPage-fluidPage.fluidBreadcrumb", fluidBreadcrumb);
                             scope.fluidPage.onLoad();
 
                             scope.fluidPanel.loaded = true;
-
                             fluidBreadcrumb.addPage(scope.fluidPage);
-
                         }
                     }
                 },
@@ -4090,7 +4089,7 @@ angular.module("templates/fluid/fluidBreadcrumb.html", []).run(["$templateCache"
   $templateCache.put("templates/fluid/fluidBreadcrumb.html",
     "<div class=\"fluid-breadcrumb\">\n" +
     "    <div class=\"item\" ng-repeat=\"bread in breadcrumb.pages\">\n" +
-    "        <span>{{bread}} {{$index < (breadcrumb.pages.length -1) }}</span></div>\n" +
+    "        <span>{{bread}} {{$index < (breadcrumb.pages.length -1) ? '/':'' }}</span></div>\n" +
     "</div>");
 }]);
 
@@ -4508,19 +4507,19 @@ angular.module("templates/fluid/fluidPanel2.html", []).run(["$templateCache", fu
     "    <div class=\"panel-heading\" ng-if=\"!task.locked\">\n" +
     "        <div class=\"panel-title\" data-toggle=\"collapse\" data-target=\"#collapse_{{task.id}}\">\n" +
     "            <a href=\"#\" class=\"fluid-panel-heading-title\">\n" +
-    "                <fluid-task-icon class=\"hidden-xs hidden-sm hidden25 btn-group btn-group-xs\"></fluid-task-icon>\n" +
-    "                <span ng-if=\"fluidPanel.loaded\">{{task.title}}</span> {{' - '}}\n" +
     "                <fluid-breadcrumb ng-if=\"fluidPanel\" fluid-panel=\"fluidPanel\"></fluid-breadcrumb>\n" +
     "\n" +
+    "                <fluid-task-icon class=\"hidden-xs hidden-sm hidden25 btn-group btn-group-xs\"></fluid-task-icon>\n" +
+    "                <span ng-if=\"fluidPanel.loaded\">{{task.title}}</span> {{' - '}}\n" +
     "            </a>\n" +
     "        </div>\n" +
     "        <fluid-loader ng-if=\"!fluidPanel.loaded\" class=\"fluid-panel-loader\"></fluid-loader>\n" +
-    "        <div ng-if=\"fluidPanel\" class=\"fluid-panel controls\">\n" +
+    "        <div class=\"fluid-panel controls\">\n" +
     "            <fluid-taskcontrols></fluid-taskcontrols>\n" +
     "        </div>\n" +
     "    </div>\n" +
     "    <div id=\"collapse\" class=\"panel-collapse collapse in\">\n" +
-    "        <div ng-if=\"fluidPanel\" id=\"_id_fpb\" class=\"panel-body container-fluid\">\n" +
+    "        <div id=\"_id_fpb\" class=\"panel-body container-fluid\">\n" +
     "            <fluid-option></fluid-option>\n" +
     "            <fluid-message id=\"fluidPanelMsg\"></fluid-message>\n" +
     "            <fluid-tool2 ng-if=\"task.showToolBar\" class=\"width100pc\"></fluid-tool2>\n" +

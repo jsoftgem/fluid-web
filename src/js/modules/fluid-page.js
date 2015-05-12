@@ -52,13 +52,11 @@ angular.module("fluidPage", ["fluidHttp", "fluidBreadcrumb"])
                         scope.onLoad = function () {
 
                             var fluidBreadcrumb = new FluidBreadcrumb(scope.fluidPanel);
-
+                            console.info("fluidPage-fluidPage.fluidBreadcrumb", fluidBreadcrumb);
                             scope.fluidPage.onLoad();
 
                             scope.fluidPanel.loaded = true;
-
                             fluidBreadcrumb.addPage(scope.fluidPage);
-
                         }
                     }
                 },

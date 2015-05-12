@@ -3,10 +3,10 @@
     <div class="panel-heading" ng-if="!task.locked">
         <div class="panel-title" data-toggle="collapse" data-target="#collapse_{{task.id}}">
             <a href="#" class="fluid-panel-heading-title">
+                <fluid-breadcrumb ng-if="fluidPanel" fluid-panel="fluidPanel"></fluid-breadcrumb>
+
                 <fluid-task-icon class="hidden-xs hidden-sm hidden25 btn-group btn-group-xs"></fluid-task-icon>
                 <span ng-if="fluidPanel.loaded">{{task.title}}</span> {{' - '}}
-                <fluid-breadcrumb fluid-panel="fluidPanel"></fluid-breadcrumb>
-
             </a>
         </div>
         <fluid-loader ng-if="!fluidPanel.loaded" class="fluid-panel-loader"></fluid-loader>

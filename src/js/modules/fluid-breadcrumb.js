@@ -10,6 +10,7 @@ angular.module("fluidBreadcrumb", [])
             scope: {fluidPanel: "="},
             link: function (scope, element, attr) {
                 scope.breadcrumb = new FluidBreadcrumb(scope.fluidPanel);
+                console.info("fluidBreadcrumb.breadcrumb",scope.breadcrumb);
             }
         }
     }])
@@ -17,7 +18,7 @@ angular.module("fluidBreadcrumb", [])
 
         var fluidBreadcrumb = function (fluidPanel) {
             if (bcs.breadcrumbs[fluidPanel.id] != null) {
-                return bcs[fluidPanel.id];
+                return bcs.breadcrumbs[fluidPanel.id];
             } else {
                 this.pages = [];
                 this.current = 0;
