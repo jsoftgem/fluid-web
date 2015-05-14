@@ -343,11 +343,6 @@ div.fluid-form label {
     position: absolute;
 }
 
-.fluid-task-icon {
-    -webkit-transform: scale(1.7, 1.7);
-    margin-bottom: -3px;
-}
-
 .fluid-icon-left {
     margin-left: -10px;
     margin-right: 4px;

@@ -82,6 +82,16 @@
     transition: width 0.2s;
 }
 
+.fluid-panel .fluid-task-icon img {
+    -webkit-transform: scale(1.7, 1.7);
+    transform: scale(1.7, 1.7);
+    margin-bottom: -3px;
+}
+
+.fluid-panel .fluid-task-icon i {
+
+}
+
 .fluid-panel .containter {
     padding: 0;
     margin: 0;
@@ -628,11 +638,6 @@ div.fluid-form label {
     overfluid: auto;
     width: 30pc;
     position: absolute;
-}
-
-.fluid-task-icon {
-    -webkit-transform: scale(1.7, 1.7);
-    margin-bottom: -3px;
 }
 
 .fluid-icon-left {

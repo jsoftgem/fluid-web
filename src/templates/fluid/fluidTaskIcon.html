@@ -1,4 +1,4 @@
-<span><span ng-if="task.useImg"><img class="fluid-task-icon" width="{{width? width:15}}" height="{{height?height:15}}"
-                                     ng-src="{{task.imgSrc}}"></span><i
-        ng-if="!task.useImg"
-        ng-class="task.glyph"></i></span>
+<span class="fluid-task-icon">
+    <img ng-if="task.useImg" width="{{width? width:15}}" height="{{height?height:15}}" ng-src="{{task.imgSrc}}">
+    <i ng-if="!task.useImg" ng-class="task.glyph"></i>
+</span>

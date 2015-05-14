@@ -1048,14 +1048,6 @@ angular.module("fluidBreadcrumb", [])
                 console.info("fluidBreadcrumb-fluidResizeBreadcrumb.parent", parent[0].clientWidth);
                 console.info("fluidBreadcrumb-fluidResizeBreadcrumb.fluidPanel.id", scope.fluidPanel.id);
 
-                scope.$watch(parent[0].clientWidth, function(size){
-                    console.info("fluidResizeBreadcrumb$on.parent.resize",size);
-                    if (scope.fluidPanel.loaded) {
-                        autoSizeBreadcrumb(element, parent, scope.fluidPanel.id);
-                    }
-                });
-
-
                 w.bind("resize", function () {
                     if (scope.fluidPanel && scope.fluidPanel.page && scope.fluidPanel.loaded) {
                         autoSizeBreadcrumb(element, parent, scope.fluidPanel.id);
@@ -4180,7 +4172,7 @@ angular.module("fluidTool", [])
 
 angular.module("templates/fluid/fluidBreadcrumb.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("templates/fluid/fluidBreadcrumb.html",
-    "<div class=\"fluid-breadcrumb\" fluid-resize-breadcrumb>\n" +
+    "<div class=\"fluid-breadcrumb\">\n" +
     "    <div class=\"item\" ng-repeat=\"bread in breadcrumb.pages\">\n" +
     "        <span ng-class=\"breadcrumb.current === $index ?'active':''\">{{bread}} {{$index < (breadcrumb.pages.length -1) ? '/':'' }}</span>\n" +
     "    </div>\n" +
@@ -4600,10 +4592,10 @@ angular.module("templates/fluid/fluidPanel2.html", []).run(["$templateCache", fu
     "    <div ng-if=\"fluidPanel\" class=\"panel-heading\" ng-if=\"!task.locked\">\n" +
     "        <div class=\"panel-title\">\n" +
     "            <div class=\"left\">\n" +
-    "                <a href=\"#\" class=\"fluid-panel-heading-title\" data-toggle=\"collapse\"\n" +
+    "                <a  ng-if=\"fluidPanel.loaded\" href=\"#\" class=\"fluid-panel-heading-title\" data-toggle=\"collapse\"\n" +
     "                   data-target=\"#collapse_{{task.fluidId}}\">\n" +
     "                    <fluid-task-icon class=\"hidden-xs hidden-sm hidden25 btn-group btn-group-xs\"></fluid-task-icon>\n" +
-    "                    <span ng-if=\"fluidPanel.loaded\">{{task.title}} {{' - '}}</span>\n" +
+    "                    <span>{{task.title}} {{' - '}}</span>\n" +
     "                </a>\n" +
     "                <fluid-loader ng-if=\"!fluidPanel.loaded\" class=\"fluid-panel-loader\"></fluid-loader>\n" +
     "            </div>\n" +
@@ -4632,10 +4624,10 @@ angular.module("templates/fluid/fluidPanel2.html", []).run(["$templateCache", fu
 
 angular.module("templates/fluid/fluidTaskIcon.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("templates/fluid/fluidTaskIcon.html",
-    "<span><span ng-if=\"task.useImg\"><img class=\"fluid-task-icon\" width=\"{{width? width:15}}\" height=\"{{height?height:15}}\"\n" +
-    "                                     ng-src=\"{{task.imgSrc}}\"></span><i\n" +
-    "        ng-if=\"!task.useImg\"\n" +
-    "        ng-class=\"task.glyph\"></i></span>");
+    "<span class=\"fluid-task-icon\">\n" +
+    "    <img ng-if=\"task.useImg\" width=\"{{width? width:15}}\" height=\"{{height?height:15}}\" ng-src=\"{{task.imgSrc}}\">\n" +
+    "    <i ng-if=\"!task.useImg\" ng-class=\"task.glyph\"></i>\n" +
+    "</span>");
 }]);
 
 angular.module("templates/fluid/fluidTaskcontrols.html", []).run(["$templateCache", function($templateCache) {
