@@ -55,12 +55,12 @@ angular.module("fluidPage", ["fluidHttp"])
                     post: function (scope, element, attr) {
                         //TODO: page onLeave handling
                         scope.onLoad = function () {
-                            scope.fluidPage.false;
+                            scope.fluidPage.loaded = false;
                             //TODO: page onLoad error handling
                             scope.fluidPage.onLoad();
                             scope.fluidPanel.loaded = true;
-                            scope.fluidPage.true;
-                            scope.fluidPanel.goTo(scope.fluidPage.name);
+                            scope.fluidPage.loaded = true;
+                            /*scope.fluidPanel.goTo(scope.fluidPage.name);*/
                         }
                     }
                 },

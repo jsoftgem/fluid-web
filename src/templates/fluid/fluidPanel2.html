@@ -22,7 +22,7 @@
             <fluid-option></fluid-option>
             <fluid-message id="fluidPanelMsg"></fluid-message>
             <fluid-tool2 ng-if="task.showToolBar" class="width100pc"></fluid-tool2>
-            <fluid-page id="fluid_page" page="fluidPanel.getPage(fluidPanel.breadcrumb.currentPage())" fluid-panel="fluidPanel"
+            <fluid-page id="fluid_page" page="currentPage()" fluid-panel="fluidPanel"
                         class="{{task.showToolBar ? 'toolbar':''}}"></fluid-page>
         </div>
     </div>

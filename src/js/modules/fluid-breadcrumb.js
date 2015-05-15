@@ -19,37 +19,28 @@ angular.module("fluidBreadcrumb", [])
             if (bcs.breadcrumbs[fluidPanel.id] != null) {
                 return bcs.breadcrumbs[fluidPanel.id];
             } else {
-
                 this.$ = $("div#_id_fp_" + fluidPanel.id + " .fluid-breadcrumb");
-
                 this.fluidId = fluidPanel.id;
-
                 this.pages = [];
-
                 this.current = 0;
-
                 this.hasNext = function () {
                     return this.current < (this.pages.length - 1);
                 }
-
                 this.hasPrevious = function () {
                     return this.current > 0;
                 }
-
                 this.next = function () {
                     if (this.hasNext()) {
                         this.current++;
                         this.scrollToCurrent();
                     }
                 }
-
                 this.previous = function () {
                     if (this.hasPrevious()) {
                         this.current--;
                         this.scrollToCurrent();
                     }
                 }
-
                 this.addPage = function (page) {
                     if (this.pages.indexOf(page.name) > -1) {
                         this.current = this.pages.indexOf(page.name);
@@ -59,21 +50,24 @@ angular.module("fluidBreadcrumb", [])
                     }
                     this.scrollToCurrent();
                 }
-
                 this.scrollToCurrent = function () {
                     this.scrollTo(this.current);
                 }
-
                 this.scrollTo = function (index) {
                     console.info("fluidBreadcrumb.scrollTo.index", index);
                     this.$.scrollTo(this.$.find("div:eq(" + index + ")"), 800);
                 }
-
-                bcs.breadcrumbs[fluidPanel.id] = this;
-
+                this.currentPage = function(){
+                    return this.pages[this.current];
+                }
                 this.close = function (page, $index) {
                     this.pages.splice($index, 1);
                 }
+                this.open = function (page, $index) {
+                    this.current = $index;
+                }
+                bcs.breadcrumbs[fluidPanel.id] = this;
+
             }
         }
         return fluidBreadcrumb;

@@ -1367,8 +1367,8 @@ angular.module("fluidPanel", ["oc.lazyLoad", "fluidHttp", "fluidFrame", "fluidMe
                             return id + "_" + scope.fluidPanel.id;
                         }
 
-                        scope.currentPage = function () {
-
+                        scope.currentPage = function (){
+                            return scope.fluidPanel.getPage(scope.fluidPanel.fluidBreadcrumb.currentPage());
                         }
                     }
                 }
@@ -1398,11 +1398,39 @@ angular.module("fluidPanel", ["oc.lazyLoad", "fluidHttp", "fluidFrame", "fluidMe
                 this.pages = [];
                 this.id = task.fluidId;
                 this.$ = $("div#_id_fp_" + this.id);
+                this.goTo = function (name) {
+                    angular.forEach(task.pages, function (page) {
+                        if (page.name === name) {
+                            var fluidBreadcrumb = new FluidBreadcrumb(this);
+                            fluidBreadcrumb.addPage(page);
+                            this.page = page;
+                        }
+                    }, this);
+                }
+
+                this.getPage = function (name) {
+                    return this.pages[name];
+                }
+
+                this.prevPage = function () {
+                    var fluidBreadcrumb = new FluidBreadcrumb(this);
+                    fluidBreadcrumb.previous();
+                    this.page = this.pages[fluidBreadcrumb.currentPage()];
+                }
+
+                this.nextPage = function () {
+                    var fluidBreadcrumb = new FluidBreadcrumb(this);
+                    fluidBreadcrumb.next();
+                    this.page = this.pages[fluidBreadcrumb.currentPage()];
+                }
+
+
                 if (!this.page) {
                     if (task.pages) {
                         angular.forEach(task.pages, function (page) {
                             if (page.isHome) {
                                 this.pages[page.name] = new FluidPage(page);
+                                this.goTo(page.name);
                             }
                         }, this);
                     }
@@ -1411,6 +1439,7 @@ angular.module("fluidPanel", ["oc.lazyLoad", "fluidHttp", "fluidFrame", "fluidMe
                         angular.forEach(task.pages, function (page) {
                             if (this.page === page.name) {
                                 this.pages[page.name] = new FluidPage(page);
+                                this.goTo(page.name);
                             }
                         }, this);
                     }
@@ -1494,36 +1523,17 @@ angular.module("fluidPanel", ["oc.lazyLoad", "fluidHttp", "fluidFrame", "fluidMe
 
                 }
 
-                this.goTo = function (name) {
-                    angular.forEach(task.pages, function (page) {
-                        if (page.name === name) {
-                            var fluidBreadcrumb = new FluidBreadcrumb(this);
-                            fluidBreadcrumb.addPage(page);
-                            this.page = page;
-                        }
-                    }, this);
-                }
-
-                this.getPage = function (name) {
-                    return this.pages[name];
-                }
-
-                this.prevPage = function () {
-                    var fluidBreadcrumb = new FluidBreadcrumb(this);
-                    fluidBreadcrumb.previous();
-                    this.page = this.pages[fluidBreadcrumb.currentPage()];
-                }
-
-                this.nextPage = function () {
-                    var fluidBreadcrumb = new FluidBreadcrumb(this);
-                    fluidBreadcrumb.next();
-                    this.page = this.pages[fluidBreadcrumb.currentPage()];
-                }
+                var panel = this;
 
                 this.fluidBreadcrumb = new FluidBreadcrumb(this);
+
                 this.fluidBreadcrumb.close = function (page, $index) {
+                    alert(panel);
+                }
+                this.fluidBreadcrumb.open = function (page, $index) {
 
                 }
+
 
                 fluidPanelService.fluidPanel[this.id] = this;
 
