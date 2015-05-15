@@ -975,6 +975,8 @@ angular.module("fluidBreadcrumb", [])
 
                 this.$ = $("div#_id_fp_" + fluidPanel.id + " .fluid-breadcrumb");
 
+                this.fluidId = fluidPanel.id;
+                
                 this.pages = [];
 
                 this.current = 0;
@@ -1025,6 +1027,10 @@ angular.module("fluidBreadcrumb", [])
                 }
 
                 bcs.breadcrumbs[fluidPanel.id] = this;
+
+                this.close = function (page, $index) {
+                    this.pages.splice($index, 1);
+                }
             }
         }
         return fluidBreadcrumb;
@@ -2054,25 +2060,30 @@ angular.module("fluidPage", ["fluidHttp"])
 
                         scope.loadPage = function (page) {
                             console.info("fluidPage-loadPage.page", page);
+                            scope.fluidPanel.loaded = false;
                             if (scope.fluidPanel.pages[scope.page.name] != null) {
                                 scope.fluidPage = scope.fluidPanel.pages[scope.page.name];
                             } else {
                                 scope.fluidPanel.pages[scope.page.name] = new FluidPage(page);
                                 scope.fluidPage = scope.fluidPanel.pages[scope.page.name];
                                 scope.fluidPage.fluidId = scope.fluidPanel.id;
-
+                                scope.fluidPage.$ = $("div#_id_fp_" + scope.fluidPanel.id + " [page-name='" + scope.fluidPage.name + "']");
                             }
-                            scope.fluidPanel.loaded = false;
+
                             if (scope.fluidPage.ajax) {
                                 fps.loadAjax(scope.fluidPage)
                                     .then(function (data) {
                                         scope.data = data;
                                         element.html("<ng-include class='fluid-page' src='fluidPageService.render(fluidPage)' onload='onLoad()'></ng-include>");
+                                        element.attr("page-name", scope.fluidPage.name);
                                         c(element.contents())(scope);
+                                        console.info("fluidPage-loadPage.loaded-page", scope.fluidPage);
                                     });
                             } else {
                                 element.html("<ng-include class='fluid-page' src='fluidPageService.render(fluidPage)' onload='onLoad()'></ng-include>");
+                                element.attr("page-name", scope.fluidPage.name);
                                 c(element.contents())(scope);
+                                console.info("fluidPage-loadPage.loaded-page", scope.fluidPage);
                             }
                         }
 
@@ -2101,7 +2112,7 @@ angular.module("fluidPage", ["fluidHttp"])
                 replace: true
             }
         }])
-    .factory("FluidPage", ["fluidPageService", "$resource", function (fps, r) {
+    .factory("FluidPage", ["fluidPageService", "$resource", "$q", "$timeout", "$rootScope", function (fps, r, q, t, rs) {
         var fluidPage = function (page) {
             console.info("FluidPage-FluidPage.page", page);
             if (fps.pages[page.name]) {
@@ -2121,7 +2132,6 @@ angular.module("fluidPage", ["fluidHttp"])
                         throw "Page ajax.url is required!";
                     }
                 }
-                //TODO: this.$ = $("div#_id_fp_" + fluidPanel.id + " .fluid-breadcrumb");
                 this.name = page.name;
                 this.id = page.id;
                 this.title = page.title;
@@ -2129,7 +2139,35 @@ angular.module("fluidPage", ["fluidHttp"])
                 this.html = page.html;
                 this.home = page.home;
                 this.ajax = page.ajax;
+                this.close = function () {
+                    var timeout = 30;
+                    q(function (resolve, reject) {
+
+                        function waitForOnClose(counter) {
+
+                            if (counter === timeout) {
+                                reject("time-out: onClose().");
+                            }
+
+                            counter++;
+                            waitForOnClose(counter);
+                        }
+
+
+                    }).then(this.closeSuccess(), this.closeError());
+                }
+
+                this.closeSuccess = function (data) {
+                    rs.$broadcast("page_close_success_evt" + this.fluidId + "_pg_" + this.name);
+                }
+
+                this.closeError = function (reason) {
+                    rs.$broadcast("page_close_failed_evt" + this.fluidId + "_pg_" + this.name, reason);
+                }
                 this.onLoad = function () {
+                    return true;
+                }
+                this.onClose = function () {
                     return true;
                 }
                 fps.pages[page.name] = this;
@@ -3615,6 +3653,7 @@ angular.module("fluidPanel", ["oc.lazyLoad", "fluidHttp", "fluidFrame", "fluidMe
                     }
                 }
 
+
                 var closeControl = new TaskControl(this);
                 closeControl.glyph = "fa fa-close";
                 closeControl.uiClass = "btn btn-danger";
@@ -3713,6 +3752,11 @@ angular.module("fluidPanel", ["oc.lazyLoad", "fluidHttp", "fluidFrame", "fluidMe
                     var fluidBreadcrumb = new FluidBreadcrumb(this);
                     fluidBreadcrumb.next();
                     this.page = this.pages[fluidBreadcrumb.currentPage()];
+                }
+
+                var breadCrumb = new FluidBreadcrumb(this);
+                breadCrumb.close = function (page, $index) {
+                    alert("fluidPanel: " + this.id + ", page: " + page);
                 }
 
                 fluidPanelService.fluidPanel[this.id] = this;
@@ -4172,9 +4216,13 @@ angular.module("fluidTool", [])
 
 angular.module("templates/fluid/fluidBreadcrumb.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("templates/fluid/fluidBreadcrumb.html",
-    "<div class=\"fluid-breadcrumb\">\n" +
+    "<div class=\"fluid-breadcrumb\" ng-init=\"item=[]\">\n" +
     "    <div class=\"item\" ng-repeat=\"bread in breadcrumb.pages\">\n" +
-    "        <span ng-class=\"breadcrumb.current === $index ?'active':''\">{{bread}} {{$index < (breadcrumb.pages.length -1) ? '/':'' }}</span>\n" +
+    "        <span ng-mouseover=\"item[$index].showClose=true && $index > 0\" ng-mouseleave=\"item[$index].showClose=false\">\n" +
+    "            <span class=\"label\" ng-class=\"breadcrumb.current === $index ?'active':''\">{{bread}}</span>\n" +
+    "            <i ng-if=\"item[$index].showClose\" class=\"fa fa-close text-danger\" title=\"Close {{bread}}\"\n" +
+    "               ng-click=\"breadcrumb.close(bread,$index)\"></i>{{$index < (breadcrumb.pages.length -1) ? ' | ':'' }}\n" +
+    "        </span>\n" +
     "    </div>\n" +
     "</div>");
 }]);

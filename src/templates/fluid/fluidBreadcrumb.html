@@ -1,5 +1,9 @@
-<div class="fluid-breadcrumb">
+<div class="fluid-breadcrumb" ng-init="item=[]">
     <div class="item" ng-repeat="bread in breadcrumb.pages">
-        <span ng-class="breadcrumb.current === $index ?'active':''">{{bread}} {{$index < (breadcrumb.pages.length -1) ? '/':'' }}</span>
+        <span ng-mouseover="item[$index].showClose=true && $index > 0" ng-mouseleave="item[$index].showClose=false">
+            <span class="label" ng-class="breadcrumb.current === $index ?'active':''">{{bread.title}}</span>
+            <i ng-if="item[$index].showClose" class="fa fa-close text-danger" title="Close {{bread.title}}"
+               ng-click="breadcrumb.close(bread,$index)"></i>{{$index < (breadcrumb.pages.length -1) ? ' | ':'' }}
+        </span>
     </div>
 </div>

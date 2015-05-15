@@ -15,13 +15,14 @@ angular.module("fluidBreadcrumb", [])
         }
     }])
     .factory("FluidBreadcrumb", ["breadcrumbService", function (bcs) {
-
         var fluidBreadcrumb = function (fluidPanel) {
             if (bcs.breadcrumbs[fluidPanel.id] != null) {
                 return bcs.breadcrumbs[fluidPanel.id];
             } else {
 
                 this.$ = $("div#_id_fp_" + fluidPanel.id + " .fluid-breadcrumb");
+
+                this.fluidId = fluidPanel.id;
 
                 this.pages = [];
 
@@ -68,15 +69,14 @@ angular.module("fluidBreadcrumb", [])
                     this.$.scrollTo(this.$.find("div:eq(" + index + ")"), 800);
                 }
 
-                this.currentPage = function () {
-                    return this.pages[this.current];
-                }
-
                 bcs.breadcrumbs[fluidPanel.id] = this;
+
+                this.close = function (page, $index) {
+                    this.pages.splice($index, 1);
+                }
             }
         }
         return fluidBreadcrumb;
-
     }])
     .service("breadcrumbService", [function () {
         this.breadcrumbs = [];
@@ -128,7 +128,6 @@ function autoSizeBreadcrumb(element, parent, id) {
             offsetWidth += $(value).width();
             console.info("fluidBreadcrumb-autoSizeBreadcrumb.value.width", $(value).width());
         }
-
         if (index === lastIndex) {
             console.info("fluidBreadcrumb-autoSizeBreadcrumb.offsetWidth", offsetWidth);
             width -= offsetWidth + 20;

@@ -1366,10 +1366,12 @@ angular.module("fluidPanel", ["oc.lazyLoad", "fluidHttp", "fluidFrame", "fluidMe
                         scope.getElementFlowId = function (id) {
                             return id + "_" + scope.fluidPanel.id;
                         }
+
+                        scope.currentPage = function () {
+
+                        }
                     }
                 }
-
-
             }
 
         }])
@@ -1388,7 +1390,7 @@ angular.module("fluidPanel", ["oc.lazyLoad", "fluidHttp", "fluidFrame", "fluidMe
             }
         }
     }])
-    .factory("FluidPanelModel", ["TaskControl", "ToolBarItem", "fluidPanelService", "fluidTaskService", "FluidBreadcrumb", function (TaskControl, ToolBarItem, fluidPanelService, TaskService, FluidBreadcrumb) {
+    .factory("FluidPanelModel", ["TaskControl", "ToolBarItem", "fluidPanelService", "fluidTaskService", "FluidBreadcrumb", "FluidPage", function (TaskControl, ToolBarItem, fluidPanelService, TaskService, FluidBreadcrumb, FluidPage) {
         var fluidPanel = function (task) {
             if (fluidPanelService.fluidPanel[task.fluidId] != null) {
                 return fluidPanelService.fluidPanel[task.fluidId];
@@ -1400,7 +1402,15 @@ angular.module("fluidPanel", ["oc.lazyLoad", "fluidHttp", "fluidFrame", "fluidMe
                     if (task.pages) {
                         angular.forEach(task.pages, function (page) {
                             if (page.isHome) {
-                                this.page = page;
+                                this.pages[page.name] = new FluidPage(page);
+                            }
+                        }, this);
+                    }
+                } else {
+                    if (task.pages) {
+                        angular.forEach(task.pages, function (page) {
+                            if (this.page === page.name) {
+                                this.pages[page.name] = new FluidPage(page);
                             }
                         }, this);
                     }
@@ -1494,6 +1504,10 @@ angular.module("fluidPanel", ["oc.lazyLoad", "fluidHttp", "fluidFrame", "fluidMe
                     }, this);
                 }
 
+                this.getPage = function (name) {
+                    return this.pages[name];
+                }
+
                 this.prevPage = function () {
                     var fluidBreadcrumb = new FluidBreadcrumb(this);
                     fluidBreadcrumb.previous();
@@ -1504,6 +1518,11 @@ angular.module("fluidPanel", ["oc.lazyLoad", "fluidHttp", "fluidFrame", "fluidMe
                     var fluidBreadcrumb = new FluidBreadcrumb(this);
                     fluidBreadcrumb.next();
                     this.page = this.pages[fluidBreadcrumb.currentPage()];
+                }
+
+                this.fluidBreadcrumb = new FluidBreadcrumb(this);
+                this.fluidBreadcrumb.close = function (page, $index) {
+
                 }
 
                 fluidPanelService.fluidPanel[this.id] = this;
