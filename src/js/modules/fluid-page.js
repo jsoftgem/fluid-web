@@ -2,8 +2,8 @@
  * Created by jerico on 4/28/2015.
  */
 angular.module("fluidPage", ["fluidHttp"])
-    .directive("fluidPage", ["$templateCache", "fluidPageService", "FluidPage", "$compile", "FluidBreadcrumb",
-        function (tc, fps, FluidPage, c, FluidBreadcrumb) {
+    .directive("fluidPage", ["$templateCache", "fluidPageService", "FluidPage", "$compile", "FluidBreadcrumb", "fluidOptionService",
+        function (tc, fps, FluidPage, c, FluidBreadcrumb, fos) {
             return {
                 restrict: "E",
                 scope: {page: "=", fluidPanel: "="},
@@ -23,6 +23,10 @@ angular.module("fluidPage", ["fluidHttp"])
                                 scope.fluidPage = scope.fluidPanel.pages[scope.page.name];
                                 scope.fluidPage.fluidId = scope.fluidPanel.id;
                                 scope.fluidPage.$ = $("div#_id_fp_" + scope.fluidPanel.id + " [page-name='" + scope.fluidPage.name + "']");
+                                scope.fluidPage.onDestroy = function () {
+                                    scope.fluidPanel.pages[scope.page.name] = scope.fluidPage.default;
+                                }
+                                scope.fluidPage.$scope = angular.element(scope.fluidPage.$).scope();
                             }
 
                             if (scope.fluidPage.ajax) {
@@ -53,6 +57,16 @@ angular.module("fluidPage", ["fluidHttp"])
 
                     },
                     post: function (scope, element, attr) {
+
+
+                        scope.openOption = function (templateName, source) {
+                            fos.openOption("fluid_option_" + scope.fluidPanel.id, templateName + "_" + scope.fluidPanel.id, source);
+                        }
+
+                        scope.closeOption = function () {
+                            fos.closeOption("fluid_option_" + scope.fluidPanel.id);
+                        }
+
                         //TODO: page onLeave handling
                         scope.onLoad = function () {
                             scope.fluidPage.loaded = false;
@@ -60,8 +74,9 @@ angular.module("fluidPage", ["fluidHttp"])
                             scope.fluidPage.onLoad();
                             scope.fluidPanel.loaded = true;
                             scope.fluidPage.loaded = true;
-                            /*scope.fluidPanel.goTo(scope.fluidPage.name);*/
                         }
+
+
                     }
                 },
                 replace: true
@@ -94,23 +109,34 @@ angular.module("fluidPage", ["fluidHttp"])
                 this.html = page.html;
                 this.home = page.home;
                 this.ajax = page.ajax;
-                this.close = function () {
+
+                this.close = function (ok, $event) {
+                    this.onClose(q, $event).then(ok, this.failed)
+                        .then(this.onDestroy);
                 }
 
-                this.closeSuccess = function (data) {
-                    rs.$broadcast("page_close_success_evt" + this.fluidId + "_pg_" + this.name);
-                }
-
-                this.closeError = function (reason) {
+                this.failed = function (reason) {
                     rs.$broadcast("page_close_failed_evt" + this.fluidId + "_pg_" + this.name, reason);
                 }
+
                 this.onLoad = function () {
                     return true;
                 }
-                this.onClose = function () {
-                    return true;
+
+                this.onClose = function (q, $event) {
+                    return q(function (resolve, reject) {
+                        resolve("ok");
+                    });
                 }
+
+                this.onDestroy = function () {
+                }
+
+                var def = {};
+                angular.copy(this, def);
+                this.default = def;
                 fps.pages[page.name] = this;
+                console.info("fluidPage-FluidPageg-newPage.page", this);
             }
         }
         return fluidPage;

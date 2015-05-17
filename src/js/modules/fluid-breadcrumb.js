@@ -57,11 +57,16 @@ angular.module("fluidBreadcrumb", [])
                     console.info("fluidBreadcrumb.scrollTo.index", index);
                     this.$.scrollTo(this.$.find("div:eq(" + index + ")"), 800);
                 }
-                this.currentPage = function(){
+                this.currentPage = function () {
                     return this.pages[this.current];
                 }
-                this.close = function (page, $index) {
+                this.close = function (page, $index, $event) {
                     this.pages.splice($index, 1);
+                    if (this.current > 0) {
+                        this.current -= 1;
+                    }
+                    console.info("fluidBreadcrumb-FluidBreadcrumb-close.current", this.current);
+
                 }
                 this.open = function (page, $index) {
                     this.current = $index;

@@ -35,11 +35,31 @@ angular.module("fluidOption", [])
             }
         }
     }])
-    .service("fluidOptionService", ["$compile", function (c) {
+    .factory("FluidOption", ["fluidOptionService", function (fos) {
+        var fluidOption = function (fluidPanel) {
+
+            if (fos.fluidOptions[fluidPanel.id] != null) {
+                return fos.fluidOptions[fluidPanel.id];
+            } else {
+                this.fluidId = fluidPanel.id;
+
+                this.$ = $("#fluid_option_" + this.fluidId);
+
+                this.open = function (template, source, page) {
+
+                }
+            }
+
+        }
+    }])
+    .service("fluidOptionService", ["$compile", "$templateCache", function (c, tc) {
+        this.fluidOptions = [];
+        this.clear = function (id) {
+            this.fluidOptions[id] = undefined;
+        }
 
         this.openOption = function (optionId, template, source) {
             console.info("fluidOptionService-openOption-source", source);
-
             var fluidOption = $("#" + optionId);
             var content = $("#" + template);
             var fluidScope = angular.element(fluidOption).scope();
@@ -47,29 +67,33 @@ angular.module("fluidOption", [])
             var fluidBottom = fluidOption.find(".fluid-option-bottom");
             var contentScope = angular.element(content).scope();
             var sourceID = $(source).attr("id");
-
             console.info("fluidOptionService-openOption-pre-sourceID", sourceID);
-
             if (!sourceID) {
                 var eventSourceCount = $("[id*='_event_source_id']").length;
                 sourceID = fluidOption.attr("id") + "_event_source_id_" + eventSourceCount;
                 $(source).attr("id", sourceID);
+            } else {
+                var eventSourceCount = $("[id*='_event_source_id']").length;
+                sourceID = "event_source_id_" + eventSourceCount;
+                $(source).attr("id", sourceID);
             }
-
             console.info("fluidOptionService-openOption-sourceID", sourceID);
-
             fluidOption.css("max-height", fluidScope.parentHeight);
-
             fluidTemplate.css("max-height", fluidScope.parentHeight - 15);
-
             fluidOption.attr("source-event", sourceID);
-
             fluidBottom.removeClass("hidden")
-
-            c(fluidTemplate.html(content.html()))(contentScope);
-
+            if (contentScope) {
+                c(fluidTemplate.html(content.html()))(contentScope);
+            } else {
+                var page = fluidOption.parent().find(".fluid-page");
+                page.ready(function () {
+                    var pageScope = angular.element(page).scope();
+                    console.info("fluidOption-fluidOptionService.page", page);
+                    console.info("fluidOption-fluidOptionService.pageScope", pageScope);
+                    c(fluidTemplate.html(content.html()))(pageScope);
+                });
+            }
         }
-
         this.closeOption = function (optionId) {
             var fluidOption = $("#" + optionId);
             var fluidTemplate = fluidOption.find(".fluid-option-template");

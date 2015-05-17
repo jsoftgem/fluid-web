@@ -3,7 +3,7 @@
     <div ng-if="fluidPanel" class="panel-heading" ng-if="!task.locked">
         <div class="panel-title">
             <div class="left">
-                <a  ng-if="fluidPanel.loaded" href="#" class="fluid-panel-heading-title" data-toggle="collapse"
+                <a ng-if="fluidPanel.loaded" href="#" class="fluid-panel-heading-title" data-toggle="collapse"
                    data-target="#collapse_{{task.fluidId}}">
                     <fluid-task-icon class="hidden-xs hidden-sm hidden25 btn-group btn-group-xs"></fluid-task-icon>
                     <span>{{task.title}} {{' - '}}</span>
@@ -15,14 +15,14 @@
 
             <fluid-taskcontrols class="controls"></fluid-taskcontrols>
         </div>
-
     </div>
     <div ng-if="fluidPanel" id="collapse" class="panel-collapse collapse in">
         <div id="_id_fpb" class="panel-body container-fluid">
             <fluid-option></fluid-option>
             <fluid-message id="fluidPanelMsg"></fluid-message>
             <fluid-tool2 ng-if="task.showToolBar" class="width100pc"></fluid-tool2>
-            <fluid-page id="fluid_page" page="currentPage()" fluid-panel="fluidPanel"
+            <fluid-page id="fluid_page" page="fluidPanel.pages[fluidPanel.fluidBreadcrumb.currentPage()]"
+                        fluid-panel="fluidPanel"
                         class="{{task.showToolBar ? 'toolbar':''}}"></fluid-page>
         </div>
     </div>
