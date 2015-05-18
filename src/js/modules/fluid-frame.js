@@ -290,6 +290,7 @@ angular.module("fluidFrame", ["fluidHttp", "fluidTask", "fluidSession"])
          };*/
         var frameService = function (name) {
             var frame = new Frame(name);
+
             frame.openTask = function (taskName, workspace) {
                 if (workspace) {
 
@@ -305,6 +306,15 @@ angular.module("fluidFrame", ["fluidHttp", "fluidTask", "fluidSession"])
                     });
 
             }
+            frame.removeTask = function (task, workspace) {
+                console.info("fluidFrame-fluidFrameService.removeTask.task", task);
+                angular.forEach(this.tasks, function (tsk, $index) {
+                    if (tsk.fluidId === task.fluidId) {
+                        this.tasks.splice($index, 1);
+                    }
+                }, this);
+            }
+
             return frame;
         }
 

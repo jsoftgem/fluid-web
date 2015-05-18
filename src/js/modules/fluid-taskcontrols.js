@@ -20,6 +20,7 @@ angular.module("fluidTaskcontrols", ["fluidTask"])
             this.uiClass = "btn btn-default";
             this.class = "";
             this.label = "";
+            this.fluidPanel = fluidPanel;
             this.action = function (task, $event) {
             }
 

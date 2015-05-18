@@ -941,7 +941,20 @@ $(document).ready(function () {
                     }
 
                     if (elementSourceEvent !== sourceId) {
-                        fluidOptionScope.close();
+                        console.info(infoSig + ".fluidPanel", fluidOptionScope.fluidPanel);
+                        var fluidPage = fluidOptionScope.fluidPanel.getPage(fluidOptionScope.fluidPanel.fluidBreadcrumb.currentPage());
+                        console.info(infoSig + ".fluidPage", fluidPage);
+                        if (fluidPage.option.isOpen) {
+                            fluidPage.option.close();
+                            if (fluidPage.option.returnToPrevious) {
+                                fluidPage.option.returnToPrevious();
+                                if (!fluidPage.$scope.$$phase) {
+                                    fluidPage.$scope.$apply();
+                                }
+                            }
+
+
+                        }
                     }
                 }
 
@@ -1020,7 +1033,7 @@ angular.module("fluidBreadcrumb", [])
                     console.info("fluidBreadcrumb-FluidBreadcrumb-close.current", this.current);
 
                 }
-                this.open = function (page, $index) {
+                this.open = function (page, $index, $event) {
                     this.current = $index;
                 }
                 bcs.breadcrumbs[fluidPanel.id] = this;
@@ -1378,6 +1391,7 @@ angular.module("fluidFrame", ["fluidHttp", "fluidTask", "fluidSession"])
          };*/
         var frameService = function (name) {
             var frame = new Frame(name);
+
             frame.openTask = function (taskName, workspace) {
                 if (workspace) {
 
@@ -1393,6 +1407,15 @@ angular.module("fluidFrame", ["fluidHttp", "fluidTask", "fluidSession"])
                     });
 
             }
+            frame.removeTask = function (task, workspace) {
+                console.info("fluidFrame-fluidFrameService.removeTask.task", task);
+                angular.forEach(this.tasks, function (tsk, $index) {
+                    if (tsk.fluidId === task.fluidId) {
+                        this.tasks.splice($index, 1);
+                    }
+                }, this);
+            }
+
             return frame;
         }
 
@@ -1989,8 +2012,116 @@ angular.module("fluidOption", [])
             }
         }
     }])
-    .service("fluidOptionService", ["$compile", "$templateCache", function (c, tc) {
+    .directive("fluidOptionTemplate", ["$templateCache", function (tc) {
+        return {
+            restrict: "E",
+            scope: {scope: "@"},//@Param scope {'task', 'page', 'new'}
+            transclude: true,
+            link: function (s, element, attr) {
 
+                if (!s.scope) {
+                    s.scope = "task";
+                }
+
+                if (!attr.id) {
+                    throw "fluidOptionTemplate ID is required.";
+                }
+                var templateId = attr.id;
+                console.info("fluidOptionTemplate.templateId", templateId);
+                tc.put(templateId, element.html());
+            },
+            replace: true,
+            template: "<div ng-transclude style='display: none; position: absolute; height: 0px;width: 0px;padding: 0;margin: 0'></div>"
+        }
+    }])
+    .factory("FluidOption", ["fluidOptionService", "$compile", "$templateCache", function (fos, c, tc) {
+        var fluidOption = function (fluidPanel) {
+            if (fos.fluidOptions[fluidPanel.id] != null) {
+                fos.fluidOptions[fluidPanel.id].$.removeClass("bg-info").removeClass("bg-warning").removeClass("bg-success").removeClass("bg-danger");
+                return fos.fluidOptions[fluidPanel.id];
+            } else {
+                this.fluidId = fluidPanel.id;
+                this.$ = $("#fluid_option_" + this.fluidId);
+                this.open = function (template, source, page) {
+                    console.info("FluidOption-openOption-source", source);
+                    var templateId = template /*+ "_" + this.fluidId*/;
+                    var fluidOption = $("#fluid_option_" + this.fluidId);
+                    var fluidScope = angular.element(fluidOption).scope();
+                    var fluidTemplate = fluidOption.find(".fluid-option-template");
+                    var fluidBottom = fluidOption.find(".fluid-option-bottom");
+
+                    if (source) {
+                        var sourceID = $(source).attr("id");
+                        console.info("FluidOption-openOption-pre-sourceID", sourceID);
+                        if (!sourceID) {
+                            var eventSourceCount = $("[id*='_event_source_id']").length;
+                            sourceID = fluidOption.attr("id") + "_event_source_id_" + eventSourceCount;
+                            $(source).attr("id", sourceID);
+                        } else {
+                            var eventSourceCount = $("[id*='_event_source_id']").length;
+                            sourceID = "event_source_id_" + eventSourceCount;
+                            $(source).attr("id", sourceID);
+                        }
+
+                        fluidOption.attr("source-event", sourceID);
+                    }
+
+                    console.info("FluidOption-openOption-sourceID", sourceID);
+                    fluidOption.css("max-height", fluidScope.parentHeight);
+                    fluidTemplate.css("max-height", fluidScope.parentHeight - 15);
+                    fluidBottom.removeClass("hidden")
+                    console.info("FluidOption-openOption.templateId", templateId);
+                    var html = tc.get(templateId);
+                    console.info("FluidOption-openOption.html", html);
+                    if (page) {
+                        console.info("fluidOption-FluidOption.page", page);
+                        console.info("fluidOption-FluidOption.pageScope", page.$scope);
+                        c(fluidTemplate.html(html))(page.$scope);
+                    } else {
+                        c(fluidTemplate.html(html))(fluidPanel.$scope);
+                    }
+                    this.isOpen = true;
+                }
+                this.close = function () {
+                    var fluidOption = $("#fluid_option_" + this.fluidId);
+                    var fluidTemplate = fluidOption.find(".fluid-option-template");
+                    var fluidBottom = fluidOption.find(".fluid-option-bottom");
+                    fluidOption.css("max-height", 0);
+                    fluidTemplate.css("max-height", 0);
+                    fluidOption.removeAttr("source-event");
+                    fluidBottom.addClass("hidden");
+                    this.isOpen = false;
+                }
+                this.info = function () {
+                    this.$.addClass("bg-info");
+                    return this;
+                }
+                this.danger = function () {
+                    this.$.addClass("bg-danger");
+                    return this;
+                }
+                this.success = function () {
+                    this.$.addClass("bg-success");
+                    return this;
+                }
+                this.warning = function () {
+                    this.$.addClass("bg-warning");
+                    return this;
+                }
+                this.isOpen = false;
+                this.isCancelled = false;
+
+                fos.fluidOptions[fluidPanel.id] = this;
+            }
+        };
+
+        return fluidOption;
+    }])
+    .service("fluidOptionService", ["$compile", "$templateCache", function (c, tc) {
+        this.fluidOptions = [];
+        this.clear = function (id) {
+            this.fluidOptions[id] = undefined;
+        }
         this.openOption = function (optionId, template, source) {
             console.info("fluidOptionService-openOption-source", source);
             var fluidOption = $("#" + optionId);
@@ -2041,9 +2172,9 @@ angular.module("fluidOption", [])
 ;/**
  * Created by jerico on 4/28/2015.
  */
-angular.module("fluidPage", ["fluidHttp"])
-    .directive("fluidPage", ["$templateCache", "fluidPageService", "FluidPage", "$compile", "FluidBreadcrumb", "fluidOptionService",
-        function (tc, fps, FluidPage, c, FluidBreadcrumb, fos) {
+angular.module("fluidPage", ["fluidHttp", "fluidOption"])
+    .directive("fluidPage", ["$templateCache", "fluidPageService", "FluidPage", "$compile", "FluidBreadcrumb", "FluidOption",
+        function (tc, fps, FluidPage, c, FluidBreadcrumb, FluidOption) {
             return {
                 restrict: "E",
                 scope: {page: "=", fluidPanel: "="},
@@ -2056,16 +2187,12 @@ angular.module("fluidPage", ["fluidHttp"])
                         scope.loadPage = function (page) {
                             console.info("fluidPage-loadPage.page", page);
                             scope.fluidPanel.loaded = false;
+
                             if (scope.fluidPanel.pages[scope.page.name] != null) {
                                 scope.fluidPage = scope.fluidPanel.pages[scope.page.name];
                             } else {
-                                scope.fluidPanel.pages[scope.page.name] = new FluidPage(page);
-                                scope.fluidPage = scope.fluidPanel.pages[scope.page.name];
-                                scope.fluidPage.fluidId = scope.fluidPanel.id;
-                                scope.fluidPage.$ = $("div#_id_fp_" + scope.fluidPanel.id + " [page-name='" + scope.fluidPage.name + "']");
-                                scope.fluidPage.onDestroy = function () {
-                                    scope.fluidPanel.pages[scope.page.name] = scope.fluidPage.default;
-                                }
+                                scope.fluidPage = new FluidPage(page);
+                                scope.fluidPanel.pages[scope.page.name] = scope.fluidPage;
                             }
 
                             if (scope.fluidPage.ajax) {
@@ -2098,23 +2225,20 @@ angular.module("fluidPage", ["fluidHttp"])
                     post: function (scope, element, attr) {
 
 
-                        scope.openOption = function (templateName, source) {
-                            fos.openOption("fluid_option_" + scope.fluidPanel.id, templateName + "_" + scope.fluidPanel.id, source);
-                        }
-
-                        scope.closeOption = function () {
-                            fos.closeOption("fluid_option_" + scope.fluidPanel.id);
-                        }
 
                         //TODO: page onLeave handling
                         scope.onLoad = function () {
+                            console.info("fluidPage-page-onload.fluidId", scope.fluidPanel.id);
+                            scope.fluidPage.fluidId = scope.fluidPanel.id;
+                            scope.fluidPage.$ = element;
+                            scope.fluidPage.$scope = scope;
+                            scope.fluidPage.option = new FluidOption(scope.fluidPanel);
                             scope.fluidPage.loaded = false;
                             //TODO: page onLoad error handling
                             scope.fluidPage.onLoad();
                             scope.fluidPanel.loaded = true;
                             scope.fluidPage.loaded = true;
                         }
-
 
                     }
                 },
@@ -2149,9 +2273,39 @@ angular.module("fluidPage", ["fluidHttp"])
                 this.home = page.home;
                 this.ajax = page.ajax;
 
-                this.close = function (ok, $event) {
-                    this.onClose(q, $event).then(ok, this.failed)
-                        .then(this.onDestroy);
+                this.close = function (ok, cancel, $event) {
+                    var page = this;
+                    this.onClose(function () {
+                        ok();
+                        if (page.option) {
+                            page.option.isCancelled = false;
+                            page.option.close();
+                        }
+                        page.onDestroy();
+                    }, function () {
+                        cancel();
+                        if (page.option) {
+                            page.option.isCancelled = true;
+                            page.option.close();
+                        }
+                    }, $event);
+                }
+
+                this.change = function (proceed, cancel, $event) {
+                    var page = this;
+                    this.onChange(function () {
+                        proceed();
+                        if (page.option) {
+                            page.option.isCancelled = false;
+                            page.option.close();
+                        }
+                    }, function () {
+                        cancel();
+                        if (page.option) {
+                            page.option.isCancelled = true;
+                            page.option.close();
+                        }
+                    }, $event);
                 }
 
                 this.failed = function (reason) {
@@ -2162,13 +2316,20 @@ angular.module("fluidPage", ["fluidHttp"])
                     return true;
                 }
 
-                this.onClose = function (q, $event) {
-                    return q(function (resolve, reject) {
-                        resolve("ok");
-                    });
+                this.onClose = function (ok, cancel) {
+                    ok();
+                }
+
+                this.onChange = function (proceed, cancel, $event) {
+                    proceed();
                 }
 
                 this.onDestroy = function () {
+                }
+
+                this.clear = function () {
+                    this.onDestroy();
+                    fps.pages[this.name] = this.default;
                 }
 
                 var def = {};
@@ -2226,7 +2387,6 @@ angular.module("fluidPage", ["fluidHttp"])
             return page;
         }
         this.render = function (page) {
-            console.info("fluidPage-fluidPageService-render.page", page);
             if (page) {
                 if (page.static) {
                     page.home = "template_" + page.id;
@@ -3530,8 +3690,8 @@ angular.module("fluidPanel", ["oc.lazyLoad", "fluidHttp", "fluidFrame", "fluidMe
             replace: true
         }
     }])
-    .directive("fluidPanel2", ["$templateCache", "FluidPanelModel", "fluidToolbarService", "$ocLazyLoad", "$compile",
-        function (tc, FluidPanel, ftb, oc, c) {
+    .directive("fluidPanel2", ["$templateCache", "FluidPanelModel", "fluidToolbarService", "$ocLazyLoad", "$compile", "fluidPanelService",
+        function (tc, FluidPanel, ftb, oc, c, fluidPanelService) {
             return {
                 require: "^fluidFrame2",
                 scope: {task: "=", frame: "@"},
@@ -3618,6 +3778,9 @@ angular.module("fluidPanel", ["oc.lazyLoad", "fluidHttp", "fluidFrame", "fluidMe
                         scope.getElementFlowId = function (id) {
                             return id + "_" + scope.fluidPanel.id;
                         }
+                        scope.$on("$destroy", function () {
+                            fluidPanelService.clear(scope.fluidPanel.id);
+                        });
                     }
                 }
             }
@@ -3638,169 +3801,261 @@ angular.module("fluidPanel", ["oc.lazyLoad", "fluidHttp", "fluidFrame", "fluidMe
             }
         }
     }])
-    .factory("FluidPanelModel", ["TaskControl", "ToolBarItem", "fluidPanelService", "fluidTaskService", "FluidBreadcrumb", "FluidPage", function (TaskControl, ToolBarItem, fluidPanelService, TaskService, FluidBreadcrumb, FluidPage) {
-        var fluidPanel = function (task) {
-            if (fluidPanelService.fluidPanel[task.fluidId] != null) {
-                return fluidPanelService.fluidPanel[task.fluidId];
-            } else {
-                this.pages = [];
-                this.id = task.fluidId;
-                this.$ = $("div#_id_fp_" + this.id);
-                this.goTo = function (name) {
-                    var pg = this.pages[name];
-                    if (pg != null) {
-                        var fluidBreadcrumb = new FluidBreadcrumb(this);
-                        fluidBreadcrumb.addPage(pg);
-                    } else {
-                        angular.forEach(task.pages, function (page) {
-                            if (page.name === name) {
-                                this.pages[name] = new FluidPage(page);
-                                var fluidBreadcrumb = new FluidBreadcrumb(this);
-                                fluidBreadcrumb.addPage(page);
-                            }
-                        }, this);
-                    }
-
-                }
-                this.getPage = function (name) {
-                    return this.pages[name];
-                }
-                this.prevPage = function () {
-                    var fluidBreadcrumb = new FluidBreadcrumb(this);
-                    fluidBreadcrumb.previous();
-                    this.page = this.pages[fluidBreadcrumb.currentPage()];
-                }
-                this.nextPage = function () {
-                    var fluidBreadcrumb = new FluidBreadcrumb(this);
-                    fluidBreadcrumb.next();
-                    this.page = this.pages[fluidBreadcrumb.currentPage()];
-                }
-
-                if (!this.page) {
-                    if (task.pages) {
-                        angular.forEach(task.pages, function (page) {
-                            if (page.isHome) {
-                                this.goTo(page.name);
-                            }
-                        }, this);
-                    }
+    .factory("FluidPanelModel", ["TaskControl", "ToolBarItem", "fluidPanelService", "fluidTaskService", "FluidBreadcrumb", "FluidPage", "$q", "fluidFrameService",
+        function (TaskControl, ToolBarItem, fluidPanelService, TaskService, FluidBreadcrumb, FluidPage, q, FluidFrame) {
+            var fluidPanel = function (task) {
+                if (fluidPanelService.fluidPanel[task.fluidId] != null) {
+                    return fluidPanelService.fluidPanel[task.fluidId];
                 } else {
-                    if (task.pages) {
-                        angular.forEach(task.pages, function (page) {
-                            if (this.page === page.name) {
-                                this.goTo(page.name);
+                    this.pages = [];
+                    this.id = task.fluidId;
+                    this.$ = $("div#_id_fp_" + this.id);
+                    this.$scope = angular.element(this.$).scope();
+                    this.goTo = function (name, $event) {
+                        var pg = this.pages[name];
+                        if (pg != null) {
+                            var fluidBreadcrumb = new FluidBreadcrumb(this);
+                            var currentPage = this.pages[fluidBreadcrumb.currentPage()];
+                            if (currentPage != null) {
+                                currentPage.change(function () {
+                                    fluidBreadcrumb.addPage(pg)
+                                }, function () {
+                                    //TODO: parent cancellation handling
+                                }, $event);
+                            } else {
+                                fluidBreadcrumb.addPage(pg);
                             }
-                        }, this);
-                    }
-                }
 
-                var closeControl = new TaskControl(this);
-                closeControl.glyph = "fa fa-close";
-                closeControl.uiClass = "btn btn-danger";
-                closeControl.label = "Close";
-                closeControl.action = function (task, $event) {
+                        } else {
+                            angular.forEach(task.pages, function (page) {
+                                if (page.name === name) {
+                                    var fluidPage = new FluidPage(page);
+                                    var fluidBreadcrumb = new FluidBreadcrumb(this);
+                                    var currentPage = this.pages[fluidBreadcrumb.currentPage()];
 
-                }
+                                    this.pages[name] = fluidPage;
 
-                var expandControl = new TaskControl(this);
-                expandControl.glyph = "fa  fa-expand";
-                expandControl.uiClass = "btn btn-info";
-                expandControl.label = "Expand";
-                expandControl.action = function (task, $event) {
-
-                }
-
-                var minimizeControl = new TaskControl(this);
-                minimizeControl.glyph = "fa fa-caret-down";
-                minimizeControl.uiClass = "btn btn-info";
-                minimizeControl.label = "Minimize";
-                minimizeControl.action = function (task, $event) {
-                    task.active = false;
-                }
-
-                var pageToolBarItem = new ToolBarItem(this);
-                pageToolBarItem.glyph = "fa fa-th-list";
-                pageToolBarItem.uiClass = "btn btn-success";
-                pageToolBarItem.label = "Menu";
-                pageToolBarItem.action = function (task, $event) {
-
-                }
-
-                var homeToolBarItem = new ToolBarItem(this);
-                homeToolBarItem.glyph = "fa fa-home";
-                homeToolBarItem.uiClass = "btn btn-info";
-                homeToolBarItem.label = "Home";
-                homeToolBarItem.action = function (task, $event) {
-                    if (task.pages) {
-                        angular.forEach(task.pages, function (page) {
-                            if (page.isHome) {
-                                this.goTo(page.name);
-                            }
-                        }, this.fluidPanel);
-                    }
-                }
-
-                var backToolBarItem = new ToolBarItem(this);
-                backToolBarItem.glyph = "fa fa-arrow-left";
-                backToolBarItem.uiClass = "btn btn-info";
-                backToolBarItem.label = "Back";
-                backToolBarItem.action = function (task, $event) {
-                    this.fluidPanel.prevPage();
-                }
-                backToolBarItem.disabled = function () {
-                    var fluidBreadcrumb = new FluidBreadcrumb(this.fluidPanel);
-                    return !fluidBreadcrumb.hasPrevious();
-                }
-
-                var nextToolBarItem = new ToolBarItem(this);
-                nextToolBarItem.glyph = "fa fa-arrow-right";
-                nextToolBarItem.uiClass = "btn btn-info";
-                nextToolBarItem.label = "Next";
-                nextToolBarItem.action = function (task, $event) {
-                    this.fluidPanel.nextPage();
-                }
-                nextToolBarItem.disabled = function () {
-                    var fluidBreadcrumb = new FluidBreadcrumb(this.fluidPanel);
-                    return !fluidBreadcrumb.hasNext();
-                }
-
-                var refreshToolBarItem = new ToolBarItem(this);
-                refreshToolBarItem.glyph = "fa fa-refresh";
-                refreshToolBarItem.uiClass = "btn btn-info";
-                refreshToolBarItem.label = "Refresh";
-                refreshToolBarItem.action = function (task, $event) {
-
-                }
-                var panel = this;
-                this.fluidBreadcrumb = new FluidBreadcrumb(this);
-                this.fluidBreadcrumb.close = function (page, $index, $event) {
-                    var breadcrumb = this;
-                    var pages = this.pages;
-                    var fluidPage = new FluidPage(panel.pages[page]);
-                    fluidPage.close(function (data) {
-                        pages.splice($index, 1);
-                        if (breadcrumb.current > $index) {
-                            breadcrumb.current -= 1;
-                        } else if (breadcrumb.current === $index) {
-                            breadcrumb.current -= 1;
+                                    if (currentPage != null) {
+                                        currentPage.change(function () {
+                                            fluidBreadcrumb.addPage(page);
+                                        }, function () {
+                                            //TODO: parent cancellation handling
+                                        }, $event);
+                                    } else {
+                                        fluidBreadcrumb.addPage(page);
+                                    }
+                                }
+                            }, this);
                         }
-                    }, $event);
-                }
-                this.fluidBreadcrumb.open = function (page, $index) {
-                    panel.goTo(page);
-                }
-                fluidPanelService.fluidPanel[this.id] = this;
 
-                this.clear = function () {
-                    this.pages.clear();
+                    }
+                    this.getPage = function (name) {
+                        return this.pages[name];
+                    }
+                    this.prevPage = function ($event) {
+                        var fluidBreadcrumb = new FluidBreadcrumb(this);
+                        var page = this.pages[fluidBreadcrumb.currentPage()];
+                        page.change(function () {
+                            fluidBreadcrumb.previous()
+                        }, function () {
+                            //TODO: parent cancellation handling
+                        }, $event);
+                    }
+                    this.nextPage = function ($event) {
+                        var fluidBreadcrumb = new FluidBreadcrumb(this);
+                        var page = this.pages[fluidBreadcrumb.currentPage()];
+                        page.change(function () {
+                            fluidBreadcrumb.next()
+                        }, function () {
+                            //TODO: parent cancellation handling
+                        }, $event);
+                    }
+                    if (!this.page) {
+                        if (task.pages) {
+                            angular.forEach(task.pages, function (page) {
+                                if (page.isHome) {
+                                    this.goTo(page.name);
+                                }
+                            }, this);
+                        }
+                    } else {
+                        if (task.pages) {
+                            angular.forEach(task.pages, function (page) {
+                                if (this.page === page.name) {
+                                    this.goTo(page.name);
+                                }
+                            }, this);
+                        }
+                    }
+                    var closeControl = new TaskControl(this);
+                    closeControl.glyph = "fa fa-close";
+                    closeControl.uiClass = "btn btn-danger";
+                    closeControl.label = "Close";
+                    closeControl.action = function (task, $event) {
+                        this.fluidPanel.close(task, $event);
+                    }
+
+                    var expandControl = new TaskControl(this);
+                    expandControl.glyph = "fa  fa-expand";
+                    expandControl.uiClass = "btn btn-info";
+                    expandControl.label = "Expand";
+                    expandControl.action = function (task, $event) {
+
+                    }
+
+                    var minimizeControl = new TaskControl(this);
+                    minimizeControl.glyph = "fa fa-caret-down";
+                    minimizeControl.uiClass = "btn btn-info";
+                    minimizeControl.label = "Minimize";
+                    minimizeControl.action = function (task, $event) {
+                        task.active = false;
+                    }
+
+                    var pageToolBarItem = new ToolBarItem(this);
+                    pageToolBarItem.glyph = "fa fa-th-list";
+                    pageToolBarItem.uiClass = "btn btn-success";
+                    pageToolBarItem.label = "Menu";
+                    pageToolBarItem.action = function (task, $event) {
+
+                    }
+
+                    var homeToolBarItem = new ToolBarItem(this);
+                    homeToolBarItem.glyph = "fa fa-home";
+                    homeToolBarItem.uiClass = "btn btn-info";
+                    homeToolBarItem.label = "Home";
+                    homeToolBarItem.action = function (task, $event) {
+                        if (task.pages) {
+                            angular.forEach(task.pages, function (page) {
+                                if (page.isHome) {
+                                    this.goTo(page.name, $event);
+                                }
+                            }, this.fluidPanel);
+                        }
+                    }
+
+                    var backToolBarItem = new ToolBarItem(this);
+                    backToolBarItem.glyph = "fa fa-arrow-left";
+                    backToolBarItem.uiClass = "btn btn-info";
+                    backToolBarItem.label = "Back";
+                    backToolBarItem.action = function (task, $event) {
+                        this.fluidPanel.prevPage($event);
+                    }
+                    backToolBarItem.disabled = function () {
+                        var fluidBreadcrumb = new FluidBreadcrumb(this.fluidPanel);
+                        return !fluidBreadcrumb.hasPrevious();
+                    }
+
+                    var nextToolBarItem = new ToolBarItem(this);
+                    nextToolBarItem.glyph = "fa fa-arrow-right";
+                    nextToolBarItem.uiClass = "btn btn-info";
+                    nextToolBarItem.label = "Next";
+                    nextToolBarItem.action = function (task, $event) {
+                        this.fluidPanel.nextPage($event);
+                    }
+                    nextToolBarItem.disabled = function () {
+                        var fluidBreadcrumb = new FluidBreadcrumb(this.fluidPanel);
+                        return !fluidBreadcrumb.hasNext();
+                    }
+
+                    var refreshToolBarItem = new ToolBarItem(this);
+                    refreshToolBarItem.glyph = "fa fa-refresh";
+                    refreshToolBarItem.uiClass = "btn btn-info";
+                    refreshToolBarItem.label = "Refresh";
+                    refreshToolBarItem.action = function (task, $event) {
+
+                    }
+
+                    var panel = this;
+                    this.fluidBreadcrumb = new FluidBreadcrumb(this);
+                    this.fluidBreadcrumb.close = function (page, $index, $event) {
+                        var previous = this.current;
+                        this.current = $index;
+                        var breadcrumb = this;
+                        var pages = this.pages;
+                        var fluidPage = new FluidPage(panel.pages[page]);
+                        fluidPage.option.returnToPrevious = function () {
+                            breadcrumb.current = previous;
+                        }
+                        fluidPage.close(function (data) {
+                            pages.splice($index, 1);
+                            if (breadcrumb.current > $index) {
+                                breadcrumb.current -= 1;
+                            } else if (breadcrumb.current === $index) {
+                                breadcrumb.current -= 1;
+                            }
+                        }, function () {
+                            breadcrumb.current = previous;
+                        }, $event);
+                    }
+                    this.fluidBreadcrumb.open = function (page, $index, $event) {
+                        panel.goTo(page, $event);
+                    }
+                    fluidPanelService.fluidPanel[this.id] = this;
+
+                    this.close = function (task, $event) {
+                        var breadcrumb = this.fluidBreadcrumb;
+                        var bPages = this.fluidBreadcrumb.pages;
+                        var pages = this.pages;
+                        var reversedPages = angular.copy(bPages, reversedPages);
+                        reversedPages.reverse();
+                        var $length = reversedPages.length;
+
+                        function closePage($index) {
+                            var pageName = reversedPages[$index];
+                            var $bIndex = bPages.indexOf(pageName);
+                            var previous = breadcrumb.current;
+                            breadcrumb.current = $bIndex;
+
+                            console.info("fluidPanel-FluidPanelModel-closePage.$index", $index);
+                            console.info("fluidPanel-FluidPanelModel-closePage.$bIndex", $bIndex);
+                            console.info("fluidPanel-FluidPanelModel-closePage.$bIndex", previous);
+
+                            var fluidPage = new FluidPage(pages[pageName]);
+
+                            console.info("fluidPanel-FluidPanelModel-closePage.fluidPage", fluidPage);
+
+                            if ($index < $length) {
+                                fluidPage.close(function (data) {
+                                    if ($bIndex === 0) {
+                                        var frame = FluidFrame(panel.frame);
+                                        frame.removeTask(task);
+                                    } else {
+                                        bPages.splice($bIndex, 1);
+                                        if (breadcrumb.current > $bIndex) {
+                                            breadcrumb.current -= 1;
+                                        } else if (breadcrumb.current === $bIndex) {
+                                            breadcrumb.current -= 1;
+                                        }
+                                        $index++;
+                                        closePage($index);
+                                    }
+                                }, function () {
+                                    breadcrumb.current = previous;
+                                }, $event);
+                            } else {
+                                task.active = false;
+                            }
+                        }
+
+                        closePage(0);
+
+                    }
+                    this.clear = function () {
+                        angular.forEach(this.pages, function (page, $index) {
+                            page.clear();
+                            if ((this.pages.length - 1) === $index) {
+                                this.pages.clear();
+                            }
+                        }, this)
+                    }
                 }
             }
-        }
-        return fluidPanel;
-    }])
+            return fluidPanel;
+        }])
     .service("fluidPanelService", [function () {
         this.fluidPanel = [];
         this.clear = function (id) {
+            this.fluidPanel[id].clear();
             this.fluidPanel[id] = undefined;
         }
         return this;
@@ -3942,13 +4197,32 @@ angular.module("fluidTask", ["fluidSession"])
         }
 
     })
-    .factory("fluidTaskService", ["sessionService", "$http", "$q", "fluidStateService", "$rootScope", "$timeout", function (ss, h, q, fss, rs, t) {
+    .factory("fluidTaskService", ["sessionService", "$http", "$q", "fluidStateService", "$rootScope", "$timeout", "$resource", function (ss, h, q, fss, rs, t, r) {
         var taskService = {};
 
         function timeoutEvent(data) {
             if (data === EVENT_TIME_OUT) {
                 rs.$broadcast(EVENT_TIME_OUT, "Task name not found.");
             } else {
+                if (data.stateAjax) {
+                    var url = data.stateAjax.url;
+                    if (!data.stateAjax.actions) {
+                        data.stateAjax.actions = [];
+                    }
+                    if (url) {
+                        if (!data.stateAjax.actions) {
+                            data.stateAjax.actions = [];
+                        }
+                        if (!data.stateAjax.param) {
+                            data.stateAjax.param = {}
+                        }
+
+                        data.resource = r(data.stateAjax.url, data.stateAjax.param, data.stateAjax.actions);
+
+                    } else {
+                        throw "Task stateAjax.url is required!";
+                    }
+                }
                 return data;
             }
         }
@@ -4034,6 +4308,7 @@ angular.module("fluidTaskcontrols", ["fluidTask"])
             this.uiClass = "btn btn-default";
             this.class = "";
             this.label = "";
+            this.fluidPanel = fluidPanel;
             this.action = function (task, $event) {
             }
 
@@ -4247,10 +4522,11 @@ angular.module("fluidTool", [])
 angular.module("templates/fluid/fluidBreadcrumb.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("templates/fluid/fluidBreadcrumb.html",
     "<div class=\"fluid-breadcrumb\" ng-init=\"item=[]\">\n" +
-    "    <div class=\"item\" ng-repeat=\"bread in breadcrumb.pages\">\n" +
-    "        <span ng-mouseover=\"item[$index].showClose=true && $index > 0\" ng-mouseleave=\"item[$index].showClose=false\">\n" +
+    "    <div class=\"item\" ng-repeat=\"bread in breadcrumb.pages\" ng-class=\"item[$index].active\">\n" +
+    "        <span ng-mouseover=\"item[$index].showClose=true && $index > 0;item[$index].active='hovered'\"\n" +
+    "              ng-mouseleave=\"item[$index].showClose=false;item[$index].active='default'\">\n" +
     "            <span class=\"label\" ng-class=\"breadcrumb.current === $index ?'active':''\"\n" +
-    "                  ng-click=\"breadcrumb.open(bread,$index)\">{{bread}}</span>\n" +
+    "                  ng-click=\"breadcrumb.open(bread,$index,$event)\">{{bread}}</span>\n" +
     "            <i ng-if=\"item[$index].showClose\" class=\"fa fa-close text-danger\" title=\"Close {{bread}}\"\n" +
     "               ng-click=\"breadcrumb.close(bread,$index,$event)\"></i>{{$index < (breadcrumb.pages.length -1) ? ' | ':'' }}\n" +
     "        </span>\n" +

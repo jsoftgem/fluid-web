@@ -1,7 +1,7 @@
 .fluid-option {
     width: 100%;
     max-height: 0;
-    background: rgba(228, 228, 228, 0.8) !important;
+    background: rgba(228, 228, 228, 0.8);
     z-index: 10;
     position: absolute;
     top: 22px;

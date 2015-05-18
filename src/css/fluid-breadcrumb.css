@@ -30,8 +30,16 @@
     /*padding: 3px 0px 3px 3px;
     margin: 5px 1px 3px 0px;*/
     border-radius: 4px;
-    box-shadow: 0 0 5px #00b3ee;
+    box-shadow: 0 0 5px #008cba;
     /*padding: 3px 0px 3px 3px;*/
     /*margin: 5px 1px 3px 0px;*/
     border: 1px solid #00b3ee;
+}
+
+.fluid-breadcrumb .hovered {
+    background: #008cba;
+}
+
+.fluid-breadcrumb .default {
+    background: none;
 }

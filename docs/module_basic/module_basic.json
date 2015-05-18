@@ -20,7 +20,7 @@
       "name": "page1",
       "title": "Home",
       "static": true,
-      "html": "<div ng-controller='moduleBasicCtrl'><ul class='list-group'><li ng-repeat='pg in data'><p>id: {{pg.id}} <br/> name: {{pg.name}} <br/> title: {{pg.title}} <br/></p> <button type='button' class='btn btn-warning' ng-click='fluidPanel.goTo(pg.name)'><i class='fa fa-search'></i></button><button class='btn btn-info' type='button' ng-click='pg.$save()'><i class='fa fa-save'></i></button></li></ul><script id='onClose' type='text/ng-template'>Do you want to close page {{fluidPage.title}} ? <a href='#' ng-click='closeOption=true'>Yes</a> {{' '}} <a href='#' ng-click='close()'>No</a></script></div>",
+      "html": "<div ng-controller='moduleBasicCtrl'><ul class='list-group'><li ng-repeat='pg in data'><p>id: {{pg.id}} <br/> name: {{pg.name}} <br/> title: {{pg.title}} <br/></p> <button type='button' class='btn btn-warning' ng-click='fluidPanel.goTo(pg.name,$event)'><i class='fa fa-search'></i></button><button class='btn btn-info' type='button' ng-click='pg.$save()'><i class='fa fa-save'></i></button></li></ul><fluid-option-template id='onClose'>Do you want to close page {{fluidPage.title}} ? <a href='#' ng-click='fluidPage.ok()'>Yes</a> {{' '}} <a href='#' ng-click='fluidPage.cancel()'>No</a></fluid-option-template><fluid-option-template id='onChange'>Do you want to leave page {{fluidPage.title}} ? <a href='#' ng-click='fluidPage.proceed()'>Yes</a> {{' '}} <a href='#' ng-click='fluidPage.cancel()'>No</a></fluid-option-template></div>",
       "isHome": true,
       "ajax": {
         "isArray": true,
@@ -33,28 +33,28 @@
       "name": "page2",
       "title": "Editor",
       "static": true,
-      "html": "<div ng-controller='moduleBasicCtrl'><h1>Editor</h1><div><button class='btn btn-info' type='button' ng-click=\"fluidPanel.goTo('page3')\">Next</button></div></div>"
+      "html": "<div ng-controller='moduleBasicCtrl'><h1>Editor</h1><div><button class='btn btn-info' type='button' ng-click=\"fluidPanel.goTo('page3',$event)\">Next</button></div></div>"
     },
     {
       "id": 3,
       "name": "page3",
       "title": "Page 3",
       "static": true,
-      "html": "<div ng-controller='moduleBasicCtrl'><h1>Page3</h1><div><button class='btn btn-info' type='button' ng-click=\"fluidPanel.goTo('page4')\">Next</button></div></div>"
+      "html": "<div ng-controller='moduleBasicCtrl'><h1>Page3</h1><div><button class='btn btn-info' type='button' ng-click=\"fluidPanel.goTo('page4',$event)\">Next</button></div></div>"
     },
     {
       "id": 4,
       "name": "page4",
       "title": "Page 4",
       "static": true,
-      "html": "<div ng-controller='moduleBasicCtrl'><h1>Page4</h1><div><button class='btn btn-info' type='button' ng-click=\"fluidPanel.goTo('page5')\">Next</button></div></div>"
+      "html": "<div ng-controller='moduleBasicCtrl'><h1>Page4</h1><div><button class='btn btn-info' type='button' ng-click=\"fluidPanel.goTo('page5',$event)\">Next</button></div></div>"
     },
     {
       "id": 5,
       "name": "page5",
       "title": "Page 5",
       "static": true,
-      "html": "<div ng-controller='moduleBasicCtrl'><h1>Page5</h1><div><button class='btn btn-info' type='button'>Prev</button></div></div>"
+      "html": "<div ng-controller='moduleBasicCtrl'><h1>Page5</h1><div></div></div>"
     }
   ]
 }

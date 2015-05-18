@@ -1,9 +1,9 @@
 /**
  * Created by jerico on 4/28/2015.
  */
-angular.module("fluidPage", ["fluidHttp"])
-    .directive("fluidPage", ["$templateCache", "fluidPageService", "FluidPage", "$compile", "FluidBreadcrumb", "fluidOptionService",
-        function (tc, fps, FluidPage, c, FluidBreadcrumb, fos) {
+angular.module("fluidPage", ["fluidHttp", "fluidOption"])
+    .directive("fluidPage", ["$templateCache", "fluidPageService", "FluidPage", "$compile", "FluidBreadcrumb", "FluidOption",
+        function (tc, fps, FluidPage, c, FluidBreadcrumb, FluidOption) {
             return {
                 restrict: "E",
                 scope: {page: "=", fluidPanel: "="},
@@ -16,17 +16,12 @@ angular.module("fluidPage", ["fluidHttp"])
                         scope.loadPage = function (page) {
                             console.info("fluidPage-loadPage.page", page);
                             scope.fluidPanel.loaded = false;
+
                             if (scope.fluidPanel.pages[scope.page.name] != null) {
                                 scope.fluidPage = scope.fluidPanel.pages[scope.page.name];
                             } else {
-                                scope.fluidPanel.pages[scope.page.name] = new FluidPage(page);
-                                scope.fluidPage = scope.fluidPanel.pages[scope.page.name];
-                                scope.fluidPage.fluidId = scope.fluidPanel.id;
-                                scope.fluidPage.$ = $("div#_id_fp_" + scope.fluidPanel.id + " [page-name='" + scope.fluidPage.name + "']");
-                                scope.fluidPage.onDestroy = function () {
-                                    scope.fluidPanel.pages[scope.page.name] = scope.fluidPage.default;
-                                }
-                                scope.fluidPage.$scope = angular.element(scope.fluidPage.$).scope();
+                                scope.fluidPage = new FluidPage(page);
+                                scope.fluidPanel.pages[scope.page.name] = scope.fluidPage;
                             }
 
                             if (scope.fluidPage.ajax) {
@@ -59,23 +54,20 @@ angular.module("fluidPage", ["fluidHttp"])
                     post: function (scope, element, attr) {
 
 
-                        scope.openOption = function (templateName, source) {
-                            fos.openOption("fluid_option_" + scope.fluidPanel.id, templateName + "_" + scope.fluidPanel.id, source);
-                        }
-
-                        scope.closeOption = function () {
-                            fos.closeOption("fluid_option_" + scope.fluidPanel.id);
-                        }
 
                         //TODO: page onLeave handling
                         scope.onLoad = function () {
+                            console.info("fluidPage-page-onload.fluidId", scope.fluidPanel.id);
+                            scope.fluidPage.fluidId = scope.fluidPanel.id;
+                            scope.fluidPage.$ = element;
+                            scope.fluidPage.$scope = scope;
+                            scope.fluidPage.option = new FluidOption(scope.fluidPanel);
                             scope.fluidPage.loaded = false;
                             //TODO: page onLoad error handling
                             scope.fluidPage.onLoad();
                             scope.fluidPanel.loaded = true;
                             scope.fluidPage.loaded = true;
                         }
-
 
                     }
                 },
@@ -110,9 +102,39 @@ angular.module("fluidPage", ["fluidHttp"])
                 this.home = page.home;
                 this.ajax = page.ajax;
 
-                this.close = function (ok, $event) {
-                    this.onClose(q, $event).then(ok, this.failed)
-                        .then(this.onDestroy);
+                this.close = function (ok, cancel, $event) {
+                    var page = this;
+                    this.onClose(function () {
+                        ok();
+                        if (page.option) {
+                            page.option.isCancelled = false;
+                            page.option.close();
+                        }
+                        page.onDestroy();
+                    }, function () {
+                        cancel();
+                        if (page.option) {
+                            page.option.isCancelled = true;
+                            page.option.close();
+                        }
+                    }, $event);
+                }
+
+                this.change = function (proceed, cancel, $event) {
+                    var page = this;
+                    this.onChange(function () {
+                        proceed();
+                        if (page.option) {
+                            page.option.isCancelled = false;
+                            page.option.close();
+                        }
+                    }, function () {
+                        cancel();
+                        if (page.option) {
+                            page.option.isCancelled = true;
+                            page.option.close();
+                        }
+                    }, $event);
                 }
 
                 this.failed = function (reason) {
@@ -123,13 +145,20 @@ angular.module("fluidPage", ["fluidHttp"])
                     return true;
                 }
 
-                this.onClose = function (q, $event) {
-                    return q(function (resolve, reject) {
-                        resolve("ok");
-                    });
+                this.onClose = function (ok, cancel) {
+                    ok();
+                }
+
+                this.onChange = function (proceed, cancel, $event) {
+                    proceed();
                 }
 
                 this.onDestroy = function () {
+                }
+
+                this.clear = function () {
+                    this.onDestroy();
+                    fps.pages[this.name] = this.default;
                 }
 
                 var def = {};
@@ -187,7 +216,6 @@ angular.module("fluidPage", ["fluidHttp"])
             return page;
         }
         this.render = function (page) {
-            console.info("fluidPage-fluidPageService-render.page", page);
             if (page) {
                 if (page.static) {
                     page.home = "template_" + page.id;

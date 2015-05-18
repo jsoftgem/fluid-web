@@ -265,7 +265,20 @@ $(document).ready(function () {
                     }
 
                     if (elementSourceEvent !== sourceId) {
-                        fluidOptionScope.close();
+                        console.info(infoSig + ".fluidPanel", fluidOptionScope.fluidPanel);
+                        var fluidPage = fluidOptionScope.fluidPanel.getPage(fluidOptionScope.fluidPanel.fluidBreadcrumb.currentPage());
+                        console.info(infoSig + ".fluidPage", fluidPage);
+                        if (fluidPage.option.isOpen) {
+                            fluidPage.option.close();
+                            if (fluidPage.option.returnToPrevious) {
+                                fluidPage.option.returnToPrevious();
+                                if (!fluidPage.$scope.$$phase) {
+                                    fluidPage.$scope.$apply();
+                                }
+                            }
+
+
+                        }
                     }
                 }
 

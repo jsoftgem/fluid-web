@@ -77,6 +77,25 @@ angular.module("fluidTask", ["fluidSession"])
             if (data === EVENT_TIME_OUT) {
                 rs.$broadcast(EVENT_TIME_OUT, "Task name not found.");
             } else {
+                /*if (data.stateAjax) {
+                 var url = data.stateAjax.url;
+                 if (!data.stateAjax.actions) {
+                 data.stateAjax.actions = [];
+                 }
+                 if (url) {
+                 if (!data.stateAjax.actions) {
+                 data.stateAjax.actions = [];
+                 }
+                 if (!data.stateAjax.param) {
+                 data.stateAjax.param = {}
+                 }
+
+                 data.resource = r(url, data.stateAjax.param, data.stateAjax.actions);
+
+                 } else {
+                 throw "Task stateAjax.url is required!";
+                 }
+                 }*/
                 return data;
             }
         }
@@ -133,6 +152,13 @@ angular.module("fluidTask", ["fluidSession"])
             return deferred.promise;
         }
         return taskService;
+    }])
+    .factory("FluidTask", ["fluidTaskService", "$resource", function (fluidTaskService, r) {
+        //TODO: handle task state here; use this in fluidPanel
+        var fluidTask = function (name) {
+            return fluidTaskService.findTaskByName(name);
+        }
+        return fluidTask;
     }])
     .service("fluidStateService", [function () {
         this.loaded = false;
