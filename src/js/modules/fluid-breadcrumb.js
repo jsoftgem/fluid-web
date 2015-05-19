@@ -116,6 +116,7 @@ angular.module("fluidBreadcrumb", [])
             }
         }
     }]);
+
 function autoSizeBreadcrumb(element, parent, id) {
     var offsetWidth = 0;
     var lastIndex = parent.children().length - 1;

@@ -70,7 +70,7 @@ angular.module("fluidTask", ["fluidSession"])
         }
 
     })
-    .factory("fluidTaskService", ["sessionService", "$http", "$q", "fluidStateService", "$rootScope", "$timeout", function (ss, h, q, fss, rs, t) {
+    .factory("fluidTaskService", ["sessionService", "$http", "$q", "fluidStateService", "$rootScope", "$timeout", "$resource", function (ss, h, q, fss, rs, t, r) {
         var taskService = {};
 
         function timeoutEvent(data) {
@@ -151,12 +151,33 @@ angular.module("fluidTask", ["fluidSession"])
 
             return deferred.promise;
         }
+        taskService.loadAjax = function (task) {
+            return q(function (resolve, reject) {
+
+            });
+        }
         return taskService;
     }])
     .factory("FluidTask", ["fluidTaskService", "$resource", function (fluidTaskService, r) {
         //TODO: handle task state here; use this in fluidPanel
-        var fluidTask = function (name) {
-            return fluidTaskService.findTaskByName(name);
+        var fluidTask = function (defaultTask) {
+            var task = {};
+            angular.copy(defaultTask, task);
+            if (task.ajax) {
+                if (task.ajax.url) {
+                    if (!task.actions) {
+                        task.actions = [];
+                    }
+                    if (!task.ajax.param) {
+                        task.ajax.param = {};
+                    }
+                    task.resource = r(task.ajax.url, task.ajax.param, task.actions);
+                } else {
+                    throw "Task ajax.url is required!";
+                }
+            }
+            console.info("fluidTask-FluidTask.newTask", task);
+            return task;
         }
         return fluidTask;
     }])

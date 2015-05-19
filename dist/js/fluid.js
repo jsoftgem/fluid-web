@@ -1081,6 +1081,7 @@ angular.module("fluidBreadcrumb", [])
             }
         }
     }]);
+
 function autoSizeBreadcrumb(element, parent, id) {
     var offsetWidth = 0;
     var lastIndex = parent.children().length - 1;
@@ -1114,7 +1115,7 @@ function autoSizeBreadcrumb(element, parent, id) {
  * ** Split Screen
  */
 
-var frameKey = "$frame_";
+var frameKey = "frame_";
 angular.module("fluidFrame", ["fluidHttp", "fluidTask", "fluidSession"])
     .directive("fluidFrame2", ["$templateCache", "$window", "fluidFrameService", function (tc, window, FrameService) {
         return {
@@ -1127,6 +1128,12 @@ angular.module("fluidFrame", ["fluidHttp", "fluidTask", "fluidSession"])
                 } else {
                     s.frame = new FrameService(s.name);
                 }
+
+                s.$watch(function(scope){
+                    return scope.frame;
+                }, function (frame) {
+                    console.info("fluidFrame-fluidFrame2$watch.frame", frame);
+                })
             }],
             template: tc.get("templates/fluid/fluidFrame2.html")
         }
@@ -1250,7 +1257,7 @@ angular.module("fluidFrame", ["fluidHttp", "fluidTask", "fluidSession"])
         this.frames = [];
         return this;
     }])
-    .factory("fluidFrameService", ["Frame", "fluidTaskService", function (Frame, taskService) {
+    .factory("fluidFrameService", ["Frame", "fluidTaskService", "FluidTask", function (Frame, taskService, FluidTask) {
         /*  this.isSearch = false;
          this.searchTask = "";
          this.taskUrl = "";
@@ -1391,21 +1398,18 @@ angular.module("fluidFrame", ["fluidHttp", "fluidTask", "fluidSession"])
          };*/
         var frameService = function (name) {
             var frame = new Frame(name);
-
             frame.openTask = function (taskName, workspace) {
                 if (workspace) {
 
                 }
-
                 taskService.findTaskByName(taskName)
                     .then(function (task) {
                         var index = frame.tasks.length;
                         console.info("fluidFrame-fluidFrameService.task", task);
                         task.fluidId = name + "_" + task.id + "_" + index;
-                        frame.tasks.push(task);
-
+                        var fluidTask = new FluidTask(task);
+                        frame.tasks.push(fluidTask);
                     });
-
             }
             frame.removeTask = function (task, workspace) {
                 console.info("fluidFrame-fluidFrameService.removeTask.task", task);
@@ -1415,10 +1419,8 @@ angular.module("fluidFrame", ["fluidHttp", "fluidTask", "fluidSession"])
                     }
                 }, this);
             }
-
             return frame;
         }
-
         return frameService;
 
     }])
@@ -1432,8 +1434,8 @@ angular.module("fluidFrame", ["fluidHttp", "fluidTask", "fluidSession"])
                 this.name = name;
                 this.fullScreen = false;
                 this.tasks = [];
-                this.workspaces = [];
-                this.showWorkspace = false;
+                // this.workspaces = [];
+                //this.showWorkspace = false;
                 fh.frames[key] = this;
             };
             return frame;
@@ -3870,6 +3872,8 @@ angular.module("fluidPanel", ["oc.lazyLoad", "fluidHttp", "fluidFrame", "fluidMe
                             //TODO: parent cancellation handling
                         }, $event);
                     }
+
+
                     if (!this.page) {
                         if (task.pages) {
                             angular.forEach(task.pages, function (page) {
@@ -3966,6 +3970,11 @@ angular.module("fluidPanel", ["oc.lazyLoad", "fluidHttp", "fluidFrame", "fluidMe
                     }
 
                     var panel = this;
+                    if (task.resource) {
+                        task.resource.$get({fluidId: task.fluidId}, function (taskResource) {
+                            panel.resource = taskResource;
+                        });
+                    }
                     this.fluidBreadcrumb = new FluidBreadcrumb(this);
                     this.fluidBreadcrumb.close = function (page, $index, $event) {
                         var previous = this.current;
@@ -4048,6 +4057,7 @@ angular.module("fluidPanel", ["oc.lazyLoad", "fluidHttp", "fluidFrame", "fluidMe
                             }
                         }, this)
                     }
+
                 }
             }
             return fluidPanel;
@@ -4204,25 +4214,25 @@ angular.module("fluidTask", ["fluidSession"])
             if (data === EVENT_TIME_OUT) {
                 rs.$broadcast(EVENT_TIME_OUT, "Task name not found.");
             } else {
-                if (data.stateAjax) {
-                    var url = data.stateAjax.url;
-                    if (!data.stateAjax.actions) {
-                        data.stateAjax.actions = [];
-                    }
-                    if (url) {
-                        if (!data.stateAjax.actions) {
-                            data.stateAjax.actions = [];
-                        }
-                        if (!data.stateAjax.param) {
-                            data.stateAjax.param = {}
-                        }
+                /*if (data.stateAjax) {
+                 var url = data.stateAjax.url;
+                 if (!data.stateAjax.actions) {
+                 data.stateAjax.actions = [];
+                 }
+                 if (url) {
+                 if (!data.stateAjax.actions) {
+                 data.stateAjax.actions = [];
+                 }
+                 if (!data.stateAjax.param) {
+                 data.stateAjax.param = {}
+                 }
 
-                        data.resource = r(data.stateAjax.url, data.stateAjax.param, data.stateAjax.actions);
+                 data.resource = r(url, data.stateAjax.param, data.stateAjax.actions);
 
-                    } else {
-                        throw "Task stateAjax.url is required!";
-                    }
-                }
+                 } else {
+                 throw "Task stateAjax.url is required!";
+                 }
+                 }*/
                 return data;
             }
         }
@@ -4278,7 +4288,35 @@ angular.module("fluidTask", ["fluidSession"])
 
             return deferred.promise;
         }
+        taskService.loadAjax = function (task) {
+            return q(function (resolve, reject) {
+
+            });
+        }
         return taskService;
+    }])
+    .factory("FluidTask", ["fluidTaskService", "$resource", function (fluidTaskService, r) {
+        //TODO: handle task state here; use this in fluidPanel
+        var fluidTask = function (defaultTask) {
+            var task = {};
+            angular.copy(defaultTask, task);
+            if (task.ajax) {
+                if (task.ajax.url) {
+                    if (!task.actions) {
+                        task.actions = [];
+                    }
+                    if (!task.ajax.param) {
+                        task.ajax.param = {};
+                    }
+                    task.resource = r(task.ajax.url, task.ajax.param, task.actions);
+                } else {
+                    throw "Task ajax.url is required!";
+                }
+            }
+            console.info("fluidTask-FluidTask.newTask", task);
+            return task;
+        }
+        return fluidTask;
     }])
     .service("fluidStateService", [function () {
         this.loaded = false;
@@ -4571,7 +4609,6 @@ angular.module("templates/fluid/fluidFrame2.html", []).run(["$templateCache", fu
     "                          ng-repeat='task in frame.tasks | filter:{active:true}'></fluid-panel2>\n" +
     "\n" +
     "        </div>\n" +
-    "\n" +
     "    </div>\n" +
     "\n" +
     "\n" +

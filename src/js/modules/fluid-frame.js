@@ -13,7 +13,7 @@
  * ** Split Screen
  */
 
-var frameKey = "$frame_";
+var frameKey = "frame_";
 angular.module("fluidFrame", ["fluidHttp", "fluidTask", "fluidSession"])
     .directive("fluidFrame2", ["$templateCache", "$window", "fluidFrameService", function (tc, window, FrameService) {
         return {
@@ -26,6 +26,12 @@ angular.module("fluidFrame", ["fluidHttp", "fluidTask", "fluidSession"])
                 } else {
                     s.frame = new FrameService(s.name);
                 }
+
+                s.$watch(function(scope){
+                    return scope.frame;
+                }, function (frame) {
+                    console.info("fluidFrame-fluidFrame2$watch.frame", frame);
+                })
             }],
             template: tc.get("templates/fluid/fluidFrame2.html")
         }
@@ -149,7 +155,7 @@ angular.module("fluidFrame", ["fluidHttp", "fluidTask", "fluidSession"])
         this.frames = [];
         return this;
     }])
-    .factory("fluidFrameService", ["Frame", "fluidTaskService", function (Frame, taskService) {
+    .factory("fluidFrameService", ["Frame", "fluidTaskService", "FluidTask", function (Frame, taskService, FluidTask) {
         /*  this.isSearch = false;
          this.searchTask = "";
          this.taskUrl = "";
@@ -290,21 +296,18 @@ angular.module("fluidFrame", ["fluidHttp", "fluidTask", "fluidSession"])
          };*/
         var frameService = function (name) {
             var frame = new Frame(name);
-
             frame.openTask = function (taskName, workspace) {
                 if (workspace) {
 
                 }
-
                 taskService.findTaskByName(taskName)
                     .then(function (task) {
                         var index = frame.tasks.length;
                         console.info("fluidFrame-fluidFrameService.task", task);
                         task.fluidId = name + "_" + task.id + "_" + index;
-                        frame.tasks.push(task);
-
+                        var fluidTask = new FluidTask(task);
+                        frame.tasks.push(fluidTask);
                     });
-
             }
             frame.removeTask = function (task, workspace) {
                 console.info("fluidFrame-fluidFrameService.removeTask.task", task);
@@ -314,10 +317,8 @@ angular.module("fluidFrame", ["fluidHttp", "fluidTask", "fluidSession"])
                     }
                 }, this);
             }
-
             return frame;
         }
-
         return frameService;
 
     }])
@@ -331,8 +332,8 @@ angular.module("fluidFrame", ["fluidHttp", "fluidTask", "fluidSession"])
                 this.name = name;
                 this.fullScreen = false;
                 this.tasks = [];
-                this.workspaces = [];
-                this.showWorkspace = false;
+                // this.workspaces = [];
+                //this.showWorkspace = false;
                 fh.frames[key] = this;
             };
             return frame;
