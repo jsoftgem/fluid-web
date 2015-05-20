@@ -15,11 +15,11 @@ angular.module("moduleBasic", [])
                 this.cancel = cancel;
             }
 
-            this.onChange = function (proceed, cancel, $event) {
+           /* this.onChange = function (proceed, cancel, $event) {
                 this.option.danger().open("onChange", $event.currentTarget, this);
                 this.proceed = proceed;
                 this.cancel = cancel;
-            }
+            }*/
         }
         s.save = function (resources) {
             console.info("moduleBasic-moduleBasicCtrl.resources", resources);

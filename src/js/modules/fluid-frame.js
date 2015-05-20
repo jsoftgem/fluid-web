@@ -27,7 +27,7 @@ angular.module("fluidFrame", ["fluidHttp", "fluidTask", "fluidSession"])
                     s.frame = new FrameService(s.name);
                 }
 
-                s.$watch(function(scope){
+                s.$watch(function (scope) {
                     return scope.frame;
                 }, function (frame) {
                     console.info("fluidFrame-fluidFrame2$watch.frame", frame);
@@ -147,6 +147,26 @@ angular.module("fluidFrame", ["fluidHttp", "fluidTask", "fluidSession"])
                 });
 
                 autoSizeFrame(element, scope.offset, w.height());
+
+            }
+        }
+    }])
+    .directive("fluidFullscreenHeight", ["$window", function ($w) {
+        return {
+            restrict: "A",
+            link: function (scope, element, attr) {
+
+                var w = angular.element($w);
+
+                if (attr.offset) {
+                    scope.offset = attr.offset;
+                }
+
+                w.bind("resize", function () {
+                    autoFullscreenHeight(element, element.parent().height());
+                });
+
+                autoFullscreenHeight(element, element.parent().height());
 
             }
         }
@@ -331,6 +351,7 @@ angular.module("fluidFrame", ["fluidHttp", "fluidTask", "fluidSession"])
                 }
                 this.name = name;
                 this.fullScreen = false;
+                this.task = undefined;
                 this.tasks = [];
                 // this.workspaces = [];
                 //this.showWorkspace = false;
@@ -354,3 +375,9 @@ function autoSizeFrame(element, offset, height) {
     element.css("margin-top", offset + "px");
     element.height(frameHeight);
 }
+
+function autoFullscreenHeight(element, height) {
+    var frameHeight = height;
+    element.height(frameHeight);
+}
+

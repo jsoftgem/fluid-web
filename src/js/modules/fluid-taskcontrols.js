@@ -32,10 +32,14 @@ angular.module("fluidTaskcontrols", ["fluidTask"])
                 return true;
             }
             if (fcs.controls[fluidPanel.id] != null) {
-                fcs.controls[fluidPanel.id].push(this);
+                if (fcs.controls[fluidPanel.id].indexOf(this) === -1) {
+                    fcs.controls[fluidPanel.id].push(this);
+                }
             } else {
                 fcs.controls[fluidPanel.id] = [];
-                fcs.controls[fluidPanel.id].push(this);
+                if (fcs.controls[fluidPanel.id].indexOf(this) === -1) {
+                    fcs.controls[fluidPanel.id].push(this);
+                }
             }
 
         }

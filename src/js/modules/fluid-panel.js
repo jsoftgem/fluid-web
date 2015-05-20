@@ -1278,8 +1278,8 @@ angular.module("fluidPanel", ["oc.lazyLoad", "fluidHttp", "fluidFrame", "fluidMe
             replace: true
         }
     }])
-    .directive("fluidPanel2", ["$templateCache", "FluidPanelModel", "fluidToolbarService", "$ocLazyLoad", "$compile", "fluidPanelService",
-        function (tc, FluidPanel, ftb, oc, c, fluidPanelService) {
+    .directive("fluidPanel2", ["$templateCache", "FluidPanelModel", "fluidToolbarService", "$ocLazyLoad", "$compile", "fluidPanelService", "fluidFrameService",
+        function (tc, FluidPanel, ftb, oc, c, fluidPanelService, FluidFrame) {
             return {
                 require: "^fluidFrame2",
                 scope: {task: "=", frame: "@"},
@@ -1311,12 +1311,12 @@ angular.module("fluidPanel", ["oc.lazyLoad", "fluidHttp", "fluidFrame", "fluidMe
                             }).then(function () {
                                 scope.fluidPanel = new FluidPanel(scope.task);
                                 scope.fluidPanel.loaded = false;
-                                scope.fluidPanel.frame = scope.frame;
+                                scope.fluidPanel.frame = new FluidFrame(scope.frame);
                             });
                         } else {
                             scope.fluidPanel = new FluidPanel(scope.task);
                             scope.fluidPanel.loaded = false;
-                            scope.fluidPanel.frame = scope.frame;
+                            scope.fluidPanel.frame = new FluidFrame(scope.frame);
                         }
 
                         scope.setSize = function (size) {
@@ -1486,12 +1486,29 @@ angular.module("fluidPanel", ["oc.lazyLoad", "fluidHttp", "fluidFrame", "fluidMe
                     }
 
                     var expandControl = new TaskControl(this);
-                    expandControl.glyph = "fa  fa-expand";
+                    expandControl.glyph = "fa fa-expand";
                     expandControl.uiClass = "btn btn-info";
                     expandControl.label = "Expand";
                     expandControl.action = function (task, $event) {
-
+                        this.fluidPanel.frame.fullScreen = true;
+                        this.fluidPanel.frame.task = task;
                     }
+                    expandControl.visible = function () {
+                        return !this.fluidPanel.frame.fullScreen;
+                    }
+
+                    var fluidScreenControl = new TaskControl(this);
+                    fluidScreenControl.glyph = "fa fa-compress";
+                    fluidScreenControl.uiClass = "btn btn-info";
+                    fluidScreenControl.label = "Expand";
+                    fluidScreenControl.action = function (task, $event) {
+                        this.fluidPanel.frame.fullScreen = false;
+                        this.fluidPanel.frame.task = undefined;
+                    }
+                    fluidScreenControl.visible = function () {
+                        return this.fluidPanel.frame.fullScreen;
+                    }
+
 
                     var minimizeControl = new TaskControl(this);
                     minimizeControl.glyph = "fa fa-caret-down";
@@ -1612,8 +1629,7 @@ angular.module("fluidPanel", ["oc.lazyLoad", "fluidHttp", "fluidFrame", "fluidMe
                             if ($index < $length) {
                                 fluidPage.close(function (data) {
                                     if ($bIndex === 0) {
-                                        var frame = FluidFrame(panel.frame);
-                                        frame.removeTask(task);
+                                        panel.frame.removeTask(task);
                                     } else {
                                         bPages.splice($bIndex, 1);
                                         if (breadcrumb.current > $bIndex) {

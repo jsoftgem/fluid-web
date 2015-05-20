@@ -1,11 +1,7 @@
 <div class="container-fluid fluid-frame" fluid-resize-frame>
     <bootstrap-viewport></bootstrap-viewport>
-
-    <div ng-if="frame.fullScreen" class="frame-content-div" column="12"
-         ng-show="frame.fullScreen" style="padding: 0;">
-        <fluid-panel task='frame.fullScreenTask'></fluid-panel>
-    </div>
-
+    <fluid-panel2 ng-if="frame.fullScreen" class="fullscreen" task='frame.task'
+                  fluid-fullscreen-height></fluid-panel2>
     <div ng-if="!frame.fullScreen">
         <div class="fluid-frame-task">
             <fluid-panel2 task="task" frame="{{frame.name}}"
@@ -13,6 +9,4 @@
 
         </div>
     </div>
-
-
 </div>

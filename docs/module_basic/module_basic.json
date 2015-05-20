@@ -40,6 +40,7 @@
       "name": "page3",
       "title": "Page 3",
       "static": true,
+      "home":"http://www.boxingnews24.com",
       "html": "<div ng-controller='moduleBasicCtrl'><h1>Page3</h1><div><button class='btn btn-info' type='button' ng-click=\"fluidPanel.goTo('page4',$event)\">Next</button></div></div>"
     },
     {

@@ -34,7 +34,7 @@ angular.module("fluidPage", ["fluidHttp", "fluidOption"])
                                         console.info("fluidPage-loadPage.loaded-page", scope.fluidPage);
                                     });
                             } else {
-                                element.html("<ng-include class='fluid-page' src='fluidPageService.render(fluidPage)' onload='onLoad()'></ng-include>");
+                                element.html("<ng-include  class='fluid-page' src='fluidPageService.render(fluidPage)' onload='onLoad()'></ng-include>");
                                 element.attr("page-name", scope.fluidPage.name);
                                 c(element.contents())(scope);
                                 console.info("fluidPage-loadPage.loaded-page", scope.fluidPage);
@@ -170,7 +170,7 @@ angular.module("fluidPage", ["fluidHttp", "fluidOption"])
         }
         return fluidPage;
     }])
-    .service("fluidPageService", ["$templateCache", "$q", function (tc, q) {
+    .service("fluidPageService", ["$templateCache", "$q","$sce", function (tc, q, sce) {
         this.pages = [];
         this.loadAjax = function (fluidPage) {
             return q(function (resolve, reject) {
@@ -232,7 +232,7 @@ angular.module("fluidPage", ["fluidHttp", "fluidOption"])
                         page.home = page.ajax.url;
                     }
                 }
-                return page.home;
+                return sce.trustAsUrl(page.home);
             }
 
         }

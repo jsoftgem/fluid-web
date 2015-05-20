@@ -8,6 +8,13 @@
 }
 
 .fluid-frame-task {
-   padding-right: 2px;
+    padding-right: 2px;
     padding-left: 2px;
+}
+
+.fluid-frame .fullscreen {
+    margin-left: -3px;
+    position: absolute;
+    margin-top: -9px;
+    width: 100%;
 }

@@ -53,8 +53,15 @@
 }
 
 .fluid-frame-task {
-   padding-right: 2px;
+    padding-right: 2px;
     padding-left: 2px;
+}
+
+.fluid-frame .fullscreen {
+    margin-left: -3px;
+    position: absolute;
+    margin-top: -9px;
+    width: 100%;
 }
 .fluid-option {
     width: 100%;
@@ -128,7 +135,7 @@
 
 .fluid-panel .panel-heading {
     padding: 0;
-    min-height: 22px;
+    min-height: 23px;
 }
 
 .fluid-panel .panel-title {

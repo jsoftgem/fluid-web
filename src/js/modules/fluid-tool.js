@@ -22,8 +22,6 @@ angular.module("fluidTool", [])
                 } else {
                     scope.size = "btn-group-md";
                 }
-
-
                 scope.runEvent = function (control, $event) {
                     if (control.action) {
                         control.action($event);
@@ -33,12 +31,9 @@ angular.module("fluidTool", [])
                     }
 
                 };
-
-
                 scope.goToEvent = function (name, param) {
                     scope.fluid.navTo(name);
                 };
-
                 scope.getClass = function (uiType) {
                     if (uiType.toLowerCase() === "info") {
                         return "btn-info";
@@ -65,10 +60,12 @@ angular.module("fluidTool", [])
             replace: true,
             scope: false,
             template: tc.get("templates/fluid/fluidToolbar2.html"),
-            link: function (scope, element, attr) {
-                console.info("fluidTool2.page", scope.task);
-                scope.fluidToolbarService = fts;
+            link: {
+                post: function (scope, element, attr) {
+                    scope.fluidToolbarService = fts;
+                }
             }
+
         }
     }])
     .factory("ToolBarItem", ["fluidToolbarService", function (ts) {
@@ -92,10 +89,14 @@ angular.module("fluidTool", [])
             }
 
             if (ts.toolbarItems[fluidPanel.id] != null) {
-                ts.toolbarItems[fluidPanel.id].push(this);
+                if (ts.toolbarItems.indexOf(this) === -1) {
+                    ts.toolbarItems[fluidPanel.id].push(this);
+                }
             } else {
                 ts.toolbarItems[fluidPanel.id] = [];
-                ts.toolbarItems[fluidPanel.id].push(this);
+                if (ts.toolbarItems.indexOf(this) === -1) {
+                    ts.toolbarItems[fluidPanel.id].push(this);
+                }
             }
         }
 
