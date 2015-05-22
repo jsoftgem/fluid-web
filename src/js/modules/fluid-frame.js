@@ -361,6 +361,35 @@ angular.module("fluidFrame", ["fluidHttp", "fluidTask", "fluidSession"])
         }];
     });
 
+function getOffset(parent, offset, index) {
+    var child = parent.children()[index];
+
+    if (child) {
+        console.info("fluidFrame-getOffset.parent.child", child);
+        if ($(child).hasClass("panel-collapse")) {
+            index = 0;
+            return getOffset($(child), offset, index);
+        }
+        else if ($(child).hasClass("panel-body")) {
+            index = 0;
+            return getOffset($(child), offset, index);
+        }
+        else if ($(child).attr("page-name") !== undefined) {
+            return offset;
+        } else {
+            index++;
+            offset += $(child).height();
+            console.info("fluidFrame-getOffset.parent.child.offset", offset);
+            return getOffset(parent, offset, index);
+        }
+    }
+    else {
+        return offset;
+    }
+
+
+}
+
 function autoSizeFrame(element, offset, height) {
 
     console.info("autoSizeFrame.offset", offset);
@@ -376,8 +405,20 @@ function autoSizeFrame(element, offset, height) {
     element.height(frameHeight);
 }
 
+
 function autoFullscreenHeight(element, height) {
-    var frameHeight = height;
-    element.height(frameHeight);
+    var panelHeight = height - 1;
+    //TODO: Adjust page height here
+
+    var offset = getOffset(element, 0, 0);
+
+    console.info("fluidFrame-autoFullscreenHeight.offset", offset);
+    console.info("fluidFrame-autoFullscreenHeight.element", element);
+
+    var pageHeight = (panelHeight - offset);
+    pageHeight -= 2;
+    element.find("[page-name]").css("margin-top", element.find(".fluid-toolbar").height() + "px").css("max-height", pageHeight + "px").css("overflow-y", "auto");
+
+    element.height(panelHeight);
 }
 

@@ -46,6 +46,14 @@
     position: absolute;
 }
 
+.fullscreen .fluid-panel .controls {
+    float: right;
+    right: 1px;
+    padding: 0;
+    margin-top: -3px;
+    position: absolute;
+}
+
 .fluid-panel .controls .small {
     margin-right: 5px;
     margin-bottom: -3px;

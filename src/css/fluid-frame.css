@@ -13,8 +13,8 @@
 }
 
 .fluid-frame .fullscreen {
-    margin-left: -3px;
+    margin-left: -2px;
     position: absolute;
-    margin-top: -9px;
+    margin-top: -7px;
     width: 100%;
 }
