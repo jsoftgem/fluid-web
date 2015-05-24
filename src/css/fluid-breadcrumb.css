@@ -5,9 +5,18 @@
     max-height: 22px;
 }
 
-.fluid-breadcrumb .item {
+.item {
     float: left;
     margin-left: 3px;
+    border-radius: 100px;
+}
+
+.fluid-breadcrumb .item {
+    border-right: 1px solid #00b3ee;
+}
+
+.fullscreen .fluid-breadcrumb .item {
+    border-right: 1px solid #9d9d9d;
 }
 
 .fluid-breadcrumb .item .active {
@@ -18,6 +27,25 @@
 .fluid-breadcrumb .item .label {
     font: inherit;
     font-style: italic;
+}
+
+.fluid-breadcrumb .item .inactive {
+    background: none;
+}
+
+.fullscreen .fluid-breadcrumb .item .active {
+    background: none;
+    color: #134fb8;
+}
+
+.fullscreen .fluid-breadcrumb .item .label {
+    font: inherit;
+    font-style: italic;
+}
+
+.fullscreen .fluid-breadcrumb .item .inactive {
+    background: none;
+    color: #9d9d9d;
 }
 
 .fluid-breadcrumb .item:hover {
@@ -33,11 +61,31 @@
     box-shadow: 0 0 5px #008cba;
     /*padding: 3px 0px 3px 3px;*/
     /*margin: 5px 1px 3px 0px;*/
-    border: 1px solid #00b3ee;
+    border-right: 1px solid #00b3ee;
+}
+
+.fullscreen .fluid-breadcrumb .item:hover {
+    cursor: pointer;
+    -webkit-transition: all 0.10s ease-in-out;
+    -moz-transition: all 0.10s ease-in-out;
+    -ms-transition: all 0.10s ease-in-out;
+    -o-transition: all 0.10s ease-in-out;
+    outline: none;
+    /*padding: 3px 0px 3px 3px;
+    margin: 5px 1px 3px 0px;*/
+    border-radius: 4px;
+    box-shadow: 0 0 5px #008cba;
+    /*padding: 3px 0px 3px 3px;*/
+    /*margin: 5px 1px 3px 0px;*/
+    border-right: 1px solid #008cba;
 }
 
 .fluid-breadcrumb .hovered {
     background: #008cba;
+}
+
+.fullscreen .fluid-breadcrumb .hovered {
+    background: #afd9ee;
 }
 
 .fluid-breadcrumb .default {

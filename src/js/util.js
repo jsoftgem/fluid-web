@@ -58,7 +58,6 @@ function estimatedFrameHeight(height) {
     return height - _pc
 }
 
-
 //TODO: body height
 function getHeadingHeight() {
     var height = 0;
@@ -72,7 +71,6 @@ function getHeadingHeight() {
 
     return height;
 }
-
 
 function generateTask(scope, t, f2) {
     console.info("generateTask > scope.task.page", scope.task.page);
@@ -235,6 +233,68 @@ function autoSizePanel(task) {
 
 }
 
+function getOffset(parent, offset, index) {
+    var child = parent.children()[index];
+    console.info("fluidFrame-getOffset.parent", parent);
+    console.info("fluidFrame-getOffset.parent.children", parent.children);
+    if (child) {
+        console.info("fluidFrame-getOffset.parent.child", child);
+        if ($(child).hasClass("panel-collapse")) {
+            index = 0;
+            return getOffset($(child), offset, index);
+        }
+        else if ($(child).hasClass("panel-body")) {
+            index = 0;
+            return getOffset($(child), offset, index);
+        }
+        else if ($(child).attr("page-name") !== undefined) {
+            return offset;
+        } else {
+            index++;
+            offset += $(child).height();
+            console.info("fluidFrame-getOffset.parent.child.offset", offset);
+            return getOffset(parent, offset, index);
+        }
+    }
+    else {
+        return offset;
+    }
+
+
+}
+
+function autoSizeFrame(element, offset, height) {
+
+    console.info("autoSizeFrame.offset", offset);
+    var frameHeight = height - 2;
+    $("body").css("max-height", height).css("overflow-y", "hidden");
+
+    if (offset) {
+        frameHeight -= offset;
+        // frameHeight -= 10;
+    }
+
+    element.css("margin-top", offset + "px");
+    element.height(frameHeight);
+}
+
+function autoFullscreen(element, height, width) {
+    var panelHeight = height;
+    var offset = getOffset(element, 0, 0);
+    console.info("fluidFrame-autoFullscreen.element", element);
+    console.info("fluidFrame-autoFullscreen.height", height);
+    var pageHeight = (panelHeight - offset);
+    /*
+     element.find(".panel-collapse").height(panelHeight - 23);
+     element.find(".panel-body").height(panelHeight - 24);*/
+    element.find(".fluid-page").ready(function () {
+        element.find(".fluid-page").css("max-height", pageHeight + "px").css("overflow-y", "auto");
+    });
+    /*element.width(width);*/
+    element.height(panelHeight);
+
+}
+
 //handles document here
 $(document).ready(function () {
 
@@ -288,3 +348,4 @@ $(document).ready(function () {
     });
 
 });
+

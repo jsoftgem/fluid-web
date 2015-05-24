@@ -15,7 +15,6 @@ angular.module("fluidTaskcontrols", ["fluidTask"])
     }])
     .factory("TaskControl", ["fluidControlService", function (fcs) {
         var control = function (fluidPanel, type) {
-
             this.glyph = "fa fa-question";
             this.uiClass = "btn btn-default";
             this.class = "";
@@ -23,13 +22,14 @@ angular.module("fluidTaskcontrols", ["fluidTask"])
             this.fluidPanel = fluidPanel;
             this.action = function (task, $event) {
             }
-
             this.disabled = function () {
                 return false;
             }
-
             this.visible = function () {
                 return true;
+            }
+            this.setId = function (id) {
+                this.id = id;
             }
             if (fcs.controls[fluidPanel.id] != null) {
                 if (fcs.controls[fluidPanel.id].indexOf(this) === -1) {

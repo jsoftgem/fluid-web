@@ -28,13 +28,13 @@ angular.module("fluidPage", ["fluidHttp", "fluidOption"])
                                 fps.loadAjax(scope.fluidPage)
                                     .then(function (data) {
                                         scope.data = data;
-                                        element.html("<ng-include class='fluid-page' src='fluidPageService.render(fluidPage)' onload='onLoad()'></ng-include>");
+                                        element.html("<ng-include class='page' src='fluidPageService.render(fluidPage)' onload='onLoad()'></ng-include>");
                                         element.attr("page-name", scope.fluidPage.name);
                                         c(element.contents())(scope);
                                         console.info("fluidPage-loadPage.loaded-page", scope.fluidPage);
                                     });
                             } else {
-                                element.html("<ng-include class='fluid-page' src='fluidPageService.render(fluidPage)' onload='onLoad()'></ng-include>");
+                                element.html("<ng-include class='page' src='fluidPageService.render(fluidPage)' onload='onLoad()'></ng-include>");
                                 element.attr("page-name", scope.fluidPage.name);
                                 c(element.contents())(scope);
                                 console.info("fluidPage-loadPage.loaded-page", scope.fluidPage);
@@ -52,9 +52,6 @@ angular.module("fluidPage", ["fluidHttp", "fluidOption"])
 
                     },
                     post: function (scope, element, attr) {
-
-
-
                         //TODO: page onLeave handling
                         scope.onLoad = function () {
                             console.info("fluidPage-page-onload.fluidId", scope.fluidPanel.id);
@@ -101,6 +98,22 @@ angular.module("fluidPage", ["fluidHttp", "fluidOption"])
                 this.html = page.html;
                 this.home = page.home;
                 this.ajax = page.ajax;
+                this.refresh = function (proceed, cancel, $event) {
+                    var page = this;
+                    this.onRefresh(function () {
+                        proceed(this);
+                        if (page.option) {
+                            page.option.isCancelled = false;
+                            page.option.close();
+                        }
+                    }, function () {
+                        cancel();
+                        if (page.option) {
+                            page.option.isCancelled = true;
+                            page.option.close();
+                        }
+                    }, $event);
+                };
 
                 this.close = function (ok, cancel, $event) {
                     var page = this;
@@ -151,6 +164,10 @@ angular.module("fluidPage", ["fluidHttp", "fluidOption"])
 
                 this.onChange = function (proceed, cancel, $event) {
                     proceed();
+                }
+
+                this.onRefresh = function (proceed, cancel, $event) {
+                    proceed(this);
                 }
 
                 this.onDestroy = function () {

@@ -54,7 +54,8 @@ angular.module("fluidTasknav", ["fluidHttp", "fluidSession"])
                 });
 
 
-            }
+            },
+            transclude: true
         }
     }])
     .service("fluidTasknavService", ["sessionService", function (ss) {

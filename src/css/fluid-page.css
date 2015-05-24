@@ -1,9 +1,8 @@
 .fluid-page {
-    background: #9fbbb4;
+    background: rgba(255, 255, 255, 0.5);
 }
 
-.fullscreen .fluid-page {
-    background: #9fbbb4;
+.page {
 }
 
 .default-page {
@@ -11,5 +10,5 @@
 }
 
 .noToolbar {
-    margin-top: -20px !important;
+    /* margin-top: -20px !important;*/
 }

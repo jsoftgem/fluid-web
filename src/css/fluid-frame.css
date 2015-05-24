@@ -1,10 +1,18 @@
 .fluid-frame {
+    overflow-y: auto;
+}
+
+.default-frame {
     margin: 0 auto;
+    clear: both;
     padding-left: 2px !important;
     padding-right: 2px !important;
-    clear: both;
-    overflow-y: auto;
     padding-top: 10px;
+}
+
+.full {
+    padding: 0px;
+    overflow: hidden;
 }
 
 .fluid-frame-task {
@@ -13,8 +21,5 @@
 }
 
 .fluid-frame .fullscreen {
-    margin-left: -2px;
-    position: absolute;
-    margin-top: -7px;
-    width: 100%;
+    padding: 0px;
 }

@@ -11,9 +11,9 @@
 
     <link href="bower_components/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
 
-    <link href="bower_components/bootstrap/dist/css/bootstrap-theme.css" rel="stylesheet">
+    <!--<link href="bower_components/bootstrap/dist/css/bootstrap-theme.css" rel="stylesheet">-->
 
-    <!-- <link href="docs/themes/yeti/bootstrap.min.css" rel="stylesheet">-->
+    <link href="docs/themes/yeti/bootstrap.min.css" rel="stylesheet">
 
     <link href="bower_components/font-awesome/css/font-awesome.min.css" rel="stylesheet">
 
@@ -60,7 +60,7 @@
                 <span class="icon-bar"></span>
             </button>
             <a class="navbar-brand" ng-click="toggleMenu()" title="toogle menu"
-               href="#"><span>@Fluid-web</span></a>
+               href="#"><span><i class="fa fa-home" title="@Fluid-web"></i></span></a>
         </div>
         <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
             <ul class="nav navbar-nav">
@@ -73,8 +73,14 @@
         </div>
     </div>
 </div>
-<fluid-tasknav></fluid-tasknav>
-<fluid-frame2 name="appFrame" fill-height="true" offset="49"
+<fluid-tasknav>
+    <div fluid-resize-frame>
+        <fluid-task name="module_basic">
+            <span icon></span>
+        </fluid-task>
+    </div>
+</fluid-tasknav>
+<fluid-frame2 name="appFrame" fill-height="true" offset="45"
               style="background: #808080"></fluid-frame2>
 </body>
 
@@ -112,17 +118,6 @@
             $("#offcanvas").height(height);
 
         });
-
-        $("a.navbar-brand").ready(function () {
-
-            $("a.navbar-brand span").hover(function () {
-
-                $("a.navbar-brand span").addClass("fa fa-ellipsis-v").html("");
-            }, function () {
-
-                $("a.navbar-brand span").removeClass("fa fa-ellipsis-v").html("@Fluid-web");
-            });
-        })
 
     });
 </script>

@@ -5,9 +5,18 @@
     max-height: 22px;
 }
 
-.fluid-breadcrumb .item {
+.item {
     float: left;
     margin-left: 3px;
+    border-radius: 100px;
+}
+
+.fluid-breadcrumb .item {
+    border-right: 1px solid #00b3ee;
+}
+
+.fullscreen .fluid-breadcrumb .item {
+    border-right: 1px solid #9d9d9d;
 }
 
 .fluid-breadcrumb .item .active {
@@ -18,6 +27,25 @@
 .fluid-breadcrumb .item .label {
     font: inherit;
     font-style: italic;
+}
+
+.fluid-breadcrumb .item .inactive {
+    background: none;
+}
+
+.fullscreen .fluid-breadcrumb .item .active {
+    background: none;
+    color: #134fb8;
+}
+
+.fullscreen .fluid-breadcrumb .item .label {
+    font: inherit;
+    font-style: italic;
+}
+
+.fullscreen .fluid-breadcrumb .item .inactive {
+    background: none;
+    color: #9d9d9d;
 }
 
 .fluid-breadcrumb .item:hover {
@@ -33,23 +61,51 @@
     box-shadow: 0 0 5px #008cba;
     /*padding: 3px 0px 3px 3px;*/
     /*margin: 5px 1px 3px 0px;*/
-    border: 1px solid #00b3ee;
+    border-right: 1px solid #00b3ee;
+}
+
+.fullscreen .fluid-breadcrumb .item:hover {
+    cursor: pointer;
+    -webkit-transition: all 0.10s ease-in-out;
+    -moz-transition: all 0.10s ease-in-out;
+    -ms-transition: all 0.10s ease-in-out;
+    -o-transition: all 0.10s ease-in-out;
+    outline: none;
+    /*padding: 3px 0px 3px 3px;
+    margin: 5px 1px 3px 0px;*/
+    border-radius: 4px;
+    box-shadow: 0 0 5px #008cba;
+    /*padding: 3px 0px 3px 3px;*/
+    /*margin: 5px 1px 3px 0px;*/
+    border-right: 1px solid #008cba;
 }
 
 .fluid-breadcrumb .hovered {
     background: #008cba;
 }
 
+.fullscreen .fluid-breadcrumb .hovered {
+    background: #afd9ee;
+}
+
 .fluid-breadcrumb .default {
     background: none;
 }
 .fluid-frame {
+    overflow-y: auto;
+}
+
+.default-frame {
     margin: 0 auto;
+    clear: both;
     padding-left: 2px !important;
     padding-right: 2px !important;
-    clear: both;
-    overflow-y: auto;
     padding-top: 10px;
+}
+
+.full {
+    padding: 0px;
+    overflow: hidden;
 }
 
 .fluid-frame-task {
@@ -58,10 +114,7 @@
 }
 
 .fluid-frame .fullscreen {
-    margin-left: -2px;
-    position: absolute;
-    margin-top: -7px;
-    width: 100%;
+    padding: 0px;
 }
 .fluid-option {
     width: 100%;
@@ -69,7 +122,6 @@
     background: rgba(228, 228, 228, 0.8);
     z-index: 10;
     position: absolute;
-    top: 22px;
     -webkit-transition: max-height 0.5s;
     transition: max-height 0.5s;
     -moz-transition: max-height 0.5s;
@@ -97,7 +149,10 @@
     overflow-y: auto;
 }
 .fluid-page {
-    background: #9fbbb4;
+    background: rgba(255, 255, 255, 0.5);
+}
+
+.page {
 }
 
 .default-page {
@@ -105,7 +160,7 @@
 }
 
 .noToolbar {
-    margin-top: -20px !important;
+    /* margin-top: -20px !important;*/
 }
 .fluid-panel-transition {
     -webkit-transition: width 0.2s;
@@ -113,9 +168,14 @@
 }
 
 .fluid-panel {
+    background: gr;
     padding: 0px !important;
     -webkit-transition: width 0.2s;
     transition: width 0.2s;
+}
+
+.fullscreen .fluid-panel {
+    width: 100%;
 }
 
 .fluid-panel .fluid-task-icon img {
@@ -128,6 +188,10 @@
 
 }
 
+.fullscreen .fluid-task-icon i {
+    color: dimgrey;
+}
+
 .fluid-panel .containter {
     padding: 0;
     margin: 0;
@@ -135,7 +199,7 @@
 
 .fluid-panel .panel-heading {
     padding: 0;
-    min-height: 23px;
+    min-height: 25px;
 }
 
 .fluid-panel .panel-title {
@@ -151,15 +215,14 @@
     float: right;
     right: 1px;
     padding: 0;
-    margin-top: -3px;
+    margin-top: -2px;
     position: absolute;
 }
 
-.fullscreen .fluid-panel .controls {
+.fullscreen .controls {
     float: right;
     right: 1px;
     padding: 0;
-    margin-top: -3px;
     position: absolute;
 }
 
@@ -173,13 +236,19 @@
 }
 
 .fluid-panel .toolbar {
-    padding-top: 30px;
+    /*padding-top: 30px;*/
 }
 
-.fluid-panel-heading-title {
+.fluid-panel .fluid-panel-heading-title {
     margin-top: 2px;
     margin-left: 2px;
     color: white;
+}
+
+.fullscreen .fluid-panel-heading-title {
+    margin-top: 2px;
+    margin-left: 2px;
+    color: dimgray;
 }
 
 .fluid-panel-icon-control {
@@ -333,7 +402,6 @@ body {
 }
 .fluid-toolbar {
     background-color: rgba(204, 229, 255, 0.5);
-    position: absolute;
 }
 
 .fluid-toolbar .btn-group {

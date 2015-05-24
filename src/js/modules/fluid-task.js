@@ -6,6 +6,38 @@ var taskKey = "$task_";
 var timeout = 30;//sets 30 seconds timeout.
 
 angular.module("fluidTask", ["fluidSession"])
+    .directive("fluidTask", ["FluidTask", "fluidTaskService", "$compile", function (FluidTask, fluidTaskService, compile) {
+        return {
+            restrict: "AE",
+            transclude: true,
+            replace: true,
+            template: "<span class='fluid-task'><ng-transclude></ng-transclude></span>",
+            scope: {name: "@"},
+            link: {
+                pre: function (scope, element, attr) {
+                    var transcludeElement = element.find("ng-transclude");
+                    fluidTaskService.findTaskByName(scope.name).
+                        then(function (data) {
+                            scope.task = data;
+                            scope.fluidTask = new FluidTask(data);
+                            element.html(transcludeElement.html())
+
+                            var icon = element.find("[icon]");
+
+                            if (icon) {
+                                if (scope.task.useImg) {
+
+                                }else{
+
+                                }
+                            }
+
+                            compile(element.contents())(scope);
+                        });
+                }
+            }
+        }
+    }])
     .provider("taskState", function () {
         var url, ajax, taskArray;
         return {

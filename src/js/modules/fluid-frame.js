@@ -163,16 +163,23 @@ angular.module("fluidFrame", ["fluidHttp", "fluidTask", "fluidSession"])
                 }
 
                 w.bind("resize", function () {
-                    autoFullscreenHeight(element, element.parent().height());
+                    autoFullscreen(element, element.parent().height(), element.parent().width());
                 });
-
-                autoFullscreenHeight(element, element.parent().height());
-
             }
         }
     }])
-    .service("fluidFrameHandler", [function () {
+    .service("fluidFrameHandler", ["$timeout", function (t) {
         this.frames = [];
+
+        var frames = this.frames;
+
+        function check() {
+            console.info("fluidFrame-fluidFrameHandler.frames", frames);
+            t(check, 1000);
+        }
+
+        check();
+
         return this;
     }])
     .factory("fluidFrameService", ["Frame", "fluidTaskService", "FluidTask", function (Frame, taskService, FluidTask) {
@@ -345,80 +352,22 @@ angular.module("fluidFrame", ["fluidHttp", "fluidTask", "fluidSession"])
     .provider("Frame", function () {
         this.$get = ["$timeout", "fluidFrameHandler", "fluidStateService", function (t, fh, fts) {
             var frame = function Frame(name) {
-                var key = frameKey + name;
-                if (fh.frames[key] != null) {
-                    return fh.frames[key];
+                if (name) {
+                    var key = frameKey + name;
+                    if (fh.frames[key] != null) {
+                        return fh.frames[key];
+                    } else {
+                        this.name = name;
+                        this.fullScreen = false;
+                        this.task = undefined;
+                        this.tasks = [];
+                        // this.workspaces = [];
+                        //this.showWorkspace = false;
+                        fh.frames[key] = this;
+                    }
                 }
-                this.name = name;
-                this.fullScreen = false;
-                this.task = undefined;
-                this.tasks = [];
-                // this.workspaces = [];
-                //this.showWorkspace = false;
-                fh.frames[key] = this;
             };
             return frame;
         }];
     });
-
-function getOffset(parent, offset, index) {
-    var child = parent.children()[index];
-
-    if (child) {
-        console.info("fluidFrame-getOffset.parent.child", child);
-        if ($(child).hasClass("panel-collapse")) {
-            index = 0;
-            return getOffset($(child), offset, index);
-        }
-        else if ($(child).hasClass("panel-body")) {
-            index = 0;
-            return getOffset($(child), offset, index);
-        }
-        else if ($(child).attr("page-name") !== undefined) {
-            return offset;
-        } else {
-            index++;
-            offset += $(child).height();
-            console.info("fluidFrame-getOffset.parent.child.offset", offset);
-            return getOffset(parent, offset, index);
-        }
-    }
-    else {
-        return offset;
-    }
-
-
-}
-
-function autoSizeFrame(element, offset, height) {
-
-    console.info("autoSizeFrame.offset", offset);
-    var frameHeight = height - 1;
-    $("body").css("max-height", height).css("overflow-y", "hidden");
-
-    if (offset) {
-        frameHeight -= offset;
-        frameHeight -= 10;
-    }
-
-    element.css("margin-top", offset + "px");
-    element.height(frameHeight);
-}
-
-
-function autoFullscreenHeight(element, height) {
-    var panelHeight = height - 1;
-    //TODO: Adjust page height here
-
-    var offset = getOffset(element, 0, 0);
-
-    console.info("fluidFrame-autoFullscreenHeight.offset", offset);
-    console.info("fluidFrame-autoFullscreenHeight.element", element);
-
-    var pageHeight = (panelHeight - offset);
-    pageHeight -= 2;
-    element.find("[page-name]").css("margin-top", element.find(".fluid-toolbar").height() + "px").css("max-height", pageHeight + "px").css("overflow-y", "auto");
-
-    element.height(panelHeight);
-}
 

@@ -1,7 +1,7 @@
 /**
  * Created by Jerico on 4/16/2015.
  */
-angular.module("mainApp", ["fluid"])
+angular.module("mainApp", ["fluid", "fluidFrame"])
     .config(["taskStateProvider", function (tsp) {
 
         tsp.setTasks([
@@ -16,21 +16,22 @@ angular.module("mainApp", ["fluid"])
         ]);
 
     }])
-    .controller("mainCtrl", ["$scope", "fluidHttpService", "fluidFrameService", "fluidOptionService", "fluidMessageService", "$rootScope", "fluidTasknavService", function (s, fhs, FrameSerivce, fos, ms, rs, fts) {
+    .controller("mainCtrl", ["$scope", "fluidHttpService", "fluidFrameService", "fluidOptionService", "fluidMessageService", "$rootScope", "fluidTasknavService", "fluidFrameHandler",
+        function (s, fhs, FrameSerivce, fos, ms, rs, fts, ffh) {
+            s.fluidFrameHandler = ffh;
+            s.toggleMenu = function () {
+                fts.toggle("taskSideBarId");
+            }
+            s.openDrawer = function ($event) {
+                console.info("openDrawer-fluidOption.id", $("div.fluid-option").attr("id"));
+                fos.openOption($("div.fluid-option").attr("id"), "fullScreenNavMenu", $event.currentTarget);
+            }
 
-        s.toggleMenu = function () {
-            fts.toggle("taskSideBarId");
-        }
-        s.openDrawer = function ($event) {
-            console.info("openDrawer-fluidOption.id", $("div.fluid-option").attr("id"));
-            fos.openOption($("div.fluid-option").attr("id"), "fullScreenNavMenu", $event.currentTarget);
-        }
+            var frame = new FrameSerivce("appFrame");
 
-        var frame = new FrameSerivce("appFrame");
+            frame.openTask("module_basic")
+            frame.openTask("moduleTaskConfig");
+            frame.openTask("moduleTaskConfig");
+            s.frame = frame;
 
-        frame.openTask("module_basic")
-        frame.openTask("moduleTaskConfig");
-        frame.openTask("moduleTaskConfig");
-        s.frame = frame;
-
-    }]);
+        }]);

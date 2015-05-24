@@ -30,8 +30,6 @@ angular.module("fluidOption", [])
                     template.css("width", element.parent().width());
                     element.css("width", element.parent().width());
                 });
-
-
             }
         }
     }])

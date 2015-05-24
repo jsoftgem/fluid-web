@@ -4,9 +4,14 @@
 }
 
 .fluid-panel {
+    background: gr;
     padding: 0px !important;
     -webkit-transition: width 0.2s;
     transition: width 0.2s;
+}
+
+.fullscreen .fluid-panel {
+    width: 100%;
 }
 
 .fluid-panel .fluid-task-icon img {
@@ -19,6 +24,10 @@
 
 }
 
+.fullscreen .fluid-task-icon i {
+    color: dimgrey;
+}
+
 .fluid-panel .containter {
     padding: 0;
     margin: 0;
@@ -26,7 +35,7 @@
 
 .fluid-panel .panel-heading {
     padding: 0;
-    min-height: 23px;
+    min-height: 25px;
 }
 
 .fluid-panel .panel-title {
@@ -42,15 +51,14 @@
     float: right;
     right: 1px;
     padding: 0;
-    margin-top: -3px;
+    margin-top: -2px;
     position: absolute;
 }
 
-.fullscreen .fluid-panel .controls {
+.fullscreen .controls {
     float: right;
     right: 1px;
     padding: 0;
-    margin-top: -3px;
     position: absolute;
 }
 
@@ -64,13 +72,19 @@
 }
 
 .fluid-panel .toolbar {
-    padding-top: 30px;
+    /*padding-top: 30px;*/
 }
 
-.fluid-panel-heading-title {
+.fluid-panel .fluid-panel-heading-title {
     margin-top: 2px;
     margin-left: 2px;
     color: white;
+}
+
+.fullscreen .fluid-panel-heading-title {
+    margin-top: 2px;
+    margin-left: 2px;
+    color: dimgray;
 }
 
 .fluid-panel-icon-control {
