@@ -27,11 +27,4 @@ angular.module("mainApp", ["fluid", "fluidFrame"])
                 fos.openOption($("div.fluid-option").attr("id"), "fullScreenNavMenu", $event.currentTarget);
             }
 
-            var frame = new FrameSerivce("appFrame");
-
-            frame.openTask("module_basic")
-            frame.openTask("moduleTaskConfig");
-            frame.openTask("moduleTaskConfig");
-            s.frame = frame;
-
         }]);

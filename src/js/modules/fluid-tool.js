@@ -54,7 +54,7 @@ angular.module("fluidTool", [])
             }
         }
     }])
-    .directive("fluidTool2", ["$templateCache", "fluidToolbarService", function (tc, fts) {
+    .directive("fluidTool2", ["$templateCache", function (tc) {
         return {
             restrict: "E",
             replace: true,
@@ -62,22 +62,19 @@ angular.module("fluidTool", [])
             template: tc.get("templates/fluid/fluidToolbar2.html"),
             link: {
                 post: function (scope, element, attr) {
-                    scope.fluidToolbarService = fts;
                 }
             }
 
         }
     }])
-    .factory("ToolBarItem", ["fluidToolbarService", function (ts) {
+    .factory("ToolBarItem", [function () {
 
-        var toolBarItem = function (fluidPanel) {
-
+        var toolBarItem = function () {
             this.glyph = "fa fa-question";
             this.class = "";
             this.uiClass = "btn btn-default";
             this.label = "";
             this.type = "buttom";
-            this.fluidPanel = fluidPanel;
             this.action = function (task, $event) {
             }
             this.showText = false;
@@ -87,19 +84,16 @@ angular.module("fluidTool", [])
             this.visible = function () {
                 return true;
             }
-
-            if (ts.toolbarItems[fluidPanel.id] != null) {
-                if (ts.toolbarItems.indexOf(this) === -1) {
-                    ts.toolbarItems[fluidPanel.id].push(this);
+            this.setId = function (id) {
+                this.id = id;
+            }
+            this.getId = function ($index) {
+                if (!this.id) {
+                    this.id = "elem_" + $index;
                 }
-            } else {
-                ts.toolbarItems[fluidPanel.id] = [];
-                if (ts.toolbarItems.indexOf(this) === -1) {
-                    ts.toolbarItems[fluidPanel.id].push(this);
-                }
+                return this.id + "_btn_tl_" + this.fluidPanel.id;
             }
         }
-
 
         return toolBarItem;
 

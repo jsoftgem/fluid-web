@@ -178,8 +178,6 @@ angular.module("fluidFrame", ["fluidHttp", "fluidTask", "fluidSession"])
             t(check, 1000);
         }
 
-        check();
-
         return this;
     }])
     .factory("fluidFrameService", ["Frame", "fluidTaskService", "FluidTask", function (Frame, taskService, FluidTask) {

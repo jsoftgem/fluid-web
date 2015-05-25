@@ -295,6 +295,21 @@ function autoFullscreen(element, height, width) {
 
 }
 
+function addItem(item, items, $index) {
+    if (!$index) {
+        $index = 0;
+    }
+    var con = items[$index];
+    if (!con) {
+        items.push(item);
+    } else {
+        if (con.id !== item.id) {
+            $index++;
+            return addItem(item, items, $index);
+        }
+    }
+}
+
 //handles document here
 $(document).ready(function () {
 

@@ -16,28 +16,21 @@ angular.module("fluidPage", ["fluidHttp", "fluidOption"])
                         scope.loadPage = function (page) {
                             console.info("fluidPage-loadPage.page", page);
                             scope.fluidPanel.loaded = false;
-
-                            if (scope.fluidPanel.pages[scope.page.name] != null) {
-                                scope.fluidPage = scope.fluidPanel.pages[scope.page.name];
-                            } else {
-                                scope.fluidPage = new FluidPage(page);
-                                scope.fluidPanel.pages[scope.page.name] = scope.fluidPage;
-                            }
-
+                            scope.fluidPage = page;
                             if (scope.fluidPage.ajax) {
-                                fps.loadAjax(scope.fluidPage)
+                                fps.loadAjax(page)
                                     .then(function (data) {
                                         scope.data = data;
                                         element.html("<ng-include class='page' src='fluidPageService.render(fluidPage)' onload='onLoad()'></ng-include>");
-                                        element.attr("page-name", scope.fluidPage.name);
+                                        element.attr("page-name", page.name);
                                         c(element.contents())(scope);
-                                        console.info("fluidPage-loadPage.loaded-page", scope.fluidPage);
+                                        console.info("fluidPage-loadPage.loaded-page", page);
                                     });
                             } else {
                                 element.html("<ng-include class='page' src='fluidPageService.render(fluidPage)' onload='onLoad()'></ng-include>");
-                                element.attr("page-name", scope.fluidPage.name);
+                                element.attr("page-name", page.name);
                                 c(element.contents())(scope);
-                                console.info("fluidPage-loadPage.loaded-page", scope.fluidPage);
+                                console.info("fluidPage-loadPage.loaded-page", page);
                             }
                         }
 
@@ -74,9 +67,6 @@ angular.module("fluidPage", ["fluidHttp", "fluidOption"])
     .factory("FluidPage", ["fluidPageService", "$resource", "$q", "$timeout", "$rootScope", function (fps, r, q, t, rs) {
         var fluidPage = function (page) {
             console.info("FluidPage-FluidPage.page", page);
-            if (fps.pages[page.name]) {
-                return fps.pages[page.name];
-            } else {
                 if (page.ajax) {
                     if (page.ajax.url) {
                         if (!page.actions) {
@@ -181,9 +171,7 @@ angular.module("fluidPage", ["fluidHttp", "fluidOption"])
                 var def = {};
                 angular.copy(this, def);
                 this.default = def;
-                fps.pages[page.name] = this;
                 console.info("fluidPage-FluidPageg-newPage.page", this);
-            }
         }
         return fluidPage;
     }])

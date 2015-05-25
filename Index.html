@@ -74,9 +74,12 @@
     </div>
 </div>
 <fluid-tasknav>
-    <div fluid-resize-frame>
+    <div style="margin-top: 45" class="container-fluid">
         <fluid-task name="module_basic">
-            <span icon></span>
+            <a href="#" ng-click="open('appFrame')">
+                <span icon height="30" width="30"></span>
+                <span>{{task.title}}</span>
+            </a>
         </fluid-task>
     </div>
 </fluid-tasknav>

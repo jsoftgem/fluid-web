@@ -5,35 +5,82 @@
 var taskKey = "$task_";
 var timeout = 30;//sets 30 seconds timeout.
 
-angular.module("fluidTask", ["fluidSession"])
-    .directive("fluidTask", ["FluidTask", "fluidTaskService", "$compile", function (FluidTask, fluidTaskService, compile) {
+angular.module("fluidTask", ["fluidSession", "fluidFrame"])
+    .directive("fluidTask", ["FluidTask", "fluidTaskService", "$compile", "fluidFrameService", function (FluidTask, fluidTaskService, compile, FluidFrame) {
         return {
             restrict: "AE",
             transclude: true,
             replace: true,
             template: "<span class='fluid-task'><ng-transclude></ng-transclude></span>",
-            scope: {name: "@"},
+            scope: {name: "@", url: "@", type: "@"},
             link: {
                 pre: function (scope, element, attr) {
+
+                    if (!scope.type) {
+                        scope.type = "menu";
+                    }
+
+
+                    element.addClass(scope.type);
+
                     var transcludeElement = element.find("ng-transclude");
-                    fluidTaskService.findTaskByName(scope.name).
-                        then(function (data) {
-                            scope.task = data;
-                            scope.fluidTask = new FluidTask(data);
-                            element.html(transcludeElement.html())
 
-                            var icon = element.find("[icon]");
+                    if (scope.name) {
+                        fluidTaskService.findTaskByName(scope.name).
+                            then(function (data) {
+                                scope.load(data);
+                            });
+                    } else if (scope.url) {
+                        fluidTaskService.findTaskByUrl(scope.url).
+                            then(function (data) {
+                                scope.load(data);
+                            });
+                    } else {
+                        throw "task name or url is required.";
+                    }
 
-                            if (icon) {
-                                if (scope.task.useImg) {
+                    scope.open = function (frame) {
+                        var fluidFrame = new FluidFrame(frame);
+                        fluidFrame.openTask(scope.task.name, undefined);
+                    }
+                    scope.load = function (data) {
+                        scope.task = new FluidTask(data);
+                        element.html(transcludeElement.html())
+                        element.attr("title", scope.task.title);
+                        var icon = element.find("[icon]");
+                        if (icon) {
+                            var iconStyle = icon.attr("style");
+                            var iconClass = icon.attr("class");
 
-                                }else{
+                            var height = icon.attr("height");
+                            var width = icon.attr("width");
 
+                            if (scope.task.useImg) {
+                                var img = $("<img>");
+                                img.attr("ng-src", scope.task.imgSrc);
+                                img.attr("height", height ? height : 15);
+                                img.attr("width", width ? width : 15);
+                                if (iconClass) {
+                                    img.attr("class", iconClass);
                                 }
+                                if (iconStyle) {
+                                    img.attr("style", iconStyle);
+                                }
+                                icon.replaceWith(img.get());
+                            } else {
+                                var i = $("<i>");
+                                i.attr("ng-class", scope.task.glyph);
+                                if (iconClass) {
+                                    i.attr("class", iconClass);
+                                }
+                                if (iconStyle) {
+                                    i.attr("style", iconStyle);
+                                }
+                                icon.replaceWith(i.get());
                             }
-
-                            compile(element.contents())(scope);
-                        });
+                        }
+                        compile(element.contents())(scope);
+                    }
                 }
             }
         }

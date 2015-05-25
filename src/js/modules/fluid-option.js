@@ -138,7 +138,7 @@ angular.module("fluidOption", [])
 
         return fluidOption;
     }])
-    .service("fluidOptionService", ["$compile", "$templateCache", function (c, tc) {
+    .service("fluidOptionService", ["$compile", "$templateCache", "$timeout", function (c, tc, t) {
         this.fluidOptions = [];
         this.clear = function (id) {
             this.fluidOptions[id] = undefined;
@@ -189,4 +189,10 @@ angular.module("fluidOption", [])
             fluidBottom.addClass("hidden");
         }
 
+        var fluidOptions = this.fluidOptions;
+
+        function check() {
+            console.info("fluidOption-fluidOptionService.fluidOptions", fluidOptions);
+            t(check, 1000);
+        }
     }]);
