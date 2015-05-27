@@ -66,7 +66,6 @@ angular.module("fluidBreadcrumb", [])
                         this.current -= 1;
                     }
                     console.info("fluidBreadcrumb-FluidBreadcrumb-close.current", this.current);
-
                 }
                 this.open = function (page, $index, $event) {
                     this.current = $index;

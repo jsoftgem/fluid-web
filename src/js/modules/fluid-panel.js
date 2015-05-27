@@ -1455,9 +1455,7 @@ angular.module("fluidPanel", ["oc.lazyLoad", "fluidHttp", "fluidFrame", "fluidMe
                                     var fluidPage = new FluidPage(page);
                                     var fluidBreadcrumb = new FluidBreadcrumb(this);
                                     var currentPage = this.pages[fluidBreadcrumb.currentPage()];
-
                                     this.pages[name] = fluidPage;
-
                                     if (currentPage != null) {
                                         currentPage.change(function () {
                                             fluidBreadcrumb.addPage(page);
@@ -1470,7 +1468,6 @@ angular.module("fluidPanel", ["oc.lazyLoad", "fluidHttp", "fluidFrame", "fluidMe
                                 }
                             }, this);
                         }
-
                     }
                     this.getPage = function (name) {
                         return this.pages[name];
@@ -1508,7 +1505,7 @@ angular.module("fluidPanel", ["oc.lazyLoad", "fluidHttp", "fluidFrame", "fluidMe
                         addItem(toolbarItem, this.toolbarItems);
                     }
 
-                    if (!this.page) {
+                    if (!task.page) {
                         if (task.pages) {
                             angular.forEach(task.pages, function (page) {
                                 if (page.isHome) {
@@ -1519,12 +1516,13 @@ angular.module("fluidPanel", ["oc.lazyLoad", "fluidHttp", "fluidFrame", "fluidMe
                     } else {
                         if (task.pages) {
                             angular.forEach(task.pages, function (page) {
-                                if (this.page === page.name) {
+                                if (task.page === page.name) {
                                     this.goTo(page.name);
                                 }
                             }, this);
                         }
                     }
+
                     var closeControl = new TaskControl(this);
                     closeControl.setId("closePanel");
                     closeControl.glyph = "fa fa-close";
@@ -1598,6 +1596,15 @@ angular.module("fluidPanel", ["oc.lazyLoad", "fluidHttp", "fluidFrame", "fluidMe
                         }
                     }
                     homeToolBarItem.setId("home_pnl_tool");
+                    homeToolBarItem.visible = function () {
+                        var breadcrumb = this.fluidPanel.fluidBreadcrumb;
+                        var current = this.fluidPanel.pages[breadcrumb.currentPage()];
+                        var firstPage = this.fluidPanel.pages[breadcrumb.pages[0]];
+
+                        console.info("fluidPanel-homeToolBarItem-visible.current", current);
+                        console.info("fluidPanel-homeToolBarItem-visible.firstPage", firstPage);
+                        return (firstPage && firstPage.isHome) && (current && !current.isHome);
+                    }
                     this.addToolbarItem(homeToolBarItem);
 
                     var backToolBarItem = new ToolBarItem();
@@ -1634,14 +1641,12 @@ angular.module("fluidPanel", ["oc.lazyLoad", "fluidHttp", "fluidFrame", "fluidMe
                     refreshToolBarItem.label = "Refresh";
                     refreshToolBarItem.action = function (task, $event) {
                         var page = this.fluidPanel.getPage(this.fluidPanel.fluidBreadcrumb.currentPage())
-                        console.info("fluidPanel-fluidPanelModal-refresh.page", page);
                         page.refresh(page.$scope.loadPage, function () {
 
                         }, $event);
                     }
                     refreshToolBarItem.setId("refresh_pnl_tool");
                     this.addToolbarItem(refreshToolBarItem);
-
 
                     var panel = this;
                     if (task.resource) {
@@ -1703,6 +1708,7 @@ angular.module("fluidPanel", ["oc.lazyLoad", "fluidHttp", "fluidFrame", "fluidMe
                                         panel.frame.fullScreen = false;
                                         panel.frame.removeTask(task);
                                         panel.destroy = true;
+                                        panel.clear();
                                     } else {
                                         bPages.splice($bIndex, 1);
                                         if (breadcrumb.current > $bIndex) {
@@ -1724,12 +1730,8 @@ angular.module("fluidPanel", ["oc.lazyLoad", "fluidHttp", "fluidFrame", "fluidMe
                         closePage(0, this);
                     }
                     this.clear = function () {
-                        angular.forEach(this.pages, function (page, $index) {
-                            page.clear();
-                            if ((this.pages.length - 1) === $index) {
-                                this.pages.clear();
-                            }
-                        }, this)
+                        this.pages = [];
+                        this.fluidBreadcrumb.pages = [];
                     }
                     this.whenLoaded = function (loadedAction) {
                         if (!this.loaders) {

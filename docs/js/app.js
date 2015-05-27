@@ -6,7 +6,7 @@ angular.module("mainApp", ["fluid", "fluidFrame"])
 
         tsp.setTasks([
             {
-                name: "module_basic",
+                name: "moduleBasic",
                 url: "docs/module_basic/module_basic.json"
             },
             {
@@ -17,7 +17,7 @@ angular.module("mainApp", ["fluid", "fluidFrame"])
 
     }])
     .controller("mainCtrl", ["$scope", "fluidHttpService", "fluidFrameService", "fluidOptionService", "fluidMessageService", "$rootScope", "fluidTasknavService", "fluidFrameHandler",
-        function (s, fhs, FrameSerivce, fos, ms, rs, fts, ffh) {
+        function (s, fhs, FrameService, fos, ms, rs, fts, ffh) {
             s.fluidFrameHandler = ffh;
             s.toggleMenu = function () {
                 fts.toggle("taskSideBarId");
@@ -26,5 +26,7 @@ angular.module("mainApp", ["fluid", "fluidFrame"])
                 console.info("openDrawer-fluidOption.id", $("div.fluid-option").attr("id"));
                 fos.openOption($("div.fluid-option").attr("id"), "fullScreenNavMenu", $event.currentTarget);
             }
+
+            s.frame = new FrameService('appFrame');
 
         }]);

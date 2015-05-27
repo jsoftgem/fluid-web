@@ -345,7 +345,7 @@ angular.module("fluidHttp", ["fluidSession"])
                 headers.fluidPage = task.currentPage;
             }
             console.log(url);
-
+            var promise = null;
             if (data === undefined) {
                 promise = h({
                     method: "get",

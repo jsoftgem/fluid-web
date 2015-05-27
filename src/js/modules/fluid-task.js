@@ -12,19 +12,12 @@ angular.module("fluidTask", ["fluidSession", "fluidFrame"])
                 restrict: "AE",
                 transclude: true,
                 replace: true,
-                template: "<span class='fluid-task'><ng-transclude></ng-transclude></span>",
-                scope: {name: "@", url: "@", type: "@", temmplate: "@"},
+                template: "<span><ng-transclude></ng-transclude></span>",
+                scope: {name: "@", url: "@", template: "@", frame: "@"},
                 link: {
                     pre: function (scope, element, attr) {
 
-                        if (!scope.type) {
-                            scope.type = "menu";
-                        }
-
-                        element.addClass(scope.type);
-
                         var transcludeElement = element.find("ng-transclude");
-
                         if (scope.name) {
                             fluidTaskService.findTaskByName(scope.name).
                                 then(function (data) {
@@ -39,17 +32,25 @@ angular.module("fluidTask", ["fluidSession", "fluidFrame"])
                             throw "task name or url is required.";
                         }
 
-                        scope.open = function (frame) {
-                            var fluidFrame = new FluidFrame(frame);
-                            fluidFrame.openTask(scope._taskName, undefined);
+                        scope.open = function (page, workspace) {
+                            var fluidFrame = new FluidFrame(scope.frame);
+                            fluidFrame.openTask(scope._taskName, page, workspace);
                         }
+
                         scope.load = function (data) {
                             var task = new FluidTask(data);
                             scope._taskName = task.name;
-                            element.html(transcludeElement.html());
-                            element.attr("title", task.title);
 
-                            var icon = element.find("[icon]");
+                            scope._pages = task.pages;
+
+                            element.html(transcludeElement.html());
+
+                            element.attr("title", task.title);
+                            var openTask = element.find("[open-task]");
+                            if(openTask){
+                                openTask.attr("ng-click","open()");
+                            }
+                            var icon = element.find(".task-icon");
                             if (icon) {
                                 var iconStyle = icon.attr("style");
                                 var iconClass = icon.attr("class");
@@ -59,8 +60,10 @@ angular.module("fluidTask", ["fluidSession", "fluidFrame"])
                                 if (task.useImg) {
                                     var img = $("<img>");
                                     img.attr("ng-src", task.imgSrc);
+
                                     img.attr("height", height ? height : 15);
                                     img.attr("width", width ? width : 15);
+
                                     if (iconClass) {
                                         img.attr("class", iconClass);
                                     }
@@ -70,7 +73,7 @@ angular.module("fluidTask", ["fluidSession", "fluidFrame"])
                                     icon.replaceWith(img.get());
                                 } else {
                                     var i = $("<i>");
-                                    i.attr("ng-class", task.glyph);
+                                    i.attr("ng-class", "'" + task.glyph + "'");
                                     if (iconClass) {
                                         i.attr("class", iconClass);
                                     }
@@ -80,7 +83,7 @@ angular.module("fluidTask", ["fluidSession", "fluidFrame"])
                                     icon.replaceWith(i.get());
                                 }
                             }
-                            var label = element.find("[label]");
+                            var label = element.find(".task-label");
                             if (label) {
                                 var labelClass = label.attr("class");
                                 var labelStyle = label.attr("style");
@@ -95,6 +98,19 @@ angular.module("fluidTask", ["fluidSession", "fluidFrame"])
                                 elem.html(task.title);
                                 label.replaceWith(elem.get());
                             }
+                            var pages = element.find(".task-pages");
+                            if (pages) {
+                                pages.attr("ng-repeat", "page in _pages | pages");
+                                var pageLabel = pages.find(".page-label");
+                                if(pageLabel){
+                                    pageLabel.html("{{page.title}}");
+                                }
+                                var openPage = pages.find("[open-page]");
+                                if(openPage){
+                                    openPage.attr("ng-click","open(page.name)");
+                                }
+                            }
+
 
                             compile(element.contents())(scope);
                         }

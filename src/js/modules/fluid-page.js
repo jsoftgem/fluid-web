@@ -67,111 +67,112 @@ angular.module("fluidPage", ["fluidHttp", "fluidOption"])
     .factory("FluidPage", ["fluidPageService", "$resource", "$q", "$timeout", "$rootScope", function (fps, r, q, t, rs) {
         var fluidPage = function (page) {
             console.info("FluidPage-FluidPage.page", page);
-                if (page.ajax) {
-                    if (page.ajax.url) {
-                        if (!page.actions) {
-                            page.actions = [];
-                        }
-                        if (!page.ajax.param) {
-                            page.ajax.param = {};
-                        }
-                        this.resource = r(page.ajax.url, page.ajax.param, page.actions);
-
-                    } else {
-                        throw "Page ajax.url is required!";
+            if (page.ajax) {
+                if (page.ajax.url) {
+                    if (!page.actions) {
+                        page.actions = [];
                     }
-                }
-                this.name = page.name;
-                this.id = page.id;
-                this.title = page.title;
-                this.static = page.static;
-                this.html = page.html;
-                this.home = page.home;
-                this.ajax = page.ajax;
-                this.refresh = function (proceed, cancel, $event) {
-                    var page = this;
-                    this.onRefresh(function () {
-                        proceed(this);
-                        if (page.option) {
-                            page.option.isCancelled = false;
-                            page.option.close();
-                        }
-                    }, function () {
-                        cancel();
-                        if (page.option) {
-                            page.option.isCancelled = true;
-                            page.option.close();
-                        }
-                    }, $event);
-                };
+                    if (!page.ajax.param) {
+                        page.ajax.param = {};
+                    }
+                    this.resource = r(page.ajax.url, page.ajax.param, page.actions);
 
-                this.close = function (ok, cancel, $event) {
-                    var page = this;
-                    this.onClose(function () {
-                        ok();
-                        if (page.option) {
-                            page.option.isCancelled = false;
-                            page.option.close();
-                        }
-                        page.onDestroy();
-                    }, function () {
-                        cancel();
-                        if (page.option) {
-                            page.option.isCancelled = true;
-                            page.option.close();
-                        }
-                    }, $event);
+                } else {
+                    throw "Page ajax.url is required!";
                 }
+            }
+            this.isHome = page.isHome;
+            this.name = page.name;
+            this.id = page.id;
+            this.title = page.title;
+            this.static = page.static;
+            this.html = page.html;
+            this.home = page.home;
+            this.ajax = page.ajax;
+            this.refresh = function (proceed, cancel, $event) {
+                var page = this;
+                this.onRefresh(function () {
+                    proceed(page);
+                    if (page.option) {
+                        page.option.isCancelled = false;
+                        page.option.close();
+                    }
+                }, function () {
+                    cancel();
+                    if (page.option) {
+                        page.option.isCancelled = true;
+                        page.option.close();
+                    }
+                }, $event);
+            };
 
-                this.change = function (proceed, cancel, $event) {
-                    var page = this;
-                    this.onChange(function () {
-                        proceed();
-                        if (page.option) {
-                            page.option.isCancelled = false;
-                            page.option.close();
-                        }
-                    }, function () {
-                        cancel();
-                        if (page.option) {
-                            page.option.isCancelled = true;
-                            page.option.close();
-                        }
-                    }, $event);
-                }
-
-                this.failed = function (reason) {
-                    rs.$broadcast("page_close_failed_evt" + this.fluidId + "_pg_" + this.name, reason);
-                }
-
-                this.onLoad = function () {
-                    return true;
-                }
-
-                this.onClose = function (ok, cancel) {
+            this.close = function (ok, cancel, $event) {
+                var page = this;
+                this.onClose(function () {
                     ok();
-                }
+                    if (page.option) {
+                        page.option.isCancelled = false;
+                        page.option.close();
+                    }
+                    page.onDestroy();
+                }, function () {
+                    cancel();
+                    if (page.option) {
+                        page.option.isCancelled = true;
+                        page.option.close();
+                    }
+                }, $event);
+            }
 
-                this.onChange = function (proceed, cancel, $event) {
+            this.change = function (proceed, cancel, $event) {
+                var page = this;
+                this.onChange(function () {
                     proceed();
-                }
+                    if (page.option) {
+                        page.option.isCancelled = false;
+                        page.option.close();
+                    }
+                }, function () {
+                    cancel();
+                    if (page.option) {
+                        page.option.isCancelled = true;
+                        page.option.close();
+                    }
+                }, $event);
+            }
 
-                this.onRefresh = function (proceed, cancel, $event) {
-                    proceed(this);
-                }
+            this.failed = function (reason) {
+                rs.$broadcast("page_close_failed_evt" + this.fluidId + "_pg_" + this.name, reason);
+            }
 
-                this.onDestroy = function () {
-                }
+            this.onLoad = function () {
+                return true;
+            }
 
-                this.clear = function () {
-                    this.onDestroy();
-                    fps.pages[this.name] = this.default;
-                }
+            this.onClose = function (ok, cancel) {
+                ok();
+            }
 
-                var def = {};
-                angular.copy(this, def);
-                this.default = def;
-                console.info("fluidPage-FluidPageg-newPage.page", this);
+            this.onChange = function (proceed, cancel, $event) {
+                proceed();
+            }
+
+            this.onRefresh = function (proceed, cancel, $event) {
+                proceed(this);
+            }
+
+            this.onDestroy = function () {
+            }
+
+            this.clear = function () {
+                this.onDestroy();
+                fps.pages[this.name] = this.default;
+            }
+
+            var def = {};
+            angular.copy(this, def);
+            this.default = def;
+            console.info("fluidPage-FluidPageg-newPage.page", this);
         }
         return fluidPage;
     }])

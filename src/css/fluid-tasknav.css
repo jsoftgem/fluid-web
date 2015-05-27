@@ -5,6 +5,7 @@ body {
 }
 
 .fluid-tasknav {
+    overflow-x: hidden;
     overflow-y: auto;
 }
 

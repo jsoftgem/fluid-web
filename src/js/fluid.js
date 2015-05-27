@@ -242,16 +242,16 @@ fluidComponents
 
                     config.headers["Access-Control-Allow-Origin"] = "*";
 
-                  /*  console.info("fluidInjector-request.config", config);
+                    /*  console.info("fluidInjector-request.config", config);
 
-                    console.info("fluidInjector-request.pages", fps.pages);
+                     console.info("fluidInjector-request.pages", fps.pages);
 
-                    if (fps.pages[config.url]) {
-                        var fluidPage = new FluidPage(fps.pages[config.url]);
-                        console.info("fluidInjector-request.fluidPage", fluidPage);
-                        fluidPage.preLoad();
-                        config.url = fluidPage.home;
-                    }*/
+                     if (fps.pages[config.url]) {
+                     var fluidPage = new FluidPage(fps.pages[config.url]);
+                     console.info("fluidInjector-request.fluidPage", fluidPage);
+                     fluidPage.preLoad();
+                     config.url = fluidPage.home;
+                     }*/
 
                     if (ss.isSessionOpened()) {
                         config.headers['Authorization'] = ss.getSessionProperty(AUTHORIZATION);
@@ -672,5 +672,12 @@ fluidComponents
                 return items.slice().reverse();
             }
         };
+    })
+    .filter("pages", function () {
+        return function (items) {
+            if (items) {
+                return filterPage(items);
+            }
+        }
     });
 /**Prototypes**/

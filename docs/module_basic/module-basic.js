@@ -9,20 +9,30 @@ angular.module("moduleBasic", ["fluid"])
             var sample = new TaskControl();
             sample.label = "Sample";
             sample.setId("sample");
+            sample.visible = function () {
+                var breadcrumb = this.fluidPanel.fluidBreadcrumb;
+
+                return breadcrumb.currentPage() === "page1";
+            }
             fluidPanel.addControl(sample);
 
 
             var toobar = new ToolBarItem();
             toobar.label = "sample";
             toobar.setId("sample");
+            toobar.visible = function () {
+                var breadcrumb = this.fluidPanel.fluidBreadcrumb;
+                return breadcrumb.currentPage() === "page1";
+            }
             fluidPanel.addToolbarItem(toobar);
         });
 
 
         console.info("moduleBasic.fluidPage", s.fluidPage);
 
-        s.fluidPage.onLoad = function () {
 
+        s.fluidPage.onLoad = function () {
+            this.option.putTemplate("onClose", "Do you want to close page {{fluidPage.title}} ? <a href='#' ng-click='fluidPage.ok()'>Yes</a> {{' '}} <a href='#' ng-click='fluidPage.cancel()'>No</a>");
             this.onClose = function (ok, cancel, $event) {
                 if ($event) {
                     this.option.warning().open("onClose", $event.currentTarget, this);

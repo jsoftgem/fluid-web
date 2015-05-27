@@ -64,7 +64,7 @@
         </div>
         <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
             <ul class="nav navbar-nav">
-                <li ng-repeat="task in frameService.taskList" ng-class="task.active ? 'active' : ''">
+                <li ng-repeat="task in frame.tasks" ng-class="task.active ? 'active' : ''">
                     <a href="#" ng-click="task.open($index)">
                         <fluid-task-icon task="task"></fluid-task-icon>
                         {{' '}}{{task.title}}</a>
@@ -73,14 +73,29 @@
         </div>
     </div>
 </div>
-<fluid-tasknav>
-    <div style="margin-top: 45" class="container-fluid">
-        <fluid-task name="module_basic">
-            <a href="#" ng-click="open('appFrame')">
-                <span icon height="30" width="30"></span>
-                <span label></span>
+<fluid-tasknav reduce-height="44">
+    <div class="container-fluid">
+        <fluid-task name="moduleTaskConfig" style="display: block" frame="appFrame">
+            <a href="#">
+                <span class="task-icon" height="25" width="25"></span>
+                <span class="task-label"></span>
             </a>
         </fluid-task>
+
+        <fluid-task name="moduleBasic" style="display: block" frame="appFrame">
+            <a href="#" open-task>
+                <span class="task-icon" height="25" width="25"></span>
+                <span class="task-label"></span>
+            </a>
+
+            <div class="task-pages">
+                <a href="#" open-page>
+                    <span class="page-label"></span>
+                </a>
+            </div>
+        </fluid-task>
+
+
     </div>
 </fluid-tasknav>
 <fluid-frame2 name="appFrame" fill-height="true" offset="45"

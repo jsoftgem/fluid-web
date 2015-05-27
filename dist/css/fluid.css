@@ -297,15 +297,15 @@
 .fluid-task {
 }
 
-.disabled {
+.fluid-task .task-label {
 
 }
 
-.menu {
+.fluid-task .task-icon {
 
 }
 
-.bar {
+.fluid-task .task-pages {
 
 }
 .fluid-taskcontrols {
@@ -323,6 +323,7 @@ body {
 }
 
 .fluid-tasknav {
+    overflow-x: hidden;
     overflow-y: auto;
 }
 

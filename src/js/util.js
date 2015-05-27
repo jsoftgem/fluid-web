@@ -263,7 +263,7 @@ function getOffset(parent, offset, index) {
 
 }
 
-function autoSizeFrame(element, offset, height) {
+function autoSizeFrame(element, offset, height, reducedHeight) {
 
     console.info("autoSizeFrame.offset", offset);
     var frameHeight = height - 2;
@@ -272,6 +272,9 @@ function autoSizeFrame(element, offset, height) {
     if (offset) {
         frameHeight -= offset;
         // frameHeight -= 10;
+    }
+    if (reducedHeight) {
+        frameHeight -= reducedHeight;
     }
 
     element.css("margin-top", offset + "px");
@@ -309,6 +312,48 @@ function addItem(item, items, $index) {
         }
     }
 }
+
+
+function filterPage(pages, $index) {
+
+    if (!$index) {
+        $index = 0;
+    }
+    var page = pages[$index];
+
+    if ((page.showOnList === undefined || page.showOnList) && !page.isHome) {
+        $index++;
+    } else {
+        pages.splice($index, 1);
+    }
+
+
+    if ($index < pages.length) {
+        return filterPage(pages, $index);
+    } else {
+        return pages;
+    }
+}
+
+
+function clearObjects(arr, $index) {
+    if (!$index) {
+        $index = 0;
+    }
+
+    var obj = arr[$index];
+
+    if (obj.clear) {
+        obj.clear();
+
+    }
+    if ($index < arr.length) {
+        $index++;
+        return clearObjects(arr, $index);
+    }
+
+}
+
 
 //handles document here
 $(document).ready(function () {

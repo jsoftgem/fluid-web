@@ -130,7 +130,12 @@ angular.module("fluidOption", [])
                     return this;
                 }
                 this.isOpen = false;
+
                 this.isCancelled = false;
+
+                this.putTemplate = function (name, template) {
+                    tc.put(name, template);
+                }
 
                 fos.fluidOptions[fluidPanel.id] = this;
             }

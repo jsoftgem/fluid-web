@@ -142,11 +142,15 @@ angular.module("fluidFrame", ["fluidHttp", "fluidTask", "fluidSession"])
                     scope.offset = attr.offset;
                 }
 
+                if (attr.reduceHeight) {
+                    scope.reduceHeight = attr.reduceHeight;
+                }
+
                 w.bind("resize", function () {
-                    autoSizeFrame(element, scope.offset, w.height());
+                    autoSizeFrame(element, scope.offset, w.height(), scope.reduceHeight);
                 });
 
-                autoSizeFrame(element, scope.offset, w.height());
+                autoSizeFrame(element, scope.offset, w.height(), scope.reduceHeight);
 
             }
         }
@@ -321,7 +325,7 @@ angular.module("fluidFrame", ["fluidHttp", "fluidTask", "fluidSession"])
          };*/
         var frameService = function (name) {
             var frame = new Frame(name);
-            frame.openTask = function (taskName, workspace) {
+            frame.openTask = function (taskName, page, workspace) {
                 if (workspace) {
 
                 }
@@ -330,7 +334,9 @@ angular.module("fluidFrame", ["fluidHttp", "fluidTask", "fluidSession"])
                         var index = frame.tasks.length;
                         console.info("fluidFrame-fluidFrameService.task", task);
                         task.fluidId = name + "_" + task.id + "_" + index;
+
                         var fluidTask = new FluidTask(task);
+                        fluidTask.page = page;
                         frame.tasks.push(fluidTask);
                     });
             }
