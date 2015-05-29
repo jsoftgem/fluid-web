@@ -1,7 +1,7 @@
 /**
  * Created by Jerico on 4/16/2015.
  */
-angular.module("mainApp", ["fluid", "fluidFrame"])
+angular.module("mainApp", ["fluid"])
     .config(["taskStateProvider", function (tsp) {
 
         tsp.setTasks([
@@ -17,15 +17,28 @@ angular.module("mainApp", ["fluid", "fluidFrame"])
 
     }])
     .controller("mainCtrl", ["$scope", "fluidHttpService", "fluidFrameService", "fluidOptionService", "fluidMessageService", "$rootScope", "fluidTasknavService", "fluidFrameHandler",
-        function (s, fhs, FrameService, fos, ms, rs, fts, ffh) {
+        "fluidTasknav", "FluidTaskGroup", "FluidTaskItem", function (s, fhs, FrameService, fos, ms, rs, fts, ffh, FluidTasknav, FluidTaskGroup, FluidTaskItem) {
+            s.menus = ["moduleBasic", "moduleTaskConfig"];
             s.fluidFrameHandler = ffh;
-            s.toggleMenu = function () {
-                fts.toggle("taskSideBarId");
-            }
             s.openDrawer = function ($event) {
                 console.info("openDrawer-fluidOption.id", $("div.fluid-option").attr("id"));
                 fos.openOption($("div.fluid-option").attr("id"), "fullScreenNavMenu", $event.currentTarget);
             }
+            s.tasknav = new FluidTasknav({
+                name: "taskNav"
+            });
+
+            var taskGroup = new FluidTaskGroup({
+                name: "Group1",
+                title: "The best group"
+            });
+
+            var moduleBasicItem = new FluidTaskItem({
+                name: "moduleBasic"
+            })
+
+            taskGroup.addTask(moduleBasicItem);
+            s.tasknav.addGroup(taskGroup);
 
             s.frame = new FrameService('appFrame');
 

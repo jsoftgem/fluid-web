@@ -65,7 +65,7 @@ angular.module("fluidPanel", ["oc.lazyLoad", "fluidHttp", "fluidFrame", "fluidMe
                                 "action": function ($event) {
                                     if (rs.viewport === 'sm' || rs.viewport === 'xs' || (rs.viewport === 'lg' && (!f.fullScreen && (scope.task.size === 50 || scope.task.size === 25)))) {
                                         var source = $event.currentTarget;
-                                        console.info("showPageList-event", $event);
+                                        console.debug("showPageList-event", $event);
                                         fos.openOption(scope.fluid.getElementFlowId('fluid_option'), scope.fluid.getElementFlowId('pageList'), source);
                                     } else {
                                         scope.task.showPageList = !scope.task.showPageList;
@@ -346,7 +346,7 @@ angular.module("fluidPanel", ["oc.lazyLoad", "fluidHttp", "fluidFrame", "fluidMe
                                 }
                             }
 
-                            console.info("autoget-page", scope.task.page);
+                            console.debug("autoget-page", scope.task.page);
                             return q(function (resolve, reject) {
                                 if ((scope.task.page !== undefined && scope.task.page !== null) && (scope.task.page.autoGet && scope.task.page.autoGet === true)) {
                                     scope.task.currentPage = scope.task.page.name;
@@ -358,22 +358,22 @@ angular.module("fluidPanel", ["oc.lazyLoad", "fluidHttp", "fluidFrame", "fluidMe
                                             url = scope.homeUrl + scope.task.page.getParam;
                                         }
                                     }
-                                    console.info("auto-get-url", url);
+                                    console.debug("auto-get-url", url);
                                     f2.get(url, scope.task)
                                         .success(function (data) {
-                                            console.info("autoget", data);
+                                            console.debug("autoget", data);
                                             resolve({page: scope.task.page.name, value: data});
                                         });
                                 } else if ((scope.task.page !== undefined && scope.task.page !== null) && (!scope.task.page.autoGet || scope.task.page.autoGet === null || scope.task.page.autoGet === false)) {
                                     scope.task.currentPage = scope.task.page.name;
-                                    console.info("autoget false", false);
+                                    console.debug("autoget false", false);
                                     resolve({page: scope.task.page.name});
                                 }
                             }).then(function (data) {
                                 scope.task.pageLoaded = true;
                                 var pagePanel = element.find(".fluid-panel-page");
-                                console.info("page-panel", pagePanel);
-                                console.info("page-panel-task", scope.task);
+                                console.debug("page-panel", pagePanel);
+                                console.debug("page-panel-task", scope.task);
                                 pagePanel.ready(function () {
                                     t(function () {
 
@@ -499,7 +499,7 @@ angular.module("fluidPanel", ["oc.lazyLoad", "fluidHttp", "fluidFrame", "fluidMe
                         };
 
                         scope.getToPage = function (name, param) {
-                            console.info("getToPage", scope.task.pages);
+                            console.debug("getToPage", scope.task.pages);
                             return q(function (resolve, reject) {
                                 angular.forEach(scope.task.pages, function (page) {
                                         if (name === page.name) {
@@ -576,7 +576,7 @@ angular.module("fluidPanel", ["oc.lazyLoad", "fluidHttp", "fluidFrame", "fluidMe
                         };
 
                         scope.fluid.goTo = function (name, param) {
-                            console.info("goTo", name);
+                            console.debug("goTo", name);
                             if (scope.fluid.onPageChanging(name, param)) {
                                 return scope.getToPage(name, param).then(scope.loadGet());
                             }
@@ -768,12 +768,12 @@ angular.module("fluidPanel", ["oc.lazyLoad", "fluidHttp", "fluidFrame", "fluidMe
                                         } else {
                                             scope.baseTask = ss.getSessionProperty(scope.task.url);
                                             if (scope.baseTask) {
-                                                console.info("fluid-panel-base-task-cache", scope.baseTask);
+                                                console.debug("fluid-panel-base-task-cache", scope.baseTask);
                                                 var newTask = scope.task.newTask;
                                                 var $task = {};
                                                 scope.copy = {};
                                                 angular.copy(scope.task, scope.copy);
-                                                console.info("fluid-panel-cache-task", scope.baseTask);
+                                                console.debug("fluid-panel-cache-task", scope.baseTask);
 
                                                 taskId = scope.baseTask.id;
                                                 if (!f.fullScreen) {
@@ -798,14 +798,14 @@ angular.module("fluidPanel", ["oc.lazyLoad", "fluidHttp", "fluidFrame", "fluidMe
                                                 scope.task.newTask = newTask;
                                                 scope.task.fluidHttpService = f2;
                                             } else {
-                                                console.info("fluid-panel-base-task-new", scope.baseTask);
+                                                console.debug("fluid-panel-base-task-new", scope.baseTask);
                                                 f2.get(scope.task.url, scope.task).success(function (d) {
                                                     ss.addSessionProperty(scope.task.url, d);
                                                     var newTask = scope.task.newTask;
                                                     var $task = {};
                                                     scope.copy = {};
                                                     angular.copy(scope.task, scope.copy);
-                                                    console.info("generated-taskp", d);
+                                                    console.debug("generated-taskp", d);
                                                     taskId = d.id;
                                                     if (!f.fullScreen) {
                                                         angular.forEach(f.taskList, function (task, key) {
@@ -827,8 +827,8 @@ angular.module("fluidPanel", ["oc.lazyLoad", "fluidHttp", "fluidFrame", "fluidMe
                                                     scope.task.generic = false;
                                                     scope.task.newTask = newTask;
                                                     scope.task.fluidHttpService = f2;
-                                                    console.info("task-initialization-finished", scope.task);
-                                                    console.info("generated-task-pages", scope.task.pages);
+                                                    console.debug("task-initialization-finished", scope.task);
+                                                    console.debug("generated-task-pages", scope.task.pages);
                                                 });
                                             }
 
@@ -1187,8 +1187,8 @@ angular.module("fluidPanel", ["oc.lazyLoad", "fluidHttp", "fluidFrame", "fluidMe
                         scope.$watch(function (scope) {
                             return scope.task.showToolBar;
                         }, function (toolbar) {
-                            console.info("toolbar", toolbar);
-                            console.info("toolbar.fullScreen", scope.fluidFrameService.fullScreen);
+                            console.debug("toolbar", toolbar);
+                            console.debug("toolbar.fullScreen", scope.fluidFrameService.fullScreen);
                             if (scope.fluidFrameService.fullScreen) {
                                 autoSizePanel(scope.task);
                             }
@@ -1235,14 +1235,14 @@ angular.module("fluidPanel", ["oc.lazyLoad", "fluidHttp", "fluidFrame", "fluidMe
                         element.ajaxStart(function () {
                             t(function () {
                                 scope.task.loaded = false;
-                                console.info("ajax-" + scope.task.name + "started:", scope.task);
+                                console.debug("ajax-" + scope.task.name + "started:", scope.task);
                             });
                         });
 
                         element.ajaxStop(function () {
                             t(function () {
                                 scope.task.loaded = true;
-                                console.info("ajax-" + scope.task.name + "stopped:", scope.task);
+                                console.debug("ajax-" + scope.task.name + "stopped:", scope.task);
                             });
                         })
                     }
@@ -1294,7 +1294,7 @@ angular.module("fluidPanel", ["oc.lazyLoad", "fluidHttp", "fluidFrame", "fluidMe
                             }
 
                             if (scope.fluidPanel.loaders) {
-                                console.info("fluidPanel-fluidPanel2.fluidPanel.loaders", scope.fluidPanel.loaders);
+                                console.debug("fluidPanel-fluidPanel2.fluidPanel.loaders", scope.fluidPanel.loaders);
                                 angular.forEach(scope.fluidPanel.loaders, function (load, $index) {
                                     load(this);
                                     scope.fluidPanel.loaders.splice($index, 1);
@@ -1350,7 +1350,7 @@ angular.module("fluidPanel", ["oc.lazyLoad", "fluidHttp", "fluidFrame", "fluidMe
                         }
 
                         scope.setSize = function (size) {
-                            console.info("fluidPanel2-setSize.size", size);
+                            console.debug("fluidPanel2-setSize.size", size);
                             switch (size) {
                                 case 25:
                                     element.addClass("col-lg-3");
@@ -1529,7 +1529,7 @@ angular.module("fluidPanel", ["oc.lazyLoad", "fluidHttp", "fluidFrame", "fluidMe
                     closeControl.uiClass = "btn btn-danger";
                     closeControl.label = "Close";
                     closeControl.action = function (task, $event) {
-                        console.info("fluidPanel-fluidPanelModel-close.fluidPanel", this.fluidPanel);
+                        console.debug("fluidPanel-fluidPanelModel-close.fluidPanel", this.fluidPanel);
                         this.fluidPanel.close(task, $event);
                     }
                     this.addControl(closeControl);
@@ -1601,8 +1601,8 @@ angular.module("fluidPanel", ["oc.lazyLoad", "fluidHttp", "fluidFrame", "fluidMe
                         var current = this.fluidPanel.pages[breadcrumb.currentPage()];
                         var firstPage = this.fluidPanel.pages[breadcrumb.pages[0]];
 
-                        console.info("fluidPanel-homeToolBarItem-visible.current", current);
-                        console.info("fluidPanel-homeToolBarItem-visible.firstPage", firstPage);
+                        console.debug("fluidPanel-homeToolBarItem-visible.current", current);
+                        console.debug("fluidPanel-homeToolBarItem-visible.firstPage", firstPage);
                         return (firstPage && firstPage.isHome) && (current && !current.isHome);
                     }
                     this.addToolbarItem(homeToolBarItem);
@@ -1694,13 +1694,13 @@ angular.module("fluidPanel", ["oc.lazyLoad", "fluidHttp", "fluidFrame", "fluidMe
                             var previous = breadcrumb.current;
                             breadcrumb.current = $bIndex;
 
-                            console.info("fluidPanel-FluidPanelModel-closePage.$index", $index);
-                            console.info("fluidPanel-FluidPanelModel-closePage.$bIndex", $bIndex);
-                            console.info("fluidPanel-FluidPanelModel-closePage.$bIndex", previous);
+                            console.debug("fluidPanel-FluidPanelModel-closePage.$index", $index);
+                            console.debug("fluidPanel-FluidPanelModel-closePage.$bIndex", $bIndex);
+                            console.debug("fluidPanel-FluidPanelModel-closePage.$bIndex", previous);
 
                             var fluidPage = fluidPanel.getPage(pageName);
 
-                            console.info("fluidPanel-FluidPanelModel-closePage.fluidPage", fluidPage);
+                            console.debug("fluidPanel-FluidPanelModel-closePage.fluidPage", fluidPage);
 
                             if ($index < $length) {
                                 fluidPage.close(function (data) {
@@ -1716,7 +1716,6 @@ angular.module("fluidPanel", ["oc.lazyLoad", "fluidHttp", "fluidFrame", "fluidMe
                                         } else if (breadcrumb.current === $bIndex) {
                                             breadcrumb.current -= 1;
                                         }
-                                        $index++;
                                         closePage($index, fluidPanel);
                                     }
                                 }, function () {
@@ -1752,7 +1751,7 @@ angular.module("fluidPanel", ["oc.lazyLoad", "fluidHttp", "fluidFrame", "fluidMe
         var fluidPanel = this.fluidPanel;
 
         function check() {
-            console.info("fluidPanel-fluidPanelService.fluidPanel", fluidPanel);
+            console.debug("fluidPanel-fluidPanelService.fluidPanel", fluidPanel);
             t(check, 1000);
         }
 

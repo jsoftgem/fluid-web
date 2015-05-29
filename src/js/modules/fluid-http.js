@@ -261,7 +261,7 @@ angular.module("fluidHttp", ["fluidSession"])
 
             var sessionValue = ss.getSessionProperty(key);
 
-            console.info("fluid-http-server-cache-session-value", sessionValue);
+            console.debug("fluid-http-server-cache-session-value", sessionValue);
 
             var promise = h({
                 method: "get",
@@ -289,8 +289,8 @@ angular.module("fluidHttp", ["fluidSession"])
                 response.config = config;
                 response.statusText = statusText;
                 ss.addSessionProperty(key, response);
-                console.info("fluid-http-server-new-session-key", key);
-                console.info("fluid-http-server-new-session-value", data);
+                console.debug("fluid-http-server-new-session-key", key);
+                console.debug("fluid-http-server-new-session-value", data);
             });
 
             return promise;

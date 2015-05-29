@@ -28,7 +28,7 @@ angular.module("moduleBasic", ["fluid"])
         });
 
 
-        console.info("moduleBasic.fluidPage", s.fluidPage);
+        console.debug("moduleBasic.fluidPage", s.fluidPage);
 
 
         s.fluidPage.onLoad = function () {
@@ -49,7 +49,7 @@ angular.module("moduleBasic", ["fluid"])
         }
 
         s.save = function (resources) {
-            console.info("moduleBasic-moduleBasicCtrl.resources", resources);
+            console.debug("moduleBasic-moduleBasicCtrl.resources", resources);
             resources.$save();
         }
 

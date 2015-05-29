@@ -1,8 +1,8 @@
 /**
  * Created by jerico on 4/29/2015.
  */
-angular.module("fluidTasknav", ["fluidHttp", "fluidSession"])
-    .directive("fluidTasknav", ["$templateCache", "sessionService", "fluidHttpService", function (tc, ss, fhs) {
+angular.module("fluidTasknav", [])
+    .directive("fluidTasknav", ["$templateCache", "fluidTasknav", function (tc, FluidTasknav) {
         return {
             restrict: "AE",
             scope: false,
@@ -10,55 +10,56 @@ angular.module("fluidTasknav", ["fluidHttp", "fluidSession"])
             replace: true,
             link: function (scope, element, attr) {
 
-                if (attr.show === "true") {
-                    console.info("fluidTasknav", attr.show);
-                    $("body").addClass("toggle-offcanvas");
+                if (attr.showOnLoad === "true") {
+                    $("body").toggleClass("toggle-offcanvas");
                 }
 
-                //TODO: position support: default is left
-                if (attr.position) {
-                    console.info("attr.position", attr.position);
-                    if (attr.position === "right") {
-                        element.addClass("right");
-                    } else {
-                        element.removeClass("right");
-                    }
+                if (attr.name) {
+                    scope.fluidTasknav = new FluidTasknav({
+                        name: attr.name
+                    })
                 }
 
-
-                if (attr.method) {
-                    scope.method = attr.method;
-                }
-
-                //TODO: ajax data
-                scope.$watch(function () {
-                    if (attr.url) {
-                        return attr.url
-                    }
-                }, function (url) {
-                    scope.loaded = false;
-                    if (ss.containsKey(url)) {
-                        scope.data = ss.getSessionProperty(url);
-                        scope.loaded = true;
-                    } else {
-                        var method = (scope.method ? scope.method : "get");
-                        scope.data = fhs.queryLocal({
-                            url: url,
-                            method: method
-                        }).success(function (data) {
-                            scope.data = data;
-                        }).then(function () {
-                            scope.loaded = true;
-                        });
-                    }
-                });
-
-
-            },
-            transclude: true
+            }
         }
     }])
-    .service("fluidTasknavService", ["sessionService", function (ss) {
+    .factory("fluidTasknav", ["fluidTasknavService", function (fluidTasknavService) {
+
+        var tasknav = function (data) {
+
+            if (data.name) {
+                this.name = data.name;
+            }
+
+            if (fluidTasknavService.getNav(this.name) != null) {
+                return fluidTasknavService.getNav(this.name);
+            } else {
+                this.groups = [];
+
+                this.toggle = function () {
+                    $("body").toggleClass("toggle-offcanvas");
+                }
+
+                this.addGroup = function (group) {
+                    this.groups.push(group);
+                }
+
+                fluidTasknavService.putNav(this.name, this);
+
+                return this;
+            }
+        }
+
+        return tasknav;
+    }])
+    .service("fluidTasknavService", [ function () {
+        this.tasknavs = [];
+        this.putNav = function (name, tasknav) {
+            this.tasknavs[name] = tasknav;
+        }
+        this.getNav = function (name) {
+            return this.tasknavs[name];
+        }
 
         this.toggle = function (id) {
             if ($("body").hasClass("toggle-offcanvas")) {

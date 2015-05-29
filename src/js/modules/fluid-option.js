@@ -48,7 +48,7 @@ angular.module("fluidOption", [])
                     throw "fluidOptionTemplate ID is required.";
                 }
                 var templateId = attr.id;
-                console.info("fluidOptionTemplate.templateId", templateId);
+                console.debug("fluidOptionTemplate.templateId", templateId);
                 tc.put(templateId, element.html());
             },
             replace: true,
@@ -64,7 +64,7 @@ angular.module("fluidOption", [])
                 this.fluidId = fluidPanel.id;
                 this.$ = $("#fluid_option_" + this.fluidId);
                 this.open = function (template, source, page) {
-                    console.info("FluidOption-openOption-source", source);
+                    console.debug("FluidOption-openOption-source", source);
                     var templateId = template /*+ "_" + this.fluidId*/;
                     var fluidOption = $("#fluid_option_" + this.fluidId);
                     var fluidScope = angular.element(fluidOption).scope();
@@ -73,7 +73,7 @@ angular.module("fluidOption", [])
 
                     if (source) {
                         var sourceID = $(source).attr("id");
-                        console.info("FluidOption-openOption-pre-sourceID", sourceID);
+                        console.debug("FluidOption-openOption-pre-sourceID", sourceID);
                         if (!sourceID) {
                             var eventSourceCount = $("[id*='_event_source_id']").length;
                             sourceID = fluidOption.attr("id") + "_event_source_id_" + eventSourceCount;
@@ -87,16 +87,16 @@ angular.module("fluidOption", [])
                         fluidOption.attr("source-event", sourceID);
                     }
 
-                    console.info("FluidOption-openOption-sourceID", sourceID);
+                    console.debug("FluidOption-openOption-sourceID", sourceID);
                     fluidOption.css("max-height", fluidScope.parentHeight);
                     fluidTemplate.css("max-height", fluidScope.parentHeight - 15);
                     fluidBottom.removeClass("hidden")
-                    console.info("FluidOption-openOption.templateId", templateId);
+                    console.debug("FluidOption-openOption.templateId", templateId);
                     var html = tc.get(templateId);
-                    console.info("FluidOption-openOption.html", html);
+                    console.debug("FluidOption-openOption.html", html);
                     if (page) {
-                        console.info("fluidOption-FluidOption.page", page);
-                        console.info("fluidOption-FluidOption.pageScope", page.$scope);
+                        console.debug("fluidOption-FluidOption.page", page);
+                        console.debug("fluidOption-FluidOption.pageScope", page.$scope);
                         c(fluidTemplate.html(html))(page.$scope);
                     } else {
                         c(fluidTemplate.html(html))(fluidPanel.$scope);
@@ -149,7 +149,7 @@ angular.module("fluidOption", [])
             this.fluidOptions[id] = undefined;
         }
         this.openOption = function (optionId, template, source) {
-            console.info("fluidOptionService-openOption-source", source);
+            console.debug("fluidOptionService-openOption-source", source);
             var fluidOption = $("#" + optionId);
             var content = $("#" + template);
             var fluidScope = angular.element(fluidOption).scope();
@@ -157,7 +157,7 @@ angular.module("fluidOption", [])
             var fluidBottom = fluidOption.find(".fluid-option-bottom");
             var contentScope = angular.element(content).scope();
             var sourceID = $(source).attr("id");
-            console.info("fluidOptionService-openOption-pre-sourceID", sourceID);
+            console.debug("fluidOptionService-openOption-pre-sourceID", sourceID);
             if (!sourceID) {
                 var eventSourceCount = $("[id*='_event_source_id']").length;
                 sourceID = fluidOption.attr("id") + "_event_source_id_" + eventSourceCount;
@@ -167,7 +167,7 @@ angular.module("fluidOption", [])
                 sourceID = "event_source_id_" + eventSourceCount;
                 $(source).attr("id", sourceID);
             }
-            console.info("fluidOptionService-openOption-sourceID", sourceID);
+            console.debug("fluidOptionService-openOption-sourceID", sourceID);
             fluidOption.css("max-height", fluidScope.parentHeight);
             fluidTemplate.css("max-height", fluidScope.parentHeight - 15);
             fluidOption.attr("source-event", sourceID);
@@ -178,8 +178,8 @@ angular.module("fluidOption", [])
                 var page = fluidOption.parent().find(".fluid-page");
                 page.ready(function () {
                     var pageScope = angular.element(page).scope();
-                    console.info("fluidOption-fluidOptionService.page", page);
-                    console.info("fluidOption-fluidOptionService.pageScope", pageScope);
+                    console.debug("fluidOption-fluidOptionService.page", page);
+                    console.debug("fluidOption-fluidOptionService.pageScope", pageScope);
                     c(fluidTemplate.html(content.html()))(pageScope);
                 });
             }
@@ -197,7 +197,7 @@ angular.module("fluidOption", [])
         var fluidOptions = this.fluidOptions;
 
         function check() {
-            console.info("fluidOption-fluidOptionService.fluidOptions", fluidOptions);
+            console.debug("fluidOption-fluidOptionService.fluidOptions", fluidOptions);
             t(check, 1000);
         }
     }]);

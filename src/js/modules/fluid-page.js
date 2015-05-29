@@ -14,7 +14,7 @@ angular.module("fluidPage", ["fluidHttp", "fluidOption"])
                         scope.fluidPageService = fps;
 
                         scope.loadPage = function (page) {
-                            console.info("fluidPage-loadPage.page", page);
+                            console.debug("fluidPage-loadPage.page", page);
                             scope.fluidPanel.loaded = false;
                             scope.fluidPage = page;
                             if (scope.fluidPage.ajax) {
@@ -24,17 +24,17 @@ angular.module("fluidPage", ["fluidHttp", "fluidOption"])
                                         element.html("<ng-include class='page' src='fluidPageService.render(fluidPage)' onload='onLoad()'></ng-include>");
                                         element.attr("page-name", page.name);
                                         c(element.contents())(scope);
-                                        console.info("fluidPage-loadPage.loaded-page", page);
+                                        console.debug("fluidPage-loadPage.loaded-page", page);
                                     });
                             } else {
                                 element.html("<ng-include class='page' src='fluidPageService.render(fluidPage)' onload='onLoad()'></ng-include>");
                                 element.attr("page-name", page.name);
                                 c(element.contents())(scope);
-                                console.info("fluidPage-loadPage.loaded-page", page);
+                                console.debug("fluidPage-loadPage.loaded-page", page);
                             }
                         }
 
-                        console.info("fluidPage.fluidPanel", scope.fluidPanel);
+                        console.debug("fluidPage.fluidPanel", scope.fluidPanel);
 
                         scope.$watch(function (scope) {
                             return scope.page;
@@ -47,7 +47,7 @@ angular.module("fluidPage", ["fluidHttp", "fluidOption"])
                     post: function (scope, element, attr) {
                         //TODO: page onLeave handling
                         scope.onLoad = function () {
-                            console.info("fluidPage-page-onload.fluidId", scope.fluidPanel.id);
+                            console.debug("fluidPage-page-onload.fluidId", scope.fluidPanel.id);
                             scope.fluidPage.fluidId = scope.fluidPanel.id;
                             scope.fluidPage.$ = element;
                             scope.fluidPage.$scope = scope;
@@ -66,7 +66,7 @@ angular.module("fluidPage", ["fluidHttp", "fluidOption"])
         }])
     .factory("FluidPage", ["fluidPageService", "$resource", "$q", "$timeout", "$rootScope", function (fps, r, q, t, rs) {
         var fluidPage = function (page) {
-            console.info("FluidPage-FluidPage.page", page);
+            console.debug("FluidPage-FluidPage.page", page);
             if (page.ajax) {
                 if (page.ajax.url) {
                     if (!page.actions) {
@@ -172,7 +172,7 @@ angular.module("fluidPage", ["fluidHttp", "fluidOption"])
             var def = {};
             angular.copy(this, def);
             this.default = def;
-            console.info("fluidPage-FluidPageg-newPage.page", this);
+            console.debug("fluidPage-FluidPageg-newPage.page", this);
         }
         return fluidPage;
     }])

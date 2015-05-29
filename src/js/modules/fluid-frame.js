@@ -30,7 +30,7 @@ angular.module("fluidFrame", ["fluidHttp", "fluidTask", "fluidSession"])
                 s.$watch(function (scope) {
                     return scope.frame;
                 }, function (frame) {
-                    console.info("fluidFrame-fluidFrame2$watch.frame", frame);
+                    console.debug("fluidFrame-fluidFrame2$watch.frame", frame);
                 })
             }],
             template: tc.get("templates/fluid/fluidFrame2.html")
@@ -178,7 +178,7 @@ angular.module("fluidFrame", ["fluidHttp", "fluidTask", "fluidSession"])
         var frames = this.frames;
 
         function check() {
-            console.info("fluidFrame-fluidFrameHandler.frames", frames);
+            console.debug("fluidFrame-fluidFrameHandler.frames", frames);
             t(check, 1000);
         }
 
@@ -242,7 +242,7 @@ angular.module("fluidFrame", ["fluidHttp", "fluidTask", "fluidSession"])
          this.fullScreenTask = undefined;
          };
          this.getFullTask = function (task) {
-         console.info("getFullTask", task);
+         console.debug("getFullTask", task);
          var fullScreenTask = undefined;
 
          if (task) {
@@ -332,7 +332,7 @@ angular.module("fluidFrame", ["fluidHttp", "fluidTask", "fluidSession"])
                 taskService.findTaskByName(taskName)
                     .then(function (task) {
                         var index = frame.tasks.length;
-                        console.info("fluidFrame-fluidFrameService.task", task);
+                        console.debug("fluidFrame-fluidFrameService.task", task);
                         task.fluidId = name + "_" + task.id + "_" + index;
 
                         var fluidTask = new FluidTask(task);
@@ -341,7 +341,7 @@ angular.module("fluidFrame", ["fluidHttp", "fluidTask", "fluidSession"])
                     });
             }
             frame.removeTask = function (task, workspace) {
-                console.info("fluidFrame-fluidFrameService.removeTask.task", task);
+                console.debug("fluidFrame-fluidFrameService.removeTask.task", task);
                 angular.forEach(this.tasks, function (tsk, $index) {
                     if (tsk.fluidId === task.fluidId) {
                         this.tasks.splice($index, 1);

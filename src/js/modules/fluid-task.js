@@ -47,8 +47,8 @@ angular.module("fluidTask", ["fluidSession", "fluidFrame"])
 
                             element.attr("title", task.title);
                             var openTask = element.find("[open-task]");
-                            if(openTask){
-                                openTask.attr("ng-click","open()");
+                            if (openTask) {
+                                openTask.attr("ng-click", "open()");
                             }
                             var icon = element.find(".task-icon");
                             if (icon) {
@@ -102,12 +102,12 @@ angular.module("fluidTask", ["fluidSession", "fluidFrame"])
                             if (pages) {
                                 pages.attr("ng-repeat", "page in _pages | pages");
                                 var pageLabel = pages.find(".page-label");
-                                if(pageLabel){
+                                if (pageLabel) {
                                     pageLabel.html("{{page.title}}");
                                 }
                                 var openPage = pages.find("[open-page]");
-                                if(openPage){
-                                    openPage.attr("ng-click","open(page.name)");
+                                if (openPage) {
+                                    openPage.attr("ng-click", "open(page.name)");
                                 }
                             }
 
@@ -135,9 +135,9 @@ angular.module("fluidTask", ["fluidSession", "fluidFrame"])
                 ajax = (url ? true : false) || ajax;
 
                 if (ajax) {
-                    console.info("fluid-task-taskState.url", url);
+                    console.debug("fluid-task-taskState.url", url);
                 } else {
-                    console.info("fluid-task-taskState.taskArray", taskArray);
+                    console.debug("fluid-task-taskState.taskArray", taskArray);
                     return q(function (resolve, reject) {
                             var length = taskArray.length - 1;
                             var value = {done: false};
@@ -189,42 +189,23 @@ angular.module("fluidTask", ["fluidSession", "fluidFrame"])
             if (data === EVENT_TIME_OUT) {
                 rs.$broadcast(EVENT_TIME_OUT, "Task name not found.");
             } else {
-                /*if (data.stateAjax) {
-                 var url = data.stateAjax.url;
-                 if (!data.stateAjax.actions) {
-                 data.stateAjax.actions = [];
-                 }
-                 if (url) {
-                 if (!data.stateAjax.actions) {
-                 data.stateAjax.actions = [];
-                 }
-                 if (!data.stateAjax.param) {
-                 data.stateAjax.param = {}
-                 }
-
-                 data.resource = r(url, data.stateAjax.param, data.stateAjax.actions);
-
-                 } else {
-                 throw "Task stateAjax.url is required!";
-                 }
-                 }*/
                 return data;
             }
         }
 
         taskService.findTaskByName = function (name) {
-            console.info("fluidTask-fluidTaskService-findTaskByName.name", name);
+            console.debug("fluidTask-fluidTaskService-findTaskByName.name", name);
             var key = taskKey + name;
             return q(function (resolve, reject) {
 
                 function waitForTask(counter) {
-                    console.info("fluidTask-fluidTaskService-findTaskByName-waitForTask.key", counter);
-                    console.info("fluidTask-fluidTaskService-findTaskByName-waitForTask.counter", counter);
-                    console.info("fluidTask-fluidTaskService-findTaskByName-waitForTask.fss", fss);
+                    console.debug("fluidTask-fluidTaskService-findTaskByName-waitForTask.key", counter);
+                    console.debug("fluidTask-fluidTaskService-findTaskByName-waitForTask.counter", counter);
+                    console.debug("fluidTask-fluidTaskService-findTaskByName-waitForTask.fss", fss);
 
                     t(function () {
                         if (ss.containsKey(key)) {
-                            console.info("fluidTask-fluidTaskService-findTaskByName-waitForTask.getSessionProperty", ss.getSessionProperty(key));
+                            console.debug("fluidTask-fluidTaskService-findTaskByName-waitForTask.getSessionProperty", ss.getSessionProperty(key));
                             resolve(ss.getSessionProperty(key));
                         } else if (counter === timeout) {
                             reject(EVENT_TIME_OUT);
@@ -244,7 +225,7 @@ angular.module("fluidTask", ["fluidSession", "fluidFrame"])
             }).then(timeoutEvent);
         }
         taskService.findTaskByUrl = function (url) {
-            console.info("fluidTask-fluidTaskService-findTaskByUrl.url", url);
+            console.debug("fluidTask-fluidTaskService-findTaskByUrl.url", url);
             var deferred = q.defer();
 
             if (fss.urlKeys[url] != null) {
@@ -257,7 +238,7 @@ angular.module("fluidTask", ["fluidSession", "fluidFrame"])
                     var key = taskKey + data.name;
                     fss.urlKeys[url] = key;
                     ss.addSessionProperty(key, data);
-                    console.info("fluidTask-fluidTaskService.cacheTask.data", data);
+                    console.debug("fluidTask-fluidTaskService.cacheTask.data", data);
                 });
             }
 
@@ -288,7 +269,7 @@ angular.module("fluidTask", ["fluidSession", "fluidFrame"])
                     throw "Task ajax.url is required!";
                 }
             }
-            console.info("fluidTask-FluidTask.newTask", task);
+            console.debug("fluidTask-FluidTask.newTask", task);
             return task;
         }
         return fluidTask;

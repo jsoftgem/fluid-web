@@ -53,7 +53,7 @@ function estimateHeight(height) {
 }
 
 function estimatedFrameHeight(height) {
-    console.info("estimatedFrameHeight.getHeadingHeight", getHeadingHeight());
+    console.debug("estimatedFrameHeight.getHeadingHeight", getHeadingHeight());
     var _pc = window.innerWidth < 450 ? 60 : window.innerWidth < 768 ? 60 : window.innerWidth < 1200 ? 65 : 50;
     return height - _pc
 }
@@ -73,7 +73,7 @@ function getHeadingHeight() {
 }
 
 function generateTask(scope, t, f2) {
-    console.info("generateTask > scope.task.page", scope.task.page);
+    console.debug("generateTask > scope.task.page", scope.task.page);
     scope.task.pageLoaded = false;
     if (scope.task.page === undefined || scope.task.page === null) {
         if (scope.task.pages) {
@@ -82,7 +82,7 @@ function generateTask(scope, t, f2) {
             scope.homeUrl = $page.page.get;
             scope.home = $page.page.name;
             scope.task.navPages = [$page.page];
-            console.info("page", scope.task.page);
+            console.debug("page", scope.task.page);
         }
     } else {
         scope.homeUrl = scope.task.page.get;
@@ -101,7 +101,7 @@ function generateTask(scope, t, f2) {
 
         if (scope.task.page.param && scope.task.page.param !== "null") {
             scope.homeUrl = scope.task.page.get + scope.task.page.param;
-            console.info("homeUrl", scope.homeUrl);
+            console.debug("homeUrl", scope.homeUrl);
         }
 
         if (scope.task.navPages.indexOf(page) > -1) {
@@ -122,7 +122,7 @@ function generateTask(scope, t, f2) {
     }
 
     scope.userTask.fluidId = scope.task.fluidId;
-    console.info("new_task", scope.task);
+    console.debug("new_task", scope.task);
     var loadGetFn = function () {
         /*pre-load*/
         if (scope.task.preLoaded === undefined || scope.task.preLoaded === false) {
@@ -203,7 +203,7 @@ function saveTaskSate(task, userTask, fluidHttpService, field) {
 }
 
 function autoSizePanel(task) {
-    console.info("autoSizePanel", task);
+    console.debug("autoSizePanel", task);
     var height = window.innerHeight;
     height = estimateHeight(height);
 
@@ -228,17 +228,17 @@ function autoSizePanel(task) {
     panelBody.css("overflow-y", "auto");
 
 
-    console.info("autoSizePanel.bodyHeight", bodyHeight);
+    console.debug("autoSizePanel.bodyHeight", bodyHeight);
 
 
 }
 
 function getOffset(parent, offset, index) {
     var child = parent.children()[index];
-    console.info("fluidFrame-getOffset.parent", parent);
-    console.info("fluidFrame-getOffset.parent.children", parent.children);
+    console.debug("fluidFrame-getOffset.parent", parent);
+    console.debug("fluidFrame-getOffset.parent.children", parent.children);
     if (child) {
-        console.info("fluidFrame-getOffset.parent.child", child);
+        console.debug("fluidFrame-getOffset.parent.child", child);
         if ($(child).hasClass("panel-collapse")) {
             index = 0;
             return getOffset($(child), offset, index);
@@ -252,7 +252,7 @@ function getOffset(parent, offset, index) {
         } else {
             index++;
             offset += $(child).height();
-            console.info("fluidFrame-getOffset.parent.child.offset", offset);
+            console.debug("fluidFrame-getOffset.parent.child.offset", offset);
             return getOffset(parent, offset, index);
         }
     }
@@ -265,7 +265,7 @@ function getOffset(parent, offset, index) {
 
 function autoSizeFrame(element, offset, height, reducedHeight) {
 
-    console.info("autoSizeFrame.offset", offset);
+    console.debug("autoSizeFrame.offset", offset);
     var frameHeight = height - 2;
     $("body").css("max-height", height).css("overflow-y", "hidden");
 
@@ -284,8 +284,8 @@ function autoSizeFrame(element, offset, height, reducedHeight) {
 function autoFullscreen(element, height, width) {
     var panelHeight = height;
     var offset = getOffset(element, 0, 0);
-    console.info("fluidFrame-autoFullscreen.element", element);
-    console.info("fluidFrame-autoFullscreen.height", height);
+    console.debug("fluidFrame-autoFullscreen.element", element);
+    console.debug("fluidFrame-autoFullscreen.height", height);
     var pageHeight = (panelHeight - offset);
     /*
      element.find(".panel-collapse").height(panelHeight - 23);
@@ -320,7 +320,9 @@ function filterPage(pages, $index) {
         $index = 0;
     }
     var page = pages[$index];
-
+    if (!page) {
+        return;
+    }
     if ((page.showOnList === undefined || page.showOnList) && !page.isHome) {
         $index++;
     } else {
@@ -385,9 +387,9 @@ $(document).ready(function () {
                     }
 
                     if (elementSourceEvent !== sourceId) {
-                        console.info(infoSig + ".fluidPanel", fluidOptionScope.fluidPanel);
+                        console.debug(infoSig + ".fluidPanel", fluidOptionScope.fluidPanel);
                         var fluidPage = fluidOptionScope.fluidPanel.getPage(fluidOptionScope.fluidPanel.fluidBreadcrumb.currentPage());
-                        console.info(infoSig + ".fluidPage", fluidPage);
+                        console.debug(infoSig + ".fluidPage", fluidPage);
                         if (fluidPage.option.isOpen) {
                             fluidPage.option.close();
                             if (fluidPage.option.returnToPrevious) {

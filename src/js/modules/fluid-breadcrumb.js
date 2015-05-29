@@ -10,7 +10,7 @@ angular.module("fluidBreadcrumb", [])
             scope: {fluidPanel: "="},
             link: function (scope, element, attr) {
                 scope.breadcrumb = new FluidBreadcrumb(scope.fluidPanel);
-                console.info("fluidBreadcrumb.breadcrumb", scope.breadcrumb);
+                console.debug("fluidBreadcrumb.breadcrumb", scope.breadcrumb);
             }
         }
     }])
@@ -54,7 +54,7 @@ angular.module("fluidBreadcrumb", [])
                     this.scrollTo(this.current);
                 }
                 this.scrollTo = function (index) {
-                    console.info("fluidBreadcrumb.scrollTo.index", index);
+                    console.debug("fluidBreadcrumb.scrollTo.index", index);
                     this.$.scrollTo(this.$.find("div:eq(" + index + ")"), 800);
                 }
                 this.currentPage = function () {
@@ -65,7 +65,7 @@ angular.module("fluidBreadcrumb", [])
                     if (this.current > 0) {
                         this.current -= 1;
                     }
-                    console.info("fluidBreadcrumb-FluidBreadcrumb-close.current", this.current);
+                    console.debug("fluidBreadcrumb-FluidBreadcrumb-close.current", this.current);
                 }
                 this.open = function (page, $index, $event) {
                     this.current = $index;
@@ -87,12 +87,12 @@ angular.module("fluidBreadcrumb", [])
             link: function (scope, element, attr) {
 
                 var w = angular.element($w);
-                console.info("fluidBreadcrumb-fluidResizeBreadcrumb.element", element);
+                console.debug("fluidBreadcrumb-fluidResizeBreadcrumb.element", element);
 
                 var parent = element.parent();
 
-                console.info("fluidBreadcrumb-fluidResizeBreadcrumb.parent", parent[0].clientWidth);
-                console.info("fluidBreadcrumb-fluidResizeBreadcrumb.fluidPanel.id", scope.fluidPanel.id);
+                console.debug("fluidBreadcrumb-fluidResizeBreadcrumb.parent", parent[0].clientWidth);
+                console.debug("fluidBreadcrumb-fluidResizeBreadcrumb.fluidPanel.id", scope.fluidPanel.id);
 
                 w.bind("resize", function () {
                     if (scope.fluidPanel && scope.fluidPanel.page && scope.fluidPanel.loaded) {
@@ -105,7 +105,7 @@ angular.module("fluidBreadcrumb", [])
                 scope.$watch(function (scope) {
                     return scope.fluidPanel.page;
                 }, function (page) {
-                    console.info("fluidResizeBreadcrumb$watch.fluidPanel.page", page);
+                    console.debug("fluidResizeBreadcrumb$watch.fluidPanel.page", page);
                     if (page && scope.fluidPanel.loaded) {
                         autoSizeBreadcrumb(element, parent, scope.fluidPanel.id);
                     }
@@ -123,15 +123,15 @@ function autoSizeBreadcrumb(element, parent, id) {
     angular.forEach(parent.children(), function (value, index) {
         var width = parent.innerWidth();
         if (!$(value).hasClass('fluid-breadcrumb')) {
-            console.info("fluidBreadcrumb-autoSizeBreadcrumb.value", value);
+            console.debug("fluidBreadcrumb-autoSizeBreadcrumb.value", value);
             offsetWidth += $(value).width();
-            console.info("fluidBreadcrumb-autoSizeBreadcrumb.value.width", $(value).width());
+            console.debug("fluidBreadcrumb-autoSizeBreadcrumb.value.width", $(value).width());
         }
         if (index === lastIndex) {
-            console.info("fluidBreadcrumb-autoSizeBreadcrumb.offsetWidth", offsetWidth);
+            console.debug("fluidBreadcrumb-autoSizeBreadcrumb.offsetWidth", offsetWidth);
             width -= offsetWidth + 20;
             this.width(width);
-            console.info("fluidBreadcrumb-autoSizeBreadcrumb.width", width);
+            console.debug("fluidBreadcrumb-autoSizeBreadcrumb.width", width);
         }
     }, element);
 }

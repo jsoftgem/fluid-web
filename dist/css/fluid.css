@@ -327,6 +327,8 @@ body {
     overflow-y: auto;
 }
 
+
+
 @media (max-width: 767px) {
     .fluid-tasknav {
         margin-left: -80px;
@@ -334,18 +336,8 @@ body {
         position: absolute;
     }
 
-    .fluid-tasknav .right {
-        margin-right: -80px;
-        max-width: 80px;
-        position: absolute;
-    }
-
     .toggle-offcanvas {
         padding-left: 80px;
-    }
-
-    .toggle-offcanvas .right {
-        padding-right: 80px;
     }
 }
 
@@ -356,19 +348,10 @@ body {
         position: absolute;
     }
 
-    .fluid-tasknav .right {
-        margin-right: -80px;
-        max-width: 80px;
-        position: absolute;
-    }
-
     .toggle-offcanvas {
         padding-left: 80px;
     }
 
-    .toggle-offcanvas .right {
-        padding-right: 80px;
-    }
 }
 
 @media (min-width: 992px) and (max-width: 1199px) {
@@ -378,19 +361,10 @@ body {
         position: absolute;
     }
 
-    .fluid-tasknav .right {
-        margin-right: -300px;
-        width: 300px;
-        position: absolute;
-    }
-
     .toggle-offcanvas {
         padding-left: 300px;
     }
 
-    .toggle-offcanvas .right {
-        padding-right: 300px;
-    }
 }
 
 @media (min-width: 1200px) {
@@ -401,18 +375,8 @@ body {
         position: absolute;
     }
 
-    .fluid-tasknav .right {
-        margin-right: -300px;
-        width: 300px;
-        position: absolute;
-    }
-
     .toggle-offcanvas {
         padding-left: 300px;
-    }
-
-    .toggle-offcanvas .right {
-        padding-right: 300px;
     }
 }
 .fluid-toolbar {
@@ -431,6 +395,12 @@ and open the template in the editor.
     Created on : 09 20, 14, 11:44:35 AM
     Author     : Jerico
 */
+
+body {
+    -moz-transition: all 0.3s;
+    -webkit-transition: all 0.3s;
+    transform: all 0.3s;
+}
 
 .hidden {
     display: none;
@@ -885,8 +855,6 @@ div.fluid-form label {
 .hideFullscreenLg {
     display: none !important;
 }
-
-
 
 /*add glows to fluid panel*/
 div.fluid-task:hover {

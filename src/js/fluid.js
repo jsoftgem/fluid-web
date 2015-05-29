@@ -4,7 +4,9 @@
 'use strict';
 
 var fluidComponents = angular.module("fluid", ["oc.lazyLoad", "LocalStorageModule", "ngResource", "templates-dist", "fluidSession",
-    "fluidHttp", "fluidFrame", "fluidMessage", "fluidOption", "fluidTool", "fluidPage", "fluidPanel", "fluidTasknav", "fluidTask", "fluidTaskcontrols"]);
+    "fluidHttp", "fluidFrame", "fluidMessage", "fluidOption", "fluidTool", "fluidPage", "fluidPanel", "fluidTasknav", "fluidTask", "fluidTaskcontrols",
+    "fluidFactories"]);
+
 var EVENT_TIME_OUT = "TIME_OUT", EVENT_TASK_LOADED = "TASK_LOAD";
 
 fluidComponents.config(["$httpProvider", "localStorageServiceProvider", function (h, ls) {
@@ -14,7 +16,7 @@ fluidComponents.config(["$httpProvider", "localStorageServiceProvider", function
     h.interceptors.push("fluidInjector");
 }]);
 
-fluidComponents.run(["taskState", function (ts) {
+fluidComponents.run(["taskState", function (ts, lg) {
 }]);
 
 fluidComponents
@@ -28,16 +30,16 @@ fluidComponents
                 if (attr.method) {
                     scope.method = attr.method;
                 }
-                console.info("permissionEnabled-url", f.permissionUrl + "?pageName=" + scope.page.name + "&method=" + scope.method);
+                console.debug("permissionEnabled-url", f.permissionUrl + "?pageName=" + scope.page.name + "&method=" + scope.method);
 
                 var url = f.permissionUrl + "?pageName=" + scope.page.name + "&method=" + scope.method;
 
                 var enabled = ss.getSessionProperty(url);
 
-                console.info("permissionEnabled", enabled);
+                console.debug("permissionEnabled", enabled);
 
                 if (enabled !== null) {
-                    console.info("permissionEnabled-old", enabled);
+                    console.debug("permissionEnabled-old", enabled);
                     if (enabled === 'false') {
                         element.attr("disabled", "");
                     }
@@ -51,7 +53,7 @@ fluidComponents
                             }
                             ss.addSessionProperty(url, data);
                         });
-                    console.info("permissionEnabled-new");
+                    console.debug("permissionEnabled-new");
                 }
             }
 
@@ -66,22 +68,22 @@ fluidComponents
                 if (attr.method) {
                     scope.method = attr.method;
                 }
-                console.info("permissionVisible-url", f.permissionUrl + "?pageName=" + scope.page.name + "&method=" + scope.method);
+                console.debug("permissionVisible-url", f.permissionUrl + "?pageName=" + scope.page.name + "&method=" + scope.method);
 
                 var url = f.permissionUrl + "?pageName=" + scope.page.name + "&method=" + scope.method;
 
                 var visible = ss.getSessionProperty(url);
 
-                console.info("permissionVisible", visible);
+                console.debug("permissionVisible", visible);
 
                 if (visible !== null) {
-                    console.info("permissionVisible-old", visible);
+                    console.debug("permissionVisible-old", visible);
 
                     if (visible === 'false') {
                         element.addClass("hidden");
-                        console.info("permissionVisible-hidden");
+                        console.debug("permissionVisible-hidden");
                     } else {
-                        console.info("permissionVisible-visible");
+                        console.debug("permissionVisible-visible");
                         element.removeClass("hidden");
                     }
 
@@ -116,8 +118,8 @@ fluidComponents
                 scope.$watch(function (scope) {
                         return attr.column;
                     }, function (column, oldColumn) {
-                        console.info("column-old", oldColumn);
-                        console.info("column", column);
+                        console.debug("column-old", oldColumn);
+                        console.debug("column", column);
                         element.removeClass("col-lg-" + oldColumn);
                         element.addClass("col-lg-" + column);
                         scope.column = column;
@@ -196,7 +198,7 @@ fluidComponents
                             break;
                     }
 
-                    console.info("column-size", size);
+                    console.debug("column-size", size);
                 });
 
 
@@ -242,13 +244,13 @@ fluidComponents
 
                     config.headers["Access-Control-Allow-Origin"] = "*";
 
-                    /*  console.info("fluidInjector-request.config", config);
+                    /*  console.debug("fluidInjector-request.config", config);
 
-                     console.info("fluidInjector-request.pages", fps.pages);
+                     console.debug("fluidInjector-request.pages", fps.pages);
 
                      if (fps.pages[config.url]) {
                      var fluidPage = new FluidPage(fps.pages[config.url]);
-                     console.info("fluidInjector-request.fluidPage", fluidPage);
+                     console.debug("fluidInjector-request.fluidPage", fluidPage);
                      fluidPage.preLoad();
                      config.url = fluidPage.home;
                      }*/
@@ -257,7 +259,7 @@ fluidComponents
                         config.headers['Authorization'] = ss.getSessionProperty(AUTHORIZATION);
                     }
 
-                    console.info("fluidInjector-request.config-altered", config);
+                    console.debug("fluidInjector-request.config-altered", config);
                     return config;
                 },
                 "requestError": function (rejection) {
@@ -433,8 +435,8 @@ fluidComponents
                 $(w).on("resize", function () {
                     if (scope) {
                         if (scope.rs.viewport === 'lg' && !f.fullScreen) {
-                            console.info("hidden50-viewport", rs.viewport);
-                            console.info("hidden50-size", scope.task.size);
+                            console.debug("hidden50-viewport", rs.viewport);
+                            console.debug("hidden50-size", scope.task.size);
                             if (scope.task.size === 50) {
                                 element.addClass("hideSize50");
                             } else {
@@ -539,8 +541,8 @@ fluidComponents
                 $(w).on("resize", function () {
                     if (scope) {
                         if (scope.rs.viewport === 'lg' && !f.fullScreen) {
-                            console.info("hidden100-viewport", rs.viewport);
-                            console.info("hidden100-size", scope.task.size);
+                            console.debug("hidden100-viewport", rs.viewport);
+                            console.debug("hidden100-size", scope.task.size);
                             if (scope.task.size === 100) {
                                 element.addClass("hideSize100");
                             } else {
