@@ -70,6 +70,9 @@ angular.module("fluidBreadcrumb", [])
                 this.open = function (page, $index, $event) {
                     this.current = $index;
                 }
+                this.getTitle = function(bread){
+                    return fluidPanel.getPage(bread).title;
+                }
                 bcs.breadcrumbs[fluidPanel.id] = this;
 
             }

@@ -683,7 +683,12 @@ fluidComponents
         }
     });
 /**Prototypes**/
-;/**
+
+
+/** TODO:
+ *  1) FluidTasknav - taskbar (active, minimize, fullscreen, settings,scrollTo);
+ *  2) FluidPanel - fullScreen - disable sizes;
+ * **/;/**
  * Created by jerico on 4/28/2015.
  */
 
@@ -1041,6 +1046,36 @@ function clearObjects(arr, $index) {
 
 }
 
+function LightenDarkenColor(col, amt) {
+
+    var usePound = false;
+
+    if (col[0] == "#") {
+        col = col.slice(1);
+        usePound = true;
+    }
+
+    var num = parseInt(col,16);
+
+    var r = (num >> 16) + amt;
+
+    if (r > 255) r = 255;
+    else if  (r < 0) r = 0;
+
+    var b = ((num >> 8) & 0x00FF) + amt;
+
+    if (b > 255) b = 255;
+    else if  (b < 0) b = 0;
+
+    var g = (num & 0x0000FF) + amt;
+
+    if (g > 255) g = 255;
+    else if (g < 0) g = 0;
+
+    return (usePound?"#":"") + (g | (b << 8) | (r << 16)).toString(16);
+
+}
+
 
 //handles document here
 $(document).ready(function () {
@@ -1168,6 +1203,9 @@ angular.module("fluidBreadcrumb", [])
                 this.open = function (page, $index, $event) {
                     this.current = $index;
                 }
+                this.getTitle = function(bread){
+                    return fluidPanel.getPage(bread).title;
+                }
                 bcs.breadcrumbs[fluidPanel.id] = this;
 
             }
@@ -1269,12 +1307,6 @@ angular.module("fluidFactories", ["fluidTask"])
 
             if (param.name) {
                 this.name = param.name;
-
-                FluidTask.findTaskByName(this.name).then(function (data) {
-                    taskItem.title = data.title;
-                    taskItem.pages = data.pages;
-                });
-
             }
 
             //TODO: other options here
@@ -1470,144 +1502,6 @@ angular.module("fluidFrame", ["fluidHttp", "fluidTask", "fluidSession"])
         return this;
     }])
     .factory("fluidFrameService", ["Frame", "fluidTaskService", "FluidTask", function (Frame, taskService, FluidTask) {
-        /*  this.isSearch = false;
-         this.searchTask = "";
-         this.taskUrl = "";
-         this.fullScreen = false;
-         this.openTask = function (name, workspace) {
-         //TODO: workspace
-         var task = new Task(name);
-         if (task) {
-         }
-         }
-         if (this.taskList === undefined) {
-         this.taskList = [];
-         }
-         this.pushTask = function (task) {
-         task.generic = true;
-         this.taskList.push(task);
-         };
-         this.addTask = function (url, origin) {
-
-         var genericTask = this.createGenericTask();
-
-         genericTask.origin = origin;
-
-         this.taskList.push(genericTask);
-
-         genericTask.index = this.taskList.length - 1;
-
-         genericTask.url = url;
-
-         var index = this.taskList.length - 1;
-
-         if (this.fullScreen) {
-         this.toggleFluidscreen();
-         }
-
-         t(function () {
-         $(".frame-content").scrollTo($("div.panel[task]:eq(" + index + ")"), 200);
-         }, 300);
-         };
-         this.toggleSearch = function () {
-         this.isSearch = !this.isSearch;
-         if (this.isSearch === false) {
-         this.searchTask = "";
-         }
-         };
-         this.toggleFullscreen = function (task) {
-         this.fullScreen = true;
-         this.fullScreenTask = task;
-         t(function () {
-         $(".frame-content").scrollTop(0);
-         });
-         };
-         this.toggleFluidscreen = function () {
-         this.fullScreen = false;
-         this.fullScreenTask = undefined;
-         };
-         this.getFullTask = function (task) {
-         console.debug("getFullTask", task);
-         var fullScreenTask = undefined;
-
-         if (task) {
-         var fullScreenTask = this.createGenericTask();
-
-         fullScreenTask.url = this.taskUrl + task.name;
-         fullScreenTask.size = 100;
-         }
-
-         return fullScreenTask;
-         };
-         this.createGenericTask = function () {
-
-         var genericTask = Task();
-
-         genericTask.id = "gen_id_";
-
-         var countGeneric = 0;
-
-         angular.forEach(this.taskList, function (task) {
-         if ((task.id + "").indexOf("gen_id_") > -1) {
-         countGeneric++;
-         }
-         });
-
-         genericTask.id = genericTask.id + "" + countGeneric;
-
-
-         genericTask.size = 50;
-
-         genericTask.active = true;
-
-         genericTask.glyph = "fa fa-tasks";
-
-         genericTask.title = "...";
-
-         genericTask.generic = true;
-
-
-         return genericTask;
-         };
-         this.getFrame = function () {
-         return $("div.frame-content.frame-fullscreen");
-         }
-         this.buildTask = function (task) {
-
-         /!* Task event *!/
-         task.preLoad = function () {
-         };
-         task.load = function () {
-         };
-         task.postLoad = function () {
-         }
-         task.onWindowClosing = function (page) {
-         return true;
-         }
-         task.onWindowHiding = function (page) {
-         return true;
-         }
-         task.onWindowOpening = function () {
-         return true;
-         }
-         task.onWindowOpened = function () {
-         }
-         task.onWindowPinned = function (page) {
-
-         }
-         task.onWindowActive = function (page) {
-         }
-
-         return task;
-         }
-         this.showActionBar = function () {
-         this.actionBarClass = "animated slideInUp";
-         this.actionBarShowing = true;
-         };
-         this.hideActionBar = function () {
-         this.actionBarClass = "animated slideOutDown";
-         this.actionBarShowing = false;
-         };*/
         var frameService = function (name) {
             var frame = new Frame(name);
             frame.openTask = function (taskName, page, workspace) {
@@ -1621,6 +1515,7 @@ angular.module("fluidFrame", ["fluidHttp", "fluidTask", "fluidSession"])
                         task.fluidId = name + "_" + task.id + "_" + index;
 
                         var fluidTask = new FluidTask(task);
+                        fluidTask.frame = frame.name;
                         fluidTask.page = page;
                         frame.tasks.push(fluidTask);
                     });
@@ -3970,7 +3865,6 @@ angular.module("fluidPanel", ["oc.lazyLoad", "fluidHttp", "fluidFrame", "fluidMe
                         } else {
                             scope.fluidPanel = new FluidPanel(scope.task);
                             scope.fluidPanel.loaded = false;
-                            scope.fluidPanel.frame = new FluidFrame(scope.frame);
                             scope.$watch(function (scope) {
                                 return scope.fluidPanel.loaded;
                             }, function (loaded) {
@@ -4032,7 +3926,8 @@ angular.module("fluidPanel", ["oc.lazyLoad", "fluidHttp", "fluidFrame", "fluidMe
                         }
                         scope.$on("$destroy", function () {
                             if (scope.fluidPanel.destroy) {
-                                fluidPanelService.clear(scope.fluidPanel.id);
+                                scope.fluidPanel.clear();
+                                scope.fluidPanel.frame.fluidPanel[scope.fluidPanel.id] = undefined;
                             }
                         });
 
@@ -4057,12 +3952,21 @@ angular.module("fluidPanel", ["oc.lazyLoad", "fluidHttp", "fluidFrame", "fluidMe
             }
         }
     }])
-    .factory("FluidPanelModel", ["TaskControl", "ToolBarItem", "fluidPanelService", "fluidTaskService", "FluidBreadcrumb", "FluidPage", "$q", "fluidFrameService",
-        function (TaskControl, ToolBarItem, fluidPanelService, TaskService, FluidBreadcrumb, FluidPage, q, FluidFrame) {
+    .factory("FluidPanelModel", ["TaskControl", "ToolBarItem", "fluidTaskService", "FluidBreadcrumb", "FluidPage", "$q", "fluidFrameService",
+        function (TaskControl, ToolBarItem, TaskService, FluidBreadcrumb, FluidPage, q, FluidFrame) {
             var fluidPanel = function (task) {
-                if (fluidPanelService.fluidPanel[task.fluidId] != null) {
-                    return fluidPanelService.fluidPanel[task.fluidId];
+                if (!task.frame) {
+                    throw "Task must have frame property value.";
+                }
+
+                var frame = new FluidFrame(task.frame);
+                if (!frame.fluidPanel) {
+                    frame.fluidPanel = [];
+                }
+                if (frame.fluidPanel[task.fluidId] != null) {
+                    return frame.fluidPanel[task.fluidId];
                 } else {
+                    this.frame = frame;
                     this.pages = [];
                     this.id = task.fluidId;
                     this.$ = $("div#_id_fp_" + this.id);
@@ -4311,9 +4215,8 @@ angular.module("fluidPanel", ["oc.lazyLoad", "fluidHttp", "fluidFrame", "fluidMe
                     this.fluidBreadcrumb.open = function (page, $index, $event) {
                         panel.goTo(page, $event);
                     }
-                    fluidPanelService.fluidPanel[this.id] = this;
 
-                    this.close = function (task, $event) {
+                    this.close = function (task, $event, item) {
                         function closePage($index, fluidPanel) {
                             var breadcrumb = fluidPanel.fluidBreadcrumb;
                             var bPages = fluidPanel.fluidBreadcrumb.pages;
@@ -4342,6 +4245,9 @@ angular.module("fluidPanel", ["oc.lazyLoad", "fluidHttp", "fluidFrame", "fluidMe
                                         panel.frame.removeTask(task);
                                         panel.destroy = true;
                                         panel.clear();
+                                        if (item) {
+                                            item.count--;
+                                        }
                                     } else {
                                         bPages.splice($bIndex, 1);
                                         if (breadcrumb.current > $bIndex) {
@@ -4371,6 +4277,7 @@ angular.module("fluidPanel", ["oc.lazyLoad", "fluidHttp", "fluidFrame", "fluidMe
                         }
                         this.loaders.push(loadedAction);
                     }
+                    frame.fluidPanel[this.id] = this;
                 }
             }
             return fluidPanel;
@@ -4790,34 +4697,60 @@ angular.module("fluidTaskcontrols", ["fluidTask"])
     }]);;/**
  * Created by jerico on 4/29/2015.
  */
-angular.module("fluidTasknav", [])
-    .directive("fluidTasknav", ["$templateCache", "fluidTasknav", function (tc, FluidTasknav) {
-        return {
-            restrict: "AE",
-            scope: false,
-            template: tc.get("templates/fluid/fluidTasknav.html"),
-            replace: true,
-            link: function (scope, element, attr) {
+angular.module("fluidTasknav", ["fluidTask", "fluidFrame", "fluidPanel"])
+    .directive("fluidTasknav", ["$templateCache", "fluidTasknav", "fluidTaskService", "fluidFrameService", "FluidPanelModel",
+        function (tc, FluidTasknav, fluidTaskService, FrameService, FluidPanel) {
+            return {
+                restrict: "AE",
+                scope: false,
+                template: tc.get("templates/fluid/fluidTasknav.html"),
+                replace: true,
+                link: function (scope, element, attr) {
 
-                if (attr.showOnLoad === "true") {
-                    $("body").toggleClass("toggle-offcanvas");
+                    if (attr.showOnLoad === "true") {
+                        $("body").toggleClass("toggle-offcanvas");
+                    }
+
+                    if (attr.name) {
+                        scope.fluidTasknav = new FluidTasknav({
+                            name: attr.name
+                        });
+
+                        if (attr.frame) {
+                            scope.fluidTasknav.frame = attr.frame;
+                        }
+
+                    } else {
+                        throw "Name is required.";
+                    }
+
+                    scope.getTask = function (item) {
+                        fluidTaskService.findTaskByName(item.name)
+                            .then(function (task) {
+                                item.title = task.title;
+                                item.pages = task.pages;
+                                item.useImg = task.useImg;
+                                item.imgSrc = task.imgSrc;
+                                item.glyph = task.glyph;
+                            })
+                    }
+
+                    scope.getPanel = function (task) {
+                        return new FluidPanel(task);
+                    }
+
                 }
-
-                if (attr.name) {
-                    scope.fluidTasknav = new FluidTasknav({
-                        name: attr.name
-                    })
-                }
-
             }
-        }
-    }])
-    .factory("fluidTasknav", ["fluidTasknavService", function (fluidTasknavService) {
+        }])
+    .factory("fluidTasknav", ["fluidTasknavService", "fluidFrameService", function (fluidTasknavService, FrameService) {
 
         var tasknav = function (data) {
 
             if (data.name) {
                 this.name = data.name;
+            }
+            if (data.frame) {
+                this.frame = data.frame;
             }
 
             if (fluidTasknavService.getNav(this.name) != null) {
@@ -4833,6 +4766,10 @@ angular.module("fluidTasknav", [])
                     this.groups.push(group);
                 }
 
+                this.getFrameService = function () {
+                    return new FrameService(this.frame);
+                }
+
                 fluidTasknavService.putNav(this.name, this);
 
                 return this;
@@ -4841,7 +4778,7 @@ angular.module("fluidTasknav", [])
 
         return tasknav;
     }])
-    .service("fluidTasknavService", [ function () {
+    .service("fluidTasknavService", [function () {
         this.tasknavs = [];
         this.putNav = function (name, tasknav) {
             this.tasknavs[name] = tasknav;
@@ -4975,7 +4912,7 @@ angular.module("templates/fluid/fluidBreadcrumb.html", []).run(["$templateCache"
     "        <span ng-mouseover=\"item[$index].showClose=true && $index > 0;item[$index].active='hovered'\"\n" +
     "              ng-mouseleave=\"item[$index].showClose=false;item[$index].active='default'\">\n" +
     "            <span class=\"label\" ng-class=\"breadcrumb.current === $index ?'active':'inactive'\"\n" +
-    "                  ng-click=\"breadcrumb.open(bread,$index,$event)\">{{bread}}</span>\n" +
+    "                  ng-click=\"breadcrumb.open(bread,$index,$event)\">{{breadcrumb.getTitle(bread)}}</span>\n" +
     "            <i ng-if=\"item[$index].showClose\" class=\"fa fa-close text-danger\" title=\"Close {{bread}}\"\n" +
     "               ng-click=\"breadcrumb.close(bread,$index,$event)\"></i>\n" +
     "        </span>\n" +
@@ -5466,7 +5403,66 @@ angular.module("templates/fluid/fluidTaskcontrols.html", []).run(["$templateCach
 angular.module("templates/fluid/fluidTasknav.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("templates/fluid/fluidTasknav.html",
     "<div id class=\"fluid-tasknav\" fluid-resize-frame>\n" +
-    "    {{fluidTasknav}}\n" +
+    "    <div class=\"input-group\"><input ng-model=\"navSearch\" class=\"form-control\" placeholder=\"Search here\">\n" +
+    "\n" +
+    "        <div class=\"input-group-addon\"><i class=\"fa fa-search\"></i></div>\n" +
+    "    </div>\n" +
+    "    <table class=\"table table-responsive\">\n" +
+    "        <tbody ng-repeat=\"group in fluidTasknav.groups\" ng-if=\"!group.empty\">\n" +
+    "        <tr class=\"group\" ng-init=\"group.show = $index == 0 ? true : false\" ng-click=\"group.show=!group.show\">\n" +
+    "            <td>\n" +
+    "                <span class=\"pull-left hidden-sm hidden-xs\">{{group.title}}</span>\n" +
+    "            </td>\n" +
+    "        </tr>\n" +
+    "        <tr ng-if=\"group.show\" id=\"group_{{group.name}}_panel\" ng-animate=\"{enter:'slideInDown', leave:'slideOutUp'}\">\n" +
+    "            <td ng-repeat=\"item in group.tasks | filter: navSearch\"\n" +
+    "                ng-init=\"getTask(item); item.count = 0;\" class=\"task-item\">\n" +
+    "                <div class=\"item-title\" ng-click=\"fluidTasknav.getFrameService().openTask(item.name)\">\n" +
+    "                    <span class=\"pull-left icon\">\n" +
+    "                        <img ng-if=\"item.useImg\" src=\"{{item.imgSrc}}\" width=\"25\" height=\"25\">\n" +
+    "                        <i ng-if=\"!item.useImg\" ng-class=\"item.glyph\"></i>\n" +
+    "\n" +
+    "                    </span>\n" +
+    "                    <span class=\"pull-left hidden-sm hidden-xs\">{{item.title}}</span>\n" +
+    "                    <span class=\"pull-right\"> <span ng-if=\"item.count > 0\" class=\"badge\">{{item.count}}</span></span>\n" +
+    "                </div>\n" +
+    "                <div ng-repeat=\"task in fluidTasknav.getFrameService().tasks | filter : {name:item.name}\"\n" +
+    "                     ng-init=\"item.count = ($index + 1)\"\n" +
+    "                     class=\"item-task\" ng-mouseover=\"task.showControl=true\" ng-mouseleave=\"task.showControl=false\">\n" +
+    "                    <div class=\"task-header\">\n" +
+    "                        <span class=\"pull-left\">{{task.title}}</span>\n" +
+    "                    <span ng-if=\"task.showControl\" class=\"hidden-sm hidden-xs pull-right controls\">\n" +
+    "                        <i class=\"hidden-md fa fa-gear text-success\" ng-click=\"task.showSetting=!task.showSetting\"></i>\n" +
+    "                        <i class=\"fa fa-close text-danger\"\n" +
+    "                           ng-click=\"getPanel(task).close(task, $event, item);\"></i>\n" +
+    "                    </span>\n" +
+    "                    </div>\n" +
+    "\n" +
+    "                    <div ng-init ng-if=\"task.showSetting\" class=\"settings\"\n" +
+    "                         ng-animate=\"{enter:'slideInDown', leave:'slideOutUp'}\">\n" +
+    "                        <ul class=\"list-group\">\n" +
+    "                            <li class=\"list-group-item list-group-item-heading list-group-item-info\"\n" +
+    "                                ng-click=\"task.showPages=!task.showPages\">Pages\n" +
+    "                            </li>\n" +
+    "                            <li ng-if=\"task.showPages\" class=\"list-group-item\" ng-repeat=\"page in task.pages\"\n" +
+    "                                ng-click=\"getPanel(task).goTo(page.name,$event)\">{{page.title}}\n" +
+    "                            </li>\n" +
+    "                            <li ng-click=\"task.showSizes=!task.showSizes\"\n" +
+    "                                class=\"list-group-item list-group-item-heading list-group-item-info\">Size\n" +
+    "                            </li>\n" +
+    "                            <li ng-if=\"task.showSizes\" class=\"list-group-item\" ng-click=\"task.size=25\">25%</li>\n" +
+    "                            <li ng-if=\"task.showSizes\" class=\"list-group-item\" ng-click=\"task.size=50\">50%</li>\n" +
+    "                            <li ng-if=\"task.showSizes\" class=\"list-group-item\" ng-click=\"task.size=75\">75%</li>\n" +
+    "                            <li ng-if=\"task.showSizes\" class=\"list-group-item\" ng-click=\"task.size=100\">100%</li>\n" +
+    "                        </ul>\n" +
+    "                    </div>\n" +
+    "                </div>\n" +
+    "            </td>\n" +
+    "\n" +
+    "        </tr>\n" +
+    "        </tbody>\n" +
+    "    </table>\n" +
+    "\n" +
     "</div>");
 }]);
 

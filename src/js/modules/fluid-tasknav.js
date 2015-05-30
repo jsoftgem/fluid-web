@@ -1,34 +1,60 @@
 /**
  * Created by jerico on 4/29/2015.
  */
-angular.module("fluidTasknav", [])
-    .directive("fluidTasknav", ["$templateCache", "fluidTasknav", function (tc, FluidTasknav) {
-        return {
-            restrict: "AE",
-            scope: false,
-            template: tc.get("templates/fluid/fluidTasknav.html"),
-            replace: true,
-            link: function (scope, element, attr) {
+angular.module("fluidTasknav", ["fluidTask", "fluidFrame", "fluidPanel"])
+    .directive("fluidTasknav", ["$templateCache", "fluidTasknav", "fluidTaskService", "fluidFrameService", "FluidPanelModel",
+        function (tc, FluidTasknav, fluidTaskService, FrameService, FluidPanel) {
+            return {
+                restrict: "AE",
+                scope: false,
+                template: tc.get("templates/fluid/fluidTasknav.html"),
+                replace: true,
+                link: function (scope, element, attr) {
 
-                if (attr.showOnLoad === "true") {
-                    $("body").toggleClass("toggle-offcanvas");
+                    if (attr.showOnLoad === "true") {
+                        $("body").toggleClass("toggle-offcanvas");
+                    }
+
+                    if (attr.name) {
+                        scope.fluidTasknav = new FluidTasknav({
+                            name: attr.name
+                        });
+
+                        if (attr.frame) {
+                            scope.fluidTasknav.frame = attr.frame;
+                        }
+
+                    } else {
+                        throw "Name is required.";
+                    }
+
+                    scope.getTask = function (item) {
+                        fluidTaskService.findTaskByName(item.name)
+                            .then(function (task) {
+                                item.title = task.title;
+                                item.pages = task.pages;
+                                item.useImg = task.useImg;
+                                item.imgSrc = task.imgSrc;
+                                item.glyph = task.glyph;
+                            })
+                    }
+
+                    scope.getPanel = function (task) {
+                        return new FluidPanel(task);
+                    }
+
                 }
-
-                if (attr.name) {
-                    scope.fluidTasknav = new FluidTasknav({
-                        name: attr.name
-                    })
-                }
-
             }
-        }
-    }])
-    .factory("fluidTasknav", ["fluidTasknavService", function (fluidTasknavService) {
+        }])
+    .factory("fluidTasknav", ["fluidTasknavService", "fluidFrameService", function (fluidTasknavService, FrameService) {
 
         var tasknav = function (data) {
 
             if (data.name) {
                 this.name = data.name;
+            }
+            if (data.frame) {
+                this.frame = data.frame;
             }
 
             if (fluidTasknavService.getNav(this.name) != null) {
@@ -44,6 +70,10 @@ angular.module("fluidTasknav", [])
                     this.groups.push(group);
                 }
 
+                this.getFrameService = function () {
+                    return new FrameService(this.frame);
+                }
+
                 fluidTasknavService.putNav(this.name, this);
 
                 return this;
@@ -52,7 +82,7 @@ angular.module("fluidTasknav", [])
 
         return tasknav;
     }])
-    .service("fluidTasknavService", [ function () {
+    .service("fluidTasknavService", [function () {
         this.tasknavs = [];
         this.putNav = function (name, tasknav) {
             this.tasknavs[name] = tasknav;

@@ -1,3 +1,62 @@
 <div id class="fluid-tasknav" fluid-resize-frame>
-    {{fluidTasknav}}
+    <div class="input-group"><input ng-model="navSearch" class="form-control" placeholder="Search here">
+
+        <div class="input-group-addon"><i class="fa fa-search"></i></div>
+    </div>
+    <table class="table table-responsive">
+        <tbody ng-repeat="group in fluidTasknav.groups" ng-if="!group.empty">
+        <tr class="group" ng-init="group.show = $index == 0 ? true : false" ng-click="group.show=!group.show">
+            <td>
+                <span class="pull-left hidden-sm hidden-xs">{{group.title}}</span>
+            </td>
+        </tr>
+        <tr ng-if="group.show" id="group_{{group.name}}_panel" ng-animate="{enter:'slideInDown', leave:'slideOutUp'}">
+            <td ng-repeat="item in group.tasks | filter: navSearch"
+                ng-init="getTask(item); item.count = 0;" class="task-item">
+                <div class="item-title" ng-click="fluidTasknav.getFrameService().openTask(item.name)">
+                    <span class="pull-left icon">
+                        <img ng-if="item.useImg" src="{{item.imgSrc}}" width="25" height="25">
+                        <i ng-if="!item.useImg" ng-class="item.glyph"></i>
+
+                    </span>
+                    <span class="pull-left hidden-sm hidden-xs">{{item.title}}</span>
+                    <span class="pull-right"> <span ng-if="item.count > 0" class="badge">{{item.count}}</span></span>
+                </div>
+                <div ng-repeat="task in fluidTasknav.getFrameService().tasks | filter : {name:item.name}"
+                     ng-init="item.count = ($index + 1)"
+                     class="item-task" ng-mouseover="task.showControl=true" ng-mouseleave="task.showControl=false">
+                    <div class="task-header">
+                        <span class="pull-left">{{task.title}}</span>
+                    <span ng-if="task.showControl" class="hidden-sm hidden-xs pull-right controls">
+                        <i class="hidden-md fa fa-gear text-success" ng-click="task.showSetting=!task.showSetting"></i>
+                        <i class="fa fa-close text-danger"
+                           ng-click="getPanel(task).close(task, $event, item);"></i>
+                    </span>
+                    </div>
+
+                    <div ng-init ng-if="task.showSetting" class="settings"
+                         ng-animate="{enter:'slideInDown', leave:'slideOutUp'}">
+                        <ul class="list-group">
+                            <li class="list-group-item list-group-item-heading list-group-item-info"
+                                ng-click="task.showPages=!task.showPages">Pages
+                            </li>
+                            <li ng-if="task.showPages" class="list-group-item" ng-repeat="page in task.pages"
+                                ng-click="getPanel(task).goTo(page.name,$event)">{{page.title}}
+                            </li>
+                            <li ng-click="task.showSizes=!task.showSizes"
+                                class="list-group-item list-group-item-heading list-group-item-info">Size
+                            </li>
+                            <li ng-if="task.showSizes" class="list-group-item" ng-click="task.size=25">25%</li>
+                            <li ng-if="task.showSizes" class="list-group-item" ng-click="task.size=50">50%</li>
+                            <li ng-if="task.showSizes" class="list-group-item" ng-click="task.size=75">75%</li>
+                            <li ng-if="task.showSizes" class="list-group-item" ng-click="task.size=100">100%</li>
+                        </ul>
+                    </div>
+                </div>
+            </td>
+
+        </tr>
+        </tbody>
+    </table>
+
 </div>

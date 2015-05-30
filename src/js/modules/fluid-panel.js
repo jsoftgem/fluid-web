@@ -1337,7 +1337,6 @@ angular.module("fluidPanel", ["oc.lazyLoad", "fluidHttp", "fluidFrame", "fluidMe
                         } else {
                             scope.fluidPanel = new FluidPanel(scope.task);
                             scope.fluidPanel.loaded = false;
-                            scope.fluidPanel.frame = new FluidFrame(scope.frame);
                             scope.$watch(function (scope) {
                                 return scope.fluidPanel.loaded;
                             }, function (loaded) {
@@ -1399,7 +1398,8 @@ angular.module("fluidPanel", ["oc.lazyLoad", "fluidHttp", "fluidFrame", "fluidMe
                         }
                         scope.$on("$destroy", function () {
                             if (scope.fluidPanel.destroy) {
-                                fluidPanelService.clear(scope.fluidPanel.id);
+                                scope.fluidPanel.clear();
+                                scope.fluidPanel.frame.fluidPanel[scope.fluidPanel.id] = undefined;
                             }
                         });
 
@@ -1424,12 +1424,21 @@ angular.module("fluidPanel", ["oc.lazyLoad", "fluidHttp", "fluidFrame", "fluidMe
             }
         }
     }])
-    .factory("FluidPanelModel", ["TaskControl", "ToolBarItem", "fluidPanelService", "fluidTaskService", "FluidBreadcrumb", "FluidPage", "$q", "fluidFrameService",
-        function (TaskControl, ToolBarItem, fluidPanelService, TaskService, FluidBreadcrumb, FluidPage, q, FluidFrame) {
+    .factory("FluidPanelModel", ["TaskControl", "ToolBarItem", "fluidTaskService", "FluidBreadcrumb", "FluidPage", "$q", "fluidFrameService",
+        function (TaskControl, ToolBarItem, TaskService, FluidBreadcrumb, FluidPage, q, FluidFrame) {
             var fluidPanel = function (task) {
-                if (fluidPanelService.fluidPanel[task.fluidId] != null) {
-                    return fluidPanelService.fluidPanel[task.fluidId];
+                if (!task.frame) {
+                    throw "Task must have frame property value.";
+                }
+
+                var frame = new FluidFrame(task.frame);
+                if (!frame.fluidPanel) {
+                    frame.fluidPanel = [];
+                }
+                if (frame.fluidPanel[task.fluidId] != null) {
+                    return frame.fluidPanel[task.fluidId];
                 } else {
+                    this.frame = frame;
                     this.pages = [];
                     this.id = task.fluidId;
                     this.$ = $("div#_id_fp_" + this.id);
@@ -1678,9 +1687,8 @@ angular.module("fluidPanel", ["oc.lazyLoad", "fluidHttp", "fluidFrame", "fluidMe
                     this.fluidBreadcrumb.open = function (page, $index, $event) {
                         panel.goTo(page, $event);
                     }
-                    fluidPanelService.fluidPanel[this.id] = this;
 
-                    this.close = function (task, $event) {
+                    this.close = function (task, $event, item) {
                         function closePage($index, fluidPanel) {
                             var breadcrumb = fluidPanel.fluidBreadcrumb;
                             var bPages = fluidPanel.fluidBreadcrumb.pages;
@@ -1709,6 +1717,9 @@ angular.module("fluidPanel", ["oc.lazyLoad", "fluidHttp", "fluidFrame", "fluidMe
                                         panel.frame.removeTask(task);
                                         panel.destroy = true;
                                         panel.clear();
+                                        if (item) {
+                                            item.count--;
+                                        }
                                     } else {
                                         bPages.splice($bIndex, 1);
                                         if (breadcrumb.current > $bIndex) {
@@ -1738,6 +1749,7 @@ angular.module("fluidPanel", ["oc.lazyLoad", "fluidHttp", "fluidFrame", "fluidMe
                         }
                         this.loaders.push(loadedAction);
                     }
+                    frame.fluidPanel[this.id] = this;
                 }
             }
             return fluidPanel;

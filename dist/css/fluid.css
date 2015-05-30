@@ -327,8 +327,6 @@ body {
     overflow-y: auto;
 }
 
-
-
 @media (max-width: 767px) {
     .fluid-tasknav {
         margin-left: -80px;
@@ -378,6 +376,71 @@ body {
     .toggle-offcanvas {
         padding-left: 300px;
     }
+
+    .fluid-tasknav .group {
+        background: #d9edf7;
+        min-height: 25px;
+        cursor: pointer;
+    }
+
+    .fluid-tasknav .group:hover {
+
+    }
+
+    .fluid-tasknav .task-item {
+        display: block;
+        padding: 10px 2px 0px 14px;
+    }
+
+    .task-item .item-title {
+        cursor: pointer;
+        min-height: 26px;
+    }
+
+    .item-title .icon {
+        margin-right: 5px;
+    }
+
+    .item-title .icon i {
+        font-size: 20px;
+    }
+
+    .task-item .item-task {
+        padding: 3px 0px 0px 14px;
+        min-height: 26px;
+        background: #FFFFFF;
+    }
+
+    .item-task .task-header {
+        min-height: 26px;
+    }
+
+    .item-task .controls {
+        padding-right: 2px;
+    }
+
+    .item-task .controls i {
+        cursor: pointer;
+        font-size: 15px;
+    }
+
+    .item-task .settings {
+        padding: 0px 1px 0px 0px;
+        margin-left: -27px;
+    }
+
+    .settings li {
+        cursor: pointer;
+        padding: 0 15px;
+        height: 26px;
+        border: none;
+    }
+
+    .settings li:hover {
+        background: #d9edf7;
+        color: #31708f;
+    }
+
 }
 .fluid-toolbar {
     background-color: rgba(204, 229, 255, 0.5);

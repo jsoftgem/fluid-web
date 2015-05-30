@@ -683,3 +683,12 @@ fluidComponents
         }
     });
 /**Prototypes**/
+
+
+/** TODO:
+ *  1) FluidTasknav - taskbar (active, minimize, fullscreen, settings,scrollTo);
+ *  2) FluidPanel - fullScreen - disable sizes;
+ *  3) FluidBreadcrumb - responsive;
+ *  4) FluidPanel - XS, SM mobile view;
+ *  5) FluidFrame - item must be assigned to FluidPanel upon opening of task;
+ * **/
