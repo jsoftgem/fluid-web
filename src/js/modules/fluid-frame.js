@@ -15,7 +15,7 @@
 
 var frameKey = "frame_";
 angular.module("fluidFrame", ["fluidHttp", "fluidTask", "fluidSession"])
-    .directive("fluidFrame2", ["$templateCache", "$window", "fluidFrameService", function (tc, window, FrameService) {
+    .directive("fluidFrame", ["$templateCache", "$window", "fluidFrameService", function (tc, window, FrameService) {
         return {
             restrict: "E",
             replace: true,
@@ -33,126 +33,7 @@ angular.module("fluidFrame", ["fluidHttp", "fluidTask", "fluidSession"])
                     console.debug("fluidFrame-fluidFrame2$watch.frame", frame);
                 })
             }],
-            template: tc.get("templates/fluid/fluidFrame2.html")
-        }
-    }])
-    .directive("fluidFrame", ["fluidFrameService", "$window", "$rootScope", "$timeout", "$templateCache", function (f, w, rs, t, tc) {
-        return {
-            restrict: "AE",
-            transclude: true,
-            scope: true,
-            template: tc.get("templates/fluid/fluidFrame.html"),
-            replace: true,
-            controller: function ($scope) {
-
-            },
-            link: function (scope, element) {
-
-                scope.frame = {};
-                scope.fluidFrameService = f;
-                scope.$watch(function (scope) {
-                    return scope.fluidFrameService.fullScreen;
-                }, function (fullScreen) {
-
-                    var frameDiv = $(element.find("div.form-group")[1]);
-
-                    if (!fullScreen) {
-                        var height = window.innerHeight;
-                        height = estimatedFrameHeight(height);
-                        var frameHeight = height;
-                        if (scope.fluidFrameService.isSearch) {
-                            frameDiv.attr("style", "height:" + frameHeight + "px;overflow:auto");
-                        } else {
-                            element.attr("style", "height:" + frameHeight + "px;overflow:auto");
-                        }
-                        $("body").attr("style", "height: " + window.innerHeight + "px;overflow:hidden");
-                    } else {
-                        var height = window.innerHeight;
-                        height = estimatedFrameHeight(height);
-                        var frameHeight = height;
-                        if (scope.fluidFrameService.isSearch) {
-                            frameDiv.attr("style", "height:" + frameHeight + "px;overflow:hidden");
-                        } else {
-                            element.attr("style", "height:" + frameHeight + "px;overflow:hidden");
-                        }
-                        $("body").attr("style", "height: " + window.innerHeight + "px;overflow:hidden");
-                    }
-                });
-
-
-                scope.show = function (task) {
-                    if (!task.pinned) {
-                        task.active = !task.active;
-                    }
-                };
-
-                $(window).on("resize", function () {
-                    if (scope) {
-                        if (!scope.fluidFrameService.fullScreen) {
-                            var height = window.innerHeight;
-                            height = estimatedFrameHeight(height);
-                            var frameHeight = height;
-                            if (scope.fluidFrameService.isSearch) {
-                                frameDiv.attr("style", "height:" + frameHeight + "px;overflow:auto");
-                            } else {
-                                element.attr("style", "height:" + frameHeight + "px;overflow:auto");
-                            }
-                        } else {
-                            var height = window.innerHeight;
-                            height = estimatedFrameHeight(height);
-                            if (scope.fluidFrameService.isSearch) {
-                                frameDiv.attr("style", "height:" + frameHeight + "px;overflow:hidden");
-                            } else {
-                                element.attr("style", "height:" + frameHeight + "px;overflow:hidden");
-                            }
-                        }
-
-                        $("body").attr("style", "height: " + window.innerHeight + "px;overflow:hidden");
-                    }
-                });
-
-
-                scope.initTask = function (task) {
-                    if (task) {
-                        scope.$watch(function () {
-                            return task.active;
-                        }, function (newValue, oldValue) {
-                            if (true === newValue) {
-                                if (task.onWindowOpening) {
-                                    task.onWindowOpened();
-                                } else {
-                                    task.active = false;
-                                }
-                            }
-
-                        });
-                    }
-                }
-            }
-        };
-    }])
-    .directive("fluidResizeFrame", ["$window", function ($w) {
-        return {
-            restrict: "A",
-            link: function (scope, element, attr) {
-
-                var w = angular.element($w);
-
-                if (attr.offset) {
-                    scope.offset = attr.offset;
-                }
-
-                if (attr.reduceHeight) {
-                    scope.reduceHeight = attr.reduceHeight;
-                }
-
-                w.bind("resize", function () {
-                    autoSizeFrame(element, scope.offset, w.height(), scope.reduceHeight);
-                });
-
-                autoSizeFrame(element, scope.offset, w.height(), scope.reduceHeight);
-
-            }
+            template: tc.get("templates/fluid/fluidFrame.html")
         }
     }])
     .directive("fluidFullscreenHeight", ["$window", function ($w) {

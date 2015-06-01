@@ -1,16 +1,12 @@
-<div class="container-fluid frame-content"
-     ng-class="fluidFrameService.fullScreen ? 'frame-fullscreen' : 'frame-fluidscreen'">
-
+<div class="fluid-frame" ng-class="!frame.fullScreen ?'default-frame':'full'">
     <bootstrap-viewport></bootstrap-viewport>
-    <div ng-if="fluidFrameService.fullScreen" class="frame-content-div" column="12"
-         ng-show="fluidFrameService.fullScreen" style="padding: 0;">
-        <fluid-panel task='fluidFrameService.fullScreenTask'></fluid-panel>
-    </div>
-    <div ng-if="!fluidFrameService.fullScreen" class="container-fluid frame-content-div fluid-frame-div"
-         ng-hide="fluidFrameService.fullScreen">
-        <div ng-init="initTask(task)" class="fluid-panel-transition fluid-frame-task"
-             ng-repeat='task in fluidFrameService.taskList | filter:{active:true, title:fluidFrameService.searchTask}'>
-            <fluid-panel task='task'></fluid-panel>
+    <fluid-panel ng-if="frame.fullScreen" class="fullscreen" task='frame.task' frame="{{frame.name}}"
+                  fluid-fullscreen-height></fluid-panel>
+    <div ng-if="!frame.fullScreen">
+        <div class="fluid-frame-task">
+            <fluid-panel task="task" frame="{{frame.name}}"
+                          ng-repeat='task in frame.tasks | filter:{active:true}'></fluid-panel>
+
         </div>
     </div>
 </div>

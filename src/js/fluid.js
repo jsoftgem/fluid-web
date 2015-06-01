@@ -665,6 +665,27 @@ fluidComponents
                 });
             }
         }
+    }])
+    .directive("fillHeight", ["$window", function ($w) {
+        return {
+            restrict: "A",
+            link: function (scope, element, attr) {
+
+                var w = angular.element($w);
+
+                if (attr.reduceHeight) {
+                    scope.reduceHeight = attr.reduceHeight;
+                }
+
+                w.bind("resize", function () {
+                    console.debug("fluid-fillHeight-window-height: ", w.height());
+                    fillHeight(element, w.height(), scope.reduceHeight);
+                });
+
+                fillHeight(element, w.height(), scope.reduceHeight);
+
+            }
+        }
     }]);
 
 fluidComponents
@@ -691,4 +712,5 @@ fluidComponents
  *  3) FluidBreadcrumb - responsive;
  *  4) FluidPanel - XS, SM mobile view;
  *  5) FluidFrame - item must be assigned to FluidPanel upon opening of task;
+ *  6) FluidTasknav - Task widget, widgetType: alert, overview, media and message; custom icon glyph/img
  * **/

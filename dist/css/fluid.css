@@ -424,6 +424,11 @@ body {
         font-size: 15px;
     }
 
+    .item-task .indicator {
+        margin-right: 2px;
+    }
+
+
     .item-task .settings {
         padding: 0px 1px 0px 0px;
         margin-left: -27px;

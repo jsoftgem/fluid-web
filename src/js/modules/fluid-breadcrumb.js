@@ -23,6 +23,7 @@ angular.module("fluidBreadcrumb", [])
                 this.fluidId = fluidPanel.id;
                 this.pages = [];
                 this.current = 0;
+                this.fluidPanel = fluidPanel;
                 this.hasNext = function () {
                     return this.current < (this.pages.length - 1);
                 }
@@ -70,8 +71,13 @@ angular.module("fluidBreadcrumb", [])
                 this.open = function (page, $index, $event) {
                     this.current = $index;
                 }
-                this.getTitle = function(bread){
-                    return fluidPanel.getPage(bread).title;
+                this.getTitle = function (bread) {
+                    if (this.fluidPanel) {
+                        var page = this.fluidPanel.getPage(bread);
+                        if (page) {
+                            return page.title;
+                        }
+                    }
                 }
                 bcs.breadcrumbs[fluidPanel.id] = this;
 

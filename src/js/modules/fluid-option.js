@@ -16,8 +16,8 @@ angular.module("fluidOption", [])
                 }, function (height) {
                     scope.parentHeight = height;
                     var template = element.find(".fluid-option-template");
-                    template.css("width", element.parent().width());
-                    element.css("width", element.parent().width());
+                   /* template.css("width", element.parent().width());
+                    element.css("width", element.parent().width());*/
 
                 });
 
@@ -27,8 +27,8 @@ angular.module("fluidOption", [])
 
                 $(w).on("resize", function () {
                     var template = element.find(".fluid-option-template");
-                    template.css("width", element.parent().width());
-                    element.css("width", element.parent().width());
+                  /*  template.css("width", element.parent().width());
+                    element.css("width", element.parent().width());*/
                 });
             }
         }
@@ -52,7 +52,7 @@ angular.module("fluidOption", [])
                 tc.put(templateId, element.html());
             },
             replace: true,
-            template: "<div ng-transclude style='display: none; position: absolute; height: 0px;width: 0px;padding: 0;margin: 0'></div>"
+            template: "<div ng-transclude style='display: none; position: absolute; height: 0px;/*width: 0px;*/padding: 0;margin: 0'></div>"
         }
     }])
     .factory("FluidOption", ["fluidOptionService", "$compile", "$templateCache", function (fos, c, tc) {

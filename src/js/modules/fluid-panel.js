@@ -2,14 +2,14 @@
  * Created by jerico on 4/28/2015.
  */
 angular.module("fluidPanel", ["oc.lazyLoad", "fluidHttp", "fluidFrame", "fluidMessage", "fluidOption", "fluidSession", "fluidTool", "fluidPage", "fluidTask", "fluidTaskcontrols", "fluidBreadcrumb"])
-    .directive("fluidPanel", ["fluidFrameService", "fluidHttpService", "$templateCache", "$compile",
+    .directive("fluidPanelObselete", ["fluidFrameService", "fluidHttpService", "$templateCache", "$compile",
         "fluidMessageService", "$rootScope", "$q", "$timeout", "$ocLazyLoad",
         "sessionService", "fluidOptionService", "fluidPageService",
         function (f, f2, tc, c, ms, rs, q, t, oc, ss, fos, fps) {
             return {
                 scope: {task: '='},
                 restrict: "E",
-                template: tc.get("templates/fluid/fluidPanel.html"),
+                template: tc.get("templates/fluid/fluidPanelObselete.html"),
                 replace: true,
                 link: {
                     pre: function (scope, element) {
@@ -1278,14 +1278,14 @@ angular.module("fluidPanel", ["oc.lazyLoad", "fluidHttp", "fluidFrame", "fluidMe
             replace: true
         }
     }])
-    .directive("fluidPanel2", ["$templateCache", "FluidPanelModel", "fluidToolbarService", "$ocLazyLoad", "$compile", "fluidPanelService", "fluidFrameService",
+    .directive("fluidPanel", ["$templateCache", "FluidPanelModel", "fluidToolbarService", "$ocLazyLoad", "$compile", "fluidPanelService", "fluidFrameService",
         function (tc, FluidPanel, ftb, oc, c, fluidPanelService, FluidFrame) {
             return {
-                require: "^fluidFrame2",
+                require: "^fluidFrame",
                 scope: {task: "=", frame: "@"},
                 restrict: "E",
                 replace: true,
-                template: tc.get("templates/fluid/fluidPanel2.html"),
+                template: tc.get("templates/fluid/fluidPanel.html"),
                 link: {
                     pre: function (scope, element, attr) {
                         scope.loaded = function () {

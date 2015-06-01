@@ -263,37 +263,26 @@ function getOffset(parent, offset, index) {
 
 }
 
-function autoSizeFrame(element, offset, height, reducedHeight) {
 
-    console.debug("autoSizeFrame.offset", offset);
-    var frameHeight = height - 2;
-    $("body").css("max-height", height).css("overflow-y", "hidden");
-
-    if (offset) {
-        frameHeight -= offset;
-        // frameHeight -= 10;
-    }
+function fillHeight(element, height, reducedHeight) {
+    var elemHeight = height;
     if (reducedHeight) {
-        frameHeight -= reducedHeight;
+        elemHeight -= reducedHeight;
     }
-
-    element.css("margin-top", offset + "px");
-    element.height(frameHeight);
+    element.height(elemHeight);
 }
+
 
 function autoFullscreen(element, height, width) {
     var panelHeight = height;
     var offset = getOffset(element, 0, 0);
     console.debug("fluidFrame-autoFullscreen.element", element);
     console.debug("fluidFrame-autoFullscreen.height", height);
-    var pageHeight = (panelHeight - offset);
-    /*
-     element.find(".panel-collapse").height(panelHeight - 23);
-     element.find(".panel-body").height(panelHeight - 24);*/
+    var pageHeight = (panelHeight - (offset + 7));
+
     element.find(".fluid-page").ready(function () {
         element.find(".fluid-page").css("max-height", pageHeight + "px").css("overflow-y", "auto");
     });
-    /*element.width(width);*/
     element.height(panelHeight);
 
 }
@@ -365,24 +354,24 @@ function LightenDarkenColor(col, amt) {
         usePound = true;
     }
 
-    var num = parseInt(col,16);
+    var num = parseInt(col, 16);
 
     var r = (num >> 16) + amt;
 
     if (r > 255) r = 255;
-    else if  (r < 0) r = 0;
+    else if (r < 0) r = 0;
 
     var b = ((num >> 8) & 0x00FF) + amt;
 
     if (b > 255) b = 255;
-    else if  (b < 0) b = 0;
+    else if (b < 0) b = 0;
 
     var g = (num & 0x0000FF) + amt;
 
     if (g > 255) g = 255;
     else if (g < 0) g = 0;
 
-    return (usePound?"#":"") + (g | (b << 8) | (r << 16)).toString(16);
+    return (usePound ? "#" : "") + (g | (b << 8) | (r << 16)).toString(16);
 
 }
 

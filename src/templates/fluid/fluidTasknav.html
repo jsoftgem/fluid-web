@@ -1,4 +1,4 @@
-<div id class="fluid-tasknav" fluid-resize-frame>
+<div id class="fluid-tasknav">
     <div class="input-group"><input ng-model="navSearch" class="form-control" placeholder="Search here">
 
         <div class="input-group-addon"><i class="fa fa-search"></i></div>
@@ -20,13 +20,14 @@
 
                     </span>
                     <span class="pull-left hidden-sm hidden-xs">{{item.title}}</span>
-                    <span class="pull-right"> <span ng-if="item.count > 0" class="badge">{{item.count}}</span></span>
+                    <span class="pull-right"> <span ng-if="item.count > 1" class="badge">{{item.count}}</span></span>
                 </div>
                 <div ng-repeat="task in fluidTasknav.getFrameService().tasks | filter : {name:item.name}"
                      ng-init="item.count = ($index + 1)"
                      class="item-task" ng-mouseover="task.showControl=true" ng-mouseleave="task.showControl=false">
                     <div class="task-header">
-                        <span class="pull-left">{{task.title}}</span>
+                        <span class="pull-left"><i class="indicator" ng-if="task.active"
+                                                   ng-class="getPanel(task).loaded ?'text-success fa fa-circle':'fa fa-spinner fa-spin'"></i>{{task.title}}</span>
                     <span ng-if="task.showControl" class="hidden-sm hidden-xs pull-right controls">
                         <i class="hidden-md fa fa-gear text-success" ng-click="task.showSetting=!task.showSetting"></i>
                         <i class="fa fa-close text-danger"
@@ -58,5 +59,4 @@
         </tr>
         </tbody>
     </table>
-
 </div>
