@@ -265,11 +265,15 @@ function getOffset(parent, offset, index) {
 
 
 function fillHeight(element, height, reducedHeight) {
+    console.debug("fillHeight-element: ", element);
+    console.debug("fiilHeight-height: ", height)
+    console.debug("fiilHeight-reducedHeight: ", reducedHeight)
     var elemHeight = height;
     if (reducedHeight) {
         elemHeight -= reducedHeight;
     }
-    element.height(elemHeight);
+    console.debug("fiilHeight-elemHeight: ", elemHeight)
+    element.css("max-height",elemHeight+"px");
 }
 
 
@@ -278,7 +282,7 @@ function autoFullscreen(element, height, width) {
     var offset = getOffset(element, 0, 0);
     console.debug("fluidFrame-autoFullscreen.element", element);
     console.debug("fluidFrame-autoFullscreen.height", height);
-    var pageHeight = (panelHeight - (offset + 7));
+    var pageHeight = (panelHeight - (offset + 5));
 
     element.find(".fluid-page").ready(function () {
         element.find(".fluid-page").css("max-height", pageHeight + "px").css("overflow-y", "auto");

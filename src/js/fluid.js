@@ -678,10 +678,10 @@ fluidComponents
                 }
 
                 w.bind("resize", function () {
-                    console.debug("fluid-fillHeight-window-height: ", w.height());
                     fillHeight(element, w.height(), scope.reduceHeight);
                 });
 
+                console.debug("fluid-fillHeight-window-height: ", w.height());
                 fillHeight(element, w.height(), scope.reduceHeight);
 
             }
@@ -707,10 +707,11 @@ fluidComponents
 
 
 /** TODO:
- *  1) FluidTasknav - taskbar (active, minimize, fullscreen, settings,scrollTo);
+ *  1) FluidTasknav - taskbar (active, minimize, fullscreen, settings,scrollTo); - Scrap (for FluidPlatform)
  *  2) FluidPanel - fullScreen - disable sizes;
  *  3) FluidBreadcrumb - responsive;
  *  4) FluidPanel - XS, SM mobile view;
  *  5) FluidFrame - item must be assigned to FluidPanel upon opening of task;
- *  6) FluidTasknav - Task widget, widgetType: alert, overview, media and message; custom icon glyph/img
+ *  6) FluidTasknav - Task widget, widgetType: alert, overview, media and message; custom icon glyph/img - Scrap (for FluidPlatform)
+ *  7) FluidTask - onClose, onLoad, onDestroy life-cycle
  * **/
