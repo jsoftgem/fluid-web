@@ -2202,28 +2202,24 @@ angular.module("fluidPage", ["fluidHttp", "fluidOption"])
 
                         scope.loadPage = function (page) {
                             console.debug("fluidPage-loadPage.page", page);
-                            if (!page) {
-                                element.html("");
-                                c(element.contents())(scope);
+                            scope.fluidPage = page;
+                            scope.fluidPanel.loaded = false;
+                            if (scope.fluidPage.ajax) {
+                                fps.loadAjax(page)
+                                    .then(function (data) {
+                                        scope.data = data;
+                                        element.html("<ng-include class='page' src='fluidPageService.render(fluidPage)' onload='onLoad()'></ng-include>");
+                                        element.attr("page-name", page.name);
+                                        c(element.contents())(scope);
+                                        console.debug("fluidPage-loadPage.loaded-page", page);
+                                    });
                             } else {
-                                scope.fluidPanel.loaded = false;
-                                scope.fluidPage = page;
-                                if (scope.fluidPage.ajax) {
-                                    fps.loadAjax(page)
-                                        .then(function (data) {
-                                            scope.data = data;
-                                            element.html("<ng-include class='page' src='fluidPageService.render(fluidPage)' onload='onLoad()'></ng-include>");
-                                            element.attr("page-name", page.name);
-                                            c(element.contents())(scope);
-                                            console.debug("fluidPage-loadPage.loaded-page", page);
-                                        });
-                                } else {
-                                    element.html("<ng-include class='page' src='fluidPageService.render(fluidPage)' onload='onLoad()'></ng-include>");
-                                    element.attr("page-name", page.name);
-                                    c(element.contents())(scope);
-                                    console.debug("fluidPage-loadPage.loaded-page", page);
-                                }
+                                element.html("<ng-include class='page' src='fluidPageService.render(fluidPage)' onload='onLoad()'></ng-include>");
+                                element.attr("page-name", page.name);
+                                c(element.contents())(scope);
+                                console.debug("fluidPage-loadPage.loaded-page", page);
                             }
+
 
                         }
 
@@ -2247,21 +2243,14 @@ angular.module("fluidPage", ["fluidHttp", "fluidOption"])
                             scope.fluidPage.option = new FluidOption(scope.fluidPanel);
                             scope.fluidPage.loaded = false;
                             //TODO: page onLoad error handling
-
                             scope.fluidPage.load(function () {
-                                if (!scope.fluidPage.loaded) {
-                                    scope.fluidPage.loaded = true;
-                                }
+                                scope.fluidPage.loaded = true;
+                                scope.fluidPanel.loaded = true;
                             }, function () {
-                                if (!scope.fluidPage.loaded) {
-                                    scope.fluidPage.loaded = true;
-                                    element.html("");
-                                    c(element.contents())(scope);
-                                }
-
+                                scope.fluidPage.loaded = true;
+                                scope.fluidPanel.loaded = true;
                             });
 
-                            scope.fluidPanel.loaded = true;
                         }
 
                     }
