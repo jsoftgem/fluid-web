@@ -269,6 +269,18 @@ angular.module("fluidTask", ["fluidSession", "fluidFrame"])
                     throw "Task ajax.url is required!";
                 }
             }
+
+
+            this.onClose = function(ok, cancel){
+                return ok();
+            }
+
+            this.onLoad = function(ok, failed){
+                return ok();
+            }
+
+
+
             console.debug("fluidTask-FluidTask.newTask", task);
             return task;
         }

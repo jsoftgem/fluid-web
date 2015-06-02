@@ -707,12 +707,13 @@ fluidComponents
 
 
 /** TODO:
- *  1) FluidTasknav - taskbar (active, minimize, fullscreen, settings,scrollTo);
+ *  1) FluidTasknav - taskbar (active, minimize, fullscreen, settings,scrollTo); - Scrap (for FluidPlatform)
  *  2) FluidPanel - fullScreen - disable sizes;
  *  3) FluidBreadcrumb - responsive;
  *  4) FluidPanel - XS, SM mobile view;
- *  5) FluidFrame - item must be assigned to FluidPanel upon opening of task;
- *  6) FluidTasknav - Task widget, widgetType: alert, overview, media and message; custom icon glyph/img
+ *  5) FluidFrame - item must be assigned to FluidPanel upon opening of task; - Scrap (for FluidPlatform)
+ *  6) FluidTasknav - Task widget, widgetType: alert, overview, media and message; custom icon glyph/img - Scrap (for FluidPlatform)
+ *  7) FluidTask - onClose, onLoad, onDestroy life-cycle
  * **/;/**
  * Created by jerico on 4/28/2015.
  */
@@ -2201,23 +2202,29 @@ angular.module("fluidPage", ["fluidHttp", "fluidOption"])
 
                         scope.loadPage = function (page) {
                             console.debug("fluidPage-loadPage.page", page);
-                            scope.fluidPanel.loaded = false;
-                            scope.fluidPage = page;
-                            if (scope.fluidPage.ajax) {
-                                fps.loadAjax(page)
-                                    .then(function (data) {
-                                        scope.data = data;
-                                        element.html("<ng-include class='page' src='fluidPageService.render(fluidPage)' onload='onLoad()'></ng-include>");
-                                        element.attr("page-name", page.name);
-                                        c(element.contents())(scope);
-                                        console.debug("fluidPage-loadPage.loaded-page", page);
-                                    });
-                            } else {
-                                element.html("<ng-include class='page' src='fluidPageService.render(fluidPage)' onload='onLoad()'></ng-include>");
-                                element.attr("page-name", page.name);
+                            if (!page) {
+                                element.html("");
                                 c(element.contents())(scope);
-                                console.debug("fluidPage-loadPage.loaded-page", page);
+                            } else {
+                                scope.fluidPanel.loaded = false;
+                                scope.fluidPage = page;
+                                if (scope.fluidPage.ajax) {
+                                    fps.loadAjax(page)
+                                        .then(function (data) {
+                                            scope.data = data;
+                                            element.html("<ng-include class='page' src='fluidPageService.render(fluidPage)' onload='onLoad()'></ng-include>");
+                                            element.attr("page-name", page.name);
+                                            c(element.contents())(scope);
+                                            console.debug("fluidPage-loadPage.loaded-page", page);
+                                        });
+                                } else {
+                                    element.html("<ng-include class='page' src='fluidPageService.render(fluidPage)' onload='onLoad()'></ng-include>");
+                                    element.attr("page-name", page.name);
+                                    c(element.contents())(scope);
+                                    console.debug("fluidPage-loadPage.loaded-page", page);
+                                }
                             }
+
                         }
 
                         console.debug("fluidPage.fluidPanel", scope.fluidPanel);
@@ -2240,9 +2247,21 @@ angular.module("fluidPage", ["fluidHttp", "fluidOption"])
                             scope.fluidPage.option = new FluidOption(scope.fluidPanel);
                             scope.fluidPage.loaded = false;
                             //TODO: page onLoad error handling
-                            scope.fluidPage.onLoad();
+
+                            scope.fluidPage.load(function () {
+                                if (!scope.fluidPage.loaded) {
+                                    scope.fluidPage.loaded = true;
+                                }
+                            }, function () {
+                                if (!scope.fluidPage.loaded) {
+                                    scope.fluidPage.loaded = true;
+                                    element.html("");
+                                    c(element.contents())(scope);
+                                }
+
+                            });
+
                             scope.fluidPanel.loaded = true;
-                            scope.fluidPage.loaded = true;
                         }
 
                     }
@@ -2327,12 +2346,19 @@ angular.module("fluidPage", ["fluidHttp", "fluidOption"])
                 }, $event);
             }
 
+            this.load = function (ok, failed) {
+                this.onLoad(function () {
+                    ok();
+                }, failed);
+            }
+
+
             this.failed = function (reason) {
                 rs.$broadcast("page_close_failed_evt" + this.fluidId + "_pg_" + this.name, reason);
             }
 
-            this.onLoad = function () {
-                return true;
+            this.onLoad = function (ok, failed) {
+                return ok();
             }
 
             this.onClose = function (ok, cancel) {
@@ -4538,6 +4564,18 @@ angular.module("fluidTask", ["fluidSession", "fluidFrame"])
                     throw "Task ajax.url is required!";
                 }
             }
+
+
+            this.onClose = function(ok, cancel){
+                return ok();
+            }
+
+            this.onLoad = function(ok, failed){
+                return ok();
+            }
+
+
+
             console.debug("fluidTask-FluidTask.newTask", task);
             return task;
         }

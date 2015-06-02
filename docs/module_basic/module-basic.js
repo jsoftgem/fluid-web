@@ -31,7 +31,8 @@ angular.module("moduleBasic", ["fluid"])
         console.debug("moduleBasic.fluidPage", s.fluidPage);
 
 
-        s.fluidPage.onLoad = function () {
+        s.fluidPage.onLoad = function (ok, failed) {
+            alert("loaded-page:" + this.name);
             this.option.putTemplate("onClose", "Do you want to close page {{fluidPage.title}} ? <a href='#' ng-click='fluidPage.ok()'>Yes</a> {{' '}} <a href='#' ng-click='fluidPage.cancel()'>No</a>");
             this.onClose = function (ok, cancel, $event) {
                 if ($event) {
@@ -40,12 +41,12 @@ angular.module("moduleBasic", ["fluid"])
                 this.ok = ok;
                 this.cancel = cancel;
             }
-
             /* this.onChange = function (proceed, cancel, $event) {
              this.option.danger().open("onChange", $event.currentTarget, this);
              this.proceed = proceed;
              this.cancel = cancel;
              }*/
+            return ok();
         }
 
         s.save = function (resources) {

@@ -711,7 +711,7 @@ fluidComponents
  *  2) FluidPanel - fullScreen - disable sizes;
  *  3) FluidBreadcrumb - responsive;
  *  4) FluidPanel - XS, SM mobile view;
- *  5) FluidFrame - item must be assigned to FluidPanel upon opening of task;
+ *  5) FluidFrame - item must be assigned to FluidPanel upon opening of task; - Scrap (for FluidPlatform)
  *  6) FluidTasknav - Task widget, widgetType: alert, overview, media and message; custom icon glyph/img - Scrap (for FluidPlatform)
  *  7) FluidTask - onClose, onLoad, onDestroy life-cycle
  * **/

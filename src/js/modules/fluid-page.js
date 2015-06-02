@@ -15,7 +15,6 @@ angular.module("fluidPage", ["fluidHttp", "fluidOption"])
 
                         scope.loadPage = function (page) {
                             console.debug("fluidPage-loadPage.page", page);
-                            scope.fluidPanel.loaded = false;
                             scope.fluidPage = page;
                             if (scope.fluidPage.ajax) {
                                 fps.loadAjax(page)
@@ -32,6 +31,8 @@ angular.module("fluidPage", ["fluidHttp", "fluidOption"])
                                 c(element.contents())(scope);
                                 console.debug("fluidPage-loadPage.loaded-page", page);
                             }
+
+
                         }
 
                         console.debug("fluidPage.fluidPanel", scope.fluidPanel);
@@ -54,9 +55,21 @@ angular.module("fluidPage", ["fluidHttp", "fluidOption"])
                             scope.fluidPage.option = new FluidOption(scope.fluidPanel);
                             scope.fluidPage.loaded = false;
                             //TODO: page onLoad error handling
-                            scope.fluidPage.onLoad();
+
+                            scope.fluidPage.load(function () {
+                                if (!scope.fluidPage.loaded) {
+                                    scope.fluidPage.loaded = true;
+                                }
+                            }, function () {
+                                if (!scope.fluidPage.loaded) {
+                                    scope.fluidPage.loaded = true;
+                                    element.html("");
+                                    c(element.contents())(scope);
+                                }
+
+                            });
+
                             scope.fluidPanel.loaded = true;
-                            scope.fluidPage.loaded = true;
                         }
 
                     }
@@ -141,12 +154,19 @@ angular.module("fluidPage", ["fluidHttp", "fluidOption"])
                 }, $event);
             }
 
+            this.load = function (ok, failed) {
+                this.onLoad(function () {
+                    ok();
+                }, failed);
+            }
+
+
             this.failed = function (reason) {
                 rs.$broadcast("page_close_failed_evt" + this.fluidId + "_pg_" + this.name, reason);
             }
 
-            this.onLoad = function () {
-                return true;
+            this.onLoad = function (ok, failed) {
+                return ok();
             }
 
             this.onClose = function (ok, cancel) {
