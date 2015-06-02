@@ -84,6 +84,7 @@ angular.module("fluidFrame", ["fluidHttp", "fluidTask", "fluidSession"])
                         frame.tasks.push(fluidTask);
                     });
             }
+
             frame.removeTask = function (task, workspace) {
                 console.debug("fluidFrame-fluidFrameService.removeTask.task", task);
                 angular.forEach(this.tasks, function (tsk, $index) {
@@ -92,6 +93,7 @@ angular.module("fluidFrame", ["fluidHttp", "fluidTask", "fluidSession"])
                     }
                 }, this);
             }
+
             return frame;
         }
         return frameService;

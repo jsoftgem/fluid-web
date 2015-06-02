@@ -270,15 +270,30 @@ angular.module("fluidTask", ["fluidSession", "fluidFrame"])
                 }
             }
 
+            this.load = function (ok, failed) {
+                this.onLoad(function () {
+                    ok();
+                }, function () {
+                    failed();
+                });
+            }
 
-            this.onClose = function(ok, cancel){
+            this.close = function (ok, cancel) {
+                this.onClose(function () {
+                    ok();
+                }, function () {
+                    cancel();
+                })
+            }
+
+
+            this.onClose = function (ok, cancel) {
                 return ok();
             }
 
-            this.onLoad = function(ok, failed){
+            this.onLoad = function (ok, failed) {
                 return ok();
             }
-
 
 
             console.debug("fluidTask-FluidTask.newTask", task);

@@ -62,6 +62,8 @@ angular.module("fluidPage", ["fluidHttp", "fluidOption"])
                             }, function () {
                                 scope.fluidPage.loaded = true;
                                 scope.fluidPanel.loaded = true;
+                                element.html("");
+                                c(element.contents())(scope);
                             });
 
                         }

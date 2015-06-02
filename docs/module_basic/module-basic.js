@@ -46,7 +46,7 @@ angular.module("moduleBasic", ["fluid"])
              this.proceed = proceed;
              this.cancel = cancel;
              }*/
-            return ok();
+            return failed();
         }
 
         s.save = function (resources) {
