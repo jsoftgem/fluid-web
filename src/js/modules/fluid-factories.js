@@ -43,4 +43,36 @@ angular.module("fluidFactories", ["fluidTask"])
 
 
         return taskItem;
+    }])
+    .factory("FluidLoader", ["factoryServer", function (factoryServer) {
+        var fluidLoader = function (fluidPanel) {
+            var key = "loader_" + fluidPanel.id;
+            if (factoryServer.get(key) != null) {
+                return factoryServer.get(key);
+            } else {
+                this.$ = fluidPanel.$.find(".fluid-loader");
+                this.load = function () {
+
+                }
+                factoryServer.put(key, this);
+            }
+
+            return this;
+        }
+
+        return fluidLoader;
+    }
+    ])
+    .
+    service("factoryServer", [function () {
+        this.factories = [];
+
+        this.put = function (name, obj) {
+            this.factories[name] = obj;
+        }
+
+        this.get = function (name) {
+            this.factories[name];
+        }
+
     }]);

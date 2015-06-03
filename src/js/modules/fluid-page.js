@@ -16,7 +16,6 @@ angular.module("fluidPage", ["fluidHttp", "fluidOption"])
                         scope.loadPage = function (page) {
                             console.debug("fluidPage-loadPage.page", page);
                             scope.fluidPage = page;
-                            scope.fluidPanel.loaded = false;
                             if (scope.fluidPage.ajax) {
                                 fps.loadAjax(page)
                                     .then(function (data) {
@@ -58,10 +57,14 @@ angular.module("fluidPage", ["fluidHttp", "fluidOption"])
                             //TODO: page onLoad error handling
                             scope.fluidPage.load(function () {
                                 scope.fluidPage.loaded = true;
-                                scope.fluidPanel.loaded = true;
+                                if (!scope.fluidPanel.loaded) {
+                                    scope.fluidPanel.loaded = true;
+                                }
                             }, function () {
                                 scope.fluidPage.loaded = true;
-                                scope.fluidPanel.loaded = true;
+                                if (!scope.fluidPanel.loaded) {
+                                    scope.fluidPanel.loaded = true;
+                                }
                                 element.html("");
                                 c(element.contents())(scope);
                             });
@@ -98,6 +101,7 @@ angular.module("fluidPage", ["fluidHttp", "fluidOption"])
             this.html = page.html;
             this.home = page.home;
             this.ajax = page.ajax;
+
             this.refresh = function (proceed, cancel, $event) {
                 var page = this;
                 this.onRefresh(function () {

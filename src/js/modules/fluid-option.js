@@ -10,26 +10,9 @@ angular.module("fluidOption", [])
             transclude: true,
             template: tc.get("templates/fluid/fluidOption.html"),
             link: function (scope, element, attr) {
-
-                scope.$watch(function (scope) {
-                    return element.parent().height();
-                }, function (height) {
-                    scope.parentHeight = height;
-                    var template = element.find(".fluid-option-template");
-                   /* template.css("width", element.parent().width());
-                    element.css("width", element.parent().width());*/
-
-                });
-
                 scope.close = function () {
                     fos.closeOption(element.attr("id"));
                 }
-
-                $(w).on("resize", function () {
-                    var template = element.find(".fluid-option-template");
-                  /*  template.css("width", element.parent().width());
-                    element.css("width", element.parent().width());*/
-                });
             }
         }
     }])

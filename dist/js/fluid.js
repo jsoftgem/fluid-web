@@ -1340,6 +1340,38 @@ angular.module("fluidFactories", ["fluidTask"])
 
 
         return taskItem;
+    }])
+    .factory("FluidLoader", ["factoryServer", function (factoryServer) {
+        var fluidLoader = function (fluidPanel) {
+            var key = "loader_" + fluidPanel.id;
+            if (factoryServer.get(key) != null) {
+                return factoryServer.get(key);
+            } else {
+                this.$ = fluidPanel.$.find(".fluid-loader");
+                this.load = function () {
+
+                }
+                factoryServer.put(key, this);
+            }
+
+            return this;
+        }
+
+        return fluidLoader;
+    }
+    ])
+    .
+    service("factoryServer", [function () {
+        this.factories = [];
+
+        this.put = function (name, obj) {
+            this.factories[name] = obj;
+        }
+
+        this.get = function (name) {
+            this.factories[name];
+        }
+
     }]);;/**
  * Created by jerico on 4/28/2015.
  * Fluid Frame Version 2.0 ff features:
@@ -1390,7 +1422,10 @@ angular.module("fluidFrame", ["fluidHttp", "fluidTask", "fluidSession"])
                 }
 
                 w.bind("resize", function () {
-                    autoFullscreen(element, element.parent().height(), element.parent().width());
+                    var maxHeight = element.parent().css("max-height");
+                    console.debug("fluidPanel.fullScreen.resize.maxHeight", maxHeight);
+                    console.debug("fluidPanel.fullScreen.resize.innerHeight", element.parent().innerHeight());
+                    autoFullscreen(element, maxHeight.replace("px", ""), element.parent().innerWidth());
                 });
             }
         }
@@ -1994,26 +2029,9 @@ angular.module("fluidOption", [])
             transclude: true,
             template: tc.get("templates/fluid/fluidOption.html"),
             link: function (scope, element, attr) {
-
-                scope.$watch(function (scope) {
-                    return element.parent().height();
-                }, function (height) {
-                    scope.parentHeight = height;
-                    var template = element.find(".fluid-option-template");
-                   /* template.css("width", element.parent().width());
-                    element.css("width", element.parent().width());*/
-
-                });
-
                 scope.close = function () {
                     fos.closeOption(element.attr("id"));
                 }
-
-                $(w).on("resize", function () {
-                    var template = element.find(".fluid-option-template");
-                  /*  template.css("width", element.parent().width());
-                    element.css("width", element.parent().width());*/
-                });
             }
         }
     }])
@@ -2203,7 +2221,6 @@ angular.module("fluidPage", ["fluidHttp", "fluidOption"])
                         scope.loadPage = function (page) {
                             console.debug("fluidPage-loadPage.page", page);
                             scope.fluidPage = page;
-                            scope.fluidPanel.loaded = false;
                             if (scope.fluidPage.ajax) {
                                 fps.loadAjax(page)
                                     .then(function (data) {
@@ -2245,10 +2262,14 @@ angular.module("fluidPage", ["fluidHttp", "fluidOption"])
                             //TODO: page onLoad error handling
                             scope.fluidPage.load(function () {
                                 scope.fluidPage.loaded = true;
-                                scope.fluidPanel.loaded = true;
+                                if (!scope.fluidPanel.loaded) {
+                                    scope.fluidPanel.loaded = true;
+                                }
                             }, function () {
                                 scope.fluidPage.loaded = true;
-                                scope.fluidPanel.loaded = true;
+                                if (!scope.fluidPanel.loaded) {
+                                    scope.fluidPanel.loaded = true;
+                                }
                                 element.html("");
                                 c(element.contents())(scope);
                             });
@@ -2285,6 +2306,7 @@ angular.module("fluidPage", ["fluidHttp", "fluidOption"])
             this.html = page.html;
             this.home = page.home;
             this.ajax = page.ajax;
+
             this.refresh = function (proceed, cancel, $event) {
                 var page = this;
                 this.onRefresh(function () {
@@ -3740,9 +3762,11 @@ angular.module("fluidPanel", ["oc.lazyLoad", "fluidHttp", "fluidFrame", "fluidMe
                     pre: function (scope, element, attr) {
                         scope.loaded = function () {
                             if (scope.fluidPanel.frame.fullScreen) {
-                                autoFullscreen(element, element.parent().innerHeight(), element.parent().innerWidth());
+                                var maxHeight = element.parent().css("max-height");
+                                console.debug("fluidPanel.fullScreen.maxHeight",maxHeight);
+                                console.debug("fluidPanel.fullScreen.innerHeight",element.parent().innerHeight());
+                                autoFullscreen(element, maxHeight.replace("px", ""), element.parent().innerWidth());
                             }
-
                             if (scope.fluidPanel.loaders) {
                                 console.debug("fluidPanel-fluidPanel2.fluidPanel.loaders", scope.fluidPanel.loaders);
                                 angular.forEach(scope.fluidPanel.loaders, function (load, $index) {
@@ -4556,15 +4580,30 @@ angular.module("fluidTask", ["fluidSession", "fluidFrame"])
                 }
             }
 
+            this.load = function (ok, failed) {
+                this.onLoad(function () {
+                    ok();
+                }, function () {
+                    failed();
+                });
+            }
 
-            this.onClose = function(ok, cancel){
+            this.close = function (ok, cancel) {
+                this.onClose(function () {
+                    ok();
+                }, function () {
+                    cancel();
+                })
+            }
+
+
+            this.onClose = function (ok, cancel) {
                 return ok();
             }
 
-            this.onLoad = function(ok, failed){
+            this.onLoad = function (ok, failed) {
                 return ok();
             }
-
 
 
             console.debug("fluidTask-FluidTask.newTask", task);
@@ -5078,7 +5117,7 @@ angular.module("templates/fluid/fluidPage.html", []).run(["$templateCache", func
 
 angular.module("templates/fluid/fluidPanel.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("templates/fluid/fluidPanel.html",
-    "<div id='_id_fp'\n" +
+    "<div id='_id_fp_{{task.id}}'\n" +
     "     ng-class=\"!fluidPanel.frame.fullScreen ? 'panel panel-primary fluid-task' : 'panel panel-default frame-fullscreen'\"\n" +
     "     class=\"fluid-panel\">\n" +
     "    <div ng-if=\"fluidPanel\" class=\"panel-heading\" ng-if=\"!task.locked\">\n" +

@@ -1290,9 +1290,11 @@ angular.module("fluidPanel", ["oc.lazyLoad", "fluidHttp", "fluidFrame", "fluidMe
                     pre: function (scope, element, attr) {
                         scope.loaded = function () {
                             if (scope.fluidPanel.frame.fullScreen) {
-                                autoFullscreen(element, element.parent().innerHeight(), element.parent().innerWidth());
+                                var maxHeight = element.parent().css("max-height");
+                                console.debug("fluidPanel.fullScreen.maxHeight",maxHeight);
+                                console.debug("fluidPanel.fullScreen.innerHeight",element.parent().innerHeight());
+                                autoFullscreen(element, maxHeight.replace("px", ""), element.parent().innerWidth());
                             }
-
                             if (scope.fluidPanel.loaders) {
                                 console.debug("fluidPanel-fluidPanel2.fluidPanel.loaders", scope.fluidPanel.loaders);
                                 angular.forEach(scope.fluidPanel.loaders, function (load, $index) {
