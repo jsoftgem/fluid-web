@@ -259,14 +259,15 @@ fluidComponents.directive("bootstrapViewport", ["$window", "$viewport", function
     }
 }]);
 fluidComponents
-    .directive("hidden25", ["$rootScope", "fluidFrameService", "$window", function (rs, f, w) {
+    .directive("hidden25", ["$viewport", "fluidFrameService", "$window", function (v, f, w) {
         return {
             restrict: "AC",
+            require: "^fluidFrame",
             scope: false,
             link: function (scope, element, attr) {
-                scope.rs = rs;
 
-                if (rs.viewport === 'lg' && !f.fullScreen) {
+
+                if (v.is("lg") && !scope.frame.fullScreen) {
                     if (scope.task.size === 25) {
                         element.addClass("hideSize25");
                     } else {
@@ -280,7 +281,7 @@ fluidComponents
                     scope.$watch(function (scope) {
                         return scope.task.size;
                     }, function (value) {
-                        if (rs.viewport === 'lg' && !f.fullScreen) {
+                        if (v.is("lg") && !scope.frame.fullScreen) {
                             if (value === 25) {
                                 element.addClass("hideSize25");
                             } else {
@@ -294,7 +295,7 @@ fluidComponents
 
                 $(w).on("resize", function () {
                     if (scope) {
-                        if (scope.rs.viewport === 'lg' && !f.fullScreen) {
+                        if (v.is("lg") && !scope.frame.fullScreen) {
                             if (scope.task.size === 25) {
                                 element.addClass("hideSize25");
                             } else {
@@ -311,14 +312,13 @@ fluidComponents
             }
         }
     }])
-    .directive("hidden50", ["$rootScope", "fluidFrameService", "$window", function (rs, f, w) {
+    .directive("hidden50", ["$viewport", "fluidFrameService", "$window", function (v, f, w) {
         return {
             restrict: "AC",
+            require: "^fluidFrame",
             scope: false,
             link: function (scope, element, attr) {
-                scope.rs = rs;
-
-                if (rs.viewport === 'lg' && !f.fullScreen) {
+                if (v.is("lg") && !scope.frame.fullScreen) {
                     if (scope.task.size === 50) {
                         element.addClass("hideSize50");
                     } else {
@@ -332,7 +332,7 @@ fluidComponents
                     scope.$watch(function (scope) {
                         return scope.task.size;
                     }, function (value) {
-                        if (rs.viewport === 'lg' && !f.fullScreen) {
+                        if (v.is("lg") && !scope.frame.fullScreen) {
                             if (value === 50) {
                                 element.addClass("hideSize50");
                             } else {
@@ -346,8 +346,7 @@ fluidComponents
 
                 $(w).on("resize", function () {
                     if (scope) {
-                        if (scope.rs.viewport === 'lg' && !f.fullScreen) {
-                            console.debug("hidden50-viewport", rs.viewport);
+                        if (v.is("lg") && !scope.frame.fullScreen) {
                             console.debug("hidden50-size", scope.task.size);
                             if (scope.task.size === 50) {
                                 element.addClass("hideSize50");
@@ -365,14 +364,14 @@ fluidComponents
             }
         }
     }])
-    .directive("hidden75", ["$rootScope", "fluidFrameService", "$window", function (rs, f, w) {
+    .directive("hidden75", ["$viewport", "fluidFrameService", "$window", function (v, f, w) {
         return {
             restrict: "AC",
+            require: "^fluidFrame",
             scope: false,
             link: function (scope, element, attr) {
-                scope.rs = rs;
 
-                if (rs.viewport === 'lg' && !f.fullScreen) {
+                if (v.is("lg") && !scope.frame.fullScreen) {
                     if (scope.task.size === 75) {
                         element.addClass("hideSize75");
                     } else {
@@ -386,7 +385,7 @@ fluidComponents
                     scope.$watch(function (scope) {
                         return scope.task.size;
                     }, function (value) {
-                        if (rs.viewport === 'lg' && !f.fullScreen) {
+                        if (v.is("lg") && !scope.frame.fullScreen) {
                             if (value === 75) {
                                 element.addClass("hideSize75");
                             } else {
@@ -400,7 +399,7 @@ fluidComponents
 
                 $(w).on("resize", function () {
                     if (scope) {
-                        if (scope.rs.viewport === 'lg' && !f.fullScreen) {
+                        if (v.is("lg") && !scope.frame.fullScreen) {
                             if (scope.task.size === 75) {
                                 element.addClass("hideSize75");
                             } else {
@@ -417,14 +416,15 @@ fluidComponents
             }
         }
     }])
-    .directive("hidden100", ["$rootScope", "fluidFrameService", "$window", function (rs, f, w) {
+    .directive("hidden100", ["$viewport", "fluidFrameService", "$window", function (v, f, w) {
         return {
             restrict: "AC",
+            require: "^fluidFrame",
             scope: false,
             link: function (scope, element, attr) {
-                scope.rs = rs;
 
-                if (rs.viewport === 'lg' && !f.fullScreen) {
+
+                if (v.is("lg") && !scope.frame.fullScreen) {
                     if (scope.task.size === 100) {
                         element.addClass("hideSize100");
                     } else {
@@ -438,7 +438,7 @@ fluidComponents
                     scope.$watch(function (scope) {
                         return scope.task.size;
                     }, function (value) {
-                        if (rs.viewport === 'lg' && !f.fullScreen) {
+                        if (v.is("lg") && !scope.frame.fullScreen) {
                             if (value === 100) {
                                 element.addClass("hideSize100");
                             } else {
@@ -452,8 +452,8 @@ fluidComponents
 
                 $(w).on("resize", function () {
                     if (scope) {
-                        if (scope.rs.viewport === 'lg' && !f.fullScreen) {
-                            console.debug("hidden100-viewport", rs.viewport);
+                        if (v.is("lg") && !scope.frame.fullScreen) {
+                            console.debug("hidden100-viewport", v.view);
                             console.debug("hidden100-size", scope.task.size);
                             if (scope.task.size === 100) {
                                 element.addClass("hideSize100");
@@ -471,24 +471,21 @@ fluidComponents
             }
         }
     }])
-    .directive("hiddenFullscreenXs", ["$rootScope", "fluidFrameService", "$window", function (rs, f, w) {
+    .directive("hiddenFullscreenXs", ["$viewport", "fluidFrameService", "$window", function (v, f, w) {
         return {
             restrict: "AC",
+            require: "^fluidFrame",
             scope: false,
             link: function (scope, element, attr) {
 
-                var viewport = rs.viewport;
-
-                if (viewport === 'xs' && f.fullScreen) {
+                if (v.is("xs") && scope.frame.fullScreen) {
                     element.addClass("hideFullscreenXs");
                 } else {
                     element.removeClass("hideFullscreenXs");
                 }
 
                 $(w).on("resize", function () {
-                    var viewport = rs.viewport;
-
-                    if (viewport === 'xs' && f.fullScreen) {
+                    if (v.is("xs") && scope.frame.fullScreen) {
                         element.addClass("hideFullscreenXs");
                     } else {
                         element.removeClass("hideFullscreenXs");
@@ -499,24 +496,22 @@ fluidComponents
             }
         }
     }])
-    .directive("hiddenFullscreenSm", ["$rootScope", "fluidFrameService", "$window", function (rs, f, w) {
+    .directive("hiddenFullscreenSm", ["$viewport", "fluidFrameService", "$window", function (v, f, w) {
         return {
             restrict: "AC",
+            require: "^fluidFrame",
             scope: false,
             link: function (scope, element, attr) {
 
-                var viewport = rs.viewport;
-
-                if (viewport === 'sm' && f.fullScreen) {
+                if (v.is("sm") && scope.frame.fullScreen) {
                     element.addClass("hideFullscreenSm");
                 } else {
                     element.removeClass("hideFullscreenSm");
                 }
 
                 $(w).on("resize", function () {
-                    var viewport = rs.viewport;
 
-                    if (viewport === 'sm' && f.fullScreen) {
+                    if (v.is("sm") && scope.frame.fullScreen) {
                         element.addClass("hideFullscreenSm");
                     } else {
                         element.removeClass("hideFullscreenSm");
@@ -526,22 +521,21 @@ fluidComponents
             }
         }
     }])
-    .directive("hiddenFullscreenMd", ["$rootScope", "fluidFrameService", "$window", function (rs, f, w) {
+    .directive("hiddenFullscreenMd", ["$viewport", "fluidFrameService", "$window", function (v, f, w) {
         return {
             restrict: "AC",
+            require: "^fluidFrame",
             scope: false,
             link: function (scope, element, attr) {
-                var viewport = rs.viewport;
 
-                if (viewport === 'md' && f.fullScreen) {
+                if (v.is("md") && scope.frame.fullScreen) {
                     element.addClass("hideFullscreenMd");
                 } else {
                     element.removeClass("hideFullscreenMd");
                 }
 
                 $(w).on("resize", function () {
-                    var viewport = rs.viewport;
-                    if (viewport === 'md' && f.fullScreen) {
+                    if (v.is("md") && scope.frame.fullScreen) {
                         element.addClass("hideFullscreenMd");
                     } else {
                         element.removeClass("hideFullscreenMd");
@@ -551,15 +545,15 @@ fluidComponents
             }
         }
     }])
-    .directive("hiddenFullscreenLg", ["$rootScope", "fluidFrameService", "$window", function (rs, f, w) {
+    .directive("hiddenFullscreenLg", ["$viewport", "fluidFrameService", "$window", function (v, f, w) {
         return {
             restrict: "AC",
+            require: "^fluidFrame",
             scope: true,
             link: function (scope, element, attr) {
 
-                var viewport = rs.viewport;
 
-                if (viewport === 'lg' && f.fullScreen) {
+                if (v.is("lg") && scope.frame.fullScreen) {
                     element.addClass("hideFullscreenLg");
                 } else {
                     element.removeClass("hideFullscreenLg");
@@ -567,9 +561,7 @@ fluidComponents
 
 
                 $(w).on("resize", function () {
-                    var viewport = rs.viewport;
-
-                    if (viewport === 'lg' && f.fullScreen) {
+                    if (v.is("lg") && scope.frame.fullScreen) {
                         element.addClass("hideFullscreenLg");
                     } else {
                         element.removeClass("hideFullscreenLg");
