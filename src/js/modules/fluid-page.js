@@ -50,7 +50,9 @@ angular.module("fluidPage", ["fluidHttp", "fluidOption"])
                         scope.onLoad = function () {
                             console.debug("fluidPage-page-onload.fluidId", scope.fluidPanel.id);
                             scope.fluidPage.fluidId = scope.fluidPanel.id;
-                            scope.fluidPage.$ = element;
+                            scope.fluidPage.$ = function () {
+                                return element;
+                            };
                             scope.fluidPage.$scope = scope;
                             scope.fluidPage.option = new FluidOption(scope.fluidPanel);
                             scope.fluidPage.loaded = false;
@@ -61,12 +63,16 @@ angular.module("fluidPage", ["fluidHttp", "fluidOption"])
                                     scope.fluidPanel.loaded = true;
                                 }
                             }, function () {
-                                scope.fluidPage.loaded = true;
+                                scope.fluidPage.loaded = false;
                                 if (!scope.fluidPanel.loaded) {
                                     scope.fluidPanel.loaded = true;
                                 }
+                                scope.fluidPage.onClose = function (ok, cancel) {
+                                    return ok();
+                                }
                                 element.html("");
                                 c(element.contents())(scope);
+
                             });
 
                         }
@@ -121,6 +127,17 @@ angular.module("fluidPage", ["fluidHttp", "fluidOption"])
 
             this.close = function (ok, cancel, $event) {
                 var page = this;
+                var pageElement = page.$();
+                if (pageElement) {
+                    var panelBody = pageElement.parent();
+                    if (panelBody) {
+                        var collapsePanel = panelBody.parent();
+                        if (collapsePanel && !collapsePanel.hasClass("in")) {
+                            collapsePanel.collapse("show");
+                        }
+                    }
+                }
+
                 this.onClose(function () {
                     ok();
                     if (page.option) {
@@ -159,7 +176,6 @@ angular.module("fluidPage", ["fluidHttp", "fluidOption"])
                     ok();
                 }, failed);
             }
-
 
             this.failed = function (reason) {
                 rs.$broadcast("page_close_failed_evt" + this.fluidId + "_pg_" + this.name, reason);

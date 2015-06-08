@@ -15,7 +15,7 @@
 
 var frameKey = "frame_";
 angular.module("fluidFrame", ["fluidHttp", "fluidTask", "fluidSession"])
-    .directive("fluidFrame", ["$templateCache", "$window", "fluidFrameService", function (tc, window, FrameService) {
+    .directive("fluidFrame", ["$templateCache", "$window", "fluidFrameService", "$viewport", function (tc, window, FrameService, v) {
         return {
             restrict: "E",
             replace: true,
@@ -26,13 +26,22 @@ angular.module("fluidFrame", ["fluidHttp", "fluidTask", "fluidSession"])
                 } else {
                     s.frame = new FrameService(s.name);
                 }
-
-                s.$watch(function (scope) {
-                    return scope.frame;
-                }, function (frame) {
-                    console.debug("fluidFrame-fluidFrame2$watch.frame", frame);
-                })
             }],
+            link: function (scope, element) {
+
+                $(window).on("resize", function () {
+                    console.debug("fluid-frame.viewport", v);
+                    scope.setViewport();
+                });
+
+
+                scope.setViewport = function () {
+
+
+                }
+
+                scope.setViewport();
+            },
             template: tc.get("templates/fluid/fluidFrame.html")
         }
     }])
@@ -49,9 +58,11 @@ angular.module("fluidFrame", ["fluidHttp", "fluidTask", "fluidSession"])
 
                 w.bind("resize", function () {
                     var maxHeight = element.parent().css("max-height");
-                    console.debug("fluidPanel.fullScreen.resize.maxHeight", maxHeight);
-                    console.debug("fluidPanel.fullScreen.resize.innerHeight", element.parent().innerHeight());
-                    autoFullscreen(element, maxHeight.replace("px", ""), element.parent().innerWidth());
+                    if (maxHeight) {
+                        console.debug("fluidPanel.fullScreen.resize.maxHeight", maxHeight);
+                        console.debug("fluidPanel.fullScreen.resize.innerHeight", element.parent().innerHeight());
+                        autoFullscreen(element, maxHeight.replace("px", ""), element.parent().innerWidth());
+                    }
                 });
             }
         }
@@ -71,7 +82,7 @@ angular.module("fluidFrame", ["fluidHttp", "fluidTask", "fluidSession"])
     .factory("fluidFrameService", ["Frame", "fluidTaskService", "FluidTask", function (Frame, taskService, FluidTask) {
         var frameService = function (name) {
             var frame = new Frame(name);
-            frame.openTask = function (taskName, page, workspace) {
+            frame.openTask = function (taskName, page, workspace, onLoad) {
                 if (workspace) {
 
                 }
@@ -84,6 +95,15 @@ angular.module("fluidFrame", ["fluidHttp", "fluidTask", "fluidSession"])
                         var fluidTask = new FluidTask(task);
                         fluidTask.frame = frame.name;
                         fluidTask.page = page;
+                        if (onLoad) {
+                            fluidTask.onLoad = onLoad;
+                        }
+                        fluidTask.ok = function () {
+
+                        }
+                        fluidTask.failed = function () {
+                            frame.tasks.splice(index, 1);
+                        }
                         frame.tasks.push(fluidTask);
                     });
             }

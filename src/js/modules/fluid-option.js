@@ -41,15 +41,18 @@ angular.module("fluidOption", [])
     .factory("FluidOption", ["fluidOptionService", "$compile", "$templateCache", function (fos, c, tc) {
         var fluidOption = function (fluidPanel) {
             if (fos.fluidOptions[fluidPanel.id] != null) {
-                fos.fluidOptions[fluidPanel.id].$.removeClass("bg-info").removeClass("bg-warning").removeClass("bg-success").removeClass("bg-danger");
+                fos.fluidOptions[fluidPanel.id].$().removeClass("bg-info").removeClass("bg-warning").removeClass("bg-success").removeClass("bg-danger");
                 return fos.fluidOptions[fluidPanel.id];
             } else {
                 this.fluidId = fluidPanel.id;
-                this.$ = $("#fluid_option_" + this.fluidId);
+                this.$ = function () {
+                    return $("#fluid_option_" + this.fluidId);
+                }
                 this.open = function (template, source, page) {
                     console.debug("FluidOption-openOption-source", source);
                     var templateId = template /*+ "_" + this.fluidId*/;
-                    var fluidOption = $("#fluid_option_" + this.fluidId);
+                    var fluidOption = this.$();
+                    console.debug("fluidOption-openOption.option", fluidOption);
                     var fluidScope = angular.element(fluidOption).scope();
                     var fluidTemplate = fluidOption.find(".fluid-option-template");
                     var fluidBottom = fluidOption.find(".fluid-option-bottom");
@@ -71,8 +74,10 @@ angular.module("fluidOption", [])
                     }
 
                     console.debug("FluidOption-openOption-sourceID", sourceID);
-                    fluidOption.css("max-height", fluidScope.parentHeight);
-                    fluidTemplate.css("max-height", fluidScope.parentHeight - 15);
+                    var parentHeight = fluidPanel.$().innerHeight();
+                    console.debug("FluidOption-openOption.parentHeight", parentHeight);
+                    fluidOption.css("max-height", parentHeight);
+                    fluidTemplate.css("max-height", parentHeight - 15);
                     fluidBottom.removeClass("hidden")
                     console.debug("FluidOption-openOption.templateId", templateId);
                     var html = tc.get(templateId);
@@ -97,19 +102,19 @@ angular.module("fluidOption", [])
                     this.isOpen = false;
                 }
                 this.info = function () {
-                    this.$.addClass("bg-info");
+                    this.$().addClass("bg-info");
                     return this;
                 }
                 this.danger = function () {
-                    this.$.addClass("bg-danger");
+                    this.$().addClass("bg-danger");
                     return this;
                 }
                 this.success = function () {
-                    this.$.addClass("bg-success");
+                    this.$().addClass("bg-success");
                     return this;
                 }
                 this.warning = function () {
-                    this.$.addClass("bg-warning");
+                    this.$().addClass("bg-warning");
                     return this;
                 }
                 this.isOpen = false;
@@ -151,8 +156,9 @@ angular.module("fluidOption", [])
                 $(source).attr("id", sourceID);
             }
             console.debug("fluidOptionService-openOption-sourceID", sourceID);
-            fluidOption.css("max-height", fluidScope.parentHeight);
-            fluidTemplate.css("max-height", fluidScope.parentHeight - 15);
+            var parentHeight = fluidScope.parentHeight < 50 ? 60 : fluidScope.parentHeight;
+            fluidOption.css("max-height", parentHeight);
+            fluidTemplate.css("max-height", parentHeight - 10);
             fluidOption.attr("source-event", sourceID);
             fluidBottom.removeClass("hidden")
             if (contentScope) {
@@ -171,6 +177,7 @@ angular.module("fluidOption", [])
             var fluidOption = $("#" + optionId);
             var fluidTemplate = fluidOption.find(".fluid-option-template");
             var fluidBottom = fluidOption.find(".fluid-option-bottom");
+            fluidOption.css("min-height", undefined);
             fluidOption.css("max-height", 0);
             fluidTemplate.css("max-height", 0);
             fluidOption.removeAttr("source-event");

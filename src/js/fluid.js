@@ -20,90 +20,6 @@ fluidComponents.run(["taskState", function (ts, lg) {
 }]);
 
 fluidComponents
-    .directive("fluidPermissionEnabled", ["fluidHttpService", "$compile", "sessionService", function (f, c, ss) {
-        return {
-            restrict: "A",
-            scope: {task: "=", page: "="},
-            link: function (scope, element, attr) {
-
-
-                if (attr.method) {
-                    scope.method = attr.method;
-                }
-                console.debug("permissionEnabled-url", f.permissionUrl + "?pageName=" + scope.page.name + "&method=" + scope.method);
-
-                var url = f.permissionUrl + "?pageName=" + scope.page.name + "&method=" + scope.method;
-
-                var enabled = ss.getSessionProperty(url);
-
-                console.debug("permissionEnabled", enabled);
-
-                if (enabled !== null) {
-                    console.debug("permissionEnabled-old", enabled);
-                    if (enabled === 'false') {
-                        element.attr("disabled", "");
-                    }
-                }
-
-                if (enabled === null) {
-                    f.get(url, scope.task)
-                        .success(function (data) {
-                            if (!data) {
-                                element.attr("disabled", "");
-                            }
-                            ss.addSessionProperty(url, data);
-                        });
-                    console.debug("permissionEnabled-new");
-                }
-            }
-
-        }
-    }])
-    .directive("fluidPermissionVisible", ["fluidHttpService", "$compile", "sessionService", function (f, c, ss) {
-        return {
-            restrict: "A",
-            scope: {task: "=", page: "="},
-            link: function (scope, element, attr) {
-
-                if (attr.method) {
-                    scope.method = attr.method;
-                }
-                console.debug("permissionVisible-url", f.permissionUrl + "?pageName=" + scope.page.name + "&method=" + scope.method);
-
-                var url = f.permissionUrl + "?pageName=" + scope.page.name + "&method=" + scope.method;
-
-                var visible = ss.getSessionProperty(url);
-
-                console.debug("permissionVisible", visible);
-
-                if (visible !== null) {
-                    console.debug("permissionVisible-old", visible);
-
-                    if (visible === 'false') {
-                        element.addClass("hidden");
-                        console.debug("permissionVisible-hidden");
-                    } else {
-                        console.debug("permissionVisible-visible");
-                        element.removeClass("hidden");
-                    }
-
-                }
-
-                if (visible === null) {
-                    f.get(url, scope.task)
-                        .success(function (data) {
-                            if (!data) {
-                                element.addClass("hidden");
-                            }
-                            ss.addSessionProperty(url, data);
-                        });
-
-                }
-
-            }
-
-        }
-    }])
     .directive("column", ["$rootScope", function (rs) {
         return {
             restrict: "A",
@@ -230,7 +146,14 @@ function setChildIndexIds(element, taskId, suffix, depth) {
 fluidComponents
     .service("fluidMonitorService", [function () {
         //TODO: fluidMonitorService
-    }]);
+    }])
+    .service("$viewport", [function () {
+        this.view = undefined;
+        this.is = function (view) {
+            return this.view === view;
+        }
+        return this;
+    }])
 
 fluidComponents
     .factory("fluidInjector", ["$q", "$rootScope", "sessionService", "fluidLoaderService", "responseEvent",
@@ -243,17 +166,6 @@ fluidComponents
                     }
 
                     config.headers["Access-Control-Allow-Origin"] = "*";
-
-                    /*  console.debug("fluidInjector-request.config", config);
-
-                     console.debug("fluidInjector-request.pages", fps.pages);
-
-                     if (fps.pages[config.url]) {
-                     var fluidPage = new FluidPage(fps.pages[config.url]);
-                     console.debug("fluidInjector-request.fluidPage", fluidPage);
-                     fluidPage.preLoad();
-                     config.url = fluidPage.home;
-                     }*/
 
                     if (ss.isSessionOpened()) {
                         config.headers['Authorization'] = ss.getSessionProperty(AUTHORIZATION);
@@ -280,13 +192,13 @@ fluidComponents
                 }
             };
         }])
-    .factory("responseEvent", ["$location", "$rootScope", function (l, rs) {
+    .service("responseEvent", ["$location", "$rootScope", function (l, rs) {
 
-        var responseEvent = {};
-        responseEvent.responses = [];
 
-        responseEvent.addResponse = function (evt, statusCode, redirect, path) {
-            responseEvent.responses.push({
+        this.responses = [];
+
+        this.addResponse = function (evt, statusCode, redirect, path) {
+            this.responses.push({
                 "evt": evt,
                 "statusCode": statusCode,
                 "redirect": redirect,
@@ -295,8 +207,8 @@ fluidComponents
 
         }
 
-        responseEvent.callEvent = function (res) {
-            angular.forEach(responseEvent.responses, function (response) {
+        this.callEvent = function (res) {
+            angular.forEach(this.responses, function (response) {
                 if (response.statusCode === res.statusCode) {
                     if (response.evt) {
                         rs.$broadcast(response.evt, response.data, response.statusText);
@@ -308,12 +220,12 @@ fluidComponents
             });
         }
 
-        return responseEvent;
+        return this;
 
     }]);
 
 /*Bootsrap Utilities*/
-fluidComponents.directive("bootstrapViewport", ["$rootScope", "$window", function (rs, w) {
+fluidComponents.directive("bootstrapViewport", ["$window", "$viewport", function (w, v) {
     return {
         restrict: "AE",
         replace: true,
@@ -321,25 +233,25 @@ fluidComponents.directive("bootstrapViewport", ["$rootScope", "$window", functio
         link: function (scope, element, attr) {
 
             if (element.find("span.fluid-view-lg").css("display") === 'block') {
-                rs.viewport = "lg";
+                v.view = "lg";
             } else if (element.find("span.fluid-view-md").css("display") === 'block') {
-                rs.viewport = "md";
+                v.view = "md";
             } else if (element.find("span.fluid-view-sm").css("display") === 'block') {
-                rs.viewport = "sm";
+                v.view = "sm";
             } else if (element.find("span.fluid-view-xs").css("display") === 'block') {
-                rs.viewport = "xs";
+                v.view = "xs";
             }
 
             $(w).on("resize", function () {
-                if (rs) {
+                if (v) {
                     if (element.find("span.fluid-view-lg").css("display") === 'block') {
-                        rs.viewport = "lg";
+                        v.view = "lg";
                     } else if (element.find("span.fluid-view-md").css("display") === 'block') {
-                        rs.viewport = "md";
+                        v.view = "md";
                     } else if (element.find("span.fluid-view-sm").css("display") === 'block') {
-                        rs.viewport = "sm";
+                        v.view = "sm";
                     } else if (element.find("span.fluid-view-xs").css("display") === 'block') {
-                        rs.viewport = "xs";
+                        v.view = "xs";
                     }
                 }
             });

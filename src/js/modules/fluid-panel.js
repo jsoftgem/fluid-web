@@ -1278,8 +1278,8 @@ angular.module("fluidPanel", ["oc.lazyLoad", "fluidHttp", "fluidFrame", "fluidMe
             replace: true
         }
     }])
-    .directive("fluidPanel", ["$templateCache", "FluidPanelModel", "fluidToolbarService", "$ocLazyLoad", "$compile", "fluidPanelService", "fluidFrameService",
-        function (tc, FluidPanel, ftb, oc, c, fluidPanelService, FluidFrame) {
+    .directive("fluidPanel", ["$templateCache", "FluidPanelModel", "fluidToolbarService", "$ocLazyLoad", "$compile", "fluidPanelService", "fluidFrameService", "$viewport", "$window",
+        function (tc, FluidPanel, ftb, oc, c, fluidPanelService, FluidFrame, v, window) {
             return {
                 require: "^fluidFrame",
                 scope: {task: "=", frame: "@"},
@@ -1288,11 +1288,26 @@ angular.module("fluidPanel", ["oc.lazyLoad", "fluidHttp", "fluidFrame", "fluidMe
                 template: tc.get("templates/fluid/fluidPanel.html"),
                 link: {
                     pre: function (scope, element, attr) {
+
+                        $(window).on("resize", function () {
+                            console.debug("fluid-panel.viewport", v);
+                            scope.setViewport();
+                        });
+
+
+                        scope.setViewport = function () {
+
+
+                        }
+
+                        scope.setViewport();
+
+
                         scope.loaded = function () {
-                            if (scope.fluidPanel.frame.fullScreen) {
+                            if (scope.fluidPanel.frame.fu6llScreen) {
                                 var maxHeight = element.parent().css("max-height");
-                                console.debug("fluidPanel.fullScreen.maxHeight",maxHeight);
-                                console.debug("fluidPanel.fullScreen.innerHeight",element.parent().innerHeight());
+                                console.debug("fluidPanel.fullScreen.maxHeight", maxHeight);
+                                console.debug("fluidPanel.fullScreen.innerHeight", element.parent().innerHeight());
                                 autoFullscreen(element, maxHeight.replace("px", ""), element.parent().innerWidth());
                             }
                             if (scope.fluidPanel.loaders) {
@@ -1354,34 +1369,19 @@ angular.module("fluidPanel", ["oc.lazyLoad", "fluidHttp", "fluidFrame", "fluidMe
                             console.debug("fluidPanel2-setSize.size", size);
                             switch (size) {
                                 case 25:
-                                    element.addClass("col-lg-3");
-                                    element.removeClass("col-lg-6");
-                                    element.removeClass("col-lg-9");
-                                    element.removeClass("col-lg-12");
+                                    scope.size = "col-lg-3";
                                     break;
                                 case 50:
-                                    element.addClass("col-lg-6")
-                                    element.removeClass("col-lg-3");
-                                    element.removeClass("col-lg-9");
-                                    element.removeClass("col-lg-12");
+                                    scope.size = "col-lg-6";
                                     break;
                                 case 75:
-                                    element.addClass("col-lg-9");
-                                    element.removeClass("col-lg-3");
-                                    element.removeClass("col-lg-6");
-                                    element.removeClass("col-lg-12");
+                                    scope.size = "col-lg-9";
                                     break;
                                 case 100:
-                                    element.addClass("col-lg-12");
-                                    element.removeClass("col-lg-3");
-                                    element.removeClass("col-lg-6");
-                                    element.removeClass("col-lg-9");
+                                    scope.size = "col-lg-12";
                                     break;
                                 default:
-                                    element.addClass("col-lg-12");
-                                    element.removeClass("col-lg-3");
-                                    element.removeClass("col-lg-6");
-                                    element.removeClass("col-lg-9");
+                                    scope.size = "col-lg-12";
                             }
                         }
 
@@ -1399,7 +1399,8 @@ angular.module("fluidPanel", ["oc.lazyLoad", "fluidHttp", "fluidFrame", "fluidMe
                             return id + "_" + scope.fluidPanel.id;
                         }
                         scope.$on("$destroy", function () {
-                            if (scope.fluidPanel.destroy) {
+
+                            if (scope.fluidPanel && scope.fluidPanel.destroy) {
                                 scope.fluidPanel.clear();
                                 scope.fluidPanel.frame.fluidPanel[scope.fluidPanel.id] = undefined;
                             }
@@ -1417,11 +1418,23 @@ angular.module("fluidPanel", ["oc.lazyLoad", "fluidHttp", "fluidFrame", "fluidMe
             scope: false,
             link: function (scope, element, attr) {
 
+                var id = element.attr("id");
+
                 if (scope.task) {
-                    element.attr("id", attr.id + "_" + scope.task.fluidId)
+                    if (id && id.indexOf(scope.task.fluidId) > -1) {
+
+                    } else {
+                        element.attr("id", attr.id + "_" + scope.task.fluidId)
+                    }
+
                 }
                 else if (scope.fluidPanel) {
-                    element.attr("id", attr.id + "_" + scope.fluidPanel.id)
+                    if (id && id.indexOf(scope.fluidPanel.id) > -1) {
+
+                    } else {
+                        element.attr("id", attr.id + "_" + scope.fluidPanel.id)
+                    }
+
                 }
             }
         }
@@ -1429,6 +1442,7 @@ angular.module("fluidPanel", ["oc.lazyLoad", "fluidHttp", "fluidFrame", "fluidMe
     .factory("FluidPanelModel", ["TaskControl", "ToolBarItem", "fluidTaskService", "FluidBreadcrumb", "FluidPage", "$q", "fluidFrameService",
         function (TaskControl, ToolBarItem, TaskService, FluidBreadcrumb, FluidPage, q, FluidFrame) {
             var fluidPanel = function (task) {
+                console.debug("fluidPanel-FluidPanelModel.task", task);
                 if (!task.frame) {
                     throw "Task must have frame property value.";
                 }
@@ -1443,7 +1457,9 @@ angular.module("fluidPanel", ["oc.lazyLoad", "fluidHttp", "fluidFrame", "fluidMe
                     this.frame = frame;
                     this.pages = [];
                     this.id = task.fluidId;
-                    this.$ = $("div#_id_fp_" + this.id);
+                    this.$ = function () {
+                        return $("div#_id_fp_" + this.id)
+                    }
                     this.$scope = angular.element(this.$).scope();
                     this.goTo = function (name, $event) {
                         var pg = this.pages[name];
@@ -1715,13 +1731,18 @@ angular.module("fluidPanel", ["oc.lazyLoad", "fluidHttp", "fluidFrame", "fluidMe
                             if ($index < $length) {
                                 fluidPage.close(function (data) {
                                     if ($bIndex === 0) {
-                                        panel.frame.fullScreen = false;
-                                        panel.frame.removeTask(task);
-                                        panel.destroy = true;
-                                        panel.clear();
-                                        if (item) {
-                                            item.count--;
-                                        }
+                                        task.close(function () {
+                                            panel.frame.fullScreen = false;
+                                            panel.frame.removeTask(task);
+                                            panel.destroy = true;
+                                            panel.clear();
+                                            if (item) {
+                                                item.count--;
+                                            }
+                                        }, function () {
+
+                                        });
+
                                     } else {
                                         bPages.splice($bIndex, 1);
                                         if (breadcrumb.current > $bIndex) {
@@ -1734,6 +1755,7 @@ angular.module("fluidPanel", ["oc.lazyLoad", "fluidHttp", "fluidFrame", "fluidMe
                                 }, function () {
                                     breadcrumb.current = previous;
                                 }, $event);
+
                             } else {
                                 task.active = false;
                             }
@@ -1745,6 +1767,7 @@ angular.module("fluidPanel", ["oc.lazyLoad", "fluidHttp", "fluidFrame", "fluidMe
                         this.pages = [];
                         this.fluidBreadcrumb.pages = [];
                     }
+
                     this.whenLoaded = function (loadedAction) {
                         if (!this.loaders) {
                             this.loaders = [];

@@ -256,6 +256,7 @@ angular.module("fluidTask", ["fluidSession", "fluidFrame"])
         var fluidTask = function (defaultTask) {
             var task = {};
             angular.copy(defaultTask, task);
+
             if (task.ajax) {
                 if (task.ajax.url) {
                     if (!task.actions) {
@@ -270,7 +271,7 @@ angular.module("fluidTask", ["fluidSession", "fluidFrame"])
                 }
             }
 
-            this.load = function (ok, failed) {
+            task.load = function (ok, failed) {
                 this.onLoad(function () {
                     ok();
                 }, function () {
@@ -278,7 +279,7 @@ angular.module("fluidTask", ["fluidSession", "fluidFrame"])
                 });
             }
 
-            this.close = function (ok, cancel) {
+            task.close = function (ok, cancel) {
                 this.onClose(function () {
                     ok();
                 }, function () {
@@ -286,13 +287,12 @@ angular.module("fluidTask", ["fluidSession", "fluidFrame"])
                 })
             }
 
-
-            this.onClose = function (ok, cancel) {
-                return ok();
+            task.onClose = function (ok, cancel) {
+                ok();
             }
 
-            this.onLoad = function (ok, failed) {
-                return ok();
+            task.onLoad = function (ok, failed) {
+                 ok();
             }
 
 
