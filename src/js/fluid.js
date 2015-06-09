@@ -266,49 +266,50 @@ fluidComponents
             scope: false,
             link: function (scope, element, attr) {
 
-
-                if (v.is("lg") && !scope.frame.fullScreen) {
-                    if (scope.task.size === 25) {
-                        element.addClass("hideSize25");
+                if (scope.fluidPanel) {
+                    if (v.is("lg") && !scope.fluidPanel.frame.fullScreen) {
+                        if (scope.fluidPanel.task.size === 25) {
+                            element.addClass("hideSize25");
+                        } else {
+                            element.removeClass("hideSize25");
+                        }
                     } else {
                         element.removeClass("hideSize25");
                     }
-                } else {
-                    element.removeClass("hideSize25");
-                }
 
-                if (scope.task) {
-                    scope.$watch(function (scope) {
-                        return scope.task.size;
-                    }, function (value) {
-                        if (v.is("lg") && !scope.frame.fullScreen) {
-                            if (value === 25) {
-                                element.addClass("hideSize25");
+                    if (scope.fluidPanel.task) {
+                        scope.$watch(function (scope) {
+                            return scope.fluidPanel.task.size;
+                        }, function (value) {
+                            if (v.is("lg") && !scope.fluidPanel.frame.fullScreen) {
+                                if (value === 25) {
+                                    element.addClass("hideSize25");
+                                } else {
+                                    element.removeClass("hideSize25");
+                                }
                             } else {
                                 element.removeClass("hideSize25");
                             }
-                        } else {
-                            element.removeClass("hideSize25");
+                        });
+                    }
+
+                    $(w).on("resize", function () {
+                        if (scope) {
+                            if (v.is("lg") && !scope.fluidPanel.frame.fullScreen) {
+                                if (scope.fluidPanel.task.size === 25) {
+                                    element.addClass("hideSize25");
+                                } else {
+                                    element.removeClass("hideSize25");
+                                }
+
+                            } else {
+                                element.removeClass("hideSize25");
+                            }
                         }
                     });
+                } else {
+                    throw "Element must be a child of <fluid-panel>";
                 }
-
-                $(w).on("resize", function () {
-                    if (scope) {
-                        if (v.is("lg") && !scope.frame.fullScreen) {
-                            if (scope.task.size === 25) {
-                                element.addClass("hideSize25");
-                            } else {
-                                element.removeClass("hideSize25");
-                            }
-
-                        } else {
-                            element.removeClass("hideSize25");
-                        }
-                    }
-                });
-
-
             }
         }
     }])
@@ -318,49 +319,50 @@ fluidComponents
             require: "^fluidFrame",
             scope: false,
             link: function (scope, element, attr) {
-                if (v.is("lg") && !scope.frame.fullScreen) {
-                    if (scope.task.size === 50) {
-                        element.addClass("hideSize50");
+                if (scope.fluidPanel) {
+                    if (v.is("lg") && !scope.fluidPanel.frame.fullScreen) {
+                        if (scope.fluidPanel.task.size === 50) {
+                            element.addClass("hideSize50");
+                        } else {
+                            element.removeClass("hideSize50");
+                        }
                     } else {
                         element.removeClass("hideSize50");
                     }
-                } else {
-                    element.removeClass("hideSize50");
-                }
 
-                if (scope.task) {
-                    scope.$watch(function (scope) {
-                        return scope.task.size;
-                    }, function (value) {
-                        if (v.is("lg") && !scope.frame.fullScreen) {
-                            if (value === 50) {
-                                element.addClass("hideSize50");
+                    if (scope.fluidPanel.task) {
+                        scope.$watch(function (scope) {
+                            return scope.fluidPanel.task.size;
+                        }, function (value) {
+                            if (v.is("lg") && !scope.fluidPanel.frame.fullScreen) {
+                                if (value === 50) {
+                                    element.addClass("hideSize50");
+                                } else {
+                                    element.removeClass("hideSize50");
+                                }
                             } else {
                                 element.removeClass("hideSize50");
                             }
-                        } else {
-                            element.removeClass("hideSize50");
+                        });
+                    }
+
+                    $(w).on("resize", function () {
+                        if (scope) {
+                            if (v.is("lg") && !scope.fluidPanel.frame.fullScreen) {
+                                if (scope.fluidPanel.task.size === 50) {
+                                    element.addClass("hideSize50");
+                                } else {
+                                    element.removeClass("hideSize50");
+                                }
+
+                            } else {
+                                element.removeClass("hideSize50");
+                            }
                         }
                     });
+                } else {
+                    throw "Element must be a child of <fluid-panel>";
                 }
-
-                $(w).on("resize", function () {
-                    if (scope) {
-                        if (v.is("lg") && !scope.frame.fullScreen) {
-                            console.debug("hidden50-size", scope.task.size);
-                            if (scope.task.size === 50) {
-                                element.addClass("hideSize50");
-                            } else {
-                                element.removeClass("hideSize50");
-                            }
-
-                        } else {
-                            element.removeClass("hideSize50");
-                        }
-                    }
-                });
-
-
             }
         }
     }])
@@ -371,46 +373,50 @@ fluidComponents
             scope: false,
             link: function (scope, element, attr) {
 
-                if (v.is("lg") && !scope.frame.fullScreen) {
-                    if (scope.task.size === 75) {
-                        element.addClass("hideSize75");
+                if (scope.fluidPanel) {
+                    if (v.is("lg") && !scope.fluidPanel.frame.fullScreen) {
+                        if (scope.fluidPanel.task.size === 75) {
+                            element.addClass("hideSize75");
+                        } else {
+                            element.removeClass("hideSize75");
+                        }
                     } else {
                         element.removeClass("hideSize75");
                     }
-                } else {
-                    element.removeClass("hideSize75");
-                }
 
-                if (scope.task) {
-                    scope.$watch(function (scope) {
-                        return scope.task.size;
-                    }, function (value) {
-                        if (v.is("lg") && !scope.frame.fullScreen) {
-                            if (value === 75) {
-                                element.addClass("hideSize75");
+                    if (scope.fluidPanel.task) {
+                        scope.$watch(function (scope) {
+                            return scope.fluidPanel.task.size;
+                        }, function (value) {
+                            if (v.is("lg") && !scope.fluidPanel.frame.fullScreen) {
+                                if (value === 75) {
+                                    element.addClass("hideSize75");
+                                } else {
+                                    element.removeClass("hideSize75");
+                                }
                             } else {
                                 element.removeClass("hideSize75");
                             }
-                        } else {
-                            element.removeClass("hideSize75");
+                        });
+                    }
+
+                    $(w).on("resize", function () {
+                        if (scope) {
+                            if (v.is("lg") && !scope.fluidPanel.frame.fullScreen) {
+                                if (scope.fluidPanel.task.size === 75) {
+                                    element.addClass("hideSize75");
+                                } else {
+                                    element.removeClass("hideSize75");
+                                }
+
+                            } else {
+                                element.removeClass("hideSize75");
+                            }
                         }
                     });
+                } else {
+                    throw "Element must be a child of <fluid-panel>";
                 }
-
-                $(w).on("resize", function () {
-                    if (scope) {
-                        if (v.is("lg") && !scope.frame.fullScreen) {
-                            if (scope.task.size === 75) {
-                                element.addClass("hideSize75");
-                            } else {
-                                element.removeClass("hideSize75");
-                            }
-
-                        } else {
-                            element.removeClass("hideSize75");
-                        }
-                    }
-                });
 
 
             }
@@ -424,48 +430,50 @@ fluidComponents
             link: function (scope, element, attr) {
 
 
-                if (v.is("lg") && !scope.frame.fullScreen) {
-                    if (scope.task.size === 100) {
-                        element.addClass("hideSize100");
+                if (scope.fluidPanel) {
+                    if (v.is("lg") && !scope.fluidPanel.frame.fullScreen) {
+                        if (scope.fluidPanel.task.size === 100) {
+                            element.addClass("hideSize100");
+                        } else {
+                            element.removeClass("hideSize100");
+                        }
                     } else {
                         element.removeClass("hideSize100");
                     }
-                } else {
-                    element.removeClass("hideSize100");
-                }
 
-                if (scope.task) {
-                    scope.$watch(function (scope) {
-                        return scope.task.size;
-                    }, function (value) {
-                        if (v.is("lg") && !scope.frame.fullScreen) {
-                            if (value === 100) {
-                                element.addClass("hideSize100");
+                    if (scope.fluidPanel.task) {
+                        scope.$watch(function (scope) {
+                            return scope.fluidPanel.task.size;
+                        }, function (value) {
+                            if (v.is("lg") && !scope.fluidPanel.frame.fullScreen) {
+                                if (value === 100) {
+                                    element.addClass("hideSize100");
+                                } else {
+                                    element.removeClass("hideSize100");
+                                }
                             } else {
                                 element.removeClass("hideSize100");
                             }
-                        } else {
-                            element.removeClass("hideSize100");
+                        });
+                    }
+
+                    $(w).on("resize", function () {
+                        if (scope) {
+                            if (v.is("lg") && !scope.fluidPanel.frame.fullScreen) {
+                                if (scope.fluidPanel.task.size === 100) {
+                                    element.addClass("hideSize100");
+                                } else {
+                                    element.removeClass("hideSize100");
+                                }
+
+                            } else {
+                                element.removeClass("hideSize100");
+                            }
                         }
                     });
+                } else {
+                    throw "Element must be a child of <fluid-panel>";
                 }
-
-                $(w).on("resize", function () {
-                    if (scope) {
-                        if (v.is("lg") && !scope.frame.fullScreen) {
-                            console.debug("hidden100-viewport", v.view);
-                            console.debug("hidden100-size", scope.task.size);
-                            if (scope.task.size === 100) {
-                                element.addClass("hideSize100");
-                            } else {
-                                element.removeClass("hideSize100");
-                            }
-
-                        } else {
-                            element.removeClass("hideSize100");
-                        }
-                    }
-                });
 
 
             }
@@ -478,20 +486,25 @@ fluidComponents
             scope: false,
             link: function (scope, element, attr) {
 
-                if (v.is("xs") && scope.frame.fullScreen) {
-                    element.addClass("hideFullscreenXs");
-                } else {
-                    element.removeClass("hideFullscreenXs");
-                }
-
-                $(w).on("resize", function () {
-                    if (v.is("xs") && scope.frame.fullScreen) {
+                if (scope.fluidPanel) {
+                    if (v.is("xs") && scope.fluidPanel.frame.fullScreen) {
                         element.addClass("hideFullscreenXs");
                     } else {
                         element.removeClass("hideFullscreenXs");
                     }
 
-                });
+                    $(w).on("resize", function () {
+                        if (v.is("xs") && scope.fluidPanel.frame.fullScreen) {
+                            element.addClass("hideFullscreenXs");
+                        } else {
+                            element.removeClass("hideFullscreenXs");
+                        }
+
+                    });
+                } else {
+                    throw "Element must be a child of <fluid-panel>";
+                }
+
 
             }
         }
@@ -502,22 +515,25 @@ fluidComponents
             require: "^fluidFrame",
             scope: false,
             link: function (scope, element, attr) {
-
-                if (v.is("sm") && scope.frame.fullScreen) {
-                    element.addClass("hideFullscreenSm");
-                } else {
-                    element.removeClass("hideFullscreenSm");
-                }
-
-                $(w).on("resize", function () {
-
-                    if (v.is("sm") && scope.frame.fullScreen) {
+                if (scope.fluidPanel) {
+                    if (v.is("sm") && scope.fluidPanel.frame.fullScreen) {
                         element.addClass("hideFullscreenSm");
                     } else {
                         element.removeClass("hideFullscreenSm");
                     }
 
-                });
+                    $(w).on("resize", function () {
+
+                        if (v.is("sm") && scope.fluidPanel.frame.fullScreen) {
+                            element.addClass("hideFullscreenSm");
+                        } else {
+                            element.removeClass("hideFullscreenSm");
+                        }
+
+                    });
+                } else {
+                    throw "Element must be a child of <fluid-panel>";
+                }
             }
         }
     }])
@@ -527,21 +543,24 @@ fluidComponents
             require: "^fluidFrame",
             scope: false,
             link: function (scope, element, attr) {
-
-                if (v.is("md") && scope.frame.fullScreen) {
-                    element.addClass("hideFullscreenMd");
-                } else {
-                    element.removeClass("hideFullscreenMd");
-                }
-
-                $(w).on("resize", function () {
-                    if (v.is("md") && scope.frame.fullScreen) {
+                if (scope.fluidPanel) {
+                    if (v.is("md") && scope.fluidPanel.frame.fullScreen) {
                         element.addClass("hideFullscreenMd");
                     } else {
                         element.removeClass("hideFullscreenMd");
                     }
 
-                });
+                    $(w).on("resize", function () {
+                        if (v.is("md") && scope.fluidPanel.frame.fullScreen) {
+                            element.addClass("hideFullscreenMd");
+                        } else {
+                            element.removeClass("hideFullscreenMd");
+                        }
+
+                    });
+                } else {
+                    throw "Element must be a child of <fluid-panel>";
+                }
             }
         }
     }])
@@ -552,21 +571,25 @@ fluidComponents
             scope: true,
             link: function (scope, element, attr) {
 
-
-                if (v.is("lg") && scope.frame.fullScreen) {
-                    element.addClass("hideFullscreenLg");
-                } else {
-                    element.removeClass("hideFullscreenLg");
-                }
-
-
-                $(w).on("resize", function () {
-                    if (v.is("lg") && scope.frame.fullScreen) {
+                if (scope.fluidPanel) {
+                    if (v.is("lg") && scope.fluidPanel.frame.fullScreen) {
                         element.addClass("hideFullscreenLg");
                     } else {
                         element.removeClass("hideFullscreenLg");
                     }
-                });
+
+
+                    $(w).on("resize", function () {
+                        if (v.is("lg") && scope.fluidPanel.frame.fullScreen) {
+                            element.addClass("hideFullscreenLg");
+                        } else {
+                            element.removeClass("hideFullscreenLg");
+                        }
+                    });
+                } else {
+                    throw "Element must be a child of <fluid-panel>";
+                }
+
             }
         }
     }])

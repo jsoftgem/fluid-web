@@ -64,6 +64,13 @@ angular.module("fluidFrame", ["fluidHttp", "fluidTask", "fluidSession"])
                         autoFullscreen(element, maxHeight.replace("px", ""), element.parent().innerWidth());
                     }
                 });
+
+                var maxHeight = element.parent().css("max-height");
+                if (maxHeight) {
+                    console.debug("fluidPanel.fullScreen.resize.maxHeight", maxHeight);
+                    console.debug("fluidPanel.fullScreen.resize.innerHeight", element.parent().innerHeight());
+                    autoFullscreen(element, maxHeight.replace("px", ""), element.parent().innerWidth());
+                }
             }
         }
     }])
@@ -115,6 +122,18 @@ angular.module("fluidFrame", ["fluidHttp", "fluidTask", "fluidSession"])
                     }
                 }, this);
             }
+
+            frame.getFluidTask = function (fluidId) {
+                var filteredTask = {};
+                angular.forEach(function (task, $index) {
+                    if (task.fluidId === fluidId) {
+                        this.task = task;
+                    }
+                }, filteredTask);
+
+                return filteredTask.task;
+            }
+
             return frame;
         }
         return frameService;

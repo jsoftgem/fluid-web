@@ -7,7 +7,7 @@ angular.module("fluidBreadcrumb", [])
             restrict: "E",
             replace: true,
             template: tc.get("templates/fluid/fluidBreadcrumb.html"),
-            scope: {fluidPanel: "="},
+            scope: false,
             link: function (scope, element, attr) {
                 scope.breadcrumb = new FluidBreadcrumb(scope.fluidPanel);
                 console.debug("fluidBreadcrumb.breadcrumb", scope.breadcrumb);

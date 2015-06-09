@@ -1455,6 +1455,7 @@ angular.module("fluidPanel", ["oc.lazyLoad", "fluidHttp", "fluidFrame", "fluidMe
                     return frame.fluidPanel[task.fluidId];
                 } else {
                     this.frame = frame;
+                    this.task = task;
                     this.pages = [];
                     this.id = task.fluidId;
                     this.$ = function () {
@@ -1767,7 +1768,6 @@ angular.module("fluidPanel", ["oc.lazyLoad", "fluidHttp", "fluidFrame", "fluidMe
                         this.pages = [];
                         this.fluidBreadcrumb.pages = [];
                     }
-
                     this.whenLoaded = function (loadedAction) {
                         if (!this.loaders) {
                             this.loaders = [];

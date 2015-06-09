@@ -48,6 +48,16 @@
     color: #9d9d9d;
 }
 
+
+.fluid-breadcrumb .item-sm {
+    padding: 0 15px;
+
+}
+
+.fluid-breadcrumb .item-sm:before {
+    content: "-";
+}
+
 .fluid-breadcrumb .item:hover {
     cursor: pointer;
     -webkit-transition: all 0.10s ease-in-out;

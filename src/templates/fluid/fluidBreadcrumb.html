@@ -1,5 +1,5 @@
 <div class="fluid-breadcrumb" ng-init="item=[]">
-    <div class="item" ng-repeat="bread in breadcrumb.pages" ng-class="item[$index].active">
+    <div class="item hidden-xs hidden-sm hidden25" ng-repeat="bread in breadcrumb.pages" ng-class="item[$index].active">
         <span ng-mouseover="item[$index].showClose=true && $index > 0;item[$index].active='hovered'"
               ng-mouseleave="item[$index].showClose=false;item[$index].active='default'">
             <span class="label" ng-class="breadcrumb.current === $index ?'active':'inactive'"
@@ -7,5 +7,10 @@
             <i ng-if="item[$index].showClose" class="fa fa-close text-danger" title="Close {{bread}}"
                ng-click="breadcrumb.close(bread,$index,$event)"></i>
         </span>
+    </div>
+    <div class="item-sm hidden-md hidden50 hidden75 hidden100 hidden-fullscreen-md hidden-fullscreen-lg">
+
+        <span>{{breadcrumb.getTitle(breadcrumb.currentPage())}}</span>
+
     </div>
 </div>
