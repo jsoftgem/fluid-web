@@ -5,7 +5,7 @@ angular.module("moduleBasic", ["fluid"])
     .controller("moduleBasicCtrl", ["$scope", "$timeout", "TaskControl", "ToolBarItem", function (s, t, TaskControl, ToolBarItem) {
 
 
-        s.fluidPanel.whenLoaded(function (fluidPanel) {
+        s.fluidPanel.onLoad(function (fluidPanel) {
             var sample = new TaskControl();
             sample.label = "Sample";
             sample.setId("sample");
@@ -40,6 +40,24 @@ angular.module("moduleBasic", ["fluid"])
                     this.ok = ok;
                     this.cancel = cancel;
                 }
+            }
+
+
+            this.onViewportChange = function (viewport) {
+                console.debug("module-basic.viewport", viewport);
+            }
+
+            this.onSizeChange = function (size) {
+                console.debug("module-basic.size", size);
+            }
+
+
+            this.onFullscreen = function (ok, cancel) {
+                cancel();
+            }
+
+            this.onFluidscreen = function (ok, cancel) {
+                cancel();
             }
 
             /* this.onChange = function (proceed, cancel, $event) {

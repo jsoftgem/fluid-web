@@ -273,20 +273,22 @@ function fillHeight(element, height, reducedHeight) {
         elemHeight -= reducedHeight;
     }
     console.debug("fiilHeight-elemHeight: ", elemHeight)
-    element.css("max-height",elemHeight+"px");
+    element.css("max-height", elemHeight + "px");
 }
 
 
 function autoFullscreen(element, height, width) {
     var panelHeight = height;
     var offset = getOffset(element, 0, 0);
+    console.debug("fluidFrame-autoFullscreen.offset", offset);
     console.debug("fluidFrame-autoFullscreen.element", element);
     console.debug("fluidFrame-autoFullscreen.height", height);
-    var pageHeight = (panelHeight - (offset + 5));
+    var pageHeight = (panelHeight - (offset > 0 ? (offset + 5) : 0));
 
     element.find(".fluid-page").ready(function () {
         element.find(".fluid-page").css("max-height", pageHeight + "px").css("overflow-y", "auto");
     });
+
     element.height(panelHeight);
 
 }

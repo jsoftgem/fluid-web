@@ -1289,22 +1289,24 @@ angular.module("fluidPanel", ["oc.lazyLoad", "fluidHttp", "fluidFrame", "fluidMe
                 link: {
                     pre: function (scope, element, attr) {
 
+                        scope.viewport = v.view;
+
                         $(window).on("resize", function () {
                             console.debug("fluid-panel.viewport", v);
                             scope.setViewport();
                         });
 
-
                         scope.setViewport = function () {
-
-
+                            if (!v.is(scope.viewport)) {
+                                if (scope.fluidPanel) {
+                                    scope.fluidPanel.onViewportChange(v.view);
+                                }
+                                scope.viewport = v.view;
+                            }
                         }
 
-                        scope.setViewport();
-
-
                         scope.loaded = function () {
-                            if (scope.fluidPanel.frame.fu6llScreen) {
+                            if (scope.fluidPanel.frame.fullScreen) {
                                 var maxHeight = element.parent().css("max-height");
                                 console.debug("fluidPanel.fullScreen.maxHeight", maxHeight);
                                 console.debug("fluidPanel.fullScreen.innerHeight", element.parent().innerHeight());
@@ -1319,6 +1321,7 @@ angular.module("fluidPanel", ["oc.lazyLoad", "fluidHttp", "fluidFrame", "fluidMe
                             }
 
                         }
+
                         scope.fluidPanel = undefined;
                         if (scope.task.lazyLoad) {
                             var pathArr = undefined;
@@ -1388,6 +1391,9 @@ angular.module("fluidPanel", ["oc.lazyLoad", "fluidHttp", "fluidFrame", "fluidMe
                         scope.$watch(function (scope) {
                             return scope.task.size;
                         }, function (newSize, oldSize) {
+                            if (scope.fluidPanel) {
+                                scope.fluidPanel.onSizeChange(newSize);
+                            }
                             scope.setSize(newSize);
                         });
 
@@ -1406,6 +1412,9 @@ angular.module("fluidPanel", ["oc.lazyLoad", "fluidHttp", "fluidFrame", "fluidMe
                             }
                         });
 
+                        element.on("load", function () {
+                            scope.task.load(scope.task.ok, scope.task.cancel);
+                        })
 
                     }
                 }
@@ -1454,6 +1463,8 @@ angular.module("fluidPanel", ["oc.lazyLoad", "fluidHttp", "fluidFrame", "fluidMe
                 if (frame.fluidPanel[task.fluidId] != null) {
                     return frame.fluidPanel[task.fluidId];
                 } else {
+
+                    var panel = this;
                     this.frame = frame;
                     this.task = task;
                     this.pages = [];
@@ -1566,10 +1577,15 @@ angular.module("fluidPanel", ["oc.lazyLoad", "fluidHttp", "fluidFrame", "fluidMe
                     expandControl.setId("expandPanel");
                     expandControl.glyph = "fa fa-expand";
                     expandControl.uiClass = "btn btn-info";
-                    expandControl.label = "Expand";
+                    expandControl.label = "Fullscreen";
                     expandControl.action = function (task, $event) {
-                        this.fluidPanel.frame.fullScreen = true;
-                        this.fluidPanel.frame.task = task;
+                        panel.onFullscreen(function () {
+                            panel.frame.fullScreen = true;
+                            panel.frame.task = task;
+                        }, function () {
+
+                        })
+
                     }
                     expandControl.visible = function () {
                         return !this.fluidPanel.frame.fullScreen;
@@ -1582,8 +1598,12 @@ angular.module("fluidPanel", ["oc.lazyLoad", "fluidHttp", "fluidFrame", "fluidMe
                     fluidScreenControl.uiClass = "btn btn-info";
                     fluidScreenControl.label = "Fluid";
                     fluidScreenControl.action = function (task, $event) {
-                        this.fluidPanel.frame.fullScreen = false;
-                        this.fluidPanel.frame.task = undefined;
+                        panel.onFluidscreen(function () {
+                            panel.frame.fullScreen = false;
+                            panel.frame.task = undefined;
+                        }, function () {
+
+                        });
                     }
                     fluidScreenControl.visible = function () {
                         return this.fluidPanel.frame.fullScreen;
@@ -1676,7 +1696,6 @@ angular.module("fluidPanel", ["oc.lazyLoad", "fluidHttp", "fluidFrame", "fluidMe
                     refreshToolBarItem.setId("refresh_pnl_tool");
                     this.addToolbarItem(refreshToolBarItem);
 
-                    var panel = this;
                     if (task.resource) {
                         task.resource.$get({fluidId: task.fluidId}, function (taskResource) {
                             panel.resource = taskResource;
@@ -1768,12 +1787,57 @@ angular.module("fluidPanel", ["oc.lazyLoad", "fluidHttp", "fluidFrame", "fluidMe
                         this.pages = [];
                         this.fluidBreadcrumb.pages = [];
                     }
-                    this.whenLoaded = function (loadedAction) {
+                    this.onLoad = function (loadedAction) {
                         if (!this.loaders) {
                             this.loaders = [];
                         }
                         this.loaders.push(loadedAction);
                     }
+                    this.onViewportChange = function (port) {
+                        var page = this.getPage(this.fluidBreadcrumb.currentPage());
+                        console.debug("fluidPanel-fluidPanelModel-onViewportChange.fluidBreadcrumb.currentPage", this.fluidBreadcrumb.currentPage());
+                        console.debug("fluidPanel-fluidPanelModel-onViewportChange.page", page);
+                        if (page) {
+                            page.onViewportChange(port);
+                        }
+                    }
+
+                    this.onSizeChange = function (size) {
+                        var page = this.getPage(this.fluidBreadcrumb.currentPage());
+                        if (page) {
+                            page.onSizeChange(size);
+                        }
+                    }
+
+                    this.onFullscreen = function (ok, cancel) {
+                        var page = this.getPage(this.fluidBreadcrumb.currentPage());
+                        if (page) {
+                            page.fullscreen(
+                                function () {
+                                    ok();
+                                },
+                                function () {
+                                    cancel();
+                                }
+                            );
+                        }
+                    }
+
+                    this.onFluidscreen = function (ok, cancel) {
+                        var page = this.getPage(this.fluidBreadcrumb.currentPage());
+                        if (page) {
+                            page.fluidscreen(
+                                function () {
+                                    ok();
+                                },
+                                function () {
+                                    cancel();
+                                }
+                            );
+                        }
+                    }
+
+
                     frame.fluidPanel[this.id] = this;
                 }
             }

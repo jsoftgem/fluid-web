@@ -2,7 +2,7 @@
  * Created by jerico on 4/28/2015.
  */
 angular.module("fluidTool", [])
-    .directive("fluidTool", ["$rootScope", "$compile", "$templateCache", function (r, c, tc) {
+    .directive("fluidToolObselete", ["$rootScope", "$compile", "$templateCache", function (r, c, tc) {
         return {
             scope: {task: '=', controls: '=', pages: '=', fluid: "=", size: "@", fixed: '='},
             restrict: "E",
@@ -54,12 +54,12 @@ angular.module("fluidTool", [])
             }
         }
     }])
-    .directive("fluidTool2", ["$templateCache", function (tc) {
+    .directive("fluidTool", ["$templateCache", function (tc) {
         return {
             restrict: "E",
             replace: true,
             scope: false,
-            template: tc.get("templates/fluid/fluidToolbar2.html"),
+            template: tc.get("templates/fluid/fluidToolbar.html"),
             link: {
                 post: function (scope, element, attr) {
                 }

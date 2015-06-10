@@ -45,7 +45,7 @@
 
 </head>
 <body ng-controller="mainCtrl">
-<div class="navbar navbar-default navbar-fixed-top">
+<!--<div class="navbar navbar-default navbar-fixed-top">
     <div class="container-fluid">
         <div class="navbar-header">
             <button ng-if="frameService.fullScreen" ng-click="openDrawer($event)" type="button" class="navbar-toggle">
@@ -66,20 +66,20 @@
         </div>
         <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
             <ul class="nav navbar-nav">
-                <!--  <li ng-repeat="task in frame.tasks" ng-class="task.active ? 'active' : ''">
+                &lt;!&ndash;  <li ng-repeat="task in frame.tasks" ng-class="task.active ? 'active' : ''">
                       <a href="#" ng-click="task.open($index)">
                           <fluid-task-icon task="task"></fluid-task-icon>
                           {{' '}}{{task.title}}</a>
-                  </li>-->
+                  </li>&ndash;&gt;
             </ul>
         </div>
     </div>
-</div>
-<div style="margin-top: 51px"><!--
+</div>-->
+<div><!--
     <fluid-tasknav fill-height reduce-height="51" name="taskNav" frame="appFrame">
 
     </fluid-tasknav>-->
-    <fluid-frame name="appFrame" fill-height reduce-height="51"></fluid-frame>
+    <fluid-frame name="appFrame" fill-height></fluid-frame>
 </div>
 
 </body>

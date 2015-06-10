@@ -1,59 +1,21 @@
-<div class='container-fluid animated fadeIn anim-dur' style="padding: 0">
-    <div class="ndg-breadcrumb">
-        <ul class='breadcrumb hidden-xs hidden-sm hidden25 hidden50 hidden-fullscreen-xs hidden-fullscreen-sm'>
-
-            <li class="pull-left"
-                ng-repeat='page in task.navPages'>
-                <a ng-class="task.page.name == page.name ? 'plain-text':''" title='{{page.title}}' href='#'
-                   ng-click='goToEvent(page.name,page.param)'>{{page.title}}</a>
-            </li>
-
-
-            <div class='form-group pull-right'>
-                <div class='btn-group {{group-size}}'>
-                    <button ng-if="control.visible() == undefined || control.visible()"
-                            id='btn_tool_{{control.id}}_{{task.id}}' ng-repeat='control in controls'
-                            title='{{control.label}}'
-                            class='btn button-tool' ng-class='getClass(control.uiType)'
-                            ng-click='runEvent(control,$event)'
-                            ng-disabled='control.disabled' type='button'><span ng-class='control.glyph'></span></button>
-                </div>
-            </div>
-            <div class="clearfix"></div>
-        </ul>
-        <ul class='breadcrumb hidden-md hidden100 hidden75 hidden-fullscreen-lg hidden-fullscreen-md'>
-
-            <li class="pull-left">
-                <a ng-class="task.page.name == task.navPages[0].name ? 'plain-text':''"
-                   title='{{task.navPages[0].title}}' href='#'
-                   ng-click='goToEvent(task.navPages[0].name,task.navPages[0].param)'>{{task.navPages[0].title}}</a>
-                <a ng-if="task.navPages.length > 1" href="#" title="more"
-                   ng-click="fluid.openOption(fluid.getElementFlowId('breadcrumb'),$event)">...</a>
-            </li>
-
-            <div class='form-group pull-right'>
-                <div class='btn-group {{group-size}}'>
-                    <button ng-if="control.visible() == undefined || control.visible()"
-                            id='btn_tool_{{control.id}}_{{task.id}}' ng-repeat='control in controls'
-                            title='{{control.label}}'
-                            class='btn button-tool' ng-class='getClass(control.uiType)'
-                            ng-click='runEvent(control,$event)'
-                            ng-disabled='control.disabled' type='button'><span ng-class='control.glyph'></span></button>
-                </div>
-            </div>
-            <div class="clearfix"></div>
-        </ul>
+<div class="fluid-toolbar">
+    <div class="btn-group btn-group-sm hidden-xs hidden-sm hidden-md" ng-if="fluidPanel && fluidPanel.toolbarItems && fluidPanel.toolbarItems.length > 0">
+        <button id="{{control.getId($index)}}" ng-if="control.visible()" ng-disabled="control.disabled()" class="{{control.class}}"
+                ng-repeat="control in fluidPanel.toolbarItems"
+                ng-class="control.uiClass"
+                type="{{control.type}}" title="{{control.label}}"
+                ng-click="control.action(task,$event)"><i class="{{control.glyph}}"></i>{{control.showText ?
+            control.label : ''}}
+        </button>
     </div>
 
-
-    <script type="text/ng-template" id="{{fluid.getElementFlowId('breadcrumb')}}">
-        <ul class="breadcrumb">
-            <li class="pull-left" ng-if="$index > 0"
-                ng-repeat='page in task.navPages'>
-                <a ng-class="task.page.name == page.name ? 'plain-text':''" title='{{page.title}}' href='#'
-                   ng-click='goToEvent(page.name,page.param)'>{{page.title}}</a>
-            </li>
-
-        </ul>
-    </script>
+    <div class="btn-group btn-group-md hidden-lg" role="toolbar" ng-if="fluidPanel && fluidPanel.toolbarItems && fluidPanel.toolbarItems.length > 0">
+        <button id="{{control.getId($index)}}" ng-if="control.visible()" ng-disabled="control.disabled()" class="{{control.class}}"
+                ng-repeat="control in fluidPanel.toolbarItems"
+                ng-class="control.uiClass"
+                type="{{control.type}}" title="{{control.label}}"
+                ng-click="control.action(task,$event)"><i class="{{control.glyph}}"></i>{{control.showText ?
+            control.label : ''}}
+        </button>
+    </div>
 </div>

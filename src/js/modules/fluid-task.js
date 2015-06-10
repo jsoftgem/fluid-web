@@ -292,9 +292,15 @@ angular.module("fluidTask", ["fluidSession", "fluidFrame"])
             }
 
             task.onLoad = function (ok, failed) {
-                 ok();
+                ok();
             }
 
+            task.open = function () {
+                if (!task.active) {
+                    task.active = true;
+                }
+                $(".fluid-frame[name='" + task.frame + "']").scrollTo($("div.fluid-panel :eq(" + task.index + ")"), 200);
+            }
 
             console.debug("fluidTask-FluidTask.newTask", task);
             return task;

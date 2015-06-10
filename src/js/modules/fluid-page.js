@@ -62,6 +62,7 @@ angular.module("fluidPage", ["fluidHttp", "fluidOption"])
                                 if (!scope.fluidPanel.loaded) {
                                     scope.fluidPanel.loaded = true;
                                 }
+
                             }, function () {
                                 scope.fluidPage.loaded = false;
                                 if (!scope.fluidPanel.loaded) {
@@ -181,6 +182,22 @@ angular.module("fluidPage", ["fluidHttp", "fluidOption"])
                 rs.$broadcast("page_close_failed_evt" + this.fluidId + "_pg_" + this.name, reason);
             }
 
+            this.fullscreen = function (ok, cancel) {
+                this.onFullscreen(function () {
+                    ok();
+                }, function () {
+                    cancel();
+                });
+            }
+
+            this.fluidscreen = function (ok, cancel) {
+                this.onFluidscreen(function () {
+                    ok();
+                }, function () {
+                    cancel();
+                });
+            }
+
             this.onLoad = function (ok, failed) {
                 return ok();
             }
@@ -198,6 +215,22 @@ angular.module("fluidPage", ["fluidHttp", "fluidOption"])
             }
 
             this.onDestroy = function () {
+            }
+
+            this.onViewportChange = function (viewport) {
+
+            }
+
+            this.onSizeChange = function (size) {
+
+            }
+
+            this.onFullscreen = function (ok, cancel) {
+                ok();
+            }
+
+            this.onFluidscreen = function (ok, cancel) {
+                ok();
             }
 
             this.clear = function () {

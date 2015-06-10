@@ -15,7 +15,7 @@ angular.module("fluidTaskcontrols", ["fluidTask"])
             replace: true
         }
     }])
-    .factory("TaskControl", ["fluidControlService", function (fcs) {
+    .factory("TaskControl", [function () {
         var control = function () {
             this.glyph = "fa fa-question";
             this.uiClass = "btn btn-default";
@@ -32,7 +32,6 @@ angular.module("fluidTaskcontrols", ["fluidTask"])
             this.setId = function (id) {
                 this.id = id;
             }
-
             this.getId = function ($index) {
                 if (!this.id) {
                     this.id = "elem_" + $index;

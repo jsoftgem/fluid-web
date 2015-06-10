@@ -26,20 +26,17 @@ angular.module("fluidFrame", ["fluidHttp", "fluidTask", "fluidSession"])
                 } else {
                     s.frame = new FrameService(s.name);
                 }
+
             }],
             link: function (scope, element) {
-
                 $(window).on("resize", function () {
                     console.debug("fluid-frame.viewport", v);
                     scope.setViewport();
                 });
-
-
                 scope.setViewport = function () {
 
 
                 }
-
                 scope.setViewport();
             },
             template: tc.get("templates/fluid/fluidFrame.html")
@@ -101,10 +98,13 @@ angular.module("fluidFrame", ["fluidHttp", "fluidTask", "fluidSession"])
 
                         var fluidTask = new FluidTask(task);
                         fluidTask.frame = frame.name;
+                        fluidTask.index = index;
+
                         fluidTask.page = page;
                         if (onLoad) {
                             fluidTask.onLoad = onLoad;
                         }
+
                         fluidTask.ok = function () {
 
                         }
@@ -151,8 +151,6 @@ angular.module("fluidFrame", ["fluidHttp", "fluidTask", "fluidSession"])
                         this.fullScreen = false;
                         this.task = undefined;
                         this.tasks = [];
-                        // this.workspaces = [];
-                        //this.showWorkspace = false;
                         fh.frames[key] = this;
                     }
                 }
