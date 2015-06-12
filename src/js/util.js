@@ -248,10 +248,12 @@ function getOffset(parent, offset, index) {
             return getOffset($(child), offset, index);
         }
         else if ($(child).attr("page-name") !== undefined) {
+
+            console.debug("fluidFrame-getOffset.parent.child.result", offset);
             return offset;
         } else {
             index++;
-            offset += $(child).height();
+            offset += $(child).innerHeight();
             console.debug("fluidFrame-getOffset.parent.child.offset", offset);
             return getOffset(parent, offset, index);
         }
@@ -273,25 +275,37 @@ function fillHeight(element, height, reducedHeight) {
         elemHeight -= reducedHeight;
     }
     console.debug("fiilHeight-elemHeight: ", elemHeight)
-    element.css("max-height", elemHeight + "px");
+    element.css("height", elemHeight + "px");
 }
 
 
 function autoFullscreen(element, height, width) {
-    var panelHeight = height;
     var offset = getOffset(element, 0, 0);
     console.debug("fluidFrame-autoFullscreen.offset", offset);
     console.debug("fluidFrame-autoFullscreen.element", element);
     console.debug("fluidFrame-autoFullscreen.height", height);
-    var pageHeight = (panelHeight - (offset > 0 ? (offset + 5) : 0));
+    var pageHeight = (height - (offset > 0 ? (offset + 5) : 0));
 
     element.find(".fluid-page").ready(function () {
-        element.find(".fluid-page").css("max-height", pageHeight + "px").css("overflow-y", "auto");
+        element.find(".fluid-page").css("height", pageHeight + "px").css("overflow-y", "auto");
     });
 
-    element.height(panelHeight);
-
 }
+
+
+function fixPageHeight(element) {
+    var offset = getOffset(element, 0, 0);
+    var maxHeight = element.parent().css("height");
+    console.debug("fixPageHeight.offset", offset);
+    console.debug("fixPageHeight.maxHeight", maxHeight);
+    if (maxHeight) {
+        var pageHeight = (maxHeight - (offset > 0 ? (offset + 5) : 0));
+        element.find(".fluid-page").ready(function () {
+            element.find(".fluid-page").css("height", pageHeight + "px").css("overflow-y", "auto");
+        });
+    }
+}
+
 
 function addItem(item, items, $index) {
     if (!$index) {

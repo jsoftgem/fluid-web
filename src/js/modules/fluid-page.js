@@ -60,7 +60,8 @@ angular.module("fluidPage", ["fluidHttp", "fluidOption"])
                             scope.fluidPage.load(function () {
                                 scope.fluidPage.loaded = true;
                                 if (!scope.fluidPanel.loaded) {
-                                    scope.fluidPanel.loaded = true;
+                                    scope.fluidPanel.loaded = true;/*
+                                    fixPageHeight(scope.fluidPanel.$());*/
                                 }
 
                             }, function () {

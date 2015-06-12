@@ -891,10 +891,12 @@ function getOffset(parent, offset, index) {
             return getOffset($(child), offset, index);
         }
         else if ($(child).attr("page-name") !== undefined) {
+
+            console.debug("fluidFrame-getOffset.parent.child.result", offset);
             return offset;
         } else {
             index++;
-            offset += $(child).height();
+            offset += $(child).innerHeight();
             console.debug("fluidFrame-getOffset.parent.child.offset", offset);
             return getOffset(parent, offset, index);
         }
@@ -916,25 +918,37 @@ function fillHeight(element, height, reducedHeight) {
         elemHeight -= reducedHeight;
     }
     console.debug("fiilHeight-elemHeight: ", elemHeight)
-    element.css("max-height", elemHeight + "px");
+    element.css("height", elemHeight + "px");
 }
 
 
 function autoFullscreen(element, height, width) {
-    var panelHeight = height;
     var offset = getOffset(element, 0, 0);
     console.debug("fluidFrame-autoFullscreen.offset", offset);
     console.debug("fluidFrame-autoFullscreen.element", element);
     console.debug("fluidFrame-autoFullscreen.height", height);
-    var pageHeight = (panelHeight - (offset > 0 ? (offset + 5) : 0));
+    var pageHeight = (height - (offset > 0 ? (offset + 5) : 0));
 
     element.find(".fluid-page").ready(function () {
-        element.find(".fluid-page").css("max-height", pageHeight + "px").css("overflow-y", "auto");
+        element.find(".fluid-page").css("height", pageHeight + "px").css("overflow-y", "auto");
     });
 
-    element.height(panelHeight);
-
 }
+
+
+function fixPageHeight(element) {
+    var offset = getOffset(element, 0, 0);
+    var maxHeight = element.parent().css("height");
+    console.debug("fixPageHeight.offset", offset);
+    console.debug("fixPageHeight.maxHeight", maxHeight);
+    if (maxHeight) {
+        var pageHeight = (maxHeight - (offset > 0 ? (offset + 5) : 0));
+        element.find(".fluid-page").ready(function () {
+            element.find(".fluid-page").css("height", pageHeight + "px").css("overflow-y", "auto");
+        });
+    }
+}
+
 
 function addItem(item, items, $index) {
     if (!$index) {
@@ -1357,20 +1371,13 @@ angular.module("fluidFrame", ["fluidHttp", "fluidTask", "fluidSession"])
                 }
 
                 w.bind("resize", function () {
-                    var maxHeight = element.parent().css("max-height");
+                    var maxHeight = element.parent().css("height");
                     if (maxHeight) {
                         console.debug("fluidPanel.fullScreen.resize.maxHeight", maxHeight);
                         console.debug("fluidPanel.fullScreen.resize.innerHeight", element.parent().innerHeight());
                         autoFullscreen(element, maxHeight.replace("px", ""), element.parent().innerWidth());
                     }
                 });
-
-                var maxHeight = element.parent().css("max-height");
-                if (maxHeight) {
-                    console.debug("fluidPanel.fullScreen.resize.maxHeight", maxHeight);
-                    console.debug("fluidPanel.fullScreen.resize.innerHeight", element.parent().innerHeight());
-                    autoFullscreen(element, maxHeight.replace("px", ""), element.parent().innerWidth());
-                }
             }
         }
     }])
@@ -1425,7 +1432,6 @@ angular.module("fluidFrame", ["fluidHttp", "fluidTask", "fluidSession"])
                     }
                 }, this);
             }
-
             frame.getFluidTask = function (fluidId) {
                 var filteredTask = {};
                 angular.forEach(function (task, $index) {
@@ -1435,6 +1441,10 @@ angular.module("fluidFrame", ["fluidHttp", "fluidTask", "fluidSession"])
                 }, filteredTask);
 
                 return filteredTask.task;
+            }
+
+            frame.$ = function () {
+                return $(".fluid-frame[name='" + frame.name + "']");
             }
 
             return frame;
@@ -2238,7 +2248,8 @@ angular.module("fluidPage", ["fluidHttp", "fluidOption"])
                             scope.fluidPage.load(function () {
                                 scope.fluidPage.loaded = true;
                                 if (!scope.fluidPanel.loaded) {
-                                    scope.fluidPanel.loaded = true;
+                                    scope.fluidPanel.loaded = true;/*
+                                    fixPageHeight(scope.fluidPanel.$());*/
                                 }
 
                             }, function () {
@@ -3773,7 +3784,8 @@ angular.module("fluidPanel", ["oc.lazyLoad", "fluidHttp", "fluidFrame", "fluidMe
         }
     }])
     .directive("fluidPanel", ["$templateCache", "FluidPanelModel", "fluidToolbarService", "$ocLazyLoad", "$compile", "fluidPanelService", "fluidFrameService", "$viewport", "$window",
-        function (tc, FluidPanel, ftb, oc, c, fluidPanelService, FluidFrame, v, window) {
+        "$anchorScroll", "$location",
+        function (tc, FluidPanel, ftb, oc, c, fluidPanelService, FluidFrame, v, window, a, l) {
             return {
                 require: "^fluidFrame",
                 scope: {task: "=", frame: "@"},
@@ -3801,7 +3813,8 @@ angular.module("fluidPanel", ["oc.lazyLoad", "fluidHttp", "fluidFrame", "fluidMe
 
                         scope.loaded = function () {
                             if (scope.fluidPanel.frame.fullScreen) {
-                                var maxHeight = element.parent().css("max-height");
+                                scope.fluidPanel.frame.$().scrollTop(0);
+                                var maxHeight = element.parent().css("height");
                                 console.debug("fluidPanel.fullScreen.maxHeight", maxHeight);
                                 console.debug("fluidPanel.fullScreen.innerHeight", element.parent().innerHeight());
                                 autoFullscreen(element, maxHeight.replace("px", ""), element.parent().innerWidth());
@@ -3813,7 +3826,6 @@ angular.module("fluidPanel", ["oc.lazyLoad", "fluidHttp", "fluidFrame", "fluidMe
                                     scope.fluidPanel.loaders.splice($index, 1);
                                 }, scope.fluidPanel);
                             }
-
                         }
 
                         scope.fluidPanel = undefined;
@@ -5017,9 +5029,8 @@ angular.module("templates/fluid/fluidFrame.html", []).run(["$templateCache", fun
     "<div class=\"fluid-frame\" ng-class=\"!frame.fullScreen ?'default-frame':'full'\">\n" +
     "    <bootstrap-viewport></bootstrap-viewport>\n" +
     "\n" +
-    "    <fluid-panel ng-if=\"frame.fullScreen\" class=\"fullscreen\" task='frame.task' frame=\"{{frame.name}}\"\n" +
+    "    <fluid-panel ng-if=\"frame.fullScreen\" task='frame.task' frame=\"{{frame.name}}\" class=\"fullscreen\"\n" +
     "                 fluid-fullscreen-height></fluid-panel>\n" +
-    "\n" +
     "    <div ng-if=\"!frame.fullScreen\">\n" +
     "        <div class=\"fluid-frame-task\">\n" +
     "            <fluid-panel task=\"task\" frame=\"{{frame.name}}\"\n" +

@@ -1279,7 +1279,8 @@ angular.module("fluidPanel", ["oc.lazyLoad", "fluidHttp", "fluidFrame", "fluidMe
         }
     }])
     .directive("fluidPanel", ["$templateCache", "FluidPanelModel", "fluidToolbarService", "$ocLazyLoad", "$compile", "fluidPanelService", "fluidFrameService", "$viewport", "$window",
-        function (tc, FluidPanel, ftb, oc, c, fluidPanelService, FluidFrame, v, window) {
+        "$anchorScroll", "$location",
+        function (tc, FluidPanel, ftb, oc, c, fluidPanelService, FluidFrame, v, window, a, l) {
             return {
                 require: "^fluidFrame",
                 scope: {task: "=", frame: "@"},
@@ -1307,7 +1308,8 @@ angular.module("fluidPanel", ["oc.lazyLoad", "fluidHttp", "fluidFrame", "fluidMe
 
                         scope.loaded = function () {
                             if (scope.fluidPanel.frame.fullScreen) {
-                                var maxHeight = element.parent().css("max-height");
+                                scope.fluidPanel.frame.$().scrollTop(0);
+                                var maxHeight = element.parent().css("height");
                                 console.debug("fluidPanel.fullScreen.maxHeight", maxHeight);
                                 console.debug("fluidPanel.fullScreen.innerHeight", element.parent().innerHeight());
                                 autoFullscreen(element, maxHeight.replace("px", ""), element.parent().innerWidth());
@@ -1319,7 +1321,6 @@ angular.module("fluidPanel", ["oc.lazyLoad", "fluidHttp", "fluidFrame", "fluidMe
                                     scope.fluidPanel.loaders.splice($index, 1);
                                 }, scope.fluidPanel);
                             }
-
                         }
 
                         scope.fluidPanel = undefined;

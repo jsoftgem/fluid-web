@@ -54,20 +54,13 @@ angular.module("fluidFrame", ["fluidHttp", "fluidTask", "fluidSession"])
                 }
 
                 w.bind("resize", function () {
-                    var maxHeight = element.parent().css("max-height");
+                    var maxHeight = element.parent().css("height");
                     if (maxHeight) {
                         console.debug("fluidPanel.fullScreen.resize.maxHeight", maxHeight);
                         console.debug("fluidPanel.fullScreen.resize.innerHeight", element.parent().innerHeight());
                         autoFullscreen(element, maxHeight.replace("px", ""), element.parent().innerWidth());
                     }
                 });
-
-                var maxHeight = element.parent().css("max-height");
-                if (maxHeight) {
-                    console.debug("fluidPanel.fullScreen.resize.maxHeight", maxHeight);
-                    console.debug("fluidPanel.fullScreen.resize.innerHeight", element.parent().innerHeight());
-                    autoFullscreen(element, maxHeight.replace("px", ""), element.parent().innerWidth());
-                }
             }
         }
     }])
@@ -122,7 +115,6 @@ angular.module("fluidFrame", ["fluidHttp", "fluidTask", "fluidSession"])
                     }
                 }, this);
             }
-
             frame.getFluidTask = function (fluidId) {
                 var filteredTask = {};
                 angular.forEach(function (task, $index) {
@@ -132,6 +124,10 @@ angular.module("fluidFrame", ["fluidHttp", "fluidTask", "fluidSession"])
                 }, filteredTask);
 
                 return filteredTask.task;
+            }
+
+            frame.$ = function () {
+                return $(".fluid-frame[name='" + frame.name + "']");
             }
 
             return frame;
