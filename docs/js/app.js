@@ -17,34 +17,8 @@ angular.module("mainApp", ["fluid"])
 
     }])
     .controller("mainCtrl", ["$scope", "fluidHttpService", "fluidFrameService", "fluidOptionService", "fluidMessageService", "$rootScope", "fluidTasknavService", "fluidFrameHandler",
-        "fluidTasknav", "FluidTaskGroup", "FluidTaskItem", function (s, fhs, FrameService, fos, ms, rs, fts, ffh, FluidTasknav, FluidTaskGroup, FluidTaskItem) {
+        function (s, fhs, FrameService, fos, ms, rs, fts, ffh) {
             s.menus = ["moduleBasic", "moduleTaskConfig"];
-            s.fluidFrameHandler = ffh;
-
-            s.openDrawer = function ($event) {
-                console.info("openDrawer-fluidOption.id", $("div.fluid-option").attr("id"));
-                fos.openOption($("div.fluid-option").attr("id"), "fullScreenNavMenu", $event.currentTarget);
-            }
-            s.tasknav = new FluidTasknav({
-                name: "taskNav"
-            });
-
-            var taskGroup = new FluidTaskGroup({
-                name: "Group1",
-                title: "Getting Started"
-            });
-
-            var moduleBasicItem = new FluidTaskItem({
-                name: "moduleBasic"
-            });
-
-            var moduleConfigItem = new FluidTaskItem({
-                name: "moduleTaskConfig"
-            });
-
-            taskGroup.addTask(moduleBasicItem);
-            taskGroup.addTask(moduleConfigItem);
-            s.tasknav.addGroup(taskGroup);
 
             s.frame = new FrameService('appFrame');
 
@@ -52,6 +26,9 @@ angular.module("mainApp", ["fluid"])
             });
             s.frame.openTask("moduleTaskConfig", undefined, undefined, function (ok, failed) {
             });
-
+            s.frame.openTask("moduleBasic", undefined, undefined, function (ok, failed) {
+            });
+            s.frame.openTask("moduleTaskConfig", undefined, undefined, function (ok, failed) {
+            });
 
         }]);

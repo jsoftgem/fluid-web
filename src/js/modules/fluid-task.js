@@ -251,7 +251,7 @@ angular.module("fluidTask", ["fluidSession", "fluidFrame"])
         }
         return taskService;
     }])
-    .factory("FluidTask", ["fluidTaskService", "$resource", function (fluidTaskService, r) {
+    .factory("FluidTask", ["fluidTaskService", "$resource", "fluidFrameHandler", function (fluidTaskService, r, fluidFrameHandler) {
         //TODO: handle task state here; use this in fluidPanel
         var fluidTask = function (defaultTask) {
             var task = {};
@@ -295,11 +295,19 @@ angular.module("fluidTask", ["fluidSession", "fluidFrame"])
                 ok();
             }
 
-            task.open = function () {
+            task.open = function ($event, frame) {
                 if (!task.active) {
                     task.active = true;
                 }
-                $(".fluid-frame[name='" + task.frame + "']").scrollTo($("div.fluid-panel :eq(" + task.index + ")"), 200);
+
+                var frame = fluidFrameHandler.frames[frameKey + task.frame];
+
+                if (frame.fullScreen) {
+                    frame.task = task;
+                } else {
+                    $(".fluid-frame[name='" + frame.name + "']").scrollTo($("div.fluid-panel:eq(" + task.index + ")"), 200);
+                    console.debug("fluid-task-task.open", "div.fluid-panel :eq(" + task.index + ")");
+                }
             }
 
             console.debug("fluidTask-FluidTask.newTask", task);

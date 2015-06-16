@@ -51,15 +51,6 @@ angular.module("moduleBasic", ["fluid"])
                 console.debug("module-basic.size", size);
             }
 
-
-            this.onFullscreen = function (ok, cancel) {
-                cancel();
-            }
-
-            this.onFluidscreen = function (ok, cancel) {
-                cancel();
-            }
-
             /* this.onChange = function (proceed, cancel, $event) {
              this.option.danger().open("onChange", $event.currentTarget, this);
              this.proceed = proceed;

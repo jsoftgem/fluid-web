@@ -1291,7 +1291,6 @@ angular.module("fluidPanel", ["oc.lazyLoad", "fluidHttp", "fluidFrame", "fluidMe
                     pre: function (scope, element, attr) {
 
                         scope.viewport = v.view;
-
                         $(window).on("resize", function () {
                             console.debug("fluid-panel.viewport", v);
                             scope.setViewport();
@@ -1323,51 +1322,59 @@ angular.module("fluidPanel", ["oc.lazyLoad", "fluidHttp", "fluidFrame", "fluidMe
                             }
                         }
 
-                        scope.fluidPanel = undefined;
-                        if (scope.task.lazyLoad) {
-                            var pathArr = undefined;
-                            if (scope.task.moduleFiles.indexOf(",") > 0) {
-                                pathArr = scope.task.moduleFiles.split(",");
-                            }
 
-                            var files = [];
-                            if (pathArr) {
-                                for (var i = 0; i < pathArr.length; i++) {
-                                    files.push(pathArr[i]);
+                        scope.load = function () {
+                            scope.fluidPanel = undefined;
+                            if (scope.task.lazyLoad) {
+                                var pathArr = undefined;
+                                if (scope.task.moduleFiles.indexOf(",") > 0) {
+                                    pathArr = scope.task.moduleFiles.split(",");
                                 }
-                            } else {
-                                files.push(scope.task.moduleFiles);
-                            }
 
-                            oc.load({
-                                name: scope.task.moduleJS,
-                                files: files,
-                                cache: true
-                            }).then(function () {
+                                var files = [];
+                                if (pathArr) {
+                                    for (var i = 0; i < pathArr.length; i++) {
+                                        files.push(pathArr[i]);
+                                    }
+                                } else {
+                                    files.push(scope.task.moduleFiles);
+                                }
+
+                                oc.load({
+                                    name: scope.task.moduleJS,
+                                    files: files,
+                                    cache: true
+                                }).then(function () {
+                                    scope.fluidPanel = new FluidPanel(scope.task);
+                                    scope.fluidPanel.loaded = false;
+                                    scope.fluidPanel.frame = new FluidFrame(scope.frame);
+                                    scope.$watch(function (scope) {
+                                        return scope.fluidPanel.loaded;
+                                    }, function (loaded) {
+                                        if (loaded) {
+                                            scope.loaded();
+                                        }
+                                    });
+                                });
+                            } else {
                                 scope.fluidPanel = new FluidPanel(scope.task);
                                 scope.fluidPanel.loaded = false;
-                                scope.fluidPanel.frame = new FluidFrame(scope.frame);
                                 scope.$watch(function (scope) {
                                     return scope.fluidPanel.loaded;
                                 }, function (loaded) {
                                     if (loaded) {
-                                        scope.loaded();
+                                        if (loaded) {
+                                            scope.loaded();
+                                        }
                                     }
                                 });
-                            });
-                        } else {
-                            scope.fluidPanel = new FluidPanel(scope.task);
-                            scope.fluidPanel.loaded = false;
-                            scope.$watch(function (scope) {
-                                return scope.fluidPanel.loaded;
-                            }, function (loaded) {
-                                if (loaded) {
-                                    if (loaded) {
-                                        scope.loaded();
-                                    }
-                                }
+                            }
+
+                            element.on("load", function () {
+                                scope.task.load(scope.task.ok, scope.task.cancel);
                             });
                         }
+
 
                         scope.setSize = function (size) {
                             console.debug("fluidPanel2-setSize.size", size);
@@ -1413,9 +1420,27 @@ angular.module("fluidPanel", ["oc.lazyLoad", "fluidHttp", "fluidFrame", "fluidMe
                             }
                         });
 
-                        element.on("load", function () {
-                            scope.task.load(scope.task.ok, scope.task.cancel);
-                        })
+
+                        var frame = new FluidFrame(scope.frame);
+
+                        if (frame.fullScreen) {
+                            scope.$watch(function (scope) {
+                                return scope.task;
+                            }, function (newTask, oldTask) {
+                                console.debug("fluid-panel.watch.oldTask", oldTask);
+                                if (newTask.fluidId !== oldTask.fluidId) {
+                                    console.debug("fluid-panel.watch.changeTask", newTask);
+                                    scope.load();
+                                } else {
+                                    console.debug("fluid-panel.watch.newTask", newTask);
+                                    scope.load();
+                                }
+
+                            });
+                        } else {
+                            scope.load();
+                        }
+
 
                     }
                 }

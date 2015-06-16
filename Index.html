@@ -13,7 +13,7 @@
 
     <!--<link href="bower_components/bootstrap/dist/css/bootstrap-theme.css" rel="stylesheet">-->
 
-    <!--<link href="docs/themes/yeti/bootstrap.min.css" rel="stylesheet">-->
+    <link href="docs/themes/yeti/bootstrap.min.css" rel="stylesheet">
 
     <link href="bower_components/font-awesome/css/font-awesome.min.css" rel="stylesheet">
 
@@ -45,7 +45,7 @@
 
 </head>
 <body ng-controller="mainCtrl">
-<!--<div class="navbar navbar-default navbar-fixed-top">
+<div class="navbar navbar-default navbar-fixed-top">
     <div class="container-fluid">
         <div class="navbar-header">
             <button ng-if="frameService.fullScreen" ng-click="openDrawer($event)" type="button" class="navbar-toggle">
@@ -66,20 +66,21 @@
         </div>
         <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
             <ul class="nav navbar-nav">
-                &lt;!&ndash;  <li ng-repeat="task in frame.tasks" ng-class="task.active ? 'active' : ''">
-                      <a href="#" ng-click="task.open($index)">
-                          <fluid-task-icon task="task"></fluid-task-icon>
-                          {{' '}}{{task.title}}</a>
-                  </li>&ndash;&gt;
+                &lt;!&ndash;
+                <li ng-repeat="task in frame.tasks" ng-class="task.active ? 'active' : ''">
+                    <a href="#" ng-click="task.open($index)">
+                        <fluid-task-icon task="task"></fluid-task-icon>
+                        {{' '}}{{task.title}}</a>
+                </li>&ndash;&gt;
             </ul>
         </div>
     </div>
-</div>-->
-<div><!--
+</div>
+<div style="margin-top:46px"><!--
     <fluid-tasknav fill-height reduce-height="51" name="taskNav" frame="appFrame">
 
     </fluid-tasknav>-->
-    <fluid-frame name="appFrame" fill-height></fluid-frame>
+    <fluid-frame name="appFrame" fill-height reduce-height="49"></fluid-frame>
 </div>
 
 </body>
@@ -95,9 +96,9 @@
                     <div class="input-group-addon"><i class="fa fa-search"></i></div>
                 </div>
             </div>
-            <a class="list-group-item" ng-repeat="task in frameService.taskList | filter : {'title':taskbar.search}"
+            <a class="list-group-item" ng-repeat="task in frame.tasks | filter : {'title':taskbar.search}"
                ng-class="task.active ? 'active':''"
-               ng-click="task.open($index)">
+               ng-click="task.open()">
                 <fluid-task-icon task="task"></fluid-task-icon>
                 {{' '}}{{task.title}}
             </a>
