@@ -3926,7 +3926,6 @@ angular.module("fluidPanel", ["oc.lazyLoad", "fluidHttp", "fluidFrame", "fluidMe
                         });
 
 
-
                         var frame = new FluidFrame(scope.frame);
 
                         if (frame.fullScreen) {
