@@ -4416,7 +4416,8 @@ angular.module("fluidProgress", [])
                 }
 
 
-                element.on(element.attr("id"), function () {
+                scope.$on(element.attr("id"), function () {
+                    console.debug("fluid-progress-'have triggered':  " + element.attr("id"));
                     var currentScope = element.scope();
                     var progess = element.scope().progress;
                     angular.forEach(progess.runners, function (runner, $index) {
@@ -4445,15 +4446,16 @@ angular.module("fluidProgress", [])
 
         var fluidProgress = function (param) {
             console.debug("fluidProgress-FluidProgress.param", param);
+            var progress = {};
             if (param.id) {
+                if (param.element) {
+                    progress.element = param.element;
+                }
                 if (fps.getFluidProgress(param.id) != null) {
                     return fps.getFluidProgress(param.id);
                 } else {
-                    if (param.element) {
-                        this.element = param.element;
-                    }
-                    this.id = param.id;
-                    this.run = function (name, loadFn, sleep) {
+                    progress.id = param.id;
+                    progress.run = function (name, loadFn, sleep) {
                         var runner = {};
                         runner.name = name;
                         runner.load = loadFn;
@@ -4465,15 +4467,21 @@ angular.module("fluidProgress", [])
                             this.done = true;
                         }
                         runner.sleep = 0;
-                        if (this.runners === undefined) {
-                            this.runners = [];
+                        if (progress.runners === undefined) {
+                            progress.runners = [];
                         }
-                        this.runners.push(runner);
-                        console.debug("progress.element", this.element);
-                        this.element.triggerHandler(this.element.attr("id"));
-                        console.debug("progress.triggered", this.element.attr("id"));
+                        progress.runners.push(runner);
+                        if(progress.element === undefined){
+                            progress.element = angular.element(progress.$());
+                        }
+                        console.debug("progress.element", progress.element);
+                        progress.element.scope().$broadcast(progress.element.attr("id"));
+                        console.debug("progress.triggered", progress.element.attr("id"));
                     }
-                    fps.addFluidProgress(this);
+                    progress.$ = function () {
+                        return $("#" + progress.id + "_progress");
+                    }
+                    fps.addFluidProgress(progress);
                 }
 
 
@@ -4481,7 +4489,7 @@ angular.module("fluidProgress", [])
                 throw "param id is required";
             }
 
-            return this;
+            return progress;
         }
 
         return fluidProgress;

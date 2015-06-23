@@ -8,6 +8,16 @@ angular.module("moduleTaskConfig", ["fluid"])
         s.fluidPage = new FluidPage(s.page);
 
         s.fluidPage.onLoad = function () {
+
+            var progress = new FluidProgress({
+                id: "config_" + s.fluidPanel.id
+            });
+
+            progress.run("sample", function () {
+                console.debug("moduleTaskConfig.sample.runner");
+            });
+
+
             console.info("moduleTaskConfig#moduleTaskConfigCtrl-onLoad.fluidPage", this);
         }
         s.addTask = function (task) {
@@ -57,12 +67,6 @@ angular.module("moduleTaskConfig", ["fluid"])
         }
 
 
-        var progress = new FluidProgress({
-            id: "config_" + s.fluidPanel.id
-        });
 
-        progress.run("sample", function () {
-            console.debug("moduleTaskConfig.sample.runner");
-        });
 
     }]);
