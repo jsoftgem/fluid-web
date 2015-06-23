@@ -1,7 +1,7 @@
 /**
  * Created by jerico on 4/28/2015.
  */
-angular.module("fluidPanel", ["oc.lazyLoad", "fluidHttp", "fluidFrame", "fluidMessage", "fluidOption", "fluidSession", "fluidTool", "fluidPage", "fluidTask", "fluidTaskcontrols", "fluidBreadcrumb"])
+angular.module("fluidPanel", ["oc.lazyLoad", "fluidHttp", "fluidFrame", "fluidMessage", "fluidOption", "fluidSession", "fluidTool", "fluidPage", "fluidTask", "fluidTaskcontrols", "fluidBreadcrumb", "fluidProgress"])
     .directive("fluidPanelObselete", ["fluidFrameService", "fluidHttpService", "$templateCache", "$compile",
         "fluidMessageService", "$rootScope", "$q", "$timeout", "$ocLazyLoad",
         "sessionService", "fluidOptionService", "fluidPageService",

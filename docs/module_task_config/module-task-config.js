@@ -2,7 +2,7 @@
  * Created by Jerico on 4/27/2015.
  */
 angular.module("moduleTaskConfig", ["fluid"])
-    .controller("moduleTaskConfigCtrl", ["$scope", "TaskControl", "FluidPage", "ToolBarItem", function (s, TaskControl, FluidPage, ToolBarItem) {
+    .controller("moduleTaskConfigCtrl", ["$scope", "TaskControl", "FluidPage", "ToolBarItem", "FluidProgress", function (s, TaskControl, FluidPage, ToolBarItem, FluidProgress) {
         s.generic = {};
         s.newTask = [];
         s.fluidPage = new FluidPage(s.page);
@@ -10,7 +10,6 @@ angular.module("moduleTaskConfig", ["fluid"])
         s.fluidPage.onLoad = function () {
             console.info("moduleTaskConfig#moduleTaskConfigCtrl-onLoad.fluidPage", this);
         }
-
         s.addTask = function (task) {
 
             console.info("addTask", task);
@@ -57,5 +56,13 @@ angular.module("moduleTaskConfig", ["fluid"])
             }
         }
 
+
+        var progress = new FluidProgress({
+            id: "config_" + s.fluidPanel.id
+        });
+
+        progress.run("sample", function () {
+            console.debug("moduleTaskConfig.sample.runner");
+        });
 
     }]);

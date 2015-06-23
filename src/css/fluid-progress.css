@@ -6,11 +6,17 @@
 
 }
 
-
 .fluid-progress .on-progress {
-
+    display: none;
 }
 
 .fluid-progress .on-complete {
 
+}
+
+.fluid-progress-loading .on-complete {
+    display: none;
+}
+
+.fluid-progress-loading .on-progress {
 }

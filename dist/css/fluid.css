@@ -304,6 +304,28 @@
     width: 100px;
     /*  margin: 0px -15px -200px -15px;*/
 }
+.fluid-progress {
+
+}
+
+.fluid-progress-loading {
+
+}
+
+.fluid-progress .on-progress {
+    display: none;
+}
+
+.fluid-progress .on-complete {
+
+}
+
+.fluid-progress-loading .on-complete {
+    display: none;
+}
+
+.fluid-progress-loading .on-progress {
+}
 .fluid-task {
 }
 

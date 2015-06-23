@@ -10,25 +10,41 @@ angular.module("fluidProgress", [])
             template: tc.get("templates/fluid/fluidProgress.html"),
             replace: true,
             transclude: true,
-            link: function (scope, elem, attr) {
+            link: function (scope, element, attr) {
 
-                scope.runners = [];
+                scope.runnerStack = [];
+                scope.runner = {};
 
                 if (attr.id) {
-                    var id = elem.attr("id");
-                    elem.attr("id", id + "_progress");
-                    var elemId = elem.attr("id");
-                    scope.progres = FluidProgress({id: elemId});
+                    var id = element.attr("id");
+                    element.attr("id", id + "_progress");
+                    scope.progress = FluidProgress({id: id, element: element});
                 } else {
                     throw "Id attribute is required.";
                 }
 
 
                 element.on(element.attr("id"), function () {
+                    var currentScope = element.scope();
                     var progess = element.scope().progress;
+                    angular.forEach(progess.runners, function (runner, $index) {
+                        var currentRunner = currentScope.runner;
 
+                        if ((currentRunner.done === undefined || currentRunner.done) || (currentRunner.cancelled === undefined || currentRunner.cancelled)) {
+                            currentScope.runnerStack.push(runner);
+                        } else {
+                            currentScope.runner = runner;
+                        }
+                        progess.runners.splice($index, 1);
+                    });
                 });
 
+
+                scope.$watch(function (scope) {
+                    return scope.runner;
+                }, function (newRunner, oldRunner) {
+                    console.debug("fluidProgress.runner.new", newRunner);
+                });
 
             }
         }
@@ -36,12 +52,14 @@ angular.module("fluidProgress", [])
     .factory("FluidProgress", ["fluidProgressService", function (fps) {
 
         var fluidProgress = function (param) {
-
+            console.debug("fluidProgress-FluidProgress.param", param);
             if (param.id) {
-
                 if (fps.getFluidProgress(param.id) != null) {
                     return fps.getFluidProgress(param.id);
                 } else {
+                    if (param.element) {
+                        this.element = param.element;
+                    }
                     this.id = param.id;
                     this.run = function (name, loadFn, sleep) {
                         var runner = {};
@@ -59,18 +77,17 @@ angular.module("fluidProgress", [])
                             this.runners = [];
                         }
                         this.runners.push(runner);
-                        var element = angular.element(this.$());
-                        element.triggerHandler(element.attr("id"));
-                    }
-                    this.$ = function () {
-                        return $("#" + this.param.id + "_progress");
+                        console.debug("progress.element", this.element);
+                        this.element.triggerHandler(this.element.attr("id"));
+                        console.debug("progress.triggered", this.element.attr("id"));
                     }
                     fps.addFluidProgress(this);
                 }
+
+
             } else {
                 throw "param id is required";
             }
-
 
             return this;
         }
@@ -78,16 +95,32 @@ angular.module("fluidProgress", [])
         return fluidProgress;
     }])
     .service("fluidProgressService", [function () {
-        this.progressObjects = [];
 
         this.addFluidProgress = function (progress) {
-            this.progressObjects[progres.id + "_progress"] = progress;
+            var id = progress.id + "_progress";
+            if (this.progressObjects == null) {
+                this.progressObjects = [];
+            }
+            this.progressObjects[id] = progress;
+            console.debug("fluid-progress-fluidProgressService-addFluidProgress.progressObjects", this.progressObjects);
+            console.debug("fluid-progress-fluidProgressService-addFluidProgress.id", id);
         }
+
         this.getFluidProgress = function (id) {
-            this.progressObjects[id + "_progress"];
+            if (this.progressObjects) {
+                console.debug("fluid-progress-fluidProgressService-getFluidProgress.id", id);
+                console.debug("fluid-progress-fluidProgressService-getFluidProgress.progressObjects", this.progressObjects);
+                var key = id + "_progress";
+                var progressObject = this.progressObjects[key];
+                console.debug("fluid-progress-fluidProgressService-getFluidProgress.progressObject", progressObject);
+                return progressObject;
+            }
         }
 
         this.clearProgress = function (id) {
             this.progressObjects[id] = undefined;
         }
+
+
+        return this;
     }]);
