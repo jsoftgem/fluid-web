@@ -4,13 +4,16 @@
 
         <div class="on-progress">
 
-            Loading now...
+            <div class="status"></div>
 
         </div>
 
         <div class="on-complete">
             <form style="margin-top: 10px" class="form-horizontal" role="form">
                 <fluid-message id="taskConfigMessage"></fluid-message>
+                <div>
+                    <button class="btn btn-info" ng-click="sample()"> Hit me baby one more time.</button>
+                </div>
                 <div class="col-lg-6">
                     <div class="form-group">
                         <label for="taskName">

@@ -2,23 +2,79 @@
  * Created by Jerico on 4/27/2015.
  */
 angular.module("moduleTaskConfig", ["fluid"])
-    .controller("moduleTaskConfigCtrl", ["$scope", "TaskControl", "FluidPage", "ToolBarItem", "FluidProgress", function (s, TaskControl, FluidPage, ToolBarItem, FluidProgress) {
+    .controller("moduleTaskConfigCtrl", ["$scope", "TaskControl", "FluidPage", "ToolBarItem", "FluidProgress", "$timeout", function (s, TaskControl, FluidPage, ToolBarItem, FluidProgress, t) {
         s.generic = {};
         s.newTask = [];
-        s.fluidPage = new FluidPage(s.page);
 
-        s.fluidPage.onLoad = function () {
+        s.sample = function () {
 
             var progress = new FluidProgress({
                 id: "config_" + s.fluidPanel.id
             });
 
-            progress.run("sample", function () {
+            progress.run("sample", function (ok, cancel, notify) {
                 console.debug("moduleTaskConfig.sample.runner");
+                var counter = 0;
+
+                function sample() {
+                    if (counter < 5) {
+                        counter++;
+                        notify("hello: " + counter, "info");
+                        t(sample, 1000);
+                    } else {
+                        ok();
+                    }
+                }
+
+                sample();
+            });
+            progress.run("sample2", function (ok, cancel,notify) {
+                console.debug("moduleTaskConfig.sample.runner2");
+                var counter = 0;
+
+                function sample() {
+                    if (counter < 5) {
+                        counter++;
+                        notify("hello 2: " + counter, "info");
+                        t(sample, 1000);
+                    } else {
+                        ok();
+                    }
+                }
+
+                sample();
+            });
+        }
+
+        s.fluidPage.onLoad = function (ok, cancel) {
+
+            var progress = new FluidProgress({
+                id: "config_" + s.fluidPanel.id
             });
 
+            progress.run("sample", function (ok, cancel) {
+                console.debug("moduleTaskConfig.sample.runner");
+                ok();
+            });
+            progress.run("sample2", function (ok, cancel) {
+                console.debug("moduleTaskConfig.sample.runner2");
+                ok();
+            });
+            progress.run("sample3", function (ok, cancel) {
+                console.debug("moduleTaskConfig.sample.runner3");
+                ok();
+            });
+            progress.run("sample4", function (ok, cancel) {
+                console.debug("moduleTaskConfig.sample.runner4");
+                ok();
+            });
+            progress.run("sample5", function (ok, cancel) {
+                console.debug("moduleTaskConfig.sample.runner5");
+                ok();
+            });
 
             console.info("moduleTaskConfig#moduleTaskConfigCtrl-onLoad.fluidPage", this);
+            ok();
         }
         s.addTask = function (task) {
 
@@ -65,8 +121,6 @@ angular.module("moduleTaskConfig", ["fluid"])
                 ffs.pushTask(s.genertic);
             }
         }
-
-
 
 
     }]);

@@ -320,11 +320,18 @@
 
 }
 
+.fluid-progress .status {
+    display: none;
+}
+
 .fluid-progress-loading .on-complete {
     display: none;
 }
 
 .fluid-progress-loading .on-progress {
+}
+
+.fluid-progress-loading .status {
 }
 .fluid-task {
 }
