@@ -2,10 +2,10 @@
  * Created by Jerico on 6/19/2015.
  */
 angular.module("fluidProgress", [])
-    .directive("fluidProgress", ["$templateCache", "fluidProgressService", "FluidProgress", "$timeout", function (tc, fps, FluidProgress, timeout) {
+    .directive("fluidProgress", ["$templateCache", "fluidProgressService", "FluidProgress", "$timeout", "$q", function (tc, fps, FluidProgress, timeout, q) {
         return {
             require: "^fluidFrame",
-            restrict: "E",
+            restrict: "AE",
             scope: false,
             template: tc.get("templates/fluid/fluidProgress.html"),
             replace: true,
@@ -13,6 +13,13 @@ angular.module("fluidProgress", [])
             link: function (scope, element, attr) {
 
                 scope.runnerStack = [];
+                scope.asynchronous = false;
+                scope.max = 0;
+                scope.min = 0;
+                scope.count = 0;
+                if (attr.asynchronous) {
+                    scope.asynchronous = attr.asynchronous === "true";
+                }
 
                 if (attr.id) {
                     var id = element.attr("id");
@@ -25,15 +32,48 @@ angular.module("fluidProgress", [])
 
                 scope.$on(element.attr("id"), function () {
                     console.debug("fluid-progress-'have triggered':  ", element.attr("id"));
-                    var progess = scope.progress;
-                    angular.forEach(progess.runners, function (runner, $index) {
-                        if (scope.runner) {
+                    var progress = scope.progress;
+                    angular.forEach(progress.runners, function (runner, $index) {
+
+                        var progressBar = element.find(".progress-bar");
+
+                        if (progressBar) {
+                            if (runner.max) {
+                                if (scope.max === 0) {
+                                    progress.max = 0;
+                                }
+                                progress.max += runner.max;
+                                scope.max += runner.max;
+                            }
+
+                            if (runner.min) {
+                                if (scope.min === 0) {
+                                    progress.min = scope.min;
+                                }
+                                progress.min += runner.min;
+                                scope.min += runner.min;
+                            }
+
+                            if (scope.count === 0) {
+                                progress.count = scope.count;
+                            }
+
+                        }
+
+                        if (scope.runner && !scope.asynchronous) {
                             scope.runnerStack.push(runner);
+                        } else if (scope.asynchronous) {
+                            var defer = q.defer();
+                            timeout(function () {
+                                loadRunner(scope, element, runner, progress);
+                                defer.resolve(runner);
+                            }, runner.sleep);
+
                         } else {
                             scope.runner = runner;
                             console.debug("fluid-progress-'have triggered': - currentRunner ", runner);
                         }
-                        progess.runners.splice($index, 1);
+                        progress.runners.splice($index, 1);
                     });
                 });
 
@@ -59,32 +99,8 @@ angular.module("fluidProgress", [])
                             }
                         } else {
                             if (!newRunner.inProgress) {
-                                scope.startLoader();
                                 newRunner.inProgress = true;
-                                newRunner.load(function () {
-                                        newRunner.done = true;
-                                        newRunner.inProgress = false;
-                                        scope.endLoader();
-                                    }, function () {
-                                        newRunner.cancelled = true;
-                                        newRunner.inProgress = false;
-                                        scope.endLoader();
-                                    },
-                                    function (message, type) {
-                                        var messageElement = element.find(".status");
-                                        var textClass = "info";
-                                        if (type === "info") {
-                                            textClass = "text-info";
-                                        } else if (type === "danger") {
-                                            textClass = "text-danger";
-                                        } else if (type === "success") {
-                                            textClass = "text-success";
-                                        } else if (type === "warning") {
-                                            textClass = "text-warning";
-                                        }
-                                        messageElement.addClass(textClass);
-                                        messageElement.html(message);
-                                    });
+                                loadRunner(scope, element, newRunner, scope.progress);
                             }
                             timeout(checkRunner, newRunner.sleep);
                         }
@@ -94,7 +110,6 @@ angular.module("fluidProgress", [])
                     if (newRunner) {
                         checkRunner();
                     }
-
 
                 });
 
@@ -107,27 +122,33 @@ angular.module("fluidProgress", [])
             console.debug("fluidProgress-FluidProgress.param", param);
             var progress = {};
             if (param.id) {
-                if (param.element) {
-                    progress.element = param.element;
-                }
+                /*if (param.element) {
+                 progress.element = param.element;
+                 }*/
                 if (fps.getFluidProgress(param.id) != null) {
                     return fps.getFluidProgress(param.id);
                 } else {
+                    progress.max = 0;
+                    progress.min = 0;
+                    progress.count = 0;
                     progress.id = param.id;
-                    progress.run = function (name, loadFn, sleep) {
+                    progress.run = function (name, loadFn, options) {
                         console.debug("progress-run.name", name);
                         var runner = {};
+                        if (options) {
+                            runner.max = options.max;
+                            runner.min = options.min;
+                            runner.sleep = options.sleep;
+                        }
                         runner.name = name;
                         runner.load = loadFn;
                         runner.message = "Loading please wait...";
-                        runner.sleep = 0;
                         if (progress.runners === undefined) {
                             progress.runners = [];
                         }
                         progress.runners.push(runner);
-                        if (progress.element === undefined) {
-                            progress.element = angular.element(progress.$());
-                        }
+                        progress.element = angular.element(progress.$());
+
                         console.debug("progress.element", progress.element);
                         progress.element.scope().$broadcast(progress.element.attr("id"));
                         console.debug("progress.triggered", progress.element.attr("id"));
@@ -135,6 +156,42 @@ angular.module("fluidProgress", [])
                     progress.$ = function () {
                         return $("#" + progress.id + "_progress");
                     }
+                    progress.onComplete = function (name, completeFunc) {
+                        if (this.completeFuncs === undefined) {
+                            this.completeFuncs = [];
+                        }
+                        this.completeFuncs[name] = completeFunc;
+                        console.debug("progress.completeFuncs", this.completeFuncs);
+                    }
+                    progress.onCancelled = function (name, cancelledFunc) {
+                        if (this.cancelledFuncs === undefined) {
+                            this.cancelledFuncs = [];
+                        }
+                        this.cancelledFuncs[name] = completeFunc;
+                        console.debug("progress.cancelledFuncs", this.cancelledFuncs);
+
+                    }
+
+                    progress.cancel = function (name, reason) {
+                        if (this.cancelledFuncs) {
+                            var cancelFunc = this.cancelledFuncs[name];
+                            if (cancelFunc) {
+                                cancelFunc(reason);
+                            }
+                        }
+                    }
+
+                    progress.complete = function (name, resolver) {
+                        if (this.completeFuncs) {
+                            var completeFunc = this.completeFuncs[name];
+                            if (completeFunc) {
+                                completeFunc(resolver);
+                            }
+                        }
+
+                    }
+
+
                     fps.addFluidProgress(progress);
                 }
 

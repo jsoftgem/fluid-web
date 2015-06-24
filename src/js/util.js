@@ -396,6 +396,85 @@ function LightenDarkenColor(col, amt) {
 }
 
 
+function loadRunner(scope, element, runner, progress) {
+    scope.startLoader();
+    return runner.load(function (resolver) {
+            runner.done = true;
+            runner.inProgress = false;
+            scope.endLoader();
+            progress.complete(runner.name, resolver);
+            if (runner.max) {
+                if (scope.count >= runner.max) {
+                    scope.count -= runner.max;
+                }
+
+                if (scope.max >= runner.max) {
+                    scope.max -= runner.max;
+                }
+
+                if (scope.min >= runner.min) {
+                    scope.min -= runner.min;
+                }
+
+                if (scope.count >= runner.max) {
+                    scope.count -= runner.max;
+                }
+
+            }
+
+        }, function (reason) {
+            runner.cancelled = true;
+            runner.inProgress = false;
+            scope.endLoader();
+            progress.cancel(runner.name, reason);
+            if (runner.max) {
+                if (scope.count > runner.max) {
+                    scope.count -= runner.max;
+                }
+
+                if (scope.max > runner.max) {
+                    scope.max -= runner.max;
+                }
+
+                if (scope.min > runner.min) {
+                    scope.min -= runner.min;
+                }
+                if (scope.count >= runner.max) {
+                    scope.count -= runner.max;
+                }
+            }
+        },
+        function (message, type, count) {
+            var messageElement = element.find(".status");
+            var textClass = "info";
+            if (type === "info") {
+                textClass = "text-info";
+            } else if (type === "danger") {
+                textClass = "text-danger";
+            } else if (type === "success") {
+                textClass = "text-success";
+            } else if (type === "warning") {
+                textClass = "text-warning";
+            }
+
+            var progressBar = element.find(".progress-bar");
+            if (progressBar) {
+                var now = progressBar.attr("aria-valuenow");
+                progressBar.attr("aria-valuenow", now++);
+            }
+
+
+            if (runner.max && runner.max > 0 && count > 0) {
+                progress.count += count;
+                scope.count += count;
+            }
+
+            messageElement.addClass(textClass);
+            messageElement.html(message);
+        });
+}
+
+
 //handles document here
 $(document).ready(function () {
 

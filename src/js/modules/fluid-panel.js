@@ -1279,8 +1279,8 @@ angular.module("fluidPanel", ["oc.lazyLoad", "fluidHttp", "fluidFrame", "fluidMe
         }
     }])
     .directive("fluidPanel", ["$templateCache", "FluidPanelModel", "fluidToolbarService", "$ocLazyLoad", "$compile", "fluidPanelService", "fluidFrameService", "$viewport", "$window",
-        "$anchorScroll", "$location",
-        function (tc, FluidPanel, ftb, oc, c, fluidPanelService, FluidFrame, v, window, a, l) {
+        "$anchorScroll", "$location", "FluidProgress",
+        function (tc, FluidPanel, ftb, oc, c, fluidPanelService, FluidFrame, v, window, a, l, FluidProgress) {
             return {
                 require: "^fluidFrame",
                 scope: {task: "=", frame: "@"},
@@ -1323,7 +1323,7 @@ angular.module("fluidPanel", ["oc.lazyLoad", "fluidHttp", "fluidFrame", "fluidMe
                         }
 
 
-                        scope.load = function () {
+                        scope.load = function (ok, cancel, notify) {
                             scope.fluidPanel = undefined;
                             if (scope.task.lazyLoad) {
                                 var pathArr = undefined;
@@ -1355,6 +1355,7 @@ angular.module("fluidPanel", ["oc.lazyLoad", "fluidHttp", "fluidFrame", "fluidMe
                                             scope.loaded();
                                         }
                                     });
+                                    ok();
                                 });
                             } else {
                                 scope.fluidPanel = new FluidPanel(scope.task);
@@ -1368,8 +1369,9 @@ angular.module("fluidPanel", ["oc.lazyLoad", "fluidHttp", "fluidFrame", "fluidMe
                                         }
                                     }
                                 });
+                                ok();
                             }
-
+                            notify("Loading task...", "info", 1);
                             element.on("load", function () {
                                 scope.task.load(scope.task.ok, scope.task.cancel);
                             });
@@ -1423,6 +1425,8 @@ angular.module("fluidPanel", ["oc.lazyLoad", "fluidHttp", "fluidFrame", "fluidMe
 
                         var frame = new FluidFrame(scope.frame);
 
+                        scope.progress = new FluidProgress({id: "_id_fp_mp_" + scope.task.fluidId});
+
                         if (frame.fullScreen) {
                             scope.$watch(function (scope) {
                                 return scope.task;
@@ -1430,15 +1434,27 @@ angular.module("fluidPanel", ["oc.lazyLoad", "fluidHttp", "fluidFrame", "fluidMe
                                 console.debug("fluid-panel.watch.oldTask", oldTask);
                                 if (newTask.fluidId !== oldTask.fluidId) {
                                     console.debug("fluid-panel.watch.changeTask", newTask);
-                                    scope.load();
+                                    scope.progress.run("fluidPanelLoader", scope.load, {
+                                        max: 1,
+                                        min: 0,
+                                        sleep: 1000
+                                    });
                                 } else {
                                     console.debug("fluid-panel.watch.newTask", newTask);
-                                    scope.load();
+                                    scope.progress.run("fluidPanelLoader", scope.load, {
+                                        max: 1,
+                                        min: 0,
+                                        sleep: 1000
+                                    });
                                 }
 
                             });
                         } else {
-                            scope.load();
+                            scope.progress.run("fluidPanelLoader", scope.load, {
+                                max: 1,
+                                min: 0,
+                                sleep: 1000
+                            });
                         }
 
 
@@ -1474,8 +1490,8 @@ angular.module("fluidPanel", ["oc.lazyLoad", "fluidHttp", "fluidFrame", "fluidMe
             }
         }
     }])
-    .factory("FluidPanelModel", ["TaskControl", "ToolBarItem", "fluidTaskService", "FluidBreadcrumb", "FluidPage", "$q", "fluidFrameService",
-        function (TaskControl, ToolBarItem, TaskService, FluidBreadcrumb, FluidPage, q, FluidFrame) {
+    .factory("FluidPanelModel", ["TaskControl", "ToolBarItem", "fluidTaskService", "FluidBreadcrumb", "FluidPage", "$q", "fluidFrameService", "fluidMessageService", "FluidProgress",
+        function (TaskControl, ToolBarItem, TaskService, FluidBreadcrumb, FluidPage, q, FluidFrame, fluidMessageService, FluidProgress) {
             var fluidPanel = function (task) {
                 console.debug("fluidPanel-FluidPanelModel.task", task);
                 if (!task.frame) {
@@ -1863,6 +1879,36 @@ angular.module("fluidPanel", ["oc.lazyLoad", "fluidHttp", "fluidFrame", "fluidMe
                         }
                     }
 
+
+                    this.getElementFlowId = function (id) {
+                        return id + "_" + this.id;
+                    }
+
+
+                    this.message = function (duration) {
+                        if (!duration) {
+                            duration = 3000;
+                        }
+                        var messageId = this.getElementFlowId("_id_fp_msg");
+                        return {
+                            info: function (message) {
+                                fluidMessageService.info(messageId, message, duration).open();
+                            },
+                            warning: function (message) {
+                                fluidMessageService.warning(messageId, message, duration).open();
+                            },
+                            danger: function (message) {
+                                fluidMessageService.danger(messageId, message, duration).open();
+                            },
+                            success: function (message) {
+                                fluidMessageService.success(messageId, message, duration).open();
+                            }
+
+                        }
+                    }
+
+
+                    this.progress = new FluidProgress({id: this.getElementFlowId("_id_fp_mp")});
 
                     frame.fluidPanel[this.id] = this;
                 }

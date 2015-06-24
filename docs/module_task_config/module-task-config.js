@@ -8,70 +8,80 @@ angular.module("moduleTaskConfig", ["fluid"])
 
         s.sample = function () {
 
-            var progress = new FluidProgress({
-                id: "config_" + s.fluidPanel.id
-            });
-
-            progress.run("sample", function (ok, cancel, notify) {
-                console.debug("moduleTaskConfig.sample.runner");
+            s.progress.run("sample", function (ok, cancel, notify) {
+                console.debug("moduleTaskConfig.sample.sample");
                 var counter = 0;
 
                 function sample() {
                     if (counter < 5) {
                         counter++;
-                        notify("hello: " + counter, "info");
-                        t(sample, 1000);
+                        notify("hello: " + counter, "info", 1);
+                        t(sample, 500);
                     } else {
                         ok();
                     }
                 }
 
                 sample();
+            }, {
+                max: 5, min: 0, sleep: 1000
             });
-            progress.run("sample2", function (ok, cancel,notify) {
-                console.debug("moduleTaskConfig.sample.runner2");
+
+            s.progress.onComplete("sample", function () {
+                console.debug("moduleTaskConfig.sample.sample.complete");
+            });
+
+            s.progress.onComplete("sample2", function () {
+                console.debug("moduleTaskConfig.sample.sample2.complete");
+            });
+
+            s.progress.run("sample2", function (ok, cancel, notify) {
+                console.debug("moduleTaskConfig.sample.sample2");
                 var counter = 0;
 
                 function sample() {
                     if (counter < 5) {
                         counter++;
-                        notify("hello 2: " + counter, "info");
+                        notify("hello 2: " + counter, "info", 1);
                         t(sample, 1000);
+                        t
                     } else {
                         ok();
                     }
                 }
 
                 sample();
+            }, {
+                max: 5, min: 0, sleep: 1000
             });
         }
 
         s.fluidPage.onLoad = function (ok, cancel) {
 
-            var progress = new FluidProgress({
+            s.progress = new FluidProgress({
                 id: "config_" + s.fluidPanel.id
             });
 
-            progress.run("sample", function (ok, cancel) {
-                console.debug("moduleTaskConfig.sample.runner");
-                ok();
-            });
-            progress.run("sample2", function (ok, cancel) {
-                console.debug("moduleTaskConfig.sample.runner2");
-                ok();
-            });
-            progress.run("sample3", function (ok, cancel) {
-                console.debug("moduleTaskConfig.sample.runner3");
-                ok();
-            });
-            progress.run("sample4", function (ok, cancel) {
-                console.debug("moduleTaskConfig.sample.runner4");
-                ok();
-            });
-            progress.run("sample5", function (ok, cancel) {
-                console.debug("moduleTaskConfig.sample.runner5");
-                ok();
-            });
+            /*      s.progress.run("sample", function (ok, cancel) {
+             console.debug("moduleTaskConfig.sample.runner");
+             ok();
+             });
+             s.progress.run("sample2", function (ok, cancel) {
+             console.debug("moduleTaskConfig.sample.runner2");
+             ok();
+             });
+             s.progress.run("sample3", function (ok, cancel) {
+             console.debug("moduleTaskConfig.sample.runner3");
+             ok();
+             });
+             s.progress.run("sample4", function (ok, cancel) {
+             console.debug("moduleTaskConfig.sample.runner4");
+             ok();
+             });
+             s.progress.run("sample5", function (ok, cancel) {
+             console.debug("moduleTaskConfig.sample.runner5");
+             ok();
+             });*/
 
             console.info("moduleTaskConfig#moduleTaskConfigCtrl-onLoad.fluidPage", this);
             ok();
