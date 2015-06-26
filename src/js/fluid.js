@@ -279,16 +279,20 @@ fluidComponents
 
                     if (scope.fluidPanel.task) {
                         scope.$watch(function (scope) {
-                            return scope.fluidPanel.task.size;
+                            if (scope.fluidPanel) {
+                                return scope.fluidPanel.task.size;
+                            }
                         }, function (value) {
-                            if (v.is("lg") && !scope.fluidPanel.frame.fullScreen) {
-                                if (value === 25) {
-                                    element.addClass("hideSize25");
+                            if (scope.fluidPanel) {
+                                if (v.is("lg") && !scope.fluidPanel.frame.fullScreen) {
+                                    if (value === 25) {
+                                        element.addClass("hideSize25");
+                                    } else {
+                                        element.removeClass("hideSize25");
+                                    }
                                 } else {
                                     element.removeClass("hideSize25");
                                 }
-                            } else {
-                                element.removeClass("hideSize25");
                             }
                         });
                     }
@@ -332,16 +336,20 @@ fluidComponents
 
                     if (scope.fluidPanel.task) {
                         scope.$watch(function (scope) {
-                            return scope.fluidPanel.task.size;
+                            if (scope.fluidPanel) {
+                                return scope.fluidPanel.task.size;
+                            }
                         }, function (value) {
-                            if (v.is("lg") && !scope.fluidPanel.frame.fullScreen) {
-                                if (value === 50) {
-                                    element.addClass("hideSize50");
+                            if (scope.fluidPanel) {
+                                if (v.is("lg") && !scope.fluidPanel.frame.fullScreen) {
+                                    if (value === 50) {
+                                        element.addClass("hideSize50");
+                                    } else {
+                                        element.removeClass("hideSize50");
+                                    }
                                 } else {
                                     element.removeClass("hideSize50");
                                 }
-                            } else {
-                                element.removeClass("hideSize50");
                             }
                         });
                     }
@@ -386,16 +394,20 @@ fluidComponents
 
                     if (scope.fluidPanel.task) {
                         scope.$watch(function (scope) {
-                            return scope.fluidPanel.task.size;
+                            if (scope.fluidPanel) {
+                                return scope.fluidPanel.task.size;
+                            }
                         }, function (value) {
-                            if (v.is("lg") && !scope.fluidPanel.frame.fullScreen) {
-                                if (value === 75) {
-                                    element.addClass("hideSize75");
+                            if (scope.fluidPanel) {
+                                if (v.is("lg") && !scope.fluidPanel.frame.fullScreen) {
+                                    if (value === 75) {
+                                        element.addClass("hideSize75");
+                                    } else {
+                                        element.removeClass("hideSize75");
+                                    }
                                 } else {
                                     element.removeClass("hideSize75");
                                 }
-                            } else {
-                                element.removeClass("hideSize75");
                             }
                         });
                     }
@@ -443,16 +455,20 @@ fluidComponents
 
                     if (scope.fluidPanel.task) {
                         scope.$watch(function (scope) {
-                            return scope.fluidPanel.task.size;
+                            if (scope.fluidPanel) {
+                                return scope.fluidPanel.task.size;
+                            }
                         }, function (value) {
-                            if (v.is("lg") && !scope.fluidPanel.frame.fullScreen) {
-                                if (value === 100) {
-                                    element.addClass("hideSize100");
+                            if (scope.fluidPanel) {
+                                if (v.is("lg") && !scope.fluidPanel.frame.fullScreen) {
+                                    if (value === 100) {
+                                        element.addClass("hideSize100");
+                                    } else {
+                                        element.removeClass("hideSize100");
+                                    }
                                 } else {
                                     element.removeClass("hideSize100");
                                 }
-                            } else {
-                                element.removeClass("hideSize100");
                             }
                         });
                     }

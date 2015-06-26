@@ -279,16 +279,20 @@ fluidComponents
 
                     if (scope.fluidPanel.task) {
                         scope.$watch(function (scope) {
-                            return scope.fluidPanel.task.size;
+                            if (scope.fluidPanel) {
+                                return scope.fluidPanel.task.size;
+                            }
                         }, function (value) {
-                            if (v.is("lg") && !scope.fluidPanel.frame.fullScreen) {
-                                if (value === 25) {
-                                    element.addClass("hideSize25");
+                            if (scope.fluidPanel) {
+                                if (v.is("lg") && !scope.fluidPanel.frame.fullScreen) {
+                                    if (value === 25) {
+                                        element.addClass("hideSize25");
+                                    } else {
+                                        element.removeClass("hideSize25");
+                                    }
                                 } else {
                                     element.removeClass("hideSize25");
                                 }
-                            } else {
-                                element.removeClass("hideSize25");
                             }
                         });
                     }
@@ -332,16 +336,20 @@ fluidComponents
 
                     if (scope.fluidPanel.task) {
                         scope.$watch(function (scope) {
-                            return scope.fluidPanel.task.size;
+                            if (scope.fluidPanel) {
+                                return scope.fluidPanel.task.size;
+                            }
                         }, function (value) {
-                            if (v.is("lg") && !scope.fluidPanel.frame.fullScreen) {
-                                if (value === 50) {
-                                    element.addClass("hideSize50");
+                            if (scope.fluidPanel) {
+                                if (v.is("lg") && !scope.fluidPanel.frame.fullScreen) {
+                                    if (value === 50) {
+                                        element.addClass("hideSize50");
+                                    } else {
+                                        element.removeClass("hideSize50");
+                                    }
                                 } else {
                                     element.removeClass("hideSize50");
                                 }
-                            } else {
-                                element.removeClass("hideSize50");
                             }
                         });
                     }
@@ -386,16 +394,20 @@ fluidComponents
 
                     if (scope.fluidPanel.task) {
                         scope.$watch(function (scope) {
-                            return scope.fluidPanel.task.size;
+                            if (scope.fluidPanel) {
+                                return scope.fluidPanel.task.size;
+                            }
                         }, function (value) {
-                            if (v.is("lg") && !scope.fluidPanel.frame.fullScreen) {
-                                if (value === 75) {
-                                    element.addClass("hideSize75");
+                            if (scope.fluidPanel) {
+                                if (v.is("lg") && !scope.fluidPanel.frame.fullScreen) {
+                                    if (value === 75) {
+                                        element.addClass("hideSize75");
+                                    } else {
+                                        element.removeClass("hideSize75");
+                                    }
                                 } else {
                                     element.removeClass("hideSize75");
                                 }
-                            } else {
-                                element.removeClass("hideSize75");
                             }
                         });
                     }
@@ -443,16 +455,20 @@ fluidComponents
 
                     if (scope.fluidPanel.task) {
                         scope.$watch(function (scope) {
-                            return scope.fluidPanel.task.size;
+                            if (scope.fluidPanel) {
+                                return scope.fluidPanel.task.size;
+                            }
                         }, function (value) {
-                            if (v.is("lg") && !scope.fluidPanel.frame.fullScreen) {
-                                if (value === 100) {
-                                    element.addClass("hideSize100");
+                            if (scope.fluidPanel) {
+                                if (v.is("lg") && !scope.fluidPanel.frame.fullScreen) {
+                                    if (value === 100) {
+                                        element.addClass("hideSize100");
+                                    } else {
+                                        element.removeClass("hideSize100");
+                                    }
                                 } else {
                                     element.removeClass("hideSize100");
                                 }
-                            } else {
-                                element.removeClass("hideSize100");
                             }
                         });
                     }
@@ -1044,6 +1060,7 @@ function loadRunner(scope, element, runner, progress) {
     return runner.load(function (resolver) {
             runner.done = true;
             runner.inProgress = false;
+            progress.inProgress = false;
             scope.endLoader();
             progress.complete(runner.name, resolver);
             if (runner.max) {
@@ -1068,6 +1085,7 @@ function loadRunner(scope, element, runner, progress) {
         }, function (reason) {
             runner.cancelled = true;
             runner.inProgress = false;
+            progress.inProgress = false;
             scope.endLoader();
             progress.cancel(runner.name, reason);
             if (runner.max) {
@@ -2287,13 +2305,13 @@ angular.module("fluidPage", ["fluidHttp", "fluidOption"])
                                 fps.loadAjax(page)
                                     .then(function (data) {
                                         scope.data = data;
-                                        element.html("<ng-include class='page' src='fluidPageService.render(fluidPage)' onload='onLoad()'></ng-include>");
+                                        element.html("<ng-include class='on-complete page' src='fluidPageService.render(fluidPage)' onload='onLoad()'></ng-include>");
                                         element.attr("page-name", page.name);
                                         c(element.contents())(scope);
                                         console.debug("fluidPage-loadPage.loaded-page", page);
                                     });
                             } else {
-                                element.html("<ng-include class='page' src='fluidPageService.render(fluidPage)' onload='onLoad()'></ng-include>");
+                                element.html("<ng-include class='on-complete page' src='fluidPageService.render(fluidPage)' onload='onLoad()'></ng-include>");
                                 element.attr("page-name", page.name);
                                 c(element.contents())(scope);
                                 console.debug("fluidPage-loadPage.loaded-page", page);
@@ -2307,7 +2325,9 @@ angular.module("fluidPage", ["fluidHttp", "fluidOption"])
                         scope.$watch(function (scope) {
                             return scope.page;
                         }, function (newPage, oldPage) {
-                            scope.loadPage(newPage);
+                            if (newPage) {
+                                scope.loadPage(newPage);
+                            }
                         });
 
 
@@ -2326,16 +2346,8 @@ angular.module("fluidPage", ["fluidHttp", "fluidOption"])
                             //TODO: page onLoad error handling
                             scope.fluidPage.load(function () {
                                 scope.fluidPage.loaded = true;
-                                if (!scope.fluidPanel.loaded) {
-                                    scope.fluidPanel.loaded = true;/*
-                                    fixPageHeight(scope.fluidPanel.$());*/
-                                }
-
                             }, function () {
                                 scope.fluidPage.loaded = false;
-                                if (!scope.fluidPanel.loaded) {
-                                    scope.fluidPanel.loaded = true;
-                                }
                                 scope.fluidPage.onClose = function (ok, cancel) {
                                     return ok();
                                 }
@@ -3908,6 +3920,8 @@ angular.module("fluidPanel", ["oc.lazyLoad", "fluidHttp", "fluidFrame", "fluidMe
 
 
                         scope.load = function (ok, cancel, notify) {
+                            notify("Creating panel...", "info", 1);
+
                             scope.fluidPanel = undefined;
                             if (scope.task.lazyLoad) {
                                 var pathArr = undefined;
@@ -3930,35 +3944,13 @@ angular.module("fluidPanel", ["oc.lazyLoad", "fluidHttp", "fluidFrame", "fluidMe
                                     cache: true
                                 }).then(function () {
                                     scope.fluidPanel = new FluidPanel(scope.task);
-                                    scope.fluidPanel.loaded = false;
                                     scope.fluidPanel.frame = new FluidFrame(scope.frame);
-                                    scope.$watch(function (scope) {
-                                        return scope.fluidPanel.loaded;
-                                    }, function (loaded) {
-                                        if (loaded) {
-                                            scope.loaded();
-                                        }
-                                    });
                                     ok();
                                 });
                             } else {
                                 scope.fluidPanel = new FluidPanel(scope.task);
-                                scope.fluidPanel.loaded = false;
-                                scope.$watch(function (scope) {
-                                    return scope.fluidPanel.loaded;
-                                }, function (loaded) {
-                                    if (loaded) {
-                                        if (loaded) {
-                                            scope.loaded();
-                                        }
-                                    }
-                                });
                                 ok();
                             }
-                            notify("Loading task...", "info", 1);
-                            element.on("load", function () {
-                                scope.task.load(scope.task.ok, scope.task.cancel);
-                            });
                         }
 
 
@@ -3996,7 +3988,9 @@ angular.module("fluidPanel", ["oc.lazyLoad", "fluidHttp", "fluidFrame", "fluidMe
                     post: function (scope, element, attr) {
 
                         scope.getElementFlowId = function (id) {
-                            return id + "_" + scope.fluidPanel.id;
+                            if (scope.fluidPanel) {
+                                return id + "_" + scope.fluidPanel.id;
+                            }
                         }
                         scope.$on("$destroy", function () {
 
@@ -4040,6 +4034,12 @@ angular.module("fluidPanel", ["oc.lazyLoad", "fluidHttp", "fluidFrame", "fluidMe
                                 sleep: 1000
                             });
                         }
+
+                        scope.progress.onComplete("fluidPanelLoader", function () {
+                            console.debug("fluidPanel-onComplete:fluidPanelLoader", scope.fluidPanel.id);
+                            scope.loaded();
+                            scope.task.load(scope.task.ok, scope.task.cancel);
+                        });
 
 
                     }
@@ -4521,7 +4521,6 @@ angular.module("fluidPanel", ["oc.lazyLoad", "fluidHttp", "fluidFrame", "fluidMe
 angular.module("fluidProgress", [])
     .directive("fluidProgress", ["$templateCache", "fluidProgressService", "FluidProgress", "$timeout", "$q", function (tc, fps, FluidProgress, timeout, q) {
         return {
-            require: "^fluidFrame",
             restrict: "AE",
             scope: false,
             template: tc.get("templates/fluid/fluidProgress.html"),
@@ -4551,7 +4550,7 @@ angular.module("fluidProgress", [])
                     console.debug("fluid-progress-'have triggered':  ", element.attr("id"));
                     var progress = scope.progress;
                     angular.forEach(progress.runners, function (runner, $index) {
-
+                        progress.inProgress = true;
                         var progressBar = element.find(".progress-bar");
 
                         if (progressBar) {
@@ -5649,35 +5648,34 @@ angular.module("templates/fluid/fluidPanel.html", []).run(["$templateCache", fun
     "    <div ng-if=\"fluidPanel\" class=\"panel-heading\" ng-if=\"!task.locked\">\n" +
     "        <div class=\"panel-title\">\n" +
     "            <div class=\"left\">\n" +
-    "                <a ng-if=\"fluidPanel.loaded && !fluidPanel.frame.fullScreen\" href=\"#\" class=\"fluid-panel-heading-title\"\n" +
+    "                <a ng-if=\"!progress.inProgress && !fluidPanel.frame.fullScreen\" href=\"#\"\n" +
+    "                   class=\"fluid-panel-heading-title\"\n" +
     "                   data-toggle=\"collapse\"\n" +
     "                   data-target=\"#_id_fp_mp_{{task.fluidId}}_progress\">\n" +
     "                    <fluid-task-icon class=\"hidden-xs hidden-sm hidden-md hidden25\"></fluid-task-icon>\n" +
     "                    <span>{{task.title}}</span>\n" +
     "                </a>\n" +
-    "                <span ng-if=\"fluidPanel.loaded && fluidPanel.frame.fullScreen\" class=\"fluid-panel-heading-title\">\n" +
-    "                    <fluid-task-icon\n" +
-    "                            class=\"hidden-xs hidden-sm hidden-md hidden25\"></fluid-task-icon>\n" +
+    "                <span ng-if=\"!progress.inProgress && fluidPanel.frame.fullScreen\" class=\"fluid-panel-heading-title\">\n" +
+    "                    <fluid-task-icon class=\"hidden-xs hidden-sm hidden-md hidden25\"></fluid-task-icon>\n" +
     "                    <span>{{task.title}}</span>\n" +
     "                </span>\n" +
-    "\n" +
-    "                <fluid-loader ng-if=\"!fluidPanel.loaded\"\n" +
+    "                <fluid-loader ng-if=\"progress.inProgress\"\n" +
     "                              class=\"fluid-panel-loader\"></fluid-loader>\n" +
     "            </div>\n" +
-    "            <fluid-breadcrumb ng-if=\"fluidPanel && fluidPanel.loaded\"></fluid-breadcrumb>\n" +
+    "            <fluid-breadcrumb ng-if=\"fluidPanel && !progress.inProgress\"></fluid-breadcrumb>\n" +
     "\n" +
     "            <fluid-taskcontrols class=\"controls\"></fluid-taskcontrols>\n" +
     "        </div>\n" +
     "    </div>\n" +
     "    <div fluid-progress id=\"_id_fp_mp\" class=\"panel-collapse collapse in\">\n" +
-    "        <div id=\"_id_fpb\" class=\"on-complete panel-body container-fluid\">\n" +
+    "        <div id=\"_id_fpb\" class=\"panel-body container-fluid\">\n" +
     "            <fluid-option></fluid-option>\n" +
     "            <!--\n" +
     "            * FluidProgress\n" +
     "            * FluidMessage\n" +
     "            -->\n" +
     "            <fluid-tool ng-if=\"task.showToolBar\" class=\"width100pc\"></fluid-tool>\n" +
-    "            <fluid-page ng-if=\"fluidPanel\" id=\"_id_fp\"\n" +
+    "            <fluid-page id=\"_id_fp\"\n" +
     "                        page=\"fluidPanel.pages[fluidPanel.fluidBreadcrumb.currentPage()]\"\n" +
     "                        fluid-panel=\"fluidPanel\"\n" +
     "                        class=\"{{task.showToolBar ? 'toolbar':''}}\"></fluid-page>\n" +

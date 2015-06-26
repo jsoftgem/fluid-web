@@ -1324,6 +1324,8 @@ angular.module("fluidPanel", ["oc.lazyLoad", "fluidHttp", "fluidFrame", "fluidMe
 
 
                         scope.load = function (ok, cancel, notify) {
+                            notify("Creating panel...", "info", 1);
+
                             scope.fluidPanel = undefined;
                             if (scope.task.lazyLoad) {
                                 var pathArr = undefined;
@@ -1346,35 +1348,13 @@ angular.module("fluidPanel", ["oc.lazyLoad", "fluidHttp", "fluidFrame", "fluidMe
                                     cache: true
                                 }).then(function () {
                                     scope.fluidPanel = new FluidPanel(scope.task);
-                                    scope.fluidPanel.loaded = false;
                                     scope.fluidPanel.frame = new FluidFrame(scope.frame);
-                                    scope.$watch(function (scope) {
-                                        return scope.fluidPanel.loaded;
-                                    }, function (loaded) {
-                                        if (loaded) {
-                                            scope.loaded();
-                                        }
-                                    });
                                     ok();
                                 });
                             } else {
                                 scope.fluidPanel = new FluidPanel(scope.task);
-                                scope.fluidPanel.loaded = false;
-                                scope.$watch(function (scope) {
-                                    return scope.fluidPanel.loaded;
-                                }, function (loaded) {
-                                    if (loaded) {
-                                        if (loaded) {
-                                            scope.loaded();
-                                        }
-                                    }
-                                });
                                 ok();
                             }
-                            notify("Loading task...", "info", 1);
-                            element.on("load", function () {
-                                scope.task.load(scope.task.ok, scope.task.cancel);
-                            });
                         }
 
 
@@ -1412,7 +1392,9 @@ angular.module("fluidPanel", ["oc.lazyLoad", "fluidHttp", "fluidFrame", "fluidMe
                     post: function (scope, element, attr) {
 
                         scope.getElementFlowId = function (id) {
-                            return id + "_" + scope.fluidPanel.id;
+                            if (scope.fluidPanel) {
+                                return id + "_" + scope.fluidPanel.id;
+                            }
                         }
                         scope.$on("$destroy", function () {
 
@@ -1456,6 +1438,12 @@ angular.module("fluidPanel", ["oc.lazyLoad", "fluidHttp", "fluidFrame", "fluidMe
                                 sleep: 1000
                             });
                         }
+
+                        scope.progress.onComplete("fluidPanelLoader", function () {
+                            console.debug("fluidPanel-onComplete:fluidPanelLoader", scope.fluidPanel.id);
+                            scope.loaded();
+                            scope.task.load(scope.task.ok, scope.task.cancel);
+                        });
 
 
                     }

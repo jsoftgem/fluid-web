@@ -4,7 +4,6 @@
 angular.module("fluidProgress", [])
     .directive("fluidProgress", ["$templateCache", "fluidProgressService", "FluidProgress", "$timeout", "$q", function (tc, fps, FluidProgress, timeout, q) {
         return {
-            require: "^fluidFrame",
             restrict: "AE",
             scope: false,
             template: tc.get("templates/fluid/fluidProgress.html"),
@@ -34,7 +33,7 @@ angular.module("fluidProgress", [])
                     console.debug("fluid-progress-'have triggered':  ", element.attr("id"));
                     var progress = scope.progress;
                     angular.forEach(progress.runners, function (runner, $index) {
-
+                        progress.inProgress = true;
                         var progressBar = element.find(".progress-bar");
 
                         if (progressBar) {

@@ -20,13 +20,13 @@ angular.module("fluidPage", ["fluidHttp", "fluidOption"])
                                 fps.loadAjax(page)
                                     .then(function (data) {
                                         scope.data = data;
-                                        element.html("<ng-include class='page' src='fluidPageService.render(fluidPage)' onload='onLoad()'></ng-include>");
+                                        element.html("<ng-include class='on-complete page' src='fluidPageService.render(fluidPage)' onload='onLoad()'></ng-include>");
                                         element.attr("page-name", page.name);
                                         c(element.contents())(scope);
                                         console.debug("fluidPage-loadPage.loaded-page", page);
                                     });
                             } else {
-                                element.html("<ng-include class='page' src='fluidPageService.render(fluidPage)' onload='onLoad()'></ng-include>");
+                                element.html("<ng-include class='on-complete page' src='fluidPageService.render(fluidPage)' onload='onLoad()'></ng-include>");
                                 element.attr("page-name", page.name);
                                 c(element.contents())(scope);
                                 console.debug("fluidPage-loadPage.loaded-page", page);
@@ -40,7 +40,9 @@ angular.module("fluidPage", ["fluidHttp", "fluidOption"])
                         scope.$watch(function (scope) {
                             return scope.page;
                         }, function (newPage, oldPage) {
-                            scope.loadPage(newPage);
+                            if (newPage) {
+                                scope.loadPage(newPage);
+                            }
                         });
 
 
@@ -59,16 +61,8 @@ angular.module("fluidPage", ["fluidHttp", "fluidOption"])
                             //TODO: page onLoad error handling
                             scope.fluidPage.load(function () {
                                 scope.fluidPage.loaded = true;
-                                if (!scope.fluidPanel.loaded) {
-                                    scope.fluidPanel.loaded = true;/*
-                                    fixPageHeight(scope.fluidPanel.$());*/
-                                }
-
                             }, function () {
                                 scope.fluidPage.loaded = false;
-                                if (!scope.fluidPanel.loaded) {
-                                    scope.fluidPanel.loaded = true;
-                                }
                                 scope.fluidPage.onClose = function (ok, cancel) {
                                     return ok();
                                 }

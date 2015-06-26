@@ -401,6 +401,7 @@ function loadRunner(scope, element, runner, progress) {
     return runner.load(function (resolver) {
             runner.done = true;
             runner.inProgress = false;
+            progress.inProgress = false;
             scope.endLoader();
             progress.complete(runner.name, resolver);
             if (runner.max) {
@@ -425,6 +426,7 @@ function loadRunner(scope, element, runner, progress) {
         }, function (reason) {
             runner.cancelled = true;
             runner.inProgress = false;
+            progress.inProgress = false;
             scope.endLoader();
             progress.cancel(runner.name, reason);
             if (runner.max) {
