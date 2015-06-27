@@ -1478,8 +1478,8 @@ angular.module("fluidPanel", ["oc.lazyLoad", "fluidHttp", "fluidFrame", "fluidMe
             }
         }
     }])
-    .factory("FluidPanelModel", ["TaskControl", "ToolBarItem", "fluidTaskService", "FluidBreadcrumb", "FluidPage", "$q", "fluidFrameService", "fluidMessageService", "FluidProgress",
-        function (TaskControl, ToolBarItem, TaskService, FluidBreadcrumb, FluidPage, q, FluidFrame, fluidMessageService, FluidProgress) {
+    .factory("FluidPanelModel", ["TaskControl", "ToolBarItem", "fluidTaskService", "FluidBreadcrumb", "FluidPage", "$q", "fluidFrameService", "FluidProgress", "FluidMessage",
+        function (TaskControl, ToolBarItem, TaskService, FluidBreadcrumb, FluidPage, q, FluidFrame, FluidProgress, FluidMessage) {
             var fluidPanel = function (task) {
                 console.debug("fluidPanel-FluidPanelModel.task", task);
                 if (!task.frame) {
@@ -1867,34 +1867,37 @@ angular.module("fluidPanel", ["oc.lazyLoad", "fluidHttp", "fluidFrame", "fluidMe
                         }
                     }
 
-
                     this.getElementFlowId = function (id) {
                         return id + "_" + this.id;
                     }
-
 
                     this.message = function (duration) {
                         if (!duration) {
                             duration = 3000;
                         }
-                        var messageId = this.getElementFlowId("_id_fp_msg");
+
+                        var fluidMessage = new FluidMessage(this, {
+                                template: "_id_fp_msg",
+                                duration: duration
+                            }
+                        )
+
                         return {
-                            info: function (message) {
-                                fluidMessageService.info(messageId, message, duration).open();
+                            info: function (message, $event) {
+                                fluidMessage.info(message).open($event);
                             },
                             warning: function (message) {
-                                fluidMessageService.warning(messageId, message, duration).open();
+                                fluidMessage.warning(message).open($event);
                             },
                             danger: function (message) {
-                                fluidMessageService.danger(messageId, message, duration).open();
+                                fluidMessage.danger(message).open($event);
                             },
                             success: function (message) {
-                                fluidMessageService.success(messageId, message, duration).open();
+                                fluidMessage.success(message).open($event);
                             }
 
                         }
                     }
-
 
                     this.progress = new FluidProgress({id: this.getElementFlowId("_id_fp_mp")});
 
@@ -1903,7 +1906,8 @@ angular.module("fluidPanel", ["oc.lazyLoad", "fluidHttp", "fluidFrame", "fluidMe
             }
             return fluidPanel;
         }])
-    .service("fluidPanelService", ["$timeout", function (t) {
+    .
+    service("fluidPanelService", ["$timeout", function (t) {
         this.fluidPanel = [];
         this.clear = function (id) {
             this.fluidPanel[id].clear();

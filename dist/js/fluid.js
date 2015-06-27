@@ -2015,15 +2015,7 @@ angular.module("fluidHttp", ["fluidSession"])
     }]);;/**
  * Created by jerico on 4/28/2015.
  */
-angular.module("fluidMessage", [])
-    .directive("fluidMessage", [function () {
-        return {
-            restrict: "AE",
-            replace: true,
-            template: "<div></div>"
-
-        }
-    }])
+angular.module("fluidMessage", ["fluidOption"])
     .service("fluidMessageService", ["$timeout", function (t) {
         var fluidMessageService = {};
 
@@ -2090,7 +2082,63 @@ angular.module("fluidMessage", [])
         };
 
         return fluidMessageService;
-    }]);/**
+    }])
+    .factory("FluidMessage", ["$timeout", "FluidOption", function (t, FluidOption) {
+
+        var fluidMessage = function (fluidPanel, option) {
+            this.duration = option.duration;
+            this.template = option.template;
+            this.fluidId = fluidPanel.id;
+            this.layout = "text-info bg-info";
+            this.message = "";
+
+            var option = new FluidOption(fluidPanel);
+
+
+            this.info = function (message) {
+                this.layout = "text-info";
+                this.message = message;
+                option.info();
+                return this;
+            }
+
+            this.success = function (message) {
+                this.layout = "text-success";
+                this.message = message;
+                option.success();
+                return this;
+            }
+
+            this.danger = function (message) {
+                this.layout = "text-danger";
+                this.message = message;
+                option.danger();
+                return this;
+            }
+            this.warning = function (message) {
+                this.layout = "text-warning";
+                this.message = message;
+                option.warning();
+                return this;
+            }
+
+            this.open = function ($event) {
+                fluidPanel.$scope.fluidMessage = this;
+                fluidPanel.frame.$().scrollTop(0);
+                option.open(this.template, $event.currentTarget);
+                t(function () {
+                    /* option.close();*/
+                }, this.duration);
+            }
+
+
+        }
+
+
+        return fluidMessage;
+
+
+    }]);;/**
  * Created by jerico on 4/28/2015.
  */
 angular.module("fluidOption", [])
@@ -4074,8 +4122,8 @@ angular.module("fluidPanel", ["oc.lazyLoad", "fluidHttp", "fluidFrame", "fluidMe
             }
         }
     }])
-    .factory("FluidPanelModel", ["TaskControl", "ToolBarItem", "fluidTaskService", "FluidBreadcrumb", "FluidPage", "$q", "fluidFrameService", "fluidMessageService", "FluidProgress",
-        function (TaskControl, ToolBarItem, TaskService, FluidBreadcrumb, FluidPage, q, FluidFrame, fluidMessageService, FluidProgress) {
+    .factory("FluidPanelModel", ["TaskControl", "ToolBarItem", "fluidTaskService", "FluidBreadcrumb", "FluidPage", "$q", "fluidFrameService", "FluidProgress", "FluidMessage",
+        function (TaskControl, ToolBarItem, TaskService, FluidBreadcrumb, FluidPage, q, FluidFrame, FluidProgress, FluidMessage) {
             var fluidPanel = function (task) {
                 console.debug("fluidPanel-FluidPanelModel.task", task);
                 if (!task.frame) {
@@ -4463,34 +4511,37 @@ angular.module("fluidPanel", ["oc.lazyLoad", "fluidHttp", "fluidFrame", "fluidMe
                         }
                     }
 
-
                     this.getElementFlowId = function (id) {
                         return id + "_" + this.id;
                     }
-
 
                     this.message = function (duration) {
                         if (!duration) {
                             duration = 3000;
                         }
-                        var messageId = this.getElementFlowId("_id_fp_msg");
+
+                        var fluidMessage = new FluidMessage(this, {
+                                template: "_id_fp_msg",
+                                duration: duration
+                            }
+                        )
+
                         return {
-                            info: function (message) {
-                                fluidMessageService.info(messageId, message, duration).open();
+                            info: function (message, $event) {
+                                fluidMessage.info(message).open($event);
                             },
                             warning: function (message) {
-                                fluidMessageService.warning(messageId, message, duration).open();
+                                fluidMessage.warning(message).open($event);
                             },
                             danger: function (message) {
-                                fluidMessageService.danger(messageId, message, duration).open();
+                                fluidMessage.danger(message).open($event);
                             },
                             success: function (message) {
-                                fluidMessageService.success(messageId, message, duration).open();
+                                fluidMessage.success(message).open($event);
                             }
 
                         }
                     }
-
 
                     this.progress = new FluidProgress({id: this.getElementFlowId("_id_fp_mp")});
 
@@ -4499,7 +4550,8 @@ angular.module("fluidPanel", ["oc.lazyLoad", "fluidHttp", "fluidFrame", "fluidMe
             }
             return fluidPanel;
         }])
-    .service("fluidPanelService", ["$timeout", function (t) {
+    .
+    service("fluidPanelService", ["$timeout", function (t) {
         this.fluidPanel = [];
         this.clear = function (id) {
             this.fluidPanel[id].clear();
@@ -5685,6 +5737,12 @@ angular.module("templates/fluid/fluidPanel.html", []).run(["$templateCache", fun
     "    </div>\n" +
     "    <script ng-if=\"fluidPanel\" id=\"menu_option\" type=\"text/ng-template\">\n" +
     "        <div class=\"container-fluid\"></div>\n" +
+    "    </script>\n" +
+    "\n" +
+    "    <script id=\"_id_fp_msg\" type=\"text/ng-template\">\n" +
+    "        <div ng-class=\"fluidMessage.layout\">\n" +
+    "            <p>{{fluidMessage.message}}</p>\n" +
+    "        </div>\n" +
     "    </script>\n" +
     "\n" +
     "</div>");

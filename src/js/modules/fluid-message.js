@@ -1,15 +1,7 @@
 /**
  * Created by jerico on 4/28/2015.
  */
-angular.module("fluidMessage", [])
-    .directive("fluidMessage", [function () {
-        return {
-            restrict: "AE",
-            replace: true,
-            template: "<div></div>"
-
-        }
-    }])
+angular.module("fluidMessage", ["fluidOption"])
     .service("fluidMessageService", ["$timeout", function (t) {
         var fluidMessageService = {};
 
@@ -77,3 +69,59 @@ angular.module("fluidMessage", [])
 
         return fluidMessageService;
     }])
+    .factory("FluidMessage", ["$timeout", "FluidOption", function (t, FluidOption) {
+
+        var fluidMessage = function (fluidPanel, option) {
+            this.duration = option.duration;
+            this.template = option.template;
+            this.fluidId = fluidPanel.id;
+            this.layout = "text-info bg-info";
+            this.message = "";
+
+            var option = new FluidOption(fluidPanel);
+
+
+            this.info = function (message) {
+                this.layout = "text-info";
+                this.message = message;
+                option.info();
+                return this;
+            }
+
+            this.success = function (message) {
+                this.layout = "text-success";
+                this.message = message;
+                option.success();
+                return this;
+            }
+
+            this.danger = function (message) {
+                this.layout = "text-danger";
+                this.message = message;
+                option.danger();
+                return this;
+            }
+            this.warning = function (message) {
+                this.layout = "text-warning";
+                this.message = message;
+                option.warning();
+                return this;
+            }
+
+            this.open = function ($event) {
+                fluidPanel.$scope.fluidMessage = this;
+                fluidPanel.frame.$().scrollTop(0);
+                option.open(this.template, $event.currentTarget);
+                t(function () {
+                    /* option.close();*/
+                }, this.duration);
+            }
+
+
+        }
+
+
+        return fluidMessage;
+
+
+    }]);
