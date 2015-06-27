@@ -126,6 +126,23 @@
 .fluid-frame .fullscreen {
     padding: 0px;
 }
+.fluid-message {
+    padding: 0 15px;
+}
+
+.fluid-message p {
+    margin-top: 5px;
+}
+
+.fluid-message .message-icon {
+    width: 50px;
+    height: 50px;
+    padding: 0 15px;
+    border-radius: 50px;
+}
+
+.fluid-message .message-icon i {
+}
 .fluid-option {
     width: 100%;
     max-height: 0;

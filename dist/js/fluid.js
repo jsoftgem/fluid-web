@@ -2089,34 +2089,36 @@ angular.module("fluidMessage", ["fluidOption"])
             this.duration = option.duration;
             this.template = option.template;
             this.fluidId = fluidPanel.id;
-            this.layout = "text-info bg-info";
+            this.icon = "fa fa-info";
+
             this.message = "";
 
             var option = new FluidOption(fluidPanel);
 
 
             this.info = function (message) {
-                this.layout = "text-info";
+                this.icon = "fa fa-info";
                 this.message = message;
                 option.info();
                 return this;
             }
 
+
             this.success = function (message) {
-                this.layout = "text-success";
+                this.icon = "fa fa-check";
                 this.message = message;
                 option.success();
                 return this;
             }
 
             this.danger = function (message) {
-                this.layout = "text-danger";
+                this.icon = "fa fa-exclamation";
                 this.message = message;
                 option.danger();
                 return this;
             }
             this.warning = function (message) {
-                this.layout = "text-warning";
+                this.icon = "fa fa-exclamation-triangle";
                 this.message = message;
                 option.warning();
                 return this;
@@ -5740,8 +5742,8 @@ angular.module("templates/fluid/fluidPanel.html", []).run(["$templateCache", fun
     "    </script>\n" +
     "\n" +
     "    <script id=\"_id_fp_msg\" type=\"text/ng-template\">\n" +
-    "        <div ng-class=\"fluidMessage.layout\">\n" +
-    "            <p>{{fluidMessage.message}}</p>\n" +
+    "        <div class=\"fluid-message\">\n" +
+    "            <p><span class=\"message-icon\"> <i ng-class=\"fluidMessage.icon\"></i> </span> {{fluidMessage.message}}</p>\n" +
     "        </div>\n" +
     "    </script>\n" +
     "\n" +
