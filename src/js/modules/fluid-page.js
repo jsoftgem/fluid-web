@@ -1,64 +1,86 @@
 /**
  * Created by jerico on 4/28/2015.
  */
-angular.module("fluidPage", ["fluidHttp", "fluidOption"])
-    .directive("fluidPage", ["$templateCache", "fluidPageService", "FluidPage", "$compile", "FluidBreadcrumb", "FluidOption",
-        function (tc, fps, FluidPage, c, FluidBreadcrumb, FluidOption) {
+angular.module("fluidPage", ["fluidHttp", "fluidOption", "fluidPanel"])
+    .directive("fluidPage", ["$templateCache", "fluidPageService", "FluidPage", "$compile", "FluidBreadcrumb", "FluidOption", "FluidPanelModel",
+        function (tc, fps, FluidPage, c, FluidBreadcrumb, FluidOption, FluidPanel) {
             return {
                 restrict: "E",
-                scope: {page: "=", fluidPanel: "="},
+                scope: {fluidPanel: "="},
                 template: tc.get("templates/fluid/fluidPage.html"),
                 link: {
                     pre: function (scope, element, attr) {
-
                         scope.fluidPageService = fps;
-
-                        scope.loadPage = function (page) {
-                            console.debug("fluidPage-loadPage.page", page);
-                            scope.fluidPage = page;
+                        scope.loadPage = function (newPage) {
+                            var pageElement = $("#" + scope.fluidPanel.getElementFlowId("_id_fp_p"));
+                            console.debug("fluidPage-loadPage.page", newPage);
+                            console.debug("fluidPage-loadPage.fluidPanel", scope.fluidPanel);
+                            scope.fluidPage = newPage;
                             if (scope.fluidPage.ajax) {
-                                fps.loadAjax(page)
+                                fps.loadAjax(newPage)
                                     .then(function (data) {
+                                        console.debug("fluidPage-loadPage.data", data);
                                         scope.data = data;
-                                        element.html("<ng-include class='on-complete page' src='fluidPageService.render(fluidPage)' onload='onLoad()'></ng-include>");
-                                        element.attr("page-name", page.name);
-                                        c(element.contents())(scope);
-                                        console.debug("fluidPage-loadPage.loaded-page", page);
+                                        pageElement.html("<ng-include class='page' src='fluidPageService.render(fluidPage)' onload='onLoad()'></ng-include>");
+                                        pageElement.attr("page-name", newPage.name);
+                                        c(pageElement.contents())(scope);
+                                        console.debug("fluidPage-loadPage.loaded-page", newPage);
+                                        scope.loadFrameAdjustment();
                                     });
                             } else {
-                                element.html("<ng-include class='on-complete page' src='fluidPageService.render(fluidPage)' onload='onLoad()'></ng-include>");
-                                element.attr("page-name", page.name);
-                                c(element.contents())(scope);
-                                console.debug("fluidPage-loadPage.loaded-page", page);
+                                pageElement.html("<ng-include class='page' src='fluidPageService.render(fluidPage)' onload='onLoad()'></ng-include>");
+                                pageElement.attr("page-name", newPage.name);
+                                c(pageElement.contents())(scope);
+                                console.debug("fluidPage-loadPage.loaded-page", newPage);
+                                scope.loadFrameAdjustment();
                             }
-
-
                         }
-
-                        console.debug("fluidPage.fluidPanel", scope.fluidPanel);
-
-                        scope.$watch(function (scope) {
-                            return scope.page;
-                        }, function (newPage, oldPage) {
-                            if (newPage) {
-                                scope.loadPage(newPage);
+                        scope.loadFrameAdjustment = function () {
+                            if (scope.fluidPanel.frame.fullScreen) {
+                                scope.fluidPanel.frame.$().scrollTop(0);
+                                var maxHeight = scope.fluidPanel.frame.$().css("height");
+                                console.debug("fluidPage.fullScreen.maxHeight", maxHeight);
+                                console.debug("fluidPage.fullScreen.innerHeight", scope.fluidPanel.frame.$().innerHeight());
+                                autoFullscreen(scope.fluidPanel.$(), maxHeight.replace("px", ""), scope.fluidPanel.frame.$().innerWidth());
+                            } else {
+                                scope.fluidPanel.frame.$().find(".fluid-page").css("height", "").css("overflow-y", "");
                             }
-                        });
-
-
+                        }
                     },
                     post: function (scope, element, attr) {
                         //TODO: page onLeave handling
+
+
+                        if (scope.fluidPanel) {
+
+                            scope.fluidPanel.frame.progress.onComplete(scope.fluidPanel.getElementFlowId("toggleFullscreen"), function () {
+                                console.debug("fluidPage.fluidPanel.frame.progress.onComplete-toggleFullscreen", scope.fluidPanel.currentPage());
+                                var page = scope.fluidPanel.currentPage();
+                                if (page) {
+                                    scope.loadPage(page);
+                                }
+
+                            });
+                            scope.fluidPanel.progress.onComplete("loadPage", function (page) {
+                                console.debug("fluidPage.fluidPanel.progress.onComplete-loadPage", page);
+                                scope.loadPage(page);
+                            });
+                        }
+
                         scope.onLoad = function () {
                             console.debug("fluidPage-page-onload.fluidId", scope.fluidPanel.id);
                             scope.fluidPage.fluidId = scope.fluidPanel.id;
                             scope.fluidPage.$ = function () {
-                                return element;
+                                return $("#" + element.attr("id"));
                             };
-                            scope.fluidPage.$scope = scope;
+                            scope.fluidPage.$scope = function () {
+                                return scope;
+                            };
+                            console.debug("fluidPage-page-onload.$", scope.fluidPage.$());
                             scope.fluidPage.option = new FluidOption(scope.fluidPanel);
                             scope.fluidPage.loaded = false;
                             //TODO: page onLoad error handling
+
                             scope.fluidPage.load(function () {
                                 scope.fluidPage.loaded = true;
                             }, function () {
@@ -68,11 +90,8 @@ angular.module("fluidPage", ["fluidHttp", "fluidOption"])
                                 }
                                 element.html("");
                                 c(element.contents())(scope);
-
                             });
-
                         }
-
                     }
                 },
                 replace: true
@@ -107,6 +126,7 @@ angular.module("fluidPage", ["fluidHttp", "fluidOption"])
             this.refresh = function (proceed, cancel, $event) {
                 var page = this;
                 this.onRefresh(function () {
+                    console.debug("fluid-page-FluidPage-onRefresh.proceed", proceed);
                     proceed(page);
                     if (page.option) {
                         page.option.isCancelled = false;
@@ -194,7 +214,7 @@ angular.module("fluidPage", ["fluidHttp", "fluidOption"])
             }
 
             this.onLoad = function (ok, failed) {
-                return ok();
+                ok();
             }
 
             this.onClose = function (ok, cancel) {

@@ -13,7 +13,7 @@
 
     <!--<link href="bower_components/bootstrap/dist/css/bootstrap-theme.css" rel="stylesheet">-->
 
-    <link href="docs/themes/yeti/bootstrap.min.css" rel="stylesheet">
+    <!--<link href="docs/themes/yeti/bootstrap.min.css" rel="stylesheet">-->
 
     <link href="bower_components/font-awesome/css/font-awesome.min.css" rel="stylesheet">
 
@@ -66,21 +66,17 @@
         </div>
         <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
             <ul class="nav navbar-nav">
-                &lt;!&ndash;
                 <li ng-repeat="task in frame.tasks" ng-class="task.active ? 'active' : ''">
                     <a href="#" ng-click="task.open($index)">
                         <fluid-task-icon task="task"></fluid-task-icon>
                         {{' '}}{{task.title}}</a>
-                </li>&ndash;&gt;
+                </li>
             </ul>
         </div>
     </div>
 </div>
-<div style="margin-top:46px"><!--
-    <fluid-tasknav fill-height reduce-height="51" name="taskNav" frame="appFrame">
-
-    </fluid-tasknav>-->
-    <fluid-frame name="appFrame" fill-height reduce-height="49"></fluid-frame>
+<div style="margin-top:52px">
+    <fluid-frame name="appFrame" fill-height reduce-height="53"></fluid-frame>
 </div>
 
 </body>
@@ -92,7 +88,6 @@
             <div class="list-group-item">
                 <div class="input-group">
                     <input class="form-control" type="text" placeholder="Search tasks" ng-model="taskbar.search">
-
                     <div class="input-group-addon"><i class="fa fa-search"></i></div>
                 </div>
             </div>

@@ -84,10 +84,10 @@ angular.module("fluidOption", [])
                     console.debug("FluidOption-openOption.html", html);
                     if (page) {
                         console.debug("fluidOption-FluidOption.page", page);
-                        console.debug("fluidOption-FluidOption.pageScope", page.$scope);
-                        c(fluidTemplate.html(html))(page.$scope);
+                        console.debug("fluidOption-FluidOption.pageScope", page.$scope());
+                        c(fluidTemplate.html(html))(page.$scope());
                     } else {
-                        c(fluidTemplate.html(html))(fluidPanel.$scope);
+                        c(fluidTemplate.html(html))(fluidPanel.$scope());
                     }
                     this.isOpen = true;
                 }

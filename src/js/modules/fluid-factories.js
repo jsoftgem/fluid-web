@@ -63,8 +63,7 @@ angular.module("fluidFactories", ["fluidTask"])
         return fluidLoader;
     }
     ])
-    .
-    service("factoryServer", [function () {
+    .service("factoryServer", [function () {
         this.factories = [];
 
         this.put = function (name, obj) {

@@ -262,7 +262,6 @@ fluidComponents
     .directive("hidden25", ["$viewport", "fluidFrameService", "$window", function (v, f, w) {
         return {
             restrict: "AC",
-            require: "^fluidFrame",
             scope: false,
             link: function (scope, element, attr) {
 
@@ -320,7 +319,6 @@ fluidComponents
     .directive("hidden50", ["$viewport", "fluidFrameService", "$window", function (v, f, w) {
         return {
             restrict: "AC",
-            require: "^fluidFrame",
             scope: false,
             link: function (scope, element, attr) {
                 if (scope.fluidPanel) {
@@ -377,7 +375,6 @@ fluidComponents
     .directive("hidden75", ["$viewport", "fluidFrameService", "$window", function (v, f, w) {
         return {
             restrict: "AC",
-            require: "^fluidFrame",
             scope: false,
             link: function (scope, element, attr) {
 
@@ -437,7 +434,6 @@ fluidComponents
     .directive("hidden100", ["$viewport", "fluidFrameService", "$window", function (v, f, w) {
         return {
             restrict: "AC",
-            require: "^fluidFrame",
             scope: false,
             link: function (scope, element, attr) {
 
@@ -498,7 +494,6 @@ fluidComponents
     .directive("hiddenFullscreenXs", ["$viewport", "fluidFrameService", "$window", function (v, f, w) {
         return {
             restrict: "AC",
-            require: "^fluidFrame",
             scope: false,
             link: function (scope, element, attr) {
 
@@ -528,7 +523,6 @@ fluidComponents
     .directive("hiddenFullscreenSm", ["$viewport", "fluidFrameService", "$window", function (v, f, w) {
         return {
             restrict: "AC",
-            require: "^fluidFrame",
             scope: false,
             link: function (scope, element, attr) {
                 if (scope.fluidPanel) {
@@ -556,7 +550,6 @@ fluidComponents
     .directive("hiddenFullscreenMd", ["$viewport", "fluidFrameService", "$window", function (v, f, w) {
         return {
             restrict: "AC",
-            require: "^fluidFrame",
             scope: false,
             link: function (scope, element, attr) {
                 if (scope.fluidPanel) {
@@ -583,7 +576,6 @@ fluidComponents
     .directive("hiddenFullscreenLg", ["$viewport", "fluidFrameService", "$window", function (v, f, w) {
         return {
             restrict: "AC",
-            require: "^fluidFrame",
             scope: true,
             link: function (scope, element, attr) {
 
@@ -658,3 +650,11 @@ fluidComponents
  *  6) FluidTasknav - Task widget, widgetType: alert, overview, media and message; custom icon glyph/img - Scrap (for FluidPlatform)
  *  7) FluidTask - onClose, onLoad, onDestroy life-cycle
  * **/
+
+
+/** TODO:
+ ISSUES:
+ 1) Destroy FluidPanel when toggleFullscreen;
+ 2) Fix state when closing FluidPanel;
+ 3) Fix Page rendering
+ **/

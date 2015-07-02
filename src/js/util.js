@@ -394,8 +394,6 @@ function LightenDarkenColor(col, amt) {
     return (usePound ? "#" : "") + (g | (b << 8) | (r << 16)).toString(16);
 
 }
-
-
 function loadRunner(scope, element, runner, progress) {
     scope.startLoader();
     return runner.load(function (resolver) {
@@ -475,6 +473,26 @@ function loadRunner(scope, element, runner, progress) {
             messageElement.html(message);
         });
 }
+function loadPage(fluidPanel) {
+    console.debug("util-loadPage.fluidPanel", fluidPanel);
+    if (fluidPanel) {
+        var progress = fluidPanel.progress;
+        console.debug("util-loadPage.progress", progress);
+        if (progress) {
+            progress.run("loadPage", function (ok, cancel, notify) {
+                console.debug("util-loadPage.progress-loadPage");
+                var page = fluidPanel.currentPage();
+                console.debug("util-loadPage.progress-loadPage.page", page);
+                if (page) {
+                    ok(page);
+                } else {
+                    cancel("Page not found.");
+                }
+            });
+        }
+    }
+
+}
 
 
 //handles document here
@@ -514,8 +532,8 @@ $(document).ready(function () {
                             fluidPage.option.close();
                             if (fluidPage.option.returnToPrevious) {
                                 fluidPage.option.returnToPrevious();
-                                if (!fluidPage.$scope.$$phase) {
-                                    fluidPage.$scope.$apply();
+                                if (!fluidPage.$scope().$$phase) {
+                                    fluidPage.$scope().$apply();
                                 }
                             }
 

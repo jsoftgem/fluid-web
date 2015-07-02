@@ -21,7 +21,7 @@
 }
 
 .fluid-panel .fluid-task-icon i {
-
+    color: dimgrey;
 }
 
 .fullscreen .fluid-task-icon i {
@@ -78,7 +78,7 @@
 .fluid-panel .fluid-panel-heading-title {
     margin-top: 2px;
     margin-left: 2px;
-    color: white;
+    color: dimgray;
 }
 
 .fullscreen .fluid-panel-heading-title {

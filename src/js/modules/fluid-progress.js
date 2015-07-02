@@ -19,79 +19,72 @@ angular.module("fluidProgress", [])
                 if (attr.asynchronous) {
                     scope.asynchronous = attr.asynchronous === "true";
                 }
-
                 if (attr.id) {
                     var id = element.attr("id");
                     element.attr("id", id + "_progress");
-                    scope.progress = FluidProgress({id: id, element: element});
+                    scope.progress = FluidProgress({id: id});
                 } else {
                     throw "Id attribute is required.";
                 }
-
-
                 scope.$on(element.attr("id"), function () {
                     console.debug("fluid-progress-'have triggered':  ", element.attr("id"));
                     var progress = scope.progress;
                     angular.forEach(progress.runners, function (runner, $index) {
                         progress.inProgress = true;
-                        var progressBar = element.find(".progress-bar");
-
-                        if (progressBar) {
-                            if (runner.max) {
-                                if (scope.max === 0) {
-                                    progress.max = 0;
+                        if (runner.triggered) {
+                            runner.triggered = false;
+                            var progressBar = element.find(".progress-bar");
+                            if (progressBar) {
+                                if (runner.max) {
+                                    if (scope.max === 0) {
+                                        progress.max = 0;
+                                    }
+                                    progress.max += runner.max;
+                                    scope.max += runner.max;
                                 }
-                                progress.max += runner.max;
-                                scope.max += runner.max;
-                            }
 
-                            if (runner.min) {
-                                if (scope.min === 0) {
-                                    progress.min = scope.min;
+                                if (runner.min) {
+                                    if (scope.min === 0) {
+                                        progress.min = scope.min;
+                                    }
+                                    progress.min += runner.min;
+                                    scope.min += runner.min;
                                 }
-                                progress.min += runner.min;
-                                scope.min += runner.min;
-                            }
 
-                            if (scope.count === 0) {
-                                progress.count = scope.count;
-                            }
+                                if (scope.count === 0) {
+                                    progress.count = scope.count;
+                                }
 
+                            }
+                            if (scope.runner && !scope.asynchronous) {
+                                scope.runnerStack.push(runner);
+                            } else if (scope.asynchronous) {
+                                var defer = q.defer();
+                                timeout(function () {
+                                    loadRunner(scope, element, runner, progress);
+                                    defer.resolve(runner);
+                                }, runner.sleep);
+                            } else {
+                                scope.runner = runner;
+                                console.debug("fluid-progress-'have triggered': - currentRunner ", runner);
+                            }
                         }
 
-                        if (scope.runner && !scope.asynchronous) {
-                            scope.runnerStack.push(runner);
-                        } else if (scope.asynchronous) {
-                            var defer = q.defer();
-                            timeout(function () {
-                                loadRunner(scope, element, runner, progress);
-                                defer.resolve(runner);
-                            }, runner.sleep);
-
-                        } else {
-                            scope.runner = runner;
-                            console.debug("fluid-progress-'have triggered': - currentRunner ", runner);
-                        }
-                        progress.runners.splice($index, 1);
                     });
                 });
-
                 scope.startLoader = function () {
                     element.removeClass("fluid-progress");
                     element.addClass("fluid-progress-loading");
                 }
-
                 scope.endLoader = function () {
                     element.addClass("fluid-progress");
                     element.removeClass("fluid-progress-loading");
                 }
-
                 scope.$watch(function (scope) {
                     return scope.runner;
                 }, function (newRunner, oldRunner) {
                     console.debug("fluid-progress.runner.new", newRunner);
                     function checkRunner() {
-
                         if (newRunner.done || newRunner.cancelled) {
                             if (scope.runnerStack) {
                                 scope.runner = scope.runnerStack.shift();
@@ -103,7 +96,6 @@ angular.module("fluidProgress", [])
                             }
                             timeout(checkRunner, newRunner.sleep);
                         }
-
                     }
 
                     if (newRunner) {
@@ -111,87 +103,146 @@ angular.module("fluidProgress", [])
                     }
 
                 });
-
+                scope.$on("$destroy", function () {
+                    if (scope.progress) {
+                        scope.progress.completeFuncs = [];
+                        scope.progress.cancelledFuncs = [];
+                        fps.clearProgress(scope.progress.id);
+                    }
+                });
             }
         }
     }])
-    .factory("FluidProgress", ["fluidProgressService", function (fps) {
+    .factory("FluidProgress", ["fluidProgressService", "$timeout", function (fps, t) {
 
         var fluidProgress = function (param) {
             console.debug("fluidProgress-FluidProgress.param", param);
             var progress = {};
             if (param.id) {
-                /*if (param.element) {
-                 progress.element = param.element;
-                 }*/
-                if (fps.getFluidProgress(param.id) != null) {
-                    return fps.getFluidProgress(param.id);
+                if (fps.getFluidProgress(param.id) !== undefined) {
+                    progress = fps.getFluidProgress(param.id);
                 } else {
+                    progress.completeFuncs = [];
+                    progress.cancelledFuncs = [];
                     progress.max = 0;
                     progress.min = 0;
                     progress.count = 0;
                     progress.id = param.id;
                     progress.run = function (name, loadFn, options) {
+                        var exists = false;
                         console.debug("progress-run.name", name);
-                        var runner = {};
-                        if (options) {
-                            runner.max = options.max;
-                            runner.min = options.min;
-                            runner.sleep = options.sleep;
+                        if (progress.runners) {
+                            console.debug("progress-run.runners", progress.runners);
+                            for (var i = 0; i < progress.runners.length; i++) {
+                                var runner = progress.runners[i];
+                                if (runner.name === name) {
+                                    exists = true;
+                                    runner.done = false;
+                                    runner.cancelled = false;
+                                    runner.inProgress = false;
+                                    runner.triggered = true;
+                                    if(loadFn){
+                                        runner.load = loadFn;
+                                    }
+                                    if (options) {
+                                        runner.max = options.max ? options.max : runner.max;
+                                        runner.min = options.min ? options.min : runner.min;
+                                        runner.sleep = options.sleep ? options.sleep : runner.sleep;
+                                    }
+                                    console.debug("progress-run.saved-triggered.runner", runner);
+                                    console.debug("progress-run.saved-triggered.name", name);
+                                }
+                            }
                         }
-                        runner.name = name;
-                        runner.load = loadFn;
-                        runner.message = "Loading please wait...";
-                        if (progress.runners === undefined) {
-                            progress.runners = [];
-                        }
-                        progress.runners.push(runner);
-                        progress.element = angular.element(progress.$());
 
+                        if (!exists) {
+                            var runner = {};
+                            if (options) {
+                                runner.max = options.max;
+                                runner.min = options.min;
+                                runner.sleep = options.sleep;
+                            }
+                            runner.name = name;
+                            runner.load = loadFn;
+                            runner.message = "Loading please wait...";
+                            if (progress.runners === undefined) {
+                                progress.runners = [];
+                            }
+                            runner.triggered = true;
+                            progress.runners.push(runner);
+                        }
+
+                        progress.element = angular.element(progress.$());
                         console.debug("progress.element", progress.element);
-                        progress.element.scope().$broadcast(progress.element.attr("id"));
-                        console.debug("progress.triggered", progress.element.attr("id"));
+
+                        var scope = progress.element.scope();
+                        if (scope) {
+                            progress.element.scope().$broadcast(progress.element.attr("id"));
+                            console.debug("progress.triggered", progress.element.attr("id"));
+                        }
+
+
                     }
                     progress.$ = function () {
                         return $("#" + progress.id + "_progress");
                     }
                     progress.onComplete = function (name, completeFunc) {
-                        if (this.completeFuncs === undefined) {
-                            this.completeFuncs = [];
+                        if (this.completeFuncs[name] == null) {
+                            this.completeFuncs[name] = [];
                         }
-                        this.completeFuncs[name] = completeFunc;
+                        this.completeFuncs[name].push(completeFunc);
+                        console.debug("progress.completeFunc-name", name);
+                        console.debug("progress.completeFunc", completeFunc);
                         console.debug("progress.completeFuncs", this.completeFuncs);
                     }
                     progress.onCancelled = function (name, cancelledFunc) {
-                        if (this.cancelledFuncs === undefined) {
-                            this.cancelledFuncs = [];
+                        if (this.cancelledFuncs[name] == null) {
+                            this.cancelledFuncs[name] = [];
                         }
-                        this.cancelledFuncs[name] = completeFunc;
+                        this.cancelledFuncs[name].push(completeFunc);
                         console.debug("progress.cancelledFuncs", this.cancelledFuncs);
-
                     }
-
                     progress.cancel = function (name, reason) {
                         if (this.cancelledFuncs) {
-                            var cancelFunc = this.cancelledFuncs[name];
-                            if (cancelFunc) {
-                                cancelFunc(reason);
+                            var cancelFuncs = this.cancelledFuncs[name];
+                            if (cancelFuncs) {
+                                angular.forEach(cancelFuncs, function (func, $index) {
+                                    t(function () {
+                                        if (func) {
+                                            func(reason);
+                                        }
+                                    });
+                                });
                             }
                         }
                     }
-
                     progress.complete = function (name, resolver) {
                         if (this.completeFuncs) {
-                            var completeFunc = this.completeFuncs[name];
-                            if (completeFunc) {
-                                completeFunc(resolver);
+                            var completeFuncs = this.completeFuncs[name];
+                            console.debug("fluid-progress.complete.name", name);
+                            console.debug("fluid-progress.complete.completeFuncs", completeFuncs);
+                            if (completeFuncs) {
+                                console.debug("fluid-progress.complete.length", completeFuncs.length);
+                                angular.forEach(completeFuncs, function (func, $index) {
+                                    console.debug("fluid-progress.complete.$index", $index)
+                                    t(function () {
+                                        if (func) {
+                                            func(resolver);
+                                        }
+                                    });
+                                });
                             }
+
                         }
 
                     }
-
-
+                    progress.clear = function () {
+                        progress.completeFuncs = [];
+                        progress.cancelledFuncs = [];
+                        progress.runners = [];
+                    }
                     fps.addFluidProgress(progress);
+
                 }
 
 
@@ -199,12 +250,12 @@ angular.module("fluidProgress", [])
                 throw "param id is required";
             }
 
+            console.debug("fluid-progress.progress", progress);
             return progress;
         }
-
         return fluidProgress;
     }])
-    .service("fluidProgressService", [function () {
+    .service("fluidProgressService", ["$timeout", function (t) {
 
         this.addFluidProgress = function (progress) {
             var id = progress.id + "_progress";
@@ -228,9 +279,8 @@ angular.module("fluidProgress", [])
         }
 
         this.clearProgress = function (id) {
-            this.progressObjects[id] = undefined;
+            this.progressObjects[id + "_progress"] = undefined;
         }
-
 
         return this;
     }]);

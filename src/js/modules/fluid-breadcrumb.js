@@ -14,10 +14,10 @@ angular.module("fluidBreadcrumb", [])
             }
         }
     }])
-    .factory("FluidBreadcrumb", ["breadcrumbService", function (bcs) {
+    .factory("FluidBreadcrumb", [function () {
         var fluidBreadcrumb = function (fluidPanel) {
-            if (bcs.breadcrumbs[fluidPanel.id] != null) {
-                return bcs.breadcrumbs[fluidPanel.id];
+            if (fluidPanel.breadcrumbs[fluidPanel.id] != null) {
+                return fluidPanel.breadcrumbs[fluidPanel.id];
             } else {
                 this.$ = $("div#_id_fp_" + fluidPanel.id + " .fluid-breadcrumb");
                 this.fluidId = fluidPanel.id;
@@ -79,7 +79,7 @@ angular.module("fluidBreadcrumb", [])
                         }
                     }
                 }
-                bcs.breadcrumbs[fluidPanel.id] = this;
+                fluidPanel.breadcrumbs[fluidPanel.id] = this;
 
             }
         }

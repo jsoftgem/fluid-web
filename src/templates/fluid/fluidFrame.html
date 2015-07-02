@@ -1,12 +1,2 @@
 <div class="fluid-frame" ng-class="!frame.fullScreen ?'default-frame':'full'">
-    <bootstrap-viewport></bootstrap-viewport>
-
-    <fluid-panel ng-if="frame.fullScreen" task='frame.task' frame="{{frame.name}}" class="fullscreen"
-                 fluid-fullscreen-height></fluid-panel>
-    <div ng-if="!frame.fullScreen">
-        <div class="fluid-frame-task">
-            <fluid-panel task="task" frame="{{frame.name}}"
-                         ng-repeat='task in frame.tasks | filter:{active:true}'></fluid-panel>
-        </div>
-    </div>
 </div>

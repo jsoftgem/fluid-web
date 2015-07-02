@@ -16,7 +16,7 @@
 }
 
 .fullscreen .fluid-breadcrumb .item {
-    border-right: 1px solid #9d9d9d;
+    border-right: 1px solid dimgrey;
 }
 
 .fluid-breadcrumb .item .active {
@@ -31,6 +31,7 @@
 
 .fluid-breadcrumb .item .inactive {
     background: none;
+    color: dimgrey;
 }
 
 .fullscreen .fluid-breadcrumb .item .active {
@@ -45,9 +46,8 @@
 
 .fullscreen .fluid-breadcrumb .item .inactive {
     background: none;
-    color: #9d9d9d;
+    color: dimgrey;
 }
-
 
 .fluid-breadcrumb .item-sm {
     padding: 0 15px;

@@ -303,11 +303,16 @@ angular.module("fluidTask", ["fluidSession", "fluidFrame"])
                 var frame = fluidFrameHandler.frames[frameKey + task.frame];
 
                 if (frame.fullScreen) {
-                    frame.task = task;
+                    frame.switchTo(task);
                 } else {
                     $(".fluid-frame[name='" + frame.name + "']").scrollTo($("div.fluid-panel:eq(" + task.index + ")"), 200);
                     console.debug("fluid-task-task.open", "div.fluid-panel :eq(" + task.index + ")");
                 }
+            }
+
+
+            task.panel = function () {
+                return $("#_id_fp_" + task.fluidId);
             }
 
             console.debug("fluidTask-FluidTask.newTask", task);

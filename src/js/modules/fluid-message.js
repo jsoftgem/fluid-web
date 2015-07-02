@@ -76,19 +76,14 @@ angular.module("fluidMessage", ["fluidOption"])
             this.template = option.template;
             this.fluidId = fluidPanel.id;
             this.icon = "fa fa-info";
-
             this.message = "";
-
             var option = new FluidOption(fluidPanel);
-
-
             this.info = function (message) {
                 this.icon = "fa fa-info";
                 this.message = message;
                 option.info();
                 return this;
             }
-
 
             this.success = function (message) {
                 this.icon = "fa fa-check";
@@ -109,7 +104,6 @@ angular.module("fluidMessage", ["fluidOption"])
                 option.warning();
                 return this;
             }
-
             this.open = function ($event) {
                 fluidPanel.$scope.fluidMessage = this;
                 fluidPanel.frame.$().scrollTop(0);

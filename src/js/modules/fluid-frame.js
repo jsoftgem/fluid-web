@@ -14,51 +14,81 @@
  */
 
 var frameKey = "frame_";
-angular.module("fluidFrame", ["fluidHttp", "fluidTask", "fluidSession"])
-    .directive("fluidFrame", ["$templateCache", "$window", "fluidFrameService", "$viewport", function (tc, window, FrameService, v) {
+angular.module("fluidFrame", ["fluidHttp", "fluidTask", "fluidSession", "fluidProgress"])
+    .directive("fluidFrame", ["$templateCache", "$window", "fluidFrameService", "$viewport", "FluidProgress", "$compile", function (tc, window, FrameService, v, FluidProgress, c) {
         return {
             restrict: "E",
             replace: true,
             scope: {name: "@", fullScreen: "=", showWorkspace: "="},
-            controller: ["$scope", function (s) {
-                if (!s.name) {
-                    throw "'name' attribute is required.";
-                } else {
-                    s.frame = new FrameService(s.name);
+            link: function (scope, element) {
+                var _t_nf = "templates/fluid/fluidFrameNF.html";
+                var _t_f = "templates/fluid/fluidFrameF.html";
+
+                scope.renderFrame = function () {
+                    console.debug("fluidFrame-renderFrame");
+
                 }
 
-            }],
-            link: function (scope, element) {
+                if (!scope.name) {
+                    throw "'name' attribute is required.";
+                } else {
+                    c(element.html("<bootstrap-viewport></bootstrap-viewport> <div fluid-progress id='_id_mf_fp_" + scope.name + "'><ng-include src='_t'></ng-include></div>"))(scope);
+
+                    console.debug("fluidFrame-init");
+
+                    scope._t = _t_nf;
+
+                    scope.progress = new FluidProgress({
+                        id: "_id_mf_fp_" + scope.name
+                    });
+
+                    console.debug("fluidFrame.progress", scope.progress);
+
+                    scope.progress.run("loadFrame", function (ok, cancel, notify) {
+                        scope.frame = new FrameService(scope.name);
+                        ok(scope.frame);
+                        console.debug("fluidFrame.created", scope.frame);
+                    });
+
+                    scope.progress.onComplete("loadFrame", function (frame) {
+                        scope.renderFrame();
+                    });
+
+                }
+
+
                 $(window).on("resize", function () {
                     console.debug("fluid-frame.viewport", v);
                     scope.setViewport();
                 });
                 scope.setViewport = function () {
-
-
                 }
                 scope.setViewport();
+
+
             },
             template: tc.get("templates/fluid/fluidFrame.html")
         }
     }])
     .directive("fluidFullscreenHeight", ["$window", function ($w) {
         return {
+            scope: false,
             restrict: "A",
             link: function (scope, element, attr) {
 
                 var w = angular.element($w);
-
                 if (attr.offset) {
                     scope.offset = attr.offset;
                 }
-
                 w.bind("resize", function () {
-                    var maxHeight = element.parent().css("height");
-                    if (maxHeight) {
-                        console.debug("fluidPanel.fullScreen.resize.maxHeight", maxHeight);
-                        console.debug("fluidPanel.fullScreen.resize.innerHeight", element.parent().innerHeight());
-                        autoFullscreen(element, maxHeight.replace("px", ""), element.parent().innerWidth());
+                    if (scope.frame.fullScreen) {
+                        var frameElement = scope.frame.$();
+                        var maxHeight = frameElement.css("height");
+                        if (maxHeight) {
+                            console.debug("fluidPanel.fullScreen.resize.maxHeight", maxHeight);
+                            console.debug("fluidPanel.fullScreen.resize.innerHeight", frameElement.innerHeight());
+                            autoFullscreen(element, maxHeight.replace("px", ""), frameElement.innerWidth());
+                        }
                     }
                 });
             }
@@ -76,9 +106,10 @@ angular.module("fluidFrame", ["fluidHttp", "fluidTask", "fluidSession"])
 
         return this;
     }])
-    .factory("fluidFrameService", ["Frame", "fluidTaskService", "FluidTask", function (Frame, taskService, FluidTask) {
+    .factory("fluidFrameService", ["Frame", "fluidTaskService", "FluidTask", "FluidProgress", function (Frame, taskService, FluidTask, FluidProgress) {
         var frameService = function (name) {
             var frame = new Frame(name);
+
             frame.openTask = function (taskName, page, workspace, onLoad) {
                 if (workspace) {
 
@@ -92,14 +123,11 @@ angular.module("fluidFrame", ["fluidHttp", "fluidTask", "fluidSession"])
                         var fluidTask = new FluidTask(task);
                         fluidTask.frame = frame.name;
                         fluidTask.index = index;
-
                         fluidTask.page = page;
                         if (onLoad) {
                             fluidTask.onLoad = onLoad;
                         }
-
                         fluidTask.ok = function () {
-
                         }
                         fluidTask.failed = function () {
                             frame.tasks.splice(index, 1);
@@ -125,11 +153,51 @@ angular.module("fluidFrame", ["fluidHttp", "fluidTask", "fluidSession"])
 
                 return filteredTask.task;
             }
-
             frame.$ = function () {
                 return $(".fluid-frame[name='" + frame.name + "']");
             }
+            frame.progress = new FluidProgress({
+                id: "_id_mf_fp_" + name
+            });
+            frame.toggleFullscreen = function (panel, task) {
+                frame.progress.run("toggleFullscreen_" + task.fluidId, function (ok, cancel, notify) {
+                    frame.fullScreen = !frame.fullScreen;
+                    console.debug("fluidFrameService-toggleFullscreen.fullScreen", frame.fullScreen);
+                    if (frame.fullScreen) {
+                        frame.task = task;
+                    } else {
+                        frame.task = undefined;
+                    }
+                    ok(frame.fullScreen);
+                });
+            }
+            frame.switchTo = function (task) {
+                frame.progress.run("switchTask_" + task.fluidId, function (ok, cancel, notify) {
+                    console.debug("fluidFrameService-switchTask.task", task);
+                    frame.task = task;
+                    ok(task);
+                });
+            }
+            frame.closeTask = function (task, workspace) {
+                frame.progress.run("closeTask_" + task.fluidId, function (ok, cancel, notify) {
+                    if (frame.fullScreen) {
+                        frame.fullScreen = false;
+                        frame.task = undefined;
+                    }
+                    frame.removeTask(task, workspace);
+                    ok(task);
+                });
+            }
+            frame.clearPanel = function (id) {
+                if (this.fluidPanel) {
+                    var fluidPanel = this.fluidPanel[id];
+                    if (fluidPanel) {
+                        fluidPanel.clear();
+                    }
+                    this.fluidPanel[id] = null;
+                }
 
+            }
             return frame;
         }
         return frameService;

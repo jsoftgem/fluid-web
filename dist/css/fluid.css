@@ -16,7 +16,7 @@
 }
 
 .fullscreen .fluid-breadcrumb .item {
-    border-right: 1px solid #9d9d9d;
+    border-right: 1px solid dimgrey;
 }
 
 .fluid-breadcrumb .item .active {
@@ -31,6 +31,7 @@
 
 .fluid-breadcrumb .item .inactive {
     background: none;
+    color: dimgrey;
 }
 
 .fullscreen .fluid-breadcrumb .item .active {
@@ -45,9 +46,8 @@
 
 .fullscreen .fluid-breadcrumb .item .inactive {
     background: none;
-    color: #9d9d9d;
+    color: dimgrey;
 }
-
 
 .fluid-breadcrumb .item-sm {
     padding: 0 15px;
@@ -212,7 +212,7 @@
 }
 
 .fluid-panel .fluid-task-icon i {
-
+    color: dimgrey;
 }
 
 .fullscreen .fluid-task-icon i {
@@ -269,7 +269,7 @@
 .fluid-panel .fluid-panel-heading-title {
     margin-top: 2px;
     margin-left: 2px;
-    color: white;
+    color: dimgray;
 }
 
 .fullscreen .fluid-panel-heading-title {
@@ -329,7 +329,7 @@
 
 }
 
-.fluid-progress .on-progress {
+.fluid-progress .on-progress{
     display: none;
 }
 
