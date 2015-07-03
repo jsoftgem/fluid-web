@@ -95,14 +95,14 @@ fluid-web/
   anuglar.module("mainApp",["fluid"])
 ```
 
-- Add ```<fluid-frame name='frameName'></fluid-frame>``` to the body:
+- Add ```<fluid-frame name='mainFrame'></fluid-frame>``` to the body:
 ```
   <body>
     <fluid-frame name='mainFrame'></fluid-frame>
   </body>
   
 ```
-Note: fluid-frame supports multiple instances so you need to specify name attribute.
+Note: fluid-frame supports multiple instances so you need to specify a unique name each fluid-frame tag.
 
 - Create task json file or javascript object:
 ```
@@ -121,15 +121,7 @@ Note: fluid-frame supports multiple instances so you need to specify name attrib
   "showToolBar": false
   }
 ```
--  Inject the ```fluidFrameService```:
-```
-   anuglar.module("mainApp",["fluid"])
-            .run(["fluidFrameService",function(ffs){
-               /*adds module json config here using url*/
-              ffs.addTask("docs/module_basic/module_basic.json");
-  }]);
 
-```
 - Add a static page:
 ```
  {
@@ -157,6 +149,27 @@ Note: fluid-frame supports multiple instances so you need to specify name attrib
   }
 ```
 Note: One home page (isHome=true) only is required.
+
+
+- Set the task in config using taskStateProvider:
+```
+angular.module("mainApp", ["fluid"])
+    .config(["taskStateProvider", function (tsp) {
+
+        tsp.setTasks([
+            {
+                name: "moduleBasic",
+                url: "docs/module_basic/module_basic.json"
+            },
+            {
+                name: "moduleTaskConfig",
+                url: "docs/module_task_config/module_task_config.json"
+            }
+        ]);
+
+    }]);
+    
+```
 
 - Open a task using FluidFrameService:
 ```
