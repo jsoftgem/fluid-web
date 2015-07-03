@@ -74,22 +74,19 @@ fluid-web/
 
 ```
 ### Getting Started
-- Add the following libraries to header:
+-  Prerequisite libraries:
 ```
-<link href="bower_components/dist/css/fluid.min.css" rel="stylesheet">
-<link href="bower_components/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
-<link href="docs/themes/yeti/bootstrap.min.css" rel="stylesheet">
-<link href="bower_components/font-awesome/css/font-awesome.min.css" rel="stylesheet">
-<link href="bower_components/animate.css/animate.min.css" rel="stylesheet">
-<script src="bower_components/jquery/dist/jquery.min.js" type="text/javascript"></script>
-<script src="bower_components/angular/angular.min.js" type="text/javascript"></script>
-<script src="bower_components/angular-local-storage/dist/angular-local-storage.min.js"
+    <link href="bower_components/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="bower_components/font-awesome/css/font-awesome.min.css" rel="stylesheet">
+    <link href="bower_components/animate.css/animate.min.css" rel="stylesheet">
+    <script src="bower_components/jquery/dist/jquery.js" type="text/javascript"></script>
+    <script src="bower_components/angular/angular.js" type="text/javascript"></script>
+    <script src="bower_components/angular-resource/angular-resource.js" type="text/javascript"></script>
+    <script src="bower_components/angular-local-storage/dist/angular-local-storage.min.js"
             type="text/javascript"></script>
-<script src="bower_components/oclazyload/dist/ocLazyLoad.min.js" type="text/javascript"></script>
-<script src="bower_components/bootstrap/dist/js/bootstrap.js" type="text/javascript"></script>
-<script src="bower_components/jquery.scrollTo/jquery.scrollTo.min.js" type="text/javascript"></script>
-<script src="bower_components/angular-sanitize/angular-sanitize.min.js" type="text/javascript"></script>
-<script src="bower_components/dist/js/fluid.js" type="text/javascript"></script>
+    <script src="bower_components/oclazyload/dist/ocLazyLoad.min.js" type="text/javascript"></script>
+    <script src="bower_components/bootstrap/dist/js/bootstrap.js" type="text/javascript"></script>
+    <script src="bower_components/jquery.scrollTo/jquery.scrollTo.js" type="text/javascript"></script>
 
 ```
 
@@ -98,14 +95,14 @@ fluid-web/
   anuglar.module("mainApp",["fluid"])
 ```
 
-- Add ```<fluid-frame></fluid-frame>``` to the body:
+- Add ```<fluid-frame name='frameName'></fluid-frame>``` to the body:
 ```
   <body>
-    <fluid-frame></fluid-frame>
+    <fluid-frame name='mainFrame'></fluid-frame>
   </body>
   
 ```
-Note: fluid-frame tag must be added to the body only <b>once</b>, fluid-web does not support multiple frame instances yet.
+Note: fluid-frame supports multiple instances so you need to specify name attribute.
 
 - Create task json file or javascript object:
 ```
@@ -160,6 +157,20 @@ Note: fluid-frame tag must be added to the body only <b>once</b>, fluid-web does
   }
 ```
 Note: One home page (isHome=true) only is required.
+
+- Open a task using FluidFrameService:
+```
+   app.controller(["$scope","fluidFrameService"], function(scope, FluidFrameService){
+
+       var fluidFrame = new FluidFrameService('mainFrame');
+       
+       fluidFrame.openTask("moduleTaskConfig", page, workspace, function (ok, failed) {
+               // Put onLoad implementation here.
+               ok(); // will load the task;
+               // failed(); will prevent the task from opening;
+            });
+   });
+```
 
 ### Demo
 Coming very soon.
