@@ -26,26 +26,44 @@ fluid-web/
 |_ src/
 |   |__ css/
 |   |    |─── fluid.css
+|   |    |___ fluid-breadbrumb.css
+|   |    |___ fluid-message.css
 |   |    |___ fluid-option.css
+|   |    |___ fluid-page.css
+|   |    |___ fluid-panel.css
+|   |    |___ fluid-progress.css
+|   |    |___ fluid-task.css
+|   |    |___ fluid-tascontrols.css
+|   |    |___ fluid-toolbar.css
+|   |   
 |   |__ js/
 |   |    |___ modules/
+|   |    |    |─── fluid-breadcrumb.js
+|   |    |    |─── fluid-factories.js
 |   |    |    |─── fluid-frame.js
 |   |    |    |─── fluid-http.js
 |   |    |    |─── fluid-message.js
 |   |    |    |─── fluid-option.js
 |   |    |    |─── fluid-page.js
-|   |    |    |─── fluid-panel.js
-|   |    |    |─── fluid-session.js
+|   |    |    |___ fluid-panel.js
+|   |    |    |___ fluid-session.js
+|   |    |    |___ fluid-task.js
+|   |    |    |___ fluid-taskcontrols.js
 |   |    |    |___ fluid-tool.js
 |   |    |___ fluid.js
 |   |    |___ util.js
 |   |__ templates/
 |        |___ fluid/
+|             |─── fluidBreadcrumb.html
 |             |─── fluidFrame.html
+|             |─── fluidFrameNF.html
 |             |─── fluidLoader.html
 |             |─── fluidOption.html
-|             |─── fluidPanel.html
-|             |─── fluidTaskIcon.html
+|             |___ fluidPage.html
+|             |___ fluidPanel.html
+|             |___ fluidProgress.html
+|             |___ fluidTaskcontrols.html
+|             |___ fluidTaskIcon.html
 |             |___ fluidToolbar.html
 |_ bower.json
 |_ gruntfile.js
