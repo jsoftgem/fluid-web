@@ -9,7 +9,7 @@ var fluidComponents = angular.module("fluid", ["oc.lazyLoad", "LocalStorageModul
 
 var EVENT_TIME_OUT = "TIME_OUT", EVENT_TASK_LOADED = "TASK_LOAD";
 
-fluidComponents.config(["$httpProvider", "localStorageServiceProvider", function (h, ls) {
+fluidComponents.config(["$httpProvider", "localStorageServiceProvider",function (h, ls) {
     ls.setPrefix("fluid")
         .setStorageType("sessionStorage")
         .setNotify(true, true);
