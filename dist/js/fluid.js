@@ -2417,7 +2417,7 @@ angular.module("fluidOption", [])
  * Created by jerico on 4/28/2015.
  */
 angular.module("fluidPage", ["fluidHttp", "fluidOption", "fluidPanel"])
-    .directive("fluidPage", ["$templateCache", "fluidPageService", "FluidPage", "$compile", "FluidBreadcrumb", "FluidOption", "FluidPanelModel",
+    .directive("fluidPage", ["$templateCache", "fluidPageService", "FluidPage", "$compile", "FluidBreadcrumb", "FluidOption", "FluidPanel",
         function (tc, fps, FluidPage, c, FluidBreadcrumb, FluidOption, FluidPanel) {
             return {
                 restrict: "E",
@@ -2774,7 +2774,7 @@ angular.module("fluidPanel", ["oc.lazyLoad", "fluidHttp", "fluidFrame", "fluidMe
             replace: true
         }
     }])
-    .directive("fluidPanel", ["$templateCache", "FluidPanelModel", "fluidToolbarService", "$ocLazyLoad", "$compile", "fluidPanelService", "fluidFrameService", "$viewport", "$window",
+    .directive("fluidPanel", ["$templateCache", "FluidPanel", "fluidToolbarService", "$ocLazyLoad", "$compile", "fluidPanelService", "fluidFrameService", "$viewport", "$window",
         "$anchorScroll", "$location", "FluidProgress",
         function (tc, FluidPanel, ftb, oc, c, fluidPanelService, FluidFrame, v, window, a, l, FluidProgress) {
             return {
@@ -2955,7 +2955,7 @@ angular.module("fluidPanel", ["oc.lazyLoad", "fluidHttp", "fluidFrame", "fluidMe
             }
         }
     }])
-    .factory("FluidPanelModel", ["TaskControl", "ToolBarItem", "fluidTaskService", "FluidBreadcrumb", "FluidPage", "$q", "fluidFrameService", "FluidProgress", "FluidMessage",
+    .factory("FluidPanel", ["TaskControl", "ToolBarItem", "fluidTaskService", "FluidBreadcrumb", "FluidPage", "$q", "fluidFrameService", "FluidProgress", "FluidMessage",
         function (TaskControl, ToolBarItem, TaskService, FluidBreadcrumb, FluidPage, q, FluidFrame, FluidProgress, FluidMessage) {
             var fluidPanel = function (task) {
                 0;
@@ -4149,7 +4149,7 @@ angular.module("fluidTaskcontrols", ["fluidTask"])
  * Created by jerico on 4/29/2015.
  */
 angular.module("fluidTasknav", ["fluidTask", "fluidFrame", "fluidPanel"])
-    .directive("fluidTasknav", ["$templateCache", "fluidTasknav", "fluidTaskService", "fluidFrameService", "FluidPanelModel",
+    .directive("fluidTasknav", ["$templateCache", "fluidTasknav", "fluidTaskService", "fluidFrameService", "FluidPanel",
         function (tc, FluidTasknav, fluidTaskService, FrameService, FluidPanel) {
             return {
                 restrict: "AE",

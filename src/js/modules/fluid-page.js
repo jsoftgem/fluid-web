@@ -2,7 +2,7 @@
  * Created by jerico on 4/28/2015.
  */
 angular.module("fluidPage", ["fluidHttp", "fluidOption", "fluidPanel"])
-    .directive("fluidPage", ["$templateCache", "fluidPageService", "FluidPage", "$compile", "FluidBreadcrumb", "FluidOption", "FluidPanelModel",
+    .directive("fluidPage", ["$templateCache", "fluidPageService", "FluidPage", "$compile", "FluidBreadcrumb", "FluidOption", "FluidPanel",
         function (tc, fps, FluidPage, c, FluidBreadcrumb, FluidOption, FluidPanel) {
             return {
                 restrict: "E",

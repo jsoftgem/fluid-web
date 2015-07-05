@@ -2,7 +2,7 @@
  * Created by jerico on 4/29/2015.
  */
 angular.module("fluidTasknav", ["fluidTask", "fluidFrame", "fluidPanel"])
-    .directive("fluidTasknav", ["$templateCache", "fluidTasknav", "fluidTaskService", "fluidFrameService", "FluidPanelModel",
+    .directive("fluidTasknav", ["$templateCache", "fluidTasknav", "fluidTaskService", "fluidFrameService", "FluidPanel",
         function (tc, FluidTasknav, fluidTaskService, FrameService, FluidPanel) {
             return {
                 restrict: "AE",
