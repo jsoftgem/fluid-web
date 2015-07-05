@@ -101,6 +101,7 @@
 .fluid-breadcrumb .default {
     background: none;
 }
+
 .fluid-frame {
     overflow-y: auto;
 }
@@ -126,6 +127,7 @@
 .fluid-frame .fullscreen {
     padding: 0px;
 }
+
 .fluid-message {
     padding: 0 15px;
 }
@@ -143,6 +145,7 @@
 
 .fluid-message .message-icon i {
 }
+
 .fluid-option {
     width: 100%;
     max-height: 0;
@@ -175,6 +178,7 @@
     -moz-transition: max-height 0.5s;
     overflow-y: auto;
 }
+
 .fluid-page {
     background: rgba(255, 255, 255, 0.5);
 }
@@ -189,6 +193,7 @@
 .noToolbar {
     /* margin-top: -20px !important;*/
 }
+
 .fluid-panel-transition {
     -webkit-transition: width 0.2s;
     transition: width 0.2s;
@@ -321,6 +326,7 @@
     width: 100px;
     /*  margin: 0px -15px -200px -15px;*/
 }
+
 .fluid-progress {
 
 }
@@ -329,7 +335,7 @@
 
 }
 
-.fluid-progress .on-progress{
+.fluid-progress .on-progress {
     display: none;
 }
 
@@ -350,6 +356,7 @@
 
 .fluid-progress-loading .status {
 }
+
 .fluid-task {
 }
 
@@ -364,14 +371,16 @@
 .fluid-task .task-pages {
 
 }
+
 .fluid-taskcontrols {
 
 }
 
 .fluid-taskcontrols .control-glyph {
-    transform: scale(1.2,1.2);
-    -webkit-transform: scale(1.2,1.2);
+    transform: scale(1.2, 1.2);
+    -webkit-transform: scale(1.2, 1.2);
 }
+
 body {
     -moz-transition: all 0.3s;
     -webkit-transition: all 0.3s;
@@ -484,7 +493,6 @@ body {
         margin-right: 2px;
     }
 
-
     .item-task .settings {
         padding: 0px 1px 0px 0px;
         margin-left: -27px;
@@ -503,6 +511,7 @@ body {
     }
 
 }
+
 .fluid-toolbar {
     background-color: rgba(204, 229, 255, 0.5);
 }
@@ -510,6 +519,7 @@ body {
 .fluid-toolbar .btn-group {
     overflow-x: hidden;
 }
+
 /*
 To change this license header, choose License Headers in Project Properties.
 To change this template file, choose Tools | Templates

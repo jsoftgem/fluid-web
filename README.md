@@ -26,26 +26,44 @@ fluid-web/
 |_ src/
 |   |__ css/
 |   |    |─── fluid.css
+|   |    |___ fluid-breadbrumb.css
+|   |    |___ fluid-message.css
 |   |    |___ fluid-option.css
+|   |    |___ fluid-page.css
+|   |    |___ fluid-panel.css
+|   |    |___ fluid-progress.css
+|   |    |___ fluid-task.css
+|   |    |___ fluid-tascontrols.css
+|   |    |___ fluid-toolbar.css
+|   |   
 |   |__ js/
 |   |    |___ modules/
+|   |    |    |─── fluid-breadcrumb.js
+|   |    |    |─── fluid-factories.js
 |   |    |    |─── fluid-frame.js
 |   |    |    |─── fluid-http.js
 |   |    |    |─── fluid-message.js
 |   |    |    |─── fluid-option.js
 |   |    |    |─── fluid-page.js
-|   |    |    |─── fluid-panel.js
-|   |    |    |─── fluid-session.js
+|   |    |    |___ fluid-panel.js
+|   |    |    |___ fluid-session.js
+|   |    |    |___ fluid-task.js
+|   |    |    |___ fluid-taskcontrols.js
 |   |    |    |___ fluid-tool.js
 |   |    |___ fluid.js
 |   |    |___ util.js
 |   |__ templates/
 |        |___ fluid/
+|             |─── fluidBreadcrumb.html
 |             |─── fluidFrame.html
+|             |─── fluidFrameNF.html
 |             |─── fluidLoader.html
 |             |─── fluidOption.html
-|             |─── fluidPanel.html
-|             |─── fluidTaskIcon.html
+|             |___ fluidPage.html
+|             |___ fluidPanel.html
+|             |___ fluidProgress.html
+|             |___ fluidTaskcontrols.html
+|             |___ fluidTaskIcon.html
 |             |___ fluidToolbar.html
 |_ bower.json
 |_ gruntfile.js
@@ -56,22 +74,19 @@ fluid-web/
 
 ```
 ### Getting Started
-- Add the following libraries to header:
+-  Prerequisite libraries:
 ```
-<link href="bower_components/dist/css/fluid.min.css" rel="stylesheet">
-<link href="bower_components/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
-<link href="docs/themes/yeti/bootstrap.min.css" rel="stylesheet">
-<link href="bower_components/font-awesome/css/font-awesome.min.css" rel="stylesheet">
-<link href="bower_components/animate.css/animate.min.css" rel="stylesheet">
-<script src="bower_components/jquery/dist/jquery.min.js" type="text/javascript"></script>
-<script src="bower_components/angular/angular.min.js" type="text/javascript"></script>
-<script src="bower_components/angular-local-storage/dist/angular-local-storage.min.js"
+    <link href="bower_components/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="bower_components/font-awesome/css/font-awesome.min.css" rel="stylesheet">
+    <link href="bower_components/animate.css/animate.min.css" rel="stylesheet">
+    <script src="bower_components/jquery/dist/jquery.js" type="text/javascript"></script>
+    <script src="bower_components/angular/angular.js" type="text/javascript"></script>
+    <script src="bower_components/angular-resource/angular-resource.js" type="text/javascript"></script>
+    <script src="bower_components/angular-local-storage/dist/angular-local-storage.min.js"
             type="text/javascript"></script>
-<script src="bower_components/oclazyload/dist/ocLazyLoad.min.js" type="text/javascript"></script>
-<script src="bower_components/bootstrap/dist/js/bootstrap.js" type="text/javascript"></script>
-<script src="bower_components/jquery.scrollTo/jquery.scrollTo.min.js" type="text/javascript"></script>
-<script src="bower_components/angular-sanitize/angular-sanitize.min.js" type="text/javascript"></script>
-<script src="bower_components/dist/js/fluid.js" type="text/javascript"></script>
+    <script src="bower_components/oclazyload/dist/ocLazyLoad.min.js" type="text/javascript"></script>
+    <script src="bower_components/bootstrap/dist/js/bootstrap.js" type="text/javascript"></script>
+    <script src="bower_components/jquery.scrollTo/jquery.scrollTo.js" type="text/javascript"></script>
 
 ```
 
@@ -80,14 +95,14 @@ fluid-web/
   anuglar.module("mainApp",["fluid"])
 ```
 
-- Add ```<fluid-frame></fluid-frame>``` to the body:
+- Add ```<fluid-frame name='mainFrame'></fluid-frame>``` to the body:
 ```
   <body>
-    <fluid-frame></fluid-frame>
+    <fluid-frame name='mainFrame'></fluid-frame>
   </body>
   
 ```
-Note: fluid-frame tag must be added to the body only <b>once</b>, fluid-web does not support multiple frame instances yet.
+Note: fluid-frame supports multiple instances so you need to specify a unique name each fluid-frame tag.
 
 - Create task json file or javascript object:
 ```
@@ -106,15 +121,7 @@ Note: fluid-frame tag must be added to the body only <b>once</b>, fluid-web does
   "showToolBar": false
   }
 ```
--  Inject the ```fluidFrameService```:
-```
-   anuglar.module("mainApp",["fluid"])
-            .run(["fluidFrameService",function(ffs){
-               /*adds module json config here using url*/
-              ffs.addTask("docs/module_basic/module_basic.json");
-  }]);
 
-```
 - Add a static page:
 ```
  {
@@ -142,6 +149,41 @@ Note: fluid-frame tag must be added to the body only <b>once</b>, fluid-web does
   }
 ```
 Note: One home page (isHome=true) only is required.
+
+
+- Set the task in config using taskStateProvider:
+```
+angular.module("mainApp", ["fluid"])
+    .config(["taskStateProvider", function (tsp) {
+
+        tsp.setTasks([
+            {
+                name: "moduleBasic",
+                url: "docs/module_basic/module_basic.json"
+            },
+            {
+                name: "moduleTaskConfig",
+                url: "docs/module_task_config/module_task_config.json"
+            }
+        ]);
+
+    }]);
+    
+```
+
+- Open a task using FluidFrameService:
+```
+   app.controller(["$scope","fluidFrameService"], function(scope, FluidFrameService){
+
+       var fluidFrame = new FluidFrameService('mainFrame');
+       
+       fluidFrame.openTask("moduleTaskConfig", page, workspace, function (ok, failed) {
+               // Put onLoad implementation here.
+               ok(); // will load the task;
+               // failed(); will prevent the task from opening;
+            });
+   });
+```
 
 ### Demo
 Coming very soon.
