@@ -32,11 +32,15 @@ angular.module("fluidFrame", ["fluidHttp", "fluidTask", "fluidSession", "fluidPr
                 if (!scope.name) {
                     throw "'name' attribute is required.";
                 } else {
-                    c(element.html("<bootstrap-viewport></bootstrap-viewport> <div fluid-progress id='_id_mf_fp_" + scope.name + "'><ng-include src='_t'></ng-include></div>"))(scope);
+
+                    scope._t = _t_nf;
+
+                    element.html("<bootstrap-viewport></bootstrap-viewport> <div fluid-progress id='_id_mf_fp_" + scope.name + "'><ng-include src='_t'></ng-include></div>");
+
+                    c(element.contents())(scope);
 
                     console.debug("fluidFrame-init");
 
-                    scope._t = _t_nf;
 
                     scope.progress = new FluidProgress({
                         id: "_id_mf_fp_" + scope.name

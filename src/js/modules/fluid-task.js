@@ -158,23 +158,25 @@ angular.module("fluidTask", ["fluidSession", "fluidFrame"])
                             var counter = 0;
 
                             function timeOut() {
-                                t(function () {
-                                    if (counter === timeout) {
-                                        reject(EVENT_TIME_OUT);
-                                    }
-                                    if (value.done) {
-                                        resolve(EVENT_TASK_LOADED);
-                                    } else {
-                                        timeOut();
-                                    }
-                                    counter++;
-                                }, 1000);
+                                console.debug("fluidtask: timeOut: ", value);
+                                if (counter === timeout) {
+                                    reject(EVENT_TIME_OUT);
+                                    return;
+                                }
+                                if (value.done) {
+                                    resolve(EVENT_TASK_LOADED);
+                                    console.debug("fluidtask: resolve: ", value);
+                                    return;
+                                }
+                                counter++;
+                                t(timeOut, 1000);
                             }
 
                             timeOut();
 
                         }
                     ).then(function (event) {
+                            console.debug("fluidtask: resolve-event: ", event);
                             rs.$broadcast(event);
                         });
                 }
@@ -202,18 +204,16 @@ angular.module("fluidTask", ["fluidSession", "fluidFrame"])
                     console.debug("fluidTask-fluidTaskService-findTaskByName-waitForTask.key", counter);
                     console.debug("fluidTask-fluidTaskService-findTaskByName-waitForTask.counter", counter);
                     console.debug("fluidTask-fluidTaskService-findTaskByName-waitForTask.fss", fss);
-
-                    t(function () {
-                        if (ss.containsKey(key)) {
-                            console.debug("fluidTask-fluidTaskService-findTaskByName-waitForTask.getSessionProperty", ss.getSessionProperty(key));
-                            resolve(ss.getSessionProperty(key));
-                        } else if (counter === timeout) {
-                            reject(EVENT_TIME_OUT);
-                        } else {
-                            counter++;
-                            waitForTask(counter);
-                        }
-                    }, 1000);
+                    if (ss.containsKey(key)) {
+                        console.debug("fluidTask-fluidTaskService-findTaskByName-waitForTask.getSessionProperty", ss.getSessionProperty(key));
+                        resolve(ss.getSessionProperty(key));
+                        return;
+                    } else if (counter === timeout) {
+                        reject(EVENT_TIME_OUT);
+                        return;
+                    }
+                    counter++;
+                    t(waitForTask, 1000);
                 }
 
                 if (ss.containsKey(key)) {

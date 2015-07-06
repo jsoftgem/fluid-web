@@ -1464,11 +1464,15 @@ angular.module("fluidFrame", ["fluidHttp", "fluidTask", "fluidSession", "fluidPr
                 if (!scope.name) {
                     throw "'name' attribute is required.";
                 } else {
-                    c(element.html("<bootstrap-viewport></bootstrap-viewport> <div fluid-progress id='_id_mf_fp_" + scope.name + "'><ng-include src='_t'></ng-include></div>"))(scope);
+
+                    scope._t = _t_nf;
+
+                    element.html("<bootstrap-viewport></bootstrap-viewport> <div fluid-progress id='_id_mf_fp_" + scope.name + "'><ng-include src='_t'></ng-include></div>");
+
+                    c(element.contents())(scope);
 
                     0;
 
-                    scope._t = _t_nf;
 
                     scope.progress = new FluidProgress({
                         id: "_id_mf_fp_" + scope.name
@@ -3928,23 +3932,25 @@ angular.module("fluidTask", ["fluidSession", "fluidFrame"])
                             var counter = 0;
 
                             function timeOut() {
-                                t(function () {
-                                    if (counter === timeout) {
-                                        reject(EVENT_TIME_OUT);
-                                    }
-                                    if (value.done) {
-                                        resolve(EVENT_TASK_LOADED);
-                                    } else {
-                                        timeOut();
-                                    }
-                                    counter++;
-                                }, 1000);
+                                0;
+                                if (counter === timeout) {
+                                    reject(EVENT_TIME_OUT);
+                                    return;
+                                }
+                                if (value.done) {
+                                    resolve(EVENT_TASK_LOADED);
+                                    0;
+                                    return;
+                                }
+                                counter++;
+                                t(timeOut, 1000);
                             }
 
                             timeOut();
 
                         }
                     ).then(function (event) {
+                            0;
                             rs.$broadcast(event);
                         });
                 }
@@ -3972,18 +3978,16 @@ angular.module("fluidTask", ["fluidSession", "fluidFrame"])
                     0;
                     0;
                     0;
-
-                    t(function () {
-                        if (ss.containsKey(key)) {
-                            0;
-                            resolve(ss.getSessionProperty(key));
-                        } else if (counter === timeout) {
-                            reject(EVENT_TIME_OUT);
-                        } else {
-                            counter++;
-                            waitForTask(counter);
-                        }
-                    }, 1000);
+                    if (ss.containsKey(key)) {
+                        0;
+                        resolve(ss.getSessionProperty(key));
+                        return;
+                    } else if (counter === timeout) {
+                        reject(EVENT_TIME_OUT);
+                        return;
+                    }
+                    counter++;
+                    t(waitForTask, 1000);
                 }
 
                 if (ss.containsKey(key)) {
