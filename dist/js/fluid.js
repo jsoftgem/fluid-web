@@ -1,4 +1,4 @@
-/**Fluid Web v0.0.1
+/**Fluid Web v0.1.0
  * Created by Jerico de Guzman
  * October 2014**/
 'use strict';
