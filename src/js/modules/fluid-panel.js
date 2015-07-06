@@ -176,6 +176,10 @@ angular.module("fluidPanel", ["oc.lazyLoad", "fluidHttp", "fluidFrame", "fluidMe
                             scope.loaded(fluidPanel);
                             task.load(task.ok, task.cancel);
                         });
+                        scope.collapsePanel = function () {
+                            scope.task.collapsed = !scope.task.collapsed;
+                            $("#_id_fp_mp_" + scope.task.fluidId + "_progress").collapse("toggle");
+                        }
 
                     }
                 }
