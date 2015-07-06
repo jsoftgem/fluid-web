@@ -22,10 +22,8 @@ angular.module("mainApp", ["fluid"])
 
             s.frame = new FrameService('appFrame');
 
-            s.frame.openTask("moduleTaskConfig", undefined, undefined, function (ok, failed) {
-            });
-            s.frame.openTask("moduleBasic", undefined, undefined, function (ok, failed) {
-            });
+            s.frame.openTask("moduleTaskConfig");
+            s.frame.openTask("moduleBasic");
 
         }]);
 
