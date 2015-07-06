@@ -260,7 +260,7 @@ angular.module("fluidPage", ["fluidHttp", "fluidOption", "fluidPanel"])
         }
         return fluidPage;
     }])
-    .service("fluidPageService", ["$templateCache", "$q", "$sce", function (tc, q, sce) {
+    .service("fluidPageService", ["$templateCache", "$q", "$sce", "fluidHttpService", function (tc, q, sce, fhs) {
         this.pages = [];
         this.loadAjax = function (fluidPage) {
             return q(function (resolve, reject) {
