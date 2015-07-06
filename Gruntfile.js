@@ -31,6 +31,14 @@ module.exports = function (grunt) {
                 }
             },
             html2js: {
+                options: {
+                    module: 'fluidTemplates',
+                    htmlmin: {
+                        collapseBooleanAttributes: true,
+                        collapseWhitespace: true,
+                        removeComments: true,
+                    }
+                },
                 dist: {
                     src: ['src/templates/fluid/*.html'],
                     dest: 'tmp/templates.js'
