@@ -3,13 +3,13 @@
  * October 2014**/
 'use strict';
 
-var fluidComponents = angular.module("fluid", ["oc.lazyLoad", "LocalStorageModule", "ngResource", "templates-dist", "fluidSession",
+var fluidComponents = angular.module("fluid", ["oc.lazyLoad", "LocalStorageModule", "ngResource", "fluidTemplates", "fluidSession",
     "fluidHttp", "fluidFrame", "fluidMessage", "fluidOption", "fluidTool", "fluidPage", "fluidPanel", "fluidTasknav", "fluidTask", "fluidTaskcontrols",
     "fluidFactories"]);
 
 var EVENT_TIME_OUT = "TIME_OUT", EVENT_TASK_LOADED = "TASK_LOAD";
 
-fluidComponents.config(["$httpProvider", "localStorageServiceProvider",function (h, ls) {
+fluidComponents.config(["$httpProvider", "localStorageServiceProvider", function (h, ls) {
     ls.setPrefix("fluid")
         .setStorageType("sessionStorage")
         .setNotify(true, true);
@@ -4306,56 +4306,31 @@ angular.module("fluidTool", [])
             this.toolbarItems[id] = undefined;
         }
 
-    }]);;angular.module('templates-dist', ['templates/fluid/fluidBreadcrumb.html', 'templates/fluid/fluidFrame.html', 'templates/fluid/fluidFrameF.html', 'templates/fluid/fluidFrameNF.html', 'templates/fluid/fluidLoader.html', 'templates/fluid/fluidOption.html', 'templates/fluid/fluidPage.html', 'templates/fluid/fluidPanel.html', 'templates/fluid/fluidProgress.html', 'templates/fluid/fluidTaskIcon.html', 'templates/fluid/fluidTaskcontrols.html', 'templates/fluid/fluidTasknav.html', 'templates/fluid/fluidToolbar.html']);
+    }]);;angular.module('fluidTemplates', ['templates/fluid/fluidBreadcrumb.html', 'templates/fluid/fluidFrame.html', 'templates/fluid/fluidFrameF.html', 'templates/fluid/fluidFrameNF.html', 'templates/fluid/fluidLoader.html', 'templates/fluid/fluidOption.html', 'templates/fluid/fluidPage.html', 'templates/fluid/fluidPanel.html', 'templates/fluid/fluidProgress.html', 'templates/fluid/fluidTaskIcon.html', 'templates/fluid/fluidTaskcontrols.html', 'templates/fluid/fluidTasknav.html', 'templates/fluid/fluidToolbar.html']);
 
 angular.module("templates/fluid/fluidBreadcrumb.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("templates/fluid/fluidBreadcrumb.html",
-    "<div class=\"fluid-breadcrumb\" ng-init=\"item=[]\">\n" +
-    "    <div class=\"item hidden-xs hidden-sm hidden25\" ng-repeat=\"bread in breadcrumb.pages\" ng-class=\"item[$index].active\">\n" +
-    "        <span ng-mouseover=\"item[$index].showClose=true && $index > 0;item[$index].active='hovered'\"\n" +
-    "              ng-mouseleave=\"item[$index].showClose=false;item[$index].active='default'\">\n" +
-    "            <span class=\"label\" ng-class=\"breadcrumb.current === $index ?'active':'inactive'\"\n" +
-    "                  ng-click=\"breadcrumb.open(bread,$index,$event)\">{{breadcrumb.getTitle(bread)}}</span>\n" +
-    "            <i ng-if=\"item[$index].showClose\" class=\"fa fa-close text-danger\" title=\"Close {{bread}}\"\n" +
-    "               ng-click=\"breadcrumb.close(bread,$index,$event)\"></i>\n" +
-    "        </span>\n" +
-    "    </div>\n" +
-    "    <div class=\"item-sm hidden-md hidden50 hidden75 hidden100 hidden-fullscreen-md hidden-fullscreen-lg\">\n" +
-    "\n" +
-    "        <span>{{breadcrumb.getTitle(breadcrumb.currentPage())}}</span>\n" +
-    "\n" +
-    "    </div>\n" +
-    "</div>");
+    "<div class=\"fluid-breadcrumb\" ng-init=\"item=[]\"><div class=\"item hidden-xs hidden-sm hidden25\" ng-repeat=\"bread in breadcrumb.pages\" ng-class=\"item[$index].active\"><span ng-mouseover=\"item[$index].showClose=true && $index > 0;item[$index].active='hovered'\" ng-mouseleave=\"item[$index].showClose=false;item[$index].active='default'\"><span class=\"label\" ng-class=\"breadcrumb.current === $index ?'active':'inactive'\" ng-click=\"breadcrumb.open(bread,$index,$event)\">{{breadcrumb.getTitle(bread)}}</span> <i ng-if=\"item[$index].showClose\" class=\"fa fa-close text-danger\" title=\"Close {{bread}}\" ng-click=\"breadcrumb.close(bread,$index,$event)\"></i></span></div><div class=\"item-sm hidden-md hidden50 hidden75 hidden100 hidden-fullscreen-md hidden-fullscreen-lg\"><span>{{breadcrumb.getTitle(breadcrumb.currentPage())}}</span></div></div>");
 }]);
 
 angular.module("templates/fluid/fluidFrame.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("templates/fluid/fluidFrame.html",
-    "<div class=\"fluid-frame\" ng-class=\"!frame.fullScreen ?'default-frame':'full'\">\n" +
-    "</div>\n" +
-    "");
+    "<div class=\"fluid-frame\" ng-class=\"!frame.fullScreen ?'default-frame':'full'\"></div>");
 }]);
 
 angular.module("templates/fluid/fluidFrameF.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("templates/fluid/fluidFrameF.html",
-    "<fluid-panel task='frame.task' frame='{{frame.name}}' class='on-complete fullscreen'\n" +
-    "             fluid-fullscreen-height></fluid-panel>");
+    "<fluid-panel task=\"frame.task\" frame=\"{{frame.name}}\" class=\"on-complete fullscreen\" fluid-fullscreen-height></fluid-panel>");
 }]);
 
 angular.module("templates/fluid/fluidFrameNF.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("templates/fluid/fluidFrameNF.html",
-    "<div class='on-complete'>\n" +
-    "    <div class='fluid-frame-task'>\n" +
-    "        <fluid-panel task='task' frame='{{frame.name}}' fluid-fullscreen-height ng-if=\"!frame.fullScreen || (frame.fullScreen && frame.task.fluidId === task.fluidId)\"\n" +
-    "                     ng-repeat='task in frame.tasks | filter:{active:true}'></fluid-panel>\n" +
-    "    </div>\n" +
-    "</div>");
+    "<div class=\"on-complete\"><div class=\"fluid-frame-task\"><fluid-panel task=\"task\" frame=\"{{frame.name}}\" fluid-fullscreen-height ng-if=\"!frame.fullScreen || (frame.fullScreen && frame.task.fluidId === task.fluidId)\" ng-repeat=\"task in frame.tasks | filter:{active:true}\"></fluid-panel></div></div>");
 }]);
 
 angular.module("templates/fluid/fluidLoader.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("templates/fluid/fluidLoader.html",
-    "<div>\n" +
-    "<style>\n" +
-    "    #{{getElementFlowId('followingBallsG')}} {\n" +
+    "<div><style>#{{getElementFlowId('followingBallsG')}} {\n" +
     "        position:relative;\n" +
     "        height:16px;\n" +
     "    }\n" +
@@ -4526,218 +4501,47 @@ angular.module("templates/fluid/fluidLoader.html", []).run(["$templateCache", fu
     "            background-color:#3647FF;\n" +
     "        }\n" +
     "\n" +
-    "    }\n" +
-    "\n" +
-    "</style>\n" +
-    "<div id=\"followingBallsG\">\n" +
-    "    <span id=\"followingBallsG_1\" class=\"followingBallsG\">\n" +
-    "    </span>\n" +
-    "    <span id=\"followingBallsG_2\" class=\"followingBallsG\">\n" +
-    "    </span>\n" +
-    "    <span id=\"followingBallsG_3\" class=\"followingBallsG\">\n" +
-    "    </span>\n" +
-    "    <span id=\"followingBallsG_4\" class=\"followingBallsG\">\n" +
-    "    </span>\n" +
-    "</div>\n" +
-    "</div>");
+    "    }</style><div id=\"followingBallsG\"><span id=\"followingBallsG_1\" class=\"followingBallsG\"></span> <span id=\"followingBallsG_2\" class=\"followingBallsG\"></span> <span id=\"followingBallsG_3\" class=\"followingBallsG\"></span> <span id=\"followingBallsG_4\" class=\"followingBallsG\"></span></div></div>");
 }]);
 
 angular.module("templates/fluid/fluidOption.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("templates/fluid/fluidOption.html",
-    "<div id=\"fluid_option\" class=\"fluid-option {{task.locked?'locked':''}}\">\n" +
-    "    <div id=\"fluid_option_template\" class=\"fluid-option-template\"></div>\n" +
-    "</div>");
+    "<div id=\"fluid_option\" class=\"fluid-option {{task.locked?'locked':''}}\"><div id=\"fluid_option_template\" class=\"fluid-option-template\"></div></div>");
 }]);
 
 angular.module("templates/fluid/fluidPage.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("templates/fluid/fluidPage.html",
-    "<div class=\"fluid-page\" ng-class=\"!fluidPage.loaded ? 'default-page':''\">\n" +
-    "</div>\n" +
-    "");
+    "<div class=\"fluid-page\" ng-class=\"!fluidPage.loaded ? 'default-page':''\"></div>");
 }]);
 
 angular.module("templates/fluid/fluidPanel.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("templates/fluid/fluidPanel.html",
-    "<div id='_id_fp'\n" +
-    "     ng-class=\"!fluidPanel.frame.fullScreen ? 'panel panel-default fluid-task ' + size : 'panel panel-default frame-fullscreen col-lg-12'\"\n" +
-    "     class=\"fluid-panel\">\n" +
-    "    <div class=\"panel-heading\" ng-if=\"!task.locked\">\n" +
-    "        <div class=\"panel-title\">\n" +
-    "            <div class=\"left\">\n" +
-    "                <a ng-if=\"fluidPanel && !progress.inProgress && !fluidFrame.progress.inProgress && !fluidPanel.frame.fullScreen\" href=\"#\"\n" +
-    "                   class=\"fluid-panel-heading-title\"\n" +
-    "                   data-toggle=\"collapse\"\n" +
-    "                   data-target=\"#_id_fp_mp_{{task.fluidId}}_progress\">\n" +
-    "                    <fluid-task-icon class=\"hidden-xs hidden-sm hidden-md hidden25\"></fluid-task-icon>\n" +
-    "                    <span>{{task.title}}</span>\n" +
-    "                </a>\n" +
-    "                <span ng-if=\"fluidPanel && !progress.inProgress && !fluidFrame.progress.inProgress && fluidPanel.frame.fullScreen\"\n" +
-    "                      class=\"fluid-panel-heading-title\">\n" +
-    "                    <fluid-task-icon class=\"hidden-xs hidden-sm hidden-md hidden25\"></fluid-task-icon>\n" +
-    "                    <span>{{task.title}}</span>\n" +
-    "                </span>\n" +
-    "                <fluid-loader ng-if=\"progress.inProgress || fluidFrame.progress.inProgress\"\n" +
-    "                              class=\"fluid-panel-loader\"></fluid-loader>\n" +
-    "            </div>\n" +
-    "            <fluid-breadcrumb ng-if=\"fluidPanel && !fluidFrame.progress.inProgress && !progress.inProgress\"></fluid-breadcrumb>\n" +
-    "\n" +
-    "            <fluid-taskcontrols ng-if=\"fluidPanel\" class=\"controls\"></fluid-taskcontrols>\n" +
-    "        </div>\n" +
-    "    </div>\n" +
-    "    <div fluid-progress id=\"_id_fp_mp\" class=\"panel-collapse collapse in\" asynchronous=\"true\">\n" +
-    "        <div ng-if=\"fluidPanel\" id=\"_id_fpb\" class=\"panel-body container-fluid\">\n" +
-    "            <fluid-option></fluid-option>\n" +
-    "            <!--\n" +
-    "            * FluidProgress\n" +
-    "            * FluidMessage\n" +
-    "            -->\n" +
-    "            <fluid-tool ng-if=\"task.showToolBar\" class=\"width100pc\"></fluid-tool>\n" +
-    "            <fluid-page id=\"_id_fp_p\"\n" +
-    "                        fluid-panel=\"fluidPanel\"\n" +
-    "                        class=\"{{task.showToolBar ? 'toolbar':''}}\"></fluid-page>\n" +
-    "\n" +
-    "        </div>\n" +
-    "    </div>\n" +
-    "    <script ng-if=\"fluidPanel\" id=\"menu_option\" type=\"text/ng-template\">\n" +
-    "        <div class=\"container-fluid\"></div>\n" +
-    "    </script>\n" +
-    "    <script id=\"_id_fp_msg\" type=\"text/ng-template\">\n" +
-    "        <div class=\"fluid-message\">\n" +
+    "<div id=\"_id_fp\" ng-class=\"!fluidPanel.frame.fullScreen ? 'panel panel-default fluid-task ' + size : 'panel panel-default frame-fullscreen col-lg-12'\" class=\"fluid-panel\"><div class=\"panel-heading\" ng-if=\"!task.locked\"><div class=\"panel-title\"><div class=\"left\"><a ng-if=\"fluidPanel && !progress.inProgress && !fluidFrame.progress.inProgress && !fluidPanel.frame.fullScreen\" href=\"#\" class=\"fluid-panel-heading-title\" data-toggle=\"collapse\" data-target=\"#_id_fp_mp_{{task.fluidId}}_progress\"><fluid-task-icon class=\"hidden-xs hidden-sm hidden-md hidden25\"></fluid-task-icon><span>{{task.title}}</span></a> <span ng-if=\"fluidPanel && !progress.inProgress && !fluidFrame.progress.inProgress && fluidPanel.frame.fullScreen\" class=\"fluid-panel-heading-title\"><fluid-task-icon class=\"hidden-xs hidden-sm hidden-md hidden25\"></fluid-task-icon><span>{{task.title}}</span></span><fluid-loader ng-if=\"progress.inProgress || fluidFrame.progress.inProgress\" class=\"fluid-panel-loader\"></fluid-loader></div><fluid-breadcrumb ng-if=\"fluidPanel && !fluidFrame.progress.inProgress && !progress.inProgress\"></fluid-breadcrumb><fluid-taskcontrols ng-if=\"fluidPanel\" class=\"controls\"></fluid-taskcontrols></div></div><div fluid-progress id=\"_id_fp_mp\" class=\"panel-collapse collapse in\" asynchronous=\"true\"><div ng-if=\"fluidPanel\" id=\"_id_fpb\" class=\"panel-body container-fluid\"><fluid-option></fluid-option><fluid-tool ng-if=\"task.showToolBar\" class=\"width100pc\"></fluid-tool><fluid-page id=\"_id_fp_p\" fluid-panel=\"fluidPanel\" class=\"{{task.showToolBar ? 'toolbar':''}}\"></fluid-page></div></div><script ng-if=\"fluidPanel\" id=\"menu_option\" type=\"text/ng-template\"><div class=\"container-fluid\"></div></script><script id=\"_id_fp_msg\" type=\"text/ng-template\"><div class=\"fluid-message\">\n" +
     "            <p><span class=\"message-icon\"> <i ng-class=\"fluidMessage.icon\"></i> </span> {{fluidMessage.message}}</p>\n" +
-    "        </div>\n" +
-    "    </script>\n" +
-    "\n" +
-    "</div>");
+    "        </div></script></div>");
 }]);
 
 angular.module("templates/fluid/fluidProgress.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("templates/fluid/fluidProgress.html",
-    "<div class=\"fluid-progress\" ng-transclude>\n" +
-    "</div>");
+    "<div class=\"fluid-progress\" ng-transclude></div>");
 }]);
 
 angular.module("templates/fluid/fluidTaskIcon.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("templates/fluid/fluidTaskIcon.html",
-    "<span class=\"fluid-task-icon\">\n" +
-    "    <img ng-if=\"task.useImg\" width=\"{{width? width:15}}\" height=\"{{height?height:15}}\" ng-src=\"{{task.imgSrc}}\">\n" +
-    "    <i ng-if=\"!task.useImg\" ng-class=\"task.glyph\"></i>\n" +
-    "</span>");
+    "<span class=\"fluid-task-icon\"><img ng-if=\"task.useImg\" width=\"{{width? width:15}}\" height=\"{{height?height:15}}\" ng-src=\"{{task.imgSrc}}\"> <i ng-if=\"!task.useImg\" ng-class=\"task.glyph\"></i></span>");
 }]);
 
 angular.module("templates/fluid/fluidTaskcontrols.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("templates/fluid/fluidTaskcontrols.html",
-    "<span class=\"fluid-taskcontrols\">\n" +
-    "      <div class=\"hidden-xs hidden-sm hidden-md hidden25 btn-group btn-group-xs\">\n" +
-    "          <button id=\"{{control.getId($index)}}\" type=\"button\" ng-if=\"control.visible()\" ng-disbabled=\"control.disabled()\"\n" +
-    "                  class=\"{{control.uiClass}}\"\n" +
-    "                  ng-repeat=\"control in fluidPanel.controls| reverse\"\n" +
-    "                  ng-class=\"control.class\"\n" +
-    "                  ng-click=\"control.action(task,$event)\"><i class=\"{{control.glyph}} control-glyph\"></i></button>\n" +
-    "      </div>\n" +
-    "      <div class=\"hidden-fullscreen-lg hidden100 hidden50 hidden75 btn-group btn-group-xs small\">\n" +
-    "          <a href=\"#\" class=\"icon dropdown-toggle fa-inverse\" data-toggle='dropdown'>\n" +
-    "              <fluid-task-icon task=\"task\"></fluid-task-icon>\n" +
-    "          </a>\n" +
-    "          <ul class='dropdown-menu dropdown-menu-right dropdown-menu-inverse'>\n" +
-    "              <li id=\"{{control.getId($index)}}\" ng-repeat=\"control in fluidPanel.controls| reverse\"\n" +
-    "                  ng-if=\"control.visible() || control.disabled()\"\n" +
-    "                  ng-class=\"control.class\">\n" +
-    "                  <a href=\"#\" ng-click=\"control.action(task,$event)\">{{control.label}}</a>\n" +
-    "              </li>\n" +
-    "          </ul>\n" +
-    "      </div>\n" +
-    "</span>\n" +
-    "\n" +
-    "");
+    "<span class=\"fluid-taskcontrols\"><div class=\"hidden-xs hidden-sm hidden-md hidden25 btn-group btn-group-xs\"><button id=\"{{control.getId($index)}}\" type=\"button\" ng-if=\"control.visible()\" ng-disbabled=\"control.disabled()\" class=\"{{control.uiClass}}\" ng-repeat=\"control in fluidPanel.controls| reverse\" ng-class=\"control.class\" ng-click=\"control.action(task,$event)\"><i class=\"{{control.glyph}} control-glyph\"></i></button></div><div class=\"hidden-fullscreen-lg hidden100 hidden50 hidden75 btn-group btn-group-xs small\"><a href=\"#\" class=\"icon dropdown-toggle fa-inverse\" data-toggle=\"dropdown\"><fluid-task-icon task=\"task\"></fluid-task-icon></a><ul class=\"dropdown-menu dropdown-menu-right dropdown-menu-inverse\"><li id=\"{{control.getId($index)}}\" ng-repeat=\"control in fluidPanel.controls| reverse\" ng-if=\"control.visible() || control.disabled()\" ng-class=\"control.class\"><a href=\"#\" ng-click=\"control.action(task,$event)\">{{control.label}}</a></li></ul></div></span>");
 }]);
 
 angular.module("templates/fluid/fluidTasknav.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("templates/fluid/fluidTasknav.html",
-    "<div id class=\"fluid-tasknav\">\n" +
-    "    <div class=\"input-group\"><input ng-model=\"navSearch\" class=\"form-control\" placeholder=\"Search here\">\n" +
-    "\n" +
-    "        <div class=\"input-group-addon\"><i class=\"fa fa-search\"></i></div>\n" +
-    "    </div>\n" +
-    "    <table class=\"table table-responsive\">\n" +
-    "        <tbody ng-repeat=\"group in fluidTasknav.groups\" ng-if=\"!group.empty\">\n" +
-    "        <tr class=\"group\" ng-init=\"group.show = $index == 0 ? true : false\" ng-click=\"group.show=!group.show\">\n" +
-    "            <td>\n" +
-    "                <span class=\"pull-left hidden-sm hidden-xs\">{{group.title}}</span>\n" +
-    "            </td>\n" +
-    "        </tr>\n" +
-    "        <tr ng-if=\"group.show\" id=\"group_{{group.name}}_panel\" ng-animate=\"{enter:'slideInDown', leave:'slideOutUp'}\">\n" +
-    "            <td ng-repeat=\"item in group.tasks | filter: navSearch\"\n" +
-    "                ng-init=\"getTask(item); item.count = 0;\" class=\"task-item\">\n" +
-    "                <div class=\"item-title\" ng-click=\"fluidTasknav.getFrameService().openTask(item.name)\">\n" +
-    "                    <span class=\"pull-left icon\">\n" +
-    "                        <img ng-if=\"item.useImg\" src=\"{{item.imgSrc}}\" width=\"25\" height=\"25\">\n" +
-    "                        <i ng-if=\"!item.useImg\" ng-class=\"item.glyph\"></i>\n" +
-    "\n" +
-    "                    </span>\n" +
-    "                    <span class=\"pull-left hidden-sm hidden-xs\">{{item.title}}</span>\n" +
-    "                    <span class=\"pull-right\"> <span ng-if=\"item.count > 1\" class=\"badge\">{{item.count}}</span></span>\n" +
-    "                </div>\n" +
-    "                <div ng-repeat=\"task in fluidTasknav.getFrameService().tasks | filter : {name:item.name}\"\n" +
-    "                     ng-init=\"item.count = ($index + 1)\"\n" +
-    "                     class=\"item-task\" ng-mouseover=\"task.showControl=true\" ng-mouseleave=\"task.showControl=false\">\n" +
-    "                    <div class=\"task-header\">\n" +
-    "                        <span class=\"pull-left\"><i class=\"indicator\" ng-if=\"task.active\"\n" +
-    "                                                   ng-class=\"getPanel(task).loaded ?'text-success fa fa-circle':'fa fa-spinner fa-spin'\"></i>{{task.title}}</span>\n" +
-    "                    <span ng-if=\"task.showControl\" class=\"hidden-sm hidden-xs pull-right controls\">\n" +
-    "                        <i class=\"hidden-md fa fa-gear text-success\" ng-click=\"task.showSetting=!task.showSetting\"></i>\n" +
-    "                        <i class=\"fa fa-close text-danger\"\n" +
-    "                           ng-click=\"getPanel(task).close(task, $event, item);\"></i>\n" +
-    "                    </span>\n" +
-    "                    </div>\n" +
-    "\n" +
-    "                    <div ng-init ng-if=\"task.showSetting\" class=\"settings\"\n" +
-    "                         ng-animate=\"{enter:'slideInDown', leave:'slideOutUp'}\">\n" +
-    "                        <ul class=\"list-group\">\n" +
-    "                            <li class=\"list-group-item list-group-item-heading list-group-item-info\"\n" +
-    "                                ng-click=\"task.showPages=!task.showPages\">Pages\n" +
-    "                            </li>\n" +
-    "                            <li ng-if=\"task.showPages\" class=\"list-group-item\" ng-repeat=\"page in task.pages\"\n" +
-    "                                ng-click=\"getPanel(task).goTo(page.name,$event)\">{{page.title}}\n" +
-    "                            </li>\n" +
-    "                            <li ng-click=\"task.showSizes=!task.showSizes\"\n" +
-    "                                class=\"list-group-item list-group-item-heading list-group-item-info\">Size\n" +
-    "                            </li>\n" +
-    "                            <li ng-if=\"task.showSizes\" class=\"list-group-item\" ng-click=\"task.size=25\">25%</li>\n" +
-    "                            <li ng-if=\"task.showSizes\" class=\"list-group-item\" ng-click=\"task.size=50\">50%</li>\n" +
-    "                            <li ng-if=\"task.showSizes\" class=\"list-group-item\" ng-click=\"task.size=75\">75%</li>\n" +
-    "                            <li ng-if=\"task.showSizes\" class=\"list-group-item\" ng-click=\"task.size=100\">100%</li>\n" +
-    "                        </ul>\n" +
-    "                    </div>\n" +
-    "                </div>\n" +
-    "            </td>\n" +
-    "\n" +
-    "        </tr>\n" +
-    "        </tbody>\n" +
-    "    </table>\n" +
-    "</div>");
+    "<div id class=\"fluid-tasknav\"><div class=\"input-group\"><input ng-model=\"navSearch\" class=\"form-control\" placeholder=\"Search here\"><div class=\"input-group-addon\"><i class=\"fa fa-search\"></i></div></div><table class=\"table table-responsive\"><tbody ng-repeat=\"group in fluidTasknav.groups\" ng-if=\"!group.empty\"><tr class=\"group\" ng-init=\"group.show = $index == 0 ? true : false\" ng-click=\"group.show=!group.show\"><td><span class=\"pull-left hidden-sm hidden-xs\">{{group.title}}</span></td></tr><tr ng-if=\"group.show\" id=\"group_{{group.name}}_panel\" ng-animate=\"{enter:'slideInDown', leave:'slideOutUp'}\"><td ng-repeat=\"item in group.tasks | filter: navSearch\" ng-init=\"getTask(item); item.count = 0;\" class=\"task-item\"><div class=\"item-title\" ng-click=\"fluidTasknav.getFrameService().openTask(item.name)\"><span class=\"pull-left icon\"><img ng-if=\"item.useImg\" src=\"{{item.imgSrc}}\" width=\"25\" height=\"25\"> <i ng-if=\"!item.useImg\" ng-class=\"item.glyph\"></i></span> <span class=\"pull-left hidden-sm hidden-xs\">{{item.title}}</span> <span class=\"pull-right\"><span ng-if=\"item.count > 1\" class=\"badge\">{{item.count}}</span></span></div><div ng-repeat=\"task in fluidTasknav.getFrameService().tasks | filter : {name:item.name}\" ng-init=\"item.count = ($index + 1)\" class=\"item-task\" ng-mouseover=\"task.showControl=true\" ng-mouseleave=\"task.showControl=false\"><div class=\"task-header\"><span class=\"pull-left\"><i class=\"indicator\" ng-if=\"task.active\" ng-class=\"getPanel(task).loaded ?'text-success fa fa-circle':'fa fa-spinner fa-spin'\"></i>{{task.title}}</span> <span ng-if=\"task.showControl\" class=\"hidden-sm hidden-xs pull-right controls\"><i class=\"hidden-md fa fa-gear text-success\" ng-click=\"task.showSetting=!task.showSetting\"></i> <i class=\"fa fa-close text-danger\" ng-click=\"getPanel(task).close(task, $event, item);\"></i></span></div><div ng-init ng-if=\"task.showSetting\" class=\"settings\" ng-animate=\"{enter:'slideInDown', leave:'slideOutUp'}\"><ul class=\"list-group\"><li class=\"list-group-item list-group-item-heading list-group-item-info\" ng-click=\"task.showPages=!task.showPages\">Pages</li><li ng-if=\"task.showPages\" class=\"list-group-item\" ng-repeat=\"page in task.pages\" ng-click=\"getPanel(task).goTo(page.name,$event)\">{{page.title}}</li><li ng-click=\"task.showSizes=!task.showSizes\" class=\"list-group-item list-group-item-heading list-group-item-info\">Size</li><li ng-if=\"task.showSizes\" class=\"list-group-item\" ng-click=\"task.size=25\">25%</li><li ng-if=\"task.showSizes\" class=\"list-group-item\" ng-click=\"task.size=50\">50%</li><li ng-if=\"task.showSizes\" class=\"list-group-item\" ng-click=\"task.size=75\">75%</li><li ng-if=\"task.showSizes\" class=\"list-group-item\" ng-click=\"task.size=100\">100%</li></ul></div></div></td></tr></tbody></table></div>");
 }]);
 
 angular.module("templates/fluid/fluidToolbar.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("templates/fluid/fluidToolbar.html",
-    "<div class=\"fluid-toolbar\">\n" +
-    "    <div class=\"btn-group btn-group-sm hidden-xs hidden-sm hidden-md\" ng-if=\"fluidPanel && fluidPanel.toolbarItems && fluidPanel.toolbarItems.length > 0\">\n" +
-    "        <button id=\"{{control.getId($index)}}\" ng-if=\"control.visible()\" ng-disabled=\"control.disabled()\" class=\"{{control.class}}\"\n" +
-    "                ng-repeat=\"control in fluidPanel.toolbarItems\"\n" +
-    "                ng-class=\"control.uiClass\"\n" +
-    "                type=\"{{control.type}}\" title=\"{{control.label}}\"\n" +
-    "                ng-click=\"control.action(task,$event)\"><i class=\"{{control.glyph}}\"></i>{{control.showText ?\n" +
-    "            control.label : ''}}\n" +
-    "        </button>\n" +
-    "    </div>\n" +
-    "\n" +
-    "    <div class=\"btn-group btn-group-md hidden-lg\" role=\"toolbar\" ng-if=\"fluidPanel && fluidPanel.toolbarItems && fluidPanel.toolbarItems.length > 0\">\n" +
-    "        <button id=\"{{control.getId($index)}}\" ng-if=\"control.visible()\" ng-disabled=\"control.disabled()\" class=\"{{control.class}}\"\n" +
-    "                ng-repeat=\"control in fluidPanel.toolbarItems\"\n" +
-    "                ng-class=\"control.uiClass\"\n" +
-    "                type=\"{{control.type}}\" title=\"{{control.label}}\"\n" +
-    "                ng-click=\"control.action(task,$event)\"><i class=\"{{control.glyph}}\"></i>{{control.showText ?\n" +
-    "            control.label : ''}}\n" +
-    "        </button>\n" +
-    "    </div>\n" +
-    "</div>");
+    "<div class=\"fluid-toolbar\"><div class=\"btn-group btn-group-sm hidden-xs hidden-sm hidden-md\" ng-if=\"fluidPanel && fluidPanel.toolbarItems && fluidPanel.toolbarItems.length > 0\"><button id=\"{{control.getId($index)}}\" ng-if=\"control.visible()\" ng-disabled=\"control.disabled()\" class=\"{{control.class}}\" ng-repeat=\"control in fluidPanel.toolbarItems\" ng-class=\"control.uiClass\" type=\"{{control.type}}\" title=\"{{control.label}}\" ng-click=\"control.action(task,$event)\"><i class=\"{{control.glyph}}\"></i>{{control.showText ? control.label : ''}}</button></div><div class=\"btn-group btn-group-md hidden-lg\" role=\"toolbar\" ng-if=\"fluidPanel && fluidPanel.toolbarItems && fluidPanel.toolbarItems.length > 0\"><button id=\"{{control.getId($index)}}\" ng-if=\"control.visible()\" ng-disabled=\"control.disabled()\" class=\"{{control.class}}\" ng-repeat=\"control in fluidPanel.toolbarItems\" ng-class=\"control.uiClass\" type=\"{{control.type}}\" title=\"{{control.label}}\" ng-click=\"control.action(task,$event)\"><i class=\"{{control.glyph}}\"></i>{{control.showText ? control.label : ''}}</button></div></div>");
 }]);
