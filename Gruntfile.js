@@ -125,8 +125,8 @@ module.exports = function (grunt) {
             },
             strip: {
                 main: {
-                    src: 'dist/js/fluid.min.js',
-                    dest: 'dist/js/fluid.min.js',
+                    src: 'dist/js/fluid.js',
+                    dest: 'dist/js/fluid.js',
                     nodes: ['console', 'debug']
                 }
             }
@@ -151,6 +151,6 @@ module.exports = function (grunt) {
      grunt.registerTask('minified', ['bower', 'connect:server', 'watch:min']);
      grunt.registerTask('package', ['bower', 'jshint', 'karma:unit', 'html2js:dist', 'concat:dist', 'uglify:dist',
      'clean:temp', 'compress:dist']);*/
-    grunt.registerTask('package', ['bower', 'html2js:dist', 'concat:dist', 'uglify:dist',
-        'clean:temp', 'compress:dist', 'strip', 'concat_css', 'cssmin']);
+    grunt.registerTask('package', ['bower', 'html2js:dist', 'concat:dist', 'strip', 'uglify:dist',
+        'clean:temp', 'compress:dist', 'concat_css', 'cssmin']);
 }
