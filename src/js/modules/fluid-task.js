@@ -305,7 +305,14 @@ angular.module("fluidTask", ["fluidSession", "fluidFrame"])
                 if (frame.fullScreen) {
                     frame.switchTo(task);
                 } else {
-                    $(".fluid-frame[name='" + frame.name + "']").scrollTo($("div.fluid-panel:eq(" + task.index + ")"), 200);
+                    var curFrame = $(".fluid-frame[name='" + frame.name + "']");
+                    curFrame
+                        .ready(function () {
+                            var panel = curFrame.find("div.fluid-panel:eq(" + task.index + ")");
+                            panel.ready(function () {
+                                curFrame.scrollTo(panel, 200);
+                            });
+                        });
                     console.debug("fluid-task-task.open", "div.fluid-panel :eq(" + task.index + ")");
                 }
             }

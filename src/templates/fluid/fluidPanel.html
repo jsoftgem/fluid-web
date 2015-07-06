@@ -4,7 +4,8 @@
     <div class="panel-heading" ng-if="!task.locked">
         <div class="panel-title">
             <div class="left">
-                <a ng-if="fluidPanel && !progress.inProgress && !fluidFrame.progress.inProgress && !fluidPanel.frame.fullScreen" href="#"
+                <a ng-if="fluidPanel && !progress.inProgress && !fluidFrame.progress.inProgress && !fluidPanel.frame.fullScreen"
+                   href="#"
                    class="fluid-panel-heading-title"
                    data-toggle="collapse"
                    data-target="#_id_fp_mp_{{task.fluidId}}_progress">
@@ -19,12 +20,14 @@
                 <fluid-loader ng-if="progress.inProgress || fluidFrame.progress.inProgress"
                               class="fluid-panel-loader"></fluid-loader>
             </div>
-            <fluid-breadcrumb ng-if="fluidPanel && !fluidFrame.progress.inProgress && !progress.inProgress"></fluid-breadcrumb>
+            <fluid-breadcrumb
+                    ng-if="fluidPanel && !fluidFrame.progress.inProgress && !progress.inProgress"></fluid-breadcrumb>
 
             <fluid-taskcontrols ng-if="fluidPanel" class="controls"></fluid-taskcontrols>
         </div>
     </div>
-    <div fluid-progress id="_id_fp_mp" class="panel-collapse collapse in" asynchronous="true">
+    <div fluid-progress id="_id_fp_mp" class="panel-collapse collapse in" ng-class="fluidFrame.fullScreen ? 'in': ''"
+         asynchronous="true">
         <div ng-if="fluidPanel" id="_id_fpb" class="panel-body container-fluid">
             <fluid-option></fluid-option>
             <!--

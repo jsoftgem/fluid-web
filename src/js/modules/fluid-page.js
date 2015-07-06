@@ -285,26 +285,6 @@ angular.module("fluidPage", ["fluidHttp", "fluidOption", "fluidPanel"])
         this.clear = function (page) {
             this.pages[page] = undefined;
         }
-        this.renderPage = function (task, fluid) {
-            var page = task.page;
-
-            if (page.static) {
-                page.home = fluid.getElementFlowId("template_" + page.name);
-                if (!tc.get(page.home)) {
-                    tc.put(page.home, page.html);
-                }
-            } else if (page.ajax) {
-                //TODO: text external page
-                if (!tc.get(page.home)) {
-                    fhs.query(page.ajax, task)
-                        .success(function (data) {
-                            tc.put(page.ajax.url, data);
-                        });
-                    page.home = page.ajax.url;
-                }
-            }
-            return page;
-        }
         this.render = function (page) {
             if (page) {
                 if (page.static) {
@@ -312,16 +292,8 @@ angular.module("fluidPage", ["fluidHttp", "fluidOption", "fluidPanel"])
                     if (!tc.get(page.home)) {
                         tc.put(page.home, page.html);
                     }
-                } else if (page.ajax) {
-                    //TODO: text external page
-                    if (!tc.get(page.home)) {
-                        fhs.query(page.ajax, task)
-                            .success(function (data) {
-                                tc.put(page.ajax.url, data);
-                            });
-                        page.home = page.ajax.url;
-                    }
                 }
+
                 return sce.trustAsUrl(page.home);
             }
 

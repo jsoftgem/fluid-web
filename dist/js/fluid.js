@@ -2704,26 +2704,6 @@ angular.module("fluidPage", ["fluidHttp", "fluidOption", "fluidPanel"])
         this.clear = function (page) {
             this.pages[page] = undefined;
         }
-        this.renderPage = function (task, fluid) {
-            var page = task.page;
-
-            if (page.static) {
-                page.home = fluid.getElementFlowId("template_" + page.name);
-                if (!tc.get(page.home)) {
-                    tc.put(page.home, page.html);
-                }
-            } else if (page.ajax) {
-                //TODO: text external page
-                if (!tc.get(page.home)) {
-                    fhs.query(page.ajax, task)
-                        .success(function (data) {
-                            tc.put(page.ajax.url, data);
-                        });
-                    page.home = page.ajax.url;
-                }
-            }
-            return page;
-        }
         this.render = function (page) {
             if (page) {
                 if (page.static) {
@@ -2731,16 +2711,8 @@ angular.module("fluidPage", ["fluidHttp", "fluidOption", "fluidPanel"])
                     if (!tc.get(page.home)) {
                         tc.put(page.home, page.html);
                     }
-                } else if (page.ajax) {
-                    //TODO: text external page
-                    if (!tc.get(page.home)) {
-                        fhs.query(page.ajax, task)
-                            .success(function (data) {
-                                tc.put(page.ajax.url, data);
-                            });
-                        page.home = page.ajax.url;
-                    }
                 }
+
                 return sce.trustAsUrl(page.home);
             }
 
@@ -4079,7 +4051,14 @@ angular.module("fluidTask", ["fluidSession", "fluidFrame"])
                 if (frame.fullScreen) {
                     frame.switchTo(task);
                 } else {
-                    $(".fluid-frame[name='" + frame.name + "']").scrollTo($("div.fluid-panel:eq(" + task.index + ")"), 200);
+                    var curFrame = $(".fluid-frame[name='" + frame.name + "']");
+                    curFrame
+                        .ready(function () {
+                            var panel = curFrame.find("div.fluid-panel:eq(" + task.index + ")");
+                            panel.ready(function () {
+                                curFrame.scrollTo(panel, 200);
+                            });
+                        });
                     0;
                 }
             }
@@ -4516,7 +4495,7 @@ angular.module("templates/fluid/fluidPage.html", []).run(["$templateCache", func
 
 angular.module("templates/fluid/fluidPanel.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("templates/fluid/fluidPanel.html",
-    "<div id=\"_id_fp\" ng-class=\"!fluidPanel.frame.fullScreen ? 'panel panel-default fluid-task ' + size : 'panel panel-default frame-fullscreen col-lg-12'\" class=\"fluid-panel\"><div class=\"panel-heading\" ng-if=\"!task.locked\"><div class=\"panel-title\"><div class=\"left\"><a ng-if=\"fluidPanel && !progress.inProgress && !fluidFrame.progress.inProgress && !fluidPanel.frame.fullScreen\" href=\"#\" class=\"fluid-panel-heading-title\" data-toggle=\"collapse\" data-target=\"#_id_fp_mp_{{task.fluidId}}_progress\"><fluid-task-icon class=\"hidden-xs hidden-sm hidden-md hidden25\"></fluid-task-icon><span>{{task.title}}</span></a> <span ng-if=\"fluidPanel && !progress.inProgress && !fluidFrame.progress.inProgress && fluidPanel.frame.fullScreen\" class=\"fluid-panel-heading-title\"><fluid-task-icon class=\"hidden-xs hidden-sm hidden-md hidden25\"></fluid-task-icon><span>{{task.title}}</span></span><fluid-loader ng-if=\"progress.inProgress || fluidFrame.progress.inProgress\" class=\"fluid-panel-loader\"></fluid-loader></div><fluid-breadcrumb ng-if=\"fluidPanel && !fluidFrame.progress.inProgress && !progress.inProgress\"></fluid-breadcrumb><fluid-taskcontrols ng-if=\"fluidPanel\" class=\"controls\"></fluid-taskcontrols></div></div><div fluid-progress id=\"_id_fp_mp\" class=\"panel-collapse collapse in\" asynchronous=\"true\"><div ng-if=\"fluidPanel\" id=\"_id_fpb\" class=\"panel-body container-fluid\"><fluid-option></fluid-option><fluid-tool ng-if=\"task.showToolBar\" class=\"width100pc\"></fluid-tool><fluid-page id=\"_id_fp_p\" fluid-panel=\"fluidPanel\" class=\"{{task.showToolBar ? 'toolbar':''}}\"></fluid-page></div></div><script ng-if=\"fluidPanel\" id=\"menu_option\" type=\"text/ng-template\"><div class=\"container-fluid\"></div></script><script id=\"_id_fp_msg\" type=\"text/ng-template\"><div class=\"fluid-message\">\n" +
+    "<div id=\"_id_fp\" ng-class=\"!fluidPanel.frame.fullScreen ? 'panel panel-default fluid-task ' + size : 'panel panel-default frame-fullscreen col-lg-12'\" class=\"fluid-panel\"><div class=\"panel-heading\" ng-if=\"!task.locked\"><div class=\"panel-title\"><div class=\"left\"><a ng-if=\"fluidPanel && !progress.inProgress && !fluidFrame.progress.inProgress && !fluidPanel.frame.fullScreen\" href=\"#\" class=\"fluid-panel-heading-title\" data-toggle=\"collapse\" data-target=\"#_id_fp_mp_{{task.fluidId}}_progress\"><fluid-task-icon class=\"hidden-xs hidden-sm hidden-md hidden25\"></fluid-task-icon><span>{{task.title}}</span></a> <span ng-if=\"fluidPanel && !progress.inProgress && !fluidFrame.progress.inProgress && fluidPanel.frame.fullScreen\" class=\"fluid-panel-heading-title\"><fluid-task-icon class=\"hidden-xs hidden-sm hidden-md hidden25\"></fluid-task-icon><span>{{task.title}}</span></span><fluid-loader ng-if=\"progress.inProgress || fluidFrame.progress.inProgress\" class=\"fluid-panel-loader\"></fluid-loader></div><fluid-breadcrumb ng-if=\"fluidPanel && !fluidFrame.progress.inProgress && !progress.inProgress\"></fluid-breadcrumb><fluid-taskcontrols ng-if=\"fluidPanel\" class=\"controls\"></fluid-taskcontrols></div></div><div fluid-progress id=\"_id_fp_mp\" class=\"panel-collapse collapse in\" ng-class=\"fluidFrame.fullScreen ? 'in': ''\" asynchronous=\"true\"><div ng-if=\"fluidPanel\" id=\"_id_fpb\" class=\"panel-body container-fluid\"><fluid-option></fluid-option><fluid-tool ng-if=\"task.showToolBar\" class=\"width100pc\"></fluid-tool><fluid-page id=\"_id_fp_p\" fluid-panel=\"fluidPanel\" class=\"{{task.showToolBar ? 'toolbar':''}}\"></fluid-page></div></div><script ng-if=\"fluidPanel\" id=\"menu_option\" type=\"text/ng-template\"><div class=\"container-fluid\"></div></script><script id=\"_id_fp_msg\" type=\"text/ng-template\"><div class=\"fluid-message\">\n" +
     "            <p><span class=\"message-icon\"> <i ng-class=\"fluidMessage.icon\"></i> </span> {{fluidMessage.message}}</p>\n" +
     "        </div></script></div>");
 }]);

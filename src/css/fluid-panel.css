@@ -15,9 +15,9 @@
 }
 
 .fluid-panel .fluid-task-icon img {
-    -webkit-transform: scale(1.7, 1.7);
-    transform: scale(1.7, 1.7);
-    margin-bottom: -3px;
+    -webkit-transform: scale(1.5, 1.5);
+    transform: scale(1.5, 1.5);
+    margin-bottom: -2px;
 }
 
 .fluid-panel .fluid-task-icon i {

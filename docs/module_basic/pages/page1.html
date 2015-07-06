@@ -1,0 +1,12 @@
+<div ng-controller='moduleBasicCtrl'>
+    <ul class='list-group'>
+        <li class='list-group-item' ng-repeat='pg in data'><p>id: {{pg.id}} <br/> name: {{pg.name}} <br/> title:
+            {{pg.title}} <br/></p>
+            <button type='button' class='btn btn-warning' ng-click='fluidPanel.goTo(pg.name,$event)'><i
+                    class='fa fa-search'></i></button>
+            <button class='btn btn-info' type='button' ng-click='pg.$save()'><i class='fa fa-save'></i></button>
+            <button type='button' class='btn btn-danger' ng-click='data.splice($index,1)'><i class='fa fa-remove'></i>
+            </button>
+        </li>
+    </ul>
+</div>
