@@ -11,6 +11,15 @@ angular.module("fluidBreadcrumb", [])
             link: function (scope, element, attr) {
                 scope.breadcrumb = new FluidBreadcrumb(scope.fluidPanel);
                 console.debug("fluidBreadcrumb.breadcrumb", scope.breadcrumb);
+                scope.collapse = function () {
+                    if (scope.task.collapsed) {
+                        scope.task.collapsed = false;
+                        $("#_id_fp_mp_" + scope.task.fluidId + "_progress").collapse("toggle");
+                    }
+                };
+                scope.close = function (breadcrumb, page, $index, $event) {
+
+                }
             }
         }
     }])
@@ -67,10 +76,10 @@ angular.module("fluidBreadcrumb", [])
                         this.current -= 1;
                     }
                     console.debug("fluidBreadcrumb-FluidBreadcrumb-close.current", this.current);
-                }
+                };
                 this.open = function (page, $index, $event) {
                     this.current = $index;
-                }
+                };
                 this.getTitle = function (bread) {
                     if (this.fluidPanel) {
                         var page = this.fluidPanel.getPage(bread);
@@ -78,7 +87,7 @@ angular.module("fluidBreadcrumb", [])
                             return page.title;
                         }
                     }
-                }
+                };
                 fluidPanel.breadcrumbs[fluidPanel.id] = this;
 
             }

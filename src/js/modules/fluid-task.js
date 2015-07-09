@@ -136,50 +136,50 @@ angular.module("fluidTask", ["fluidSession", "fluidFrame"])
 
                 if (ajax) {
                     console.debug("fluid-task-taskState.url", url);
-                } else {
-                    console.debug("fluid-task-taskState.taskArray", taskArray);
-                    return q(function (resolve, reject) {
-                            var length = taskArray.length - 1;
-                            var value = {done: false};
-                            angular.forEach(taskArray, function (task, $index) {
-                                if (!ss.containsKey(taskKey + task.name)) {
-                                    if (task.url) {
-                                        taskService.findTaskByUrl(task.url);
-                                    } else {
-                                        ss.addSessionProperty(taskKey + task.name, task);
-                                    }
+                }
+                console.debug("fluid-task-taskState.taskArray", taskArray);
+                return q(function (resolve, reject) {
+                        var length = taskArray.length - 1;
+                        var value = {done: false};
+                        angular.forEach(taskArray, function (task, $index) {
+                            if (!ss.containsKey(taskKey + task.name)) {
+                                if (task.url) {
+                                    taskService.findTaskByUrl(task.url);
+                                } else {
+                                    ss.addSessionProperty(taskKey + task.name, task);
                                 }
-
-                                if (length === $index) {
-                                    this.done = true;
-                                }
-
-                            }, value);
-                            var counter = 0;
-
-                            function timeOut() {
-                                console.debug("fluidtask: timeOut: ", value);
-                                if (counter === timeout) {
-                                    reject(EVENT_TIME_OUT);
-                                    return;
-                                }
-                                if (value.done) {
-                                    resolve(EVENT_TASK_LOADED);
-                                    console.debug("fluidtask: resolve: ", value);
-                                    return;
-                                }
-                                counter++;
-                                t(timeOut, 1000);
                             }
 
-                            timeOut();
+                            if (length === $index) {
+                                this.done = true;
+                            }
 
+                        }, value);
+                        var counter = 0;
+
+                        function timeOut() {
+                            console.debug("fluidtask: timeOut: ", value);
+                            if (counter === timeout) {
+                                reject(EVENT_TIME_OUT);
+                                return;
+                            }
+                            if (value.done) {
+                                resolve(EVENT_TASK_LOADED);
+                                console.debug("fluidtask: resolve: ", value);
+                                return;
+                            }
+                            counter++;
+                            t(timeOut, 1000);
                         }
-                    ).then(function (event) {
-                            console.debug("fluidtask: resolve-event: ", event);
-                            rs.$broadcast(event);
-                        });
-                }
+
+                        timeOut();
+
+                    }
+                ).then(function (event) {
+                        console.debug("fluidtask: resolve-event: ", event);
+                        rs.$broadcast(event);
+                    });
+
             }]
         }
 

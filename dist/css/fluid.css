@@ -55,7 +55,7 @@
 }
 
 .fluid-breadcrumb .item-sm:before {
-    content: "-";
+    content: " ";
 }
 
 .fluid-breadcrumb .item:hover {
@@ -195,7 +195,7 @@
 }
 
 .fluid-panel {
-    background: gr;
+    background: dimgrey;
     padding: 0px !important;
     -webkit-transition: width 0.2s;
     transition: width 0.2s;
@@ -238,6 +238,10 @@
     margin-right: 3px;
 }
 
+.fluid-panel .panel-title .fluid-title-text {
+    margin-left: 2px;
+}
+
 .fluid-panel .controls {
     float: right;
     right: 1px;
@@ -270,6 +274,7 @@
     margin-top: 2px;
     margin-left: 2px;
     color: dimgray;
+    text-decoration: none;
 }
 
 .fullscreen .fluid-panel-heading-title {

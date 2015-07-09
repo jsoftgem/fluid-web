@@ -1,0 +1,22 @@
+{
+  "id": "moduleTask",
+  "name": "moduleTask",
+  "title": "Fluid-task Management",
+  "size": 100,
+  "glyph": "fa fa-gears",
+  "active": true,
+  "locked": false,
+  "showToolBar": true,
+  "lazyLoad": true,
+  "moduleJS": "moduleBasic",
+  "moduleFiles": "docs/module_task/module-task.js",
+  "pages": [
+    {
+      "id": 1,
+      "name": "taskOverview",
+      "title": "Task Overview",
+      "home": "docs/module_task/pages/task-overview.html",
+      "isHome": true
+    }
+  ]
+}

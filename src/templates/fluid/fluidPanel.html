@@ -8,12 +8,12 @@
                    href="#" ng-click="collapsePanel()"
                    class="fluid-panel-heading-title">
                     <fluid-task-icon class="hidden-xs hidden-sm hidden-md hidden25"></fluid-task-icon>
-                    <span>{{task.title}}</span>
+                    <span class="fluid-title-text">{{task.title}}</span>
                 </a>
                 <span ng-if="fluidPanel && !progress.inProgress && !fluidFrame.progress.inProgress && fluidPanel.frame.fullScreen"
                       class="fluid-panel-heading-title">
                     <fluid-task-icon class="hidden-xs hidden-sm hidden-md hidden25"></fluid-task-icon>
-                    <span>{{task.title}}</span>
+                    <span class="fluid-title-text">{{task.title}}</span>
                 </span>
                 <fluid-loader ng-if="progress.inProgress || fluidFrame.progress.inProgress"
                               class="fluid-panel-loader"></fluid-loader>

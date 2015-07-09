@@ -31,8 +31,7 @@
       "id": 2,
       "name": "page2",
       "title": "Editor",
-      "static": true,
-      "html": "<div ng-controller='moduleBasicCtrl'><h1>Editor</h1><div><button class='btn btn-info' type='button' ng-click=\"fluidPanel.goTo('page3',$event)\">Next</button></div></div>"
+      "home":"docs/module_basic/pages/page2.html"
     },
     {
       "id": 3,

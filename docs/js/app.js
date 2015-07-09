@@ -6,25 +6,21 @@ angular.module("mainApp", ["fluid"])
 
         tsp.setTasks([
             {
-                name: "moduleBasic",
-                url: "docs/module_basic/module_basic.json"
+                name: "moduleTask",
+                url: "docs/module_task/module-task.json"
             },
             {
-                name: "moduleTaskConfig",
-                url: "docs/module_task_config/module_task_config.json"
+                name: "moduleBasic",
+                url: "docs/module_basic/module-basic.json"
             }
         ]);
 
     }])
-    .controller("mainCtrl", ["$scope", "fluidHttpService", "fluidFrameService", "fluidOptionService", "fluidMessageService", "$rootScope", "fluidTasknavService", "fluidFrameHandler",
-        function (s, fhs, FrameService, fos, ms, rs, fts, ffh) {
-            s.menus = ["moduleBasic", "moduleTaskConfig"];
-
+    .controller("mainCtrl", ["$scope", "fluidFrameService",
+        function (s, FrameService) {
             s.frame = new FrameService('appFrame');
-
-            s.frame.openTask("moduleTaskConfig");
+            s.frame.openTask("moduleTask");
             s.frame.openTask("moduleBasic");
-
         }]);
 
 

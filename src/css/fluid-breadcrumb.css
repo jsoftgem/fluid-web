@@ -55,7 +55,7 @@
 }
 
 .fluid-breadcrumb .item-sm:before {
-    content: "-";
+    content: " ";
 }
 
 .fluid-breadcrumb .item:hover {

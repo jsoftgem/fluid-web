@@ -31,7 +31,7 @@ angular.module("moduleBasic", ["fluid"])
         console.debug("moduleBasic.fluidPage", s.fluidPage);
 
 
-        s.fluidPage.onLoad = function (ok, failed) {
+        s.fluidPage.onLoad = function (ok) {
             this.option.putTemplate("onClose", "Do you want to close page {{fluidPage.title}} ? <a href='#' ng-click='fluidPage.ok()'>Yes</a> {{' '}} <a href='#' ng-click='fluidPage.cancel()'>No</a>");
 
             if (this.name === "page5") {
