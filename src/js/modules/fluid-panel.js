@@ -673,9 +673,6 @@ angular.module("fluidPanel", ["oc.lazyLoad", "fluidHttp", "fluidFrame", "fluidMe
                         t(checkPages, 1000);
                     }
 
-                    checkPages();
-
-
                     return this;
                 }
             };

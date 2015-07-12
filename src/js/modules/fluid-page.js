@@ -110,6 +110,21 @@ angular.module("fluidPage", ["fluidHttp", "fluidOption", "fluidPanel"])
         var fluidPage = function (page) {
 
 
+            if (page.ajax) {
+                if (page.ajax.url) {
+                    if (!page.ajax.actions) {
+                        page.ajax.actions = [];
+                    }
+                    if (!page.ajax.param) {
+                        page.ajax.param = {};
+                    }
+                    this.resource = r(page.ajax.url, page.ajax.param, page.ajax.actions);
+
+                } else {
+                    throw "Page ajax.url is required!";
+                }
+            }
+
             /*
              TODO: v 0.2.0 url page
              if(page.url){
@@ -119,20 +134,7 @@ angular.module("fluidPage", ["fluidHttp", "fluidOption", "fluidPanel"])
              }
              */
             console.debug("FluidPage-FluidPage.page", page);
-            if (page.ajax) {
-                if (page.ajax.url) {
-                    if (!page.actions) {
-                        page.actions = [];
-                    }
-                    if (!page.ajax.param) {
-                        page.ajax.param = {};
-                    }
-                    this.resource = r(page.ajax.url, page.ajax.param, page.actions);
 
-                } else {
-                    throw "Page ajax.url is required!";
-                }
-            }
             this.isHome = page.isHome;
             this.name = page.name;
             this.id = page.id;
@@ -311,14 +313,14 @@ angular.module("fluidPage", ["fluidHttp", "fluidOption", "fluidPanel"])
                                 fluidPage.cached = {}
                             }
                             if (ajax.isArray) {
-                                var query = fluidPage.resource.query(function () {
+                                var query = fluidPage.resource.query(fluidPage.ajax.param, function () {
                                     fluidPage.isNew = false;
                                     fluidPage.isRefreshed = false;
                                     fluidPage.cached = query;
                                     resolve(query);
                                 });
                             } else {
-                                fluidPage.resource.get(function (data) {
+                                fluidPage.resource.get(fluidPage.ajax.param, function (data) {
                                     fluidPage.isNew = false;
                                     fluidPage.isRefreshed = false;
                                     angular.copy(data, fluidPage.cached);
