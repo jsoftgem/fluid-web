@@ -1,0 +1,9 @@
+<div class="container-fluid" ng-controller="moduleTaskCtrl">
+    {{data}}
+    <form class="form-horizontal" ng-submit="save($event)">
+        <div class="form-group" column="6">
+            <label for="{{fluidPanel.getElementFlowId('name')}}">Name</label>
+            <input id="{{fluidPanel.getElementFlowId('name')}}" class="form-control" ng-model="data.name">
+        </div>
+    </form>
+</div>

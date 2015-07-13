@@ -158,26 +158,22 @@ fluidComponents
 fluidComponents
     .factory("fluidInjector", ["$q", "$rootScope", "sessionService", "fluidLoaderService", "responseEvent",
         function (q, rs, ss, fls, r) {
-
             return {
                 "request": function (config) {
                     if (fls.enabled) {
                         fls.loaded = false;
                     }
-
                     config.headers["Access-Control-Allow-Origin"] = "*";
-
                     if (ss.isSessionOpened()) {
                         config.headers['Authorization'] = ss.getSessionProperty(AUTHORIZATION);
                     }
-
                     console.debug("fluidInjector-request.config-altered", config);
                     return config;
                 },
                 "requestError": function (rejection) {
                     fls.loaded = true;
                     fls.enabled = true;
-                    return q.reject(rejection);
+                    return q.reject(rejection).then(undefined, r.callError);
                 },
                 "response": function (response) {
                     fls.loaded = true;
@@ -188,7 +184,7 @@ fluidComponents
                 "responseError": function (rejection) {
                     fls.loaded = true;
                     fls.enabled = true;
-                    return q.reject(rejection);
+                    return q.reject(rejection).then(undefined, r.callError);
                 }
             };
         }])
@@ -209,6 +205,7 @@ fluidComponents
 
         this.callEvent = function (res) {
             angular.forEach(this.responses, function (response) {
+                console.debug("fluid-responseEvent.response", response);
                 if (response.statusCode === res.statusCode) {
                     if (response.evt) {
                         rs.$broadcast(response.evt, response.data, response.statusText);
@@ -218,7 +215,12 @@ fluidComponents
 
                 }
             });
-        }
+        };
+
+
+        this.callError = function (rejection) {
+            console.debug("fluid-responseEvent.rejection", rejection);
+        };
 
         return this;
 

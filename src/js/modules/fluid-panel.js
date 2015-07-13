@@ -641,13 +641,13 @@ angular.module("fluidPanel", ["oc.lazyLoad", "fluidHttp", "fluidFrame", "fluidMe
                             info: function (message, $event) {
                                 fluidMessage.info(message).open($event);
                             },
-                            warning: function (message) {
+                            warning: function (message, $event) {
                                 fluidMessage.warning(message).open($event);
                             },
-                            danger: function (message) {
+                            danger: function (message, $event) {
                                 fluidMessage.danger(message).open($event);
                             },
-                            success: function (message) {
+                            success: function (message, $event) {
                                 fluidMessage.success(message).open($event);
                             }
 

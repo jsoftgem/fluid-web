@@ -5,28 +5,25 @@ angular.module("moduleBasic", ["fluid"])
     .controller("moduleBasicCtrl", ["$scope", "$timeout", "TaskControl", "ToolBarItem", function (s, t, TaskControl, ToolBarItem) {
 
 
-        s.fluidPanel.onLoad(function (fluidPanel) {
-            var sample = new TaskControl();
-            sample.label = "Sample";
-            sample.setId("sample");
-            sample.visible = function () {
-                var breadcrumb = this.fluidPanel.fluidBreadcrumb;
+        var sample = new TaskControl();
+        sample.label = "Sample";
+        sample.setId("sample");
+        sample.visible = function () {
+            var breadcrumb = s.fluidPanel.fluidBreadcrumb;
 
-                return breadcrumb.currentPage() === "page1";
-            }
-            fluidPanel.addControl(sample);
+            return breadcrumb.currentPage() === "page1";
+        }
+        s.fluidPanel.addControl(sample);
 
 
-            var toobar = new ToolBarItem();
-            toobar.label = "sample";
-            toobar.setId("sample");
-            toobar.visible = function () {
-                var breadcrumb = this.fluidPanel.fluidBreadcrumb;
-                return breadcrumb.currentPage() === "page1";
-            }
-            fluidPanel.addToolbarItem(toobar);
-        });
-
+        var toolbar = new ToolBarItem();
+        toolbar.label = "sample";
+        toolbar.setId("sample");
+        toolbar.visible = function () {
+            var breadcrumb = s.fluidPanel.fluidBreadcrumb;
+            return breadcrumb.currentPage() === "page1";
+        };
+        s.fluidPanel.addToolbarItem(toolbar);
 
         console.debug("moduleBasic.fluidPage", s.fluidPage);
 

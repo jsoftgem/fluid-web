@@ -158,26 +158,22 @@ fluidComponents
 fluidComponents
     .factory("fluidInjector", ["$q", "$rootScope", "sessionService", "fluidLoaderService", "responseEvent",
         function (q, rs, ss, fls, r) {
-
             return {
                 "request": function (config) {
                     if (fls.enabled) {
                         fls.loaded = false;
                     }
-
                     config.headers["Access-Control-Allow-Origin"] = "*";
-
                     if (ss.isSessionOpened()) {
                         config.headers['Authorization'] = ss.getSessionProperty(AUTHORIZATION);
                     }
-
                     console.debug("fluidInjector-request.config-altered", config);
                     return config;
                 },
                 "requestError": function (rejection) {
                     fls.loaded = true;
                     fls.enabled = true;
-                    return q.reject(rejection);
+                    return q.reject(rejection).then(undefined, r.callError);
                 },
                 "response": function (response) {
                     fls.loaded = true;
@@ -188,7 +184,7 @@ fluidComponents
                 "responseError": function (rejection) {
                     fls.loaded = true;
                     fls.enabled = true;
-                    return q.reject(rejection);
+                    return q.reject(rejection).then(undefined, r.callError);
                 }
             };
         }])
@@ -209,6 +205,7 @@ fluidComponents
 
         this.callEvent = function (res) {
             angular.forEach(this.responses, function (response) {
+                console.debug("fluid-responseEvent.response", response);
                 if (response.statusCode === res.statusCode) {
                     if (response.evt) {
                         rs.$broadcast(response.evt, response.data, response.statusText);
@@ -218,7 +215,12 @@ fluidComponents
 
                 }
             });
-        }
+        };
+
+
+        this.callError = function (rejection) {
+            console.debug("fluid-responseEvent.rejection", rejection);
+        };
 
         return this;
 
@@ -2558,7 +2560,6 @@ angular.module("fluidPage", ["fluidHttp", "fluidOption", "fluidPanel"])
     .factory("FluidPage", ["fluidPageService", "$resource", "$q", "$timeout", "$rootScope", function (fps, r, q, t, rs) {
         var fluidPage = function (page) {
 
-
             if (page.ajax) {
                 if (page.ajax.url) {
                     if (!page.ajax.actions) {
@@ -2736,7 +2737,7 @@ angular.module("fluidPage", ["fluidHttp", "fluidOption", "fluidPanel"])
     .service("fluidPageService", ["$templateCache", "$q", "$sce", function (tc, q, sce) {
         this.pages = [];
         this.loadAjax = function (fluidPage) {
-            return q(function (resolve, reject) {
+            return q(function (resolve) {
                 if (fluidPage.ajax) {
                     var ajax = fluidPage.ajax;
                     if (!ajax.auto) {
@@ -3449,13 +3450,13 @@ angular.module("fluidPanel", ["oc.lazyLoad", "fluidHttp", "fluidFrame", "fluidMe
                             info: function (message, $event) {
                                 fluidMessage.info(message).open($event);
                             },
-                            warning: function (message) {
+                            warning: function (message, $event) {
                                 fluidMessage.warning(message).open($event);
                             },
-                            danger: function (message) {
+                            danger: function (message, $event) {
                                 fluidMessage.danger(message).open($event);
                             },
-                            success: function (message) {
+                            success: function (message, $event) {
                                 fluidMessage.success(message).open($event);
                             }
 

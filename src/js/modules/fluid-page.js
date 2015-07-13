@@ -109,7 +109,6 @@ angular.module("fluidPage", ["fluidHttp", "fluidOption", "fluidPanel"])
     .factory("FluidPage", ["fluidPageService", "$resource", "$q", "$timeout", "$rootScope", function (fps, r, q, t, rs) {
         var fluidPage = function (page) {
 
-
             if (page.ajax) {
                 if (page.ajax.url) {
                     if (!page.ajax.actions) {
@@ -287,7 +286,7 @@ angular.module("fluidPage", ["fluidHttp", "fluidOption", "fluidPanel"])
     .service("fluidPageService", ["$templateCache", "$q", "$sce", function (tc, q, sce) {
         this.pages = [];
         this.loadAjax = function (fluidPage) {
-            return q(function (resolve, reject) {
+            return q(function (resolve) {
                 if (fluidPage.ajax) {
                     var ajax = fluidPage.ajax;
                     if (!ajax.auto) {

@@ -14,8 +14,7 @@
     "angular-local-storage": "0.1.5",
     "font-awesome": "~4.3.0",
     "jquery.scrollTo": "2.1.0",
-    "animate.css": "~3.1.0",
-    "Hover": "~2.0.2"
+    "animate.css": "~3.1.0"
   },
   "devDependencies": {
     "angular-mocks": "*"
