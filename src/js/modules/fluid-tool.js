@@ -24,7 +24,7 @@ angular.module("fluidTool", [])
             this.label = "";
             this.type = "buttom";
             this.action = function (task, $event) {
-            }
+            };
             this.showText = false;
             this.disabled = function () {
                 return false;

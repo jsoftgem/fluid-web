@@ -1,4 +1,4 @@
-/**Fluid Web v0.1.1
+/**Fluid Web v0.1.3
  * Created by Jerico de Guzman
  * October 2014**/
 'use strict';
@@ -7,6 +7,8 @@ var fluidComponents = angular.module("fluid", ["oc.lazyLoad", "LocalStorageModul
     "fluidHttp", "fluidFrame", "fluidMessage", "fluidOption", "fluidTool", "fluidPage", "fluidPanel", "fluidTasknav", "fluidTask", "fluidTaskcontrols",
     "fluidFactories"]);
 
+var fidKey = /fid=[\w]*;/;
+var pgKey = /pg=[\w]*;/;
 var EVENT_TIME_OUT = "TIME_OUT", EVENT_TASK_LOADED = "TASK_LOAD";
 
 fluidComponents.config(["$httpProvider", "localStorageServiceProvider", function (h, ls) {
@@ -156,28 +158,54 @@ fluidComponents
     }])
 
 fluidComponents
-    .factory("fluidInjector", ["$q", "$rootScope", "sessionService", "fluidLoaderService", "responseEvent",
-        function (q, rs, ss, fls, r) {
-
+    .factory("fluidInjector", ["$q", "$rootScope", "sessionService", "fluidLoaderService", "responseEvent", "fluidPageService",
+        function (q, rs, ss, fls, r, fps) {
             return {
                 "request": function (config) {
                     if (fls.enabled) {
                         fls.loaded = false;
                     }
+                    console.debug("fluid-fluidInjector.config.url", config.url);
+                    console.debug("fluid-fluidInjector.config", config);
+
+                    if (config.url) {
+                        var fid = ('' + config.url).match(fidKey);
+                        var pg = ('' + config.url).match(pgKey);
+                        if (fid) {
+                            config.headers["fid"] = fid[0].split("=")[1].replace(";", "");
+                            config.url = config.url.replace(fid, "");
+                        }
+
+                        if (pg) {
+                            var page = pg[0].split("=")[1].replace(";", "");
+                            config.headers["pg"] = page;
+                            config.url = config.url.replace(pg, "");
+
+                            var pageState = fps.pageState(page);
+
+                            console.debug("fluid-fluidInjector-request.fps", fps);
+
+                            if (config.method === 'PUT' || config.method === 'POST' || config.method === 'DELETE') {
+                                pageState.$updated = new Date().getTime();
+                                console.debug("fluid-fluidInjector-request.pageState", pageState);
+                            }
+
+
+                        }
+                    }
+
 
                     config.headers["Access-Control-Allow-Origin"] = "*";
-
                     if (ss.isSessionOpened()) {
                         config.headers['Authorization'] = ss.getSessionProperty(AUTHORIZATION);
                     }
-
                     console.debug("fluidInjector-request.config-altered", config);
                     return config;
                 },
                 "requestError": function (rejection) {
                     fls.loaded = true;
                     fls.enabled = true;
-                    return q.reject(rejection);
+                    return q.reject(rejection).then(undefined, r.callError);
                 },
                 "response": function (response) {
                     fls.loaded = true;
@@ -188,7 +216,7 @@ fluidComponents
                 "responseError": function (rejection) {
                     fls.loaded = true;
                     fls.enabled = true;
-                    return q.reject(rejection);
+                    return q.reject(rejection).then(undefined, r.callError);
                 }
             };
         }])
@@ -209,6 +237,7 @@ fluidComponents
 
         this.callEvent = function (res) {
             angular.forEach(this.responses, function (response) {
+                console.debug("fluid-responseEvent.response", response);
                 if (response.statusCode === res.statusCode) {
                     if (response.evt) {
                         rs.$broadcast(response.evt, response.data, response.statusText);
@@ -218,7 +247,12 @@ fluidComponents
 
                 }
             });
-        }
+        };
+
+
+        this.callError = function (rejection) {
+            console.debug("fluid-responseEvent.rejection", rejection);
+        };
 
         return this;
 

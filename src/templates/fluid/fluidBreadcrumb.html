@@ -3,7 +3,7 @@
         <span ng-mouseover="item[$index].showClose=true && $index > 0;item[$index].active='hovered'"
               ng-mouseleave="item[$index].showClose=false;item[$index].active='default'">
             <span class="label" ng-class="breadcrumb.current === $index ?'active':'inactive'"
-                  ng-click="breadcrumb.open(bread,$index,$event)">{{breadcrumb.getTitle(bread)}}</span>
+                  ng-click="breadcrumb.open(bread,$index,$event);collapse()">{{breadcrumb.getTitle(bread)}}</span>
             <i ng-if="item[$index].showClose" class="fa fa-close text-danger" title="Close {{bread}}"
                ng-click="breadcrumb.close(bread,$index,$event)"></i>
         </span>

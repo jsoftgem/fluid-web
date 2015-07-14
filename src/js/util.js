@@ -495,6 +495,27 @@ function loadPage(fluidPanel) {
 }
 
 
+function initOption(option, page) {
+    if (option) {
+        var param = option.param;
+        var url = option.url;
+        var data = option.data;
+        if (page.ajax === undefined) {
+            page.ajax = {};
+        }
+        if (param) {
+            page.ajax.param = param;
+        }
+        if (url) {
+            page.ajax.url = url;
+        }
+        if (data) {
+            page.ajax.data = data;
+        }
+    }
+}
+
+
 //handles document here
 $(document).ready(function () {
 
