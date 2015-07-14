@@ -34,6 +34,8 @@ angular.module("moduleTask", ["fluid"])
         });
 
 
+        scope.hello  ="Static scope var hello";
+
         scope.save = function ($event) {
             scope.data.$save().
                 then(function (data) {

@@ -9,7 +9,7 @@
   "active": true,
   "locked": false,
   "closeable": false,
-  "showToolBar": true,
+  "showToolBar": false,
   "lazyLoad": true,
   "moduleJS": "moduleBasic",
   "moduleFiles": "docs/module_basic/module-basic.js",

@@ -37,7 +37,7 @@ angular.module("fluidPanel", ["oc.lazyLoad", "fluidHttp", "fluidFrame", "fluidMe
                 replace: true,
                 template: tc.get("templates/fluid/fluidPanel.html"),
                 link: {
-                    pre: function (scope, element, attr) {
+                    pre: function (scope) {
                         scope.$on("$destroy", function () {
                             console.debug("fluidPanel.$destroy", scope.fluidPanel);
                             if (scope.fluidPanel) {
@@ -138,7 +138,7 @@ angular.module("fluidPanel", ["oc.lazyLoad", "fluidHttp", "fluidFrame", "fluidMe
                             scope.setSize(newSize);
                         });
                     },
-                    post: function (scope, element, attr) {
+                    post: function (scope) {
 
                         scope.getElementFlowId = function (id) {
                             if (scope.fluidPanel) {
@@ -213,8 +213,8 @@ angular.module("fluidPanel", ["oc.lazyLoad", "fluidHttp", "fluidFrame", "fluidMe
             }
         }
     }])
-    .factory("FluidPanel", ["TaskControl", "ToolBarItem", "fluidTaskService", "FluidBreadcrumb", "FluidPage", "$q", "fluidFrameService", "FluidProgress", "FluidMessage", "$timeout",
-        function (TaskControl, ToolBarItem, TaskService, FluidBreadcrumb, FluidPage, q, FluidFrame, FluidProgress, FluidMessage, t) {
+    .factory("FluidPanel", ["TaskControl", "ToolBarItem", "fluidTaskService", "FluidBreadcrumb", "FluidPage", "$q", "fluidFrameService", "FluidProgress", "FluidMessage", "$timeout", "fluidPageService",
+        function (TaskControl, ToolBarItem, TaskService, FluidBreadcrumb, FluidPage, q, FluidFrame, FluidProgress, FluidMessage, t, fps) {
             var fluidPanel = function (task) {
                 console.debug("fluidPanel-FluidPanelModel.task", task);
                 if (!task.frame) {
@@ -267,7 +267,7 @@ angular.module("fluidPanel", ["oc.lazyLoad", "fluidHttp", "fluidFrame", "fluidMe
                         } else {
                             angular.forEach(task.pages, function (page) {
                                 if (page.name === name) {
-                                    page.fluidId = panel.fluidId;
+                                    page.fluidId = panel.id;
 
                                     var fluidPage = new FluidPage(page);
                                     fluidPage.isNew = true;
@@ -469,9 +469,31 @@ angular.module("fluidPanel", ["oc.lazyLoad", "fluidHttp", "fluidFrame", "fluidMe
                     nextToolBarItem.setId("next_pnl_tool");
                     this.addToolbarItem(nextToolBarItem);
 
+
+                    var undoToolBarItem = new ToolBarItem();
+                    undoToolBarItem.glyph = "fa fa-undo";
+                    undoToolBarItem.uiClass = "btn btn-warning";
+                    undoToolBarItem.label = "Unso";
+                    undoToolBarItem.action = function (task, $event) {
+                        this.fluidPanel.nextPage($event);
+                    };
+                    undoToolBarItem.disabled = function () {
+                        var currentPage = this.fluidPanel.currentPage();
+                        var fluidState = fps.fluidPageState(currentPage.name, this.fluidPanel.id);
+                        return fluidState.$currentState === 0;
+                    };
+                    undoToolBarItem.visible = function () {
+                        var currentPage = this.fluidPanel.currentPage();
+                        var fluidState = fps.fluidPageState(currentPage.name, this.fluidPanel.id);
+                        return fluidState.$currentState > 0;
+                    };
+                    undoToolBarItem.setId("undo_pnl_tool");
+                    this.addToolbarItem(undoToolBarItem);
+
+
                     var refreshToolBarItem = new ToolBarItem();
                     refreshToolBarItem.glyph = "fa fa-refresh";
-                    refreshToolBarItem.uiClass = "btn btn-info";
+                    refreshToolBarItem.uiClass = "btn btn-success";
                     refreshToolBarItem.label = "Refresh";
                     refreshToolBarItem.action = function (task, $event) {
                         var page = this.fluidPanel.getPage(this.fluidPanel.fluidBreadcrumb.currentPage());
