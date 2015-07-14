@@ -174,14 +174,8 @@ angular.module("mainApp", ["fluid"])
 - Open a task using FluidFrameService:
 ```
    app.controller(["$scope","fluidFrameService"], function(scope, FluidFrameService){
-
        var fluidFrame = new FluidFrameService('mainFrame');
-       
-       fluidFrame.openTask("moduleTaskConfig", page, workspace, function (ok, failed) {
-               // Put onLoad implementation here.
-               ok(); // will load the task;
-               // failed(); will prevent the task from opening;
-            });
+       fluidFrame.openTask("moduleTaskConfig");
    });
 ```
 
