@@ -199,7 +199,7 @@ angular.module("fluidProgress", [])
                         if (this.cancelledFuncs[name] == null) {
                             this.cancelledFuncs[name] = [];
                         }
-                        this.cancelledFuncs[name].push(completeFunc);
+                        this.cancelledFuncs[name].push(cancelledFunc);
                         console.debug("progress.cancelledFuncs", this.cancelledFuncs);
                     }
                     progress.cancel = function (name, reason) {

@@ -22,26 +22,33 @@ angular.module("fluidTool", [])
             this.class = "";
             this.uiClass = "btn btn-default";
             this.label = "";
-            this.type = "buttom";
+            this.type = "button";
             this.action = function (task, $event) {
             };
             this.showText = false;
+
             this.disabled = function () {
                 return false;
-            }
+            };
             this.visible = function () {
                 return true;
-            }
+            };
             this.setId = function (id) {
                 this.id = id;
-            }
+                this.originalId = id;
+            };
             this.getId = function ($index) {
                 if (!this.id) {
                     this.id = "elem_" + $index;
+                    this.originalId = "elem_" + $index;
                 }
                 return this.id + "_btn_tl_" + this.fluidPanel.id;
+            };
+
+            this.is = function (id) {
+                return this.originalId === id;
             }
-        }
+        };
 
         return toolBarItem;
 

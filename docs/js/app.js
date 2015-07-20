@@ -20,6 +20,7 @@ angular.module("mainApp", ["fluid"])
         function (s, FrameService) {
             s.frame = new FrameService('appFrame');
             s.frame.openTask("moduleTask");
+            s.frame.openTask("moduleBasic");
         }]);
 
 

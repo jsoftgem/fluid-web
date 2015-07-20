@@ -138,7 +138,28 @@ angular.module("fluidFrame", ["fluidHttp", "fluidTask", "fluidSession", "fluidPr
                         }
                         frame.tasks.push(fluidTask);
                     });
-            }
+            };
+
+            frame.openTaskRaw = function (task, page, workspace, onLoad) {
+                var index = frame.tasks.length;
+                console.debug("fluidFrame-fluidFrameService.task", task);
+                task.fluidId = name + "_" + task.id + "_" + index;
+
+                var fluidTask = new FluidTask(task);
+                fluidTask.frame = frame.name;
+                fluidTask.index = index;
+                fluidTask.page = page;
+                if (onLoad) {
+                    fluidTask.onLoad = onLoad;
+                }
+                fluidTask.ok = function () {
+                };
+                fluidTask.failed = function () {
+                    frame.tasks.splice(index, 1);
+                };
+                frame.tasks.push(fluidTask);
+            };
+
             frame.removeTask = function (task, workspace) {
                 console.debug("fluidFrame-fluidFrameService.removeTask.task", task);
                 angular.forEach(this.tasks, function (tsk, $index) {

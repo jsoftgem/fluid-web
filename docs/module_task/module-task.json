@@ -1,7 +1,7 @@
 {
   "id": "moduleTask",
   "name": "moduleTask",
-  "title": "Fluid-task Management",
+  "title": "Fluid-task Editor",
   "size": 100,
   "glyph": "fa fa-gears",
   "active": true,
@@ -9,8 +9,40 @@
   "closeable": false,
   "showToolBar": true,
   "lazyLoad": true,
-  "moduleJS": "moduleBasic",
-  "moduleFiles": "docs/module_task/module-task.js",
+  "moduleJS": "moduleTask",
+  "moduleFiles": "docs/module_task/module-task.js,docs/module_task/module-task.css,docs/module_task/mode-html.js,docs/module_task/worker-html.js,docs/module_task/theme-eclipse.js",
+  "toolbarItems": [
+    {
+      "id": "createTaskToolbar",
+      "label": "New task",
+      "uiClass": "btn btn-info",
+      "glyph": "fa fa-plus"
+    },
+    {
+      "id": "saveTaskToolbar",
+      "label": "Save",
+      "uiClass": "btn btn-success",
+      "glyph": "fa fa-save"
+    },
+    {
+      "id": "addNewPage",
+      "label": "New page",
+      "uiClass": "btn btn-default",
+      "glyph": "fa fa-edit"
+    },
+    {
+      "id": "removeAllPages",
+      "label": "Remove all pages",
+      "uiClass": "btn btn-danger",
+      "glyph": "fa fa-trash"
+    },
+    {
+      "id": "removePage",
+      "label": "Remove page",
+      "uiClass": "btn btn-danger",
+      "glyph": "fa fa-remove"
+    }
+  ],
   "pages": [
     {
       "id": 1,
