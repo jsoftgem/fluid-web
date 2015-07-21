@@ -108,6 +108,7 @@ angular.module("fluidFrame", ["fluidHttp", "fluidTask", "fluidSession", "fluidPr
             t(check, 1000);
         }
 
+
         return this;
     }])
     .factory("fluidFrameService", ["Frame", "fluidTaskService", "FluidTask", "FluidProgress", function (Frame, taskService, FluidTask, FluidProgress) {
@@ -132,11 +133,19 @@ angular.module("fluidFrame", ["fluidHttp", "fluidTask", "fluidSession", "fluidPr
                             fluidTask.onLoad = onLoad;
                         }
                         fluidTask.ok = function () {
-                        }
+                        };
                         fluidTask.failed = function () {
                             frame.tasks.splice(index, 1);
-                        }
+                        };
                         frame.tasks.push(fluidTask);
+
+                        if (frame.fullScreen) {
+                            if (frame.task) {
+                                frame.switchTo(fluidTask);
+                            } else {
+                                frame.toggleFullscreen(fluidTask);
+                            }
+                        }
                     });
             };
 
@@ -158,6 +167,14 @@ angular.module("fluidFrame", ["fluidHttp", "fluidTask", "fluidSession", "fluidPr
                     frame.tasks.splice(index, 1);
                 };
                 frame.tasks.push(fluidTask);
+
+                if (frame.fullScreen) {
+                    if (frame.task) {
+                        frame.switchTo(fluidTask);
+                    } else {
+                        frame.toggleFullscreen(fluidTask);
+                    }
+                }
             };
 
             frame.removeTask = function (task, workspace) {
@@ -178,13 +195,16 @@ angular.module("fluidFrame", ["fluidHttp", "fluidTask", "fluidSession", "fluidPr
 
                 return filteredTask.task;
             }
+
             frame.$ = function () {
                 return $(".fluid-frame[name='" + frame.name + "']");
             }
+
             frame.progress = new FluidProgress({
                 id: "_id_mf_fp_" + name
             });
-            frame.toggleFullscreen = function (panel, task) {
+
+            frame.toggleFullscreen = function (task) {
                 frame.progress.run("toggleFullscreen_" + task.fluidId, function (ok, cancel, notify) {
                     frame.fullScreen = !frame.fullScreen;
                     console.debug("fluidFrameService-toggleFullscreen.fullScreen", frame.fullScreen);
@@ -195,14 +215,16 @@ angular.module("fluidFrame", ["fluidHttp", "fluidTask", "fluidSession", "fluidPr
                     }
                     ok(frame.fullScreen);
                 });
-            }
+            };
+
             frame.switchTo = function (task) {
                 frame.progress.run("switchTask_" + task.fluidId, function (ok, cancel, notify) {
                     console.debug("fluidFrameService-switchTask.task", task);
                     frame.task = task;
                     ok(task);
                 });
-            }
+            };
+
             frame.closeTask = function (task, workspace) {
                 frame.progress.run("closeTask_" + task.fluidId, function (ok, cancel, notify) {
                     if (frame.fullScreen) {
@@ -224,16 +246,21 @@ angular.module("fluidFrame", ["fluidHttp", "fluidTask", "fluidSession", "fluidPr
 
             }
             return frame;
-        }
+        };
         return frameService;
 
     }])
     .provider("Frame", function () {
-        this.$get = ["$timeout", "fluidFrameHandler", "fluidStateService", function (t, fh, fts) {
+        this.$get = ["$timeout", "fluidFrameHandler", function (t, fh) {
+            console.debug("fluidFrame.FrameProvider.fluidFrameHandler.frames-start", fh.frames);
+
             var frame = function Frame(name) {
+                console.debug("fluidFrame.FrameProvider.name", name);
                 if (name) {
                     var key = frameKey + name;
-                    if (fh.frames[key] != null) {
+                    if (fh.frames[key] !== undefined) {
+
+                        console.debug("fluidFrame.FrameProvider.fluidFrameHandler.frames-in-cache", fh.frames);
                         return fh.frames[key];
                     } else {
                         this.name = name;
@@ -241,9 +268,14 @@ angular.module("fluidFrame", ["fluidHttp", "fluidTask", "fluidSession", "fluidPr
                         this.task = undefined;
                         this.tasks = [];
                         fh.frames[key] = this;
+
+                        console.debug("fluidFrame.FrameProvider.fluidFrameHandler.frames-in", fh.frames);
+                        return fh.frames[key];
                     }
                 }
             };
+
+            console.debug("fluidFrame.FrameProvider.fluidFrameHandler.frames-end", fh.frames);
             return frame;
         }];
     });

@@ -33,17 +33,17 @@ angular.module("fluidSession", ["LocalStorageModule"])
             } else {
                 return ls.cookie.get(key);
             }
-        }
+        };
 
         this.login = function (username, password, remember) {
             var base64 = window.btoa(username + ":" + password);
             this.addSessionProperty("remember", remember);
             this.addSessionProperty(AUTHORIZATION, "Basic " + base64);
-        }
+        };
 
         this.createSession = function (base64) {
             this.addSessionProperty(AUTHORIZATION, "Basic " + base64);
-        }
+        };
 
         this.removeSessionProperty = function (key) {
             if (this.isSessionSupported) {
@@ -51,7 +51,7 @@ angular.module("fluidSession", ["LocalStorageModule"])
             } else {
                 return ls.cookie.remove(key);
             }
-        }
+        };
 
         this.logout = function () {
             if (this.isSessionSupported) {

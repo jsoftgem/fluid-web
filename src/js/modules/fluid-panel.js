@@ -44,7 +44,7 @@ angular.module("fluidPanel", ["oc.lazyLoad", "fluidHttp", "fluidFrame", "fluidMe
                                 if (match) {
                                     var classedTaskName = scope.task.name.replace(match, "-" + match[0].toLowerCase());
                                     return classedTaskName;
-                                }else{
+                                } else {
                                     return scope.task.name;
                                 }
                             }
@@ -113,6 +113,7 @@ angular.module("fluidPanel", ["oc.lazyLoad", "fluidHttp", "fluidFrame", "fluidMe
                                     scope.fluidPanel.frame = new FluidFrame(scope.frame);
                                     ok(scope.task);
                                     console.debug("fluidPanel.load-1");
+                                    console.debug("fluidPanel.load-1.frame", scope.fluidPanel.frame);
                                 });
                             } else {
                                 scope.fluidPanel = new FluidPanel(scope.task);
@@ -361,7 +362,7 @@ angular.module("fluidPanel", ["oc.lazyLoad", "fluidHttp", "fluidFrame", "fluidMe
                     }
 
                     var closeControl = new TaskControl(this);
-                    closeControl.setId("closePanel");
+                    closeControl.setId("closeControl");
                     closeControl.glyph = "fa fa-close";
                     closeControl.uiClass = "btn btn-danger";
                     closeControl.label = "Close";
@@ -375,14 +376,14 @@ angular.module("fluidPanel", ["oc.lazyLoad", "fluidHttp", "fluidFrame", "fluidMe
                     this.addControl(closeControl);
 
                     var expandControl = new TaskControl();
-                    expandControl.setId("expandPanel");
+                    expandControl.setId("expandControl");
                     expandControl.glyph = "fa fa-expand";
                     expandControl.uiClass = "btn btn-info";
                     expandControl.label = "Fullscreen";
                     expandControl.action = function (task, $event) {
                         panel.onFullscreen(function () {
                             panel.destroy = true;
-                            panel.frame.toggleFullscreen(panel, task);
+                            panel.frame.toggleFullscreen(task);
                         }, function () {
 
                         })
@@ -394,14 +395,14 @@ angular.module("fluidPanel", ["oc.lazyLoad", "fluidHttp", "fluidFrame", "fluidMe
                     this.addControl(expandControl);
 
                     var fluidScreenControl = new TaskControl();
-                    fluidScreenControl.setId("fluidPanel");
+                    fluidScreenControl.setId("fluidControl");
                     fluidScreenControl.glyph = "fa fa-compress";
                     fluidScreenControl.uiClass = "btn btn-info";
                     fluidScreenControl.label = "Fluid";
                     fluidScreenControl.action = function (task, $event) {
                         panel.onFluidscreen(function () {
                             panel.destroy = true;
-                            panel.frame.toggleFullscreen(panel, task);
+                            panel.frame.toggleFullscreen(task);
                         }, function () {
 
                         });
@@ -442,6 +443,7 @@ angular.module("fluidPanel", ["oc.lazyLoad", "fluidHttp", "fluidFrame", "fluidMe
                     }
 
                     var homeToolBarItem = new ToolBarItem();
+                    homeToolBarItem.setId("homeToolbarItem");
                     homeToolBarItem.glyph = "fa fa-home";
                     homeToolBarItem.uiClass = "btn btn-info";
                     homeToolBarItem.label = "Home";
@@ -465,11 +467,16 @@ angular.module("fluidPanel", ["oc.lazyLoad", "fluidHttp", "fluidFrame", "fluidMe
                     this.addToolbarItem(homeToolBarItem);
 
                     var backToolBarItem = new ToolBarItem();
+                    backToolBarItem.setId("backToolBarItem");
                     backToolBarItem.glyph = "fa fa-arrow-left";
                     backToolBarItem.uiClass = "btn btn-info";
                     backToolBarItem.label = "Back";
                     backToolBarItem.action = function (task, $event) {
                         this.fluidPanel.prevPage($event);
+                    };
+                    backToolBarItem.visible = function () {
+                        var fluidBreadcrumb = new FluidBreadcrumb(this.fluidPanel);
+                        return !fluidBreadcrumb.hasPrevious();
                     };
                     backToolBarItem.disabled = function () {
                         var fluidBreadcrumb = new FluidBreadcrumb(this.fluidPanel);
@@ -479,11 +486,16 @@ angular.module("fluidPanel", ["oc.lazyLoad", "fluidHttp", "fluidFrame", "fluidMe
                     this.addToolbarItem(backToolBarItem);
 
                     var nextToolBarItem = new ToolBarItem();
+                    nextToolBarItem.setId("nextToolBarItem");
                     nextToolBarItem.glyph = "fa fa-arrow-right";
                     nextToolBarItem.uiClass = "btn btn-info";
                     nextToolBarItem.label = "Next";
                     nextToolBarItem.action = function (task, $event) {
                         this.fluidPanel.nextPage($event);
+                    };
+                    nextToolBarItem.visible = function () {
+                        var fluidBreadcrumb = new FluidBreadcrumb(this.fluidPanel);
+                        return !fluidBreadcrumb.hasNext();
                     };
                     nextToolBarItem.disabled = function () {
                         var fluidBreadcrumb = new FluidBreadcrumb(this.fluidPanel);
@@ -515,6 +527,7 @@ angular.module("fluidPanel", ["oc.lazyLoad", "fluidHttp", "fluidFrame", "fluidMe
 
 
                     var refreshToolBarItem = new ToolBarItem();
+                    refreshToolBarItem.setId("refreshToolBarItem");
                     refreshToolBarItem.glyph = "fa fa-refresh";
                     refreshToolBarItem.uiClass = "btn btn-success";
                     refreshToolBarItem.label = "Refresh";

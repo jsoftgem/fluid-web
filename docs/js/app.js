@@ -19,8 +19,13 @@ angular.module("mainApp", ["fluid"])
     .controller("mainCtrl", ["$scope", "fluidFrameService",
         function (s, FrameService) {
             s.frame = new FrameService('appFrame');
-            s.frame.openTask("moduleTask");
-            s.frame.openTask("moduleBasic");
+            s.frame.fullScreen = true;
+            s.getReducedHeight = function () {
+                var bottomHeight = $(".navbar-fixed-bottom").innerHeight();
+                var topHeight = $(".navbar-fixed-top").innerHeight();
+                return bottomHeight + topHeight;
+            };
+
         }]);
 
 
