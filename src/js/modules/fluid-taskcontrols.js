@@ -22,23 +22,29 @@ angular.module("fluidTaskcontrols", ["fluidTask"])
             this.class = "";
             this.label = "";
             this.action = function (task, $event) {
-            }
+            };
             this.disabled = function () {
                 return false;
-            }
+            };
             this.visible = function () {
                 return true;
-            }
+            };
             this.setId = function (id) {
                 this.id = id;
-            }
+                this.originalId = id;
+            };
             this.getId = function ($index) {
                 if (!this.id) {
                     this.id = "elem_" + $index;
+                    this.originalId = "elem_" + $index;
                 }
                 return this.id + "_ctl_" + this.fluidPanel.id;
+            };
+            this.is = function (id) {
+                return this.originalId === id;
             }
-        }
+        };
+
         return control;
     }])
     .service("fluidControlService", [function () {

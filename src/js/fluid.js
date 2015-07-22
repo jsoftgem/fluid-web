@@ -1,4 +1,4 @@
-/**Fluid Web v0.1.3
+/**Fluid Web v0.1.4
  * Created by Jerico de Guzman
  * October 2014**/
 'use strict';
@@ -644,6 +644,14 @@ fluidComponents
 
                 if (attr.reduceHeight) {
                     scope.reduceHeight = attr.reduceHeight;
+
+                    scope.$watch(function () {
+                        return attr.reduceHeight;
+                    }, function (height) {
+                        scope.reduceHeight = height;
+                        fillHeight(element, w.height(), height);
+                    });
+
                 }
 
                 w.bind("resize", function () {

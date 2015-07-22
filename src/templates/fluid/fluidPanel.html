@@ -1,6 +1,6 @@
 <div id='_id_fp'
      ng-class="!fluidPanel.frame.fullScreen ? 'panel panel-default fluid-task ' + size : 'panel panel-default frame-fullscreen col-lg-12'"
-     class="fluid-panel">
+     class="fluid-panel {{getTaskClass()}}">
     <div class="panel-heading" ng-if="!task.locked">
         <div class="panel-title">
             <div class="left">

@@ -105,7 +105,6 @@ angular.module("fluidPage", ["fluidHttp", "fluidOption", "fluidPanel"])
                         }
 
 
-
                     }
                 },
                 replace: true
@@ -115,7 +114,26 @@ angular.module("fluidPage", ["fluidHttp", "fluidOption", "fluidPanel"])
         var fluidPage = function (page) {
 
             if (page.ajax) {
-                if (page.ajax.url) {
+                var url = page.ajax.url;
+
+                if (page.host) {
+
+                    var length = page.host.length;
+                    var lastChar = page.host.indexOf(page.host.length - 1);
+
+                    if (lastChar === "/") {
+                        length--;
+                    }
+                    var host = page.host.substring(0, length - 1);
+
+                    if (url.indexOf(0) === "/") {
+                        url = url.substring(1, url.length - 1);
+                    }
+
+                    url = host + "/" + url;
+                }
+
+                if (url) {
                     if (!page.ajax.actions) {
                         page.ajax.actions = [];
                     }
@@ -123,13 +141,13 @@ angular.module("fluidPage", ["fluidHttp", "fluidOption", "fluidPanel"])
                         page.ajax.param = {};
                     }
 
-                    var url = "fid=" + page.fluidId + ";pg=" + page.name + ";" + page.ajax.url;
+                    url = "fid=" + page.fluidId + ";pg=" + page.name + ";" + url;
 
                     this.resource = r(url, page.ajax.param, page.ajax.actions);
 
-                } else {
+                } /*else {
                     throw "Page ajax.url is required!";
-                }
+                }*/
             }
 
             /*
@@ -151,6 +169,7 @@ angular.module("fluidPage", ["fluidHttp", "fluidOption", "fluidPanel"])
             this.home = page.home;
             this.ajax = page.ajax;
             this.fluidId = page.fluidId;
+            this.host = page.host;
             /*
              TODO: create page transition
              if (page.animate) {
@@ -355,7 +374,7 @@ angular.module("fluidPage", ["fluidHttp", "fluidOption", "fluidPanel"])
                     if (ajax.auto === undefined) {
                         ajax.auto = true;
                     }
-                    if (ajax.auto) {
+                    if (ajax.auto === true) {
                         var $updated;
 
                         var state = fps.pageState(fluidPage.name);
@@ -366,15 +385,15 @@ angular.module("fluidPage", ["fluidHttp", "fluidOption", "fluidPanel"])
                         console.debug("fluidPage-fluidPageService-loadAjax.fluidState", fluidState);
                         console.debug("fluidPage-fluidPageService-loadAjax.fluidPage", fluidPage);
 
-                        $updated = state.$updated ? fluidState.$lastUpdated < state.$updated : false;
-
+                        $updated = state.$updated !== undefined ? fluidState.$lastUpdated < state.$updated : false;
+                        console.debug("fluidPage-fluidPageService-loadAjax.$updated", $updated);
                         if (!$updated && fluidPage.watch) {
                             for (var i = 0; i < fluidPage.watch.length; i++) {
                                 var watch = fluidPage.watch[i];
                                 console.debug("fluidPage-fluidPageService-loadAjax.watch", watch);
                                 var watchedState = fps.pageState(watch);
                                 console.debug("fluidPage-fluidPageService-loadAjax.watchedState", watchedState);
-                                $updated = watchedState.$updated ? fluidState.$lastUpdated < watchedState.$updated : false;
+                                $updated = watchedState.$updated !== undefined ? fluidState.$lastUpdated < watchedState.$updated : false;
                                 if ($updated) {
                                     break;
                                 }
@@ -387,6 +406,8 @@ angular.module("fluidPage", ["fluidHttp", "fluidOption", "fluidPanel"])
 
                         }
 
+                        console.debug("fluidPage-fluidPageService-loadAjax.fluidPage.isNew", fluidPage.isNew);
+                        console.debug("fluidPage-fluidPageService-loadAjax.fluidPage.isRefreshed", fluidPage.isRefreshed);
                         if (ajax.data) {
                             console.debug("fluidPage-fluidPageService.ajax.data", ajax.data);
                             if (fluidPage.isNew || fluidPage.isRefreshed || $updated) {
@@ -411,17 +432,21 @@ angular.module("fluidPage", ["fluidHttp", "fluidOption", "fluidPanel"])
                                     fluidPage.isNew = false;
                                     fluidPage.isRefreshed = false;
                                     fluidPage.cached = query;
-                                    fluidState.$lastUpdated = new Date().getTime();
-                                    resolve(query);
+                                    if (fluidState) {
+                                        fluidState.$lastUpdated = new Date().getTime();
+                                    }
+                                    resolve(fluidPage.cached);
                                 });
                             } else {
                                 fluidPage.resource.get(fluidPage.ajax.param, function (data) {
                                     fluidPage.isNew = false;
                                     fluidPage.isRefreshed = false;
-                                    fluidState.$lastUpdated = new Date().getTime();
+                                    if (fluidState) {
+                                        fluidState.$lastUpdated = new Date().getTime();
+                                    }
                                     angular.extend(fluidPage.cached, data);
                                     fluidPage.cached.__proto__ = data.__proto__;
-                                    resolve(data);
+                                    resolve(fluidPage.cached);
                                 });
                             }
                         } else {
