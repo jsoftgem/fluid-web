@@ -3502,7 +3502,7 @@ angular.module("fluidPanel", ["oc.lazyLoad", "fluidHttp", "fluidFrame", "fluidMe
                     };
                     backToolBarItem.visible = function () {
                         var fluidBreadcrumb = new FluidBreadcrumb(this.fluidPanel);
-                        return !fluidBreadcrumb.hasPrevious();
+                        return fluidBreadcrumb.hasPrevious();
                     };
                     backToolBarItem.disabled = function () {
                         var fluidBreadcrumb = new FluidBreadcrumb(this.fluidPanel);
@@ -3521,7 +3521,7 @@ angular.module("fluidPanel", ["oc.lazyLoad", "fluidHttp", "fluidFrame", "fluidMe
                     };
                     nextToolBarItem.visible = function () {
                         var fluidBreadcrumb = new FluidBreadcrumb(this.fluidPanel);
-                        return !fluidBreadcrumb.hasNext();
+                        return fluidBreadcrumb.hasNext();
                     };
                     nextToolBarItem.disabled = function () {
                         var fluidBreadcrumb = new FluidBreadcrumb(this.fluidPanel);
