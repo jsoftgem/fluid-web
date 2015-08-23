@@ -19,7 +19,7 @@
       "id": 1,
       "name": "page1",
       "title": "Home",
-      "home":"docs/module_basic/pages/page1.html",
+      "home": "docs/module_basic/pages/page1.html",
       "isHome": true,
       "ajax": {
         "isArray": true,
@@ -31,7 +31,8 @@
       "id": 2,
       "name": "page2",
       "title": "Editor",
-      "home":"docs/module_basic/pages/page2.html"
+      "home": "docs/module_basic/pages/page2.html",
+      "showToolBar": true
     },
     {
       "id": 3,
