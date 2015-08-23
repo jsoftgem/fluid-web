@@ -27,14 +27,16 @@ angular.module("fluidPage", ["fluidHttp", "fluidOption", "fluidPanel"])
                                     .then(function (data) {
                                         console.debug("fluidPage-loadPage.data", data);
                                         scope.data = data;
-                                        pageElement.html("<ng-include class='page' src='fluidPageService.render(fluidPage)' onload='onLoad()'></ng-include>");
+                                        pageElement.html("<ng-include ng-controller='" + scope.fluidPage.controller + "' class='page' src='fluidPageService.render(fluidPage)' onload='onLoad()'></ng-include>");
                                         pageElement.attr("page-name", newPage.name);
                                         c(pageElement.contents())(scope);
                                         console.debug("fluidPage-loadPage.loaded-page", newPage);
                                         scope.loadFrameAdjustment();
+                                    }, function (reason) {
+                                        //TODO: add error loading page
                                     });
                             } else {
-                                pageElement.html("<ng-include class='page' src='fluidPageService.render(fluidPage)' onload='onLoad()'></ng-include>");
+                                pageElement.html("<ng-include ng-controller='" + scope.fluidPage.controller + "' class='page' src='fluidPageService.render(fluidPage)' onload='onLoad()'></ng-include>");
                                 pageElement.attr("page-name", newPage.name);
                                 c(pageElement.contents())(scope);
                                 console.debug("fluidPage-loadPage.loaded-page", newPage);
@@ -145,9 +147,10 @@ angular.module("fluidPage", ["fluidHttp", "fluidOption", "fluidPanel"])
 
                     this.resource = r(url, page.ajax.param, page.ajax.actions);
 
-                } /*else {
-                    throw "Page ajax.url is required!";
-                }*/
+                }
+                /*else {
+                 throw "Page ajax.url is required!";
+                 }*/
             }
 
             /*
@@ -159,7 +162,7 @@ angular.module("fluidPage", ["fluidHttp", "fluidOption", "fluidPanel"])
              }
              */
             console.debug("FluidPage-FluidPage.page", page);
-
+            this.controller = page.controller;
             this.isHome = page.isHome;
             this.name = page.name;
             this.id = page.id;
@@ -303,11 +306,7 @@ angular.module("fluidPage", ["fluidHttp", "fluidOption", "fluidPanel"])
                 this.onDestroy();
                 fps.destroyFluidPageState(this.name, this.fluidId);
             };
-
-
             this.watch = page.watch ? page.watch.split(",") : undefined;
-
-
             var def = {};
             angular.copy(this, def);
             this.default = def;

@@ -46,18 +46,15 @@ var eventInterceptorId = "event_interceptor_id_";
 var goToEventID = "event_got_id_";
 var EVENT_NOT_ALLOWED = "not_allowed_";
 var AUTHORIZATION = "authorization";
-
 function estimateHeight(height) {
     var _pc = window.innerWidth < 450 ? 55 : window.innerWidth < 768 ? 55 : window.innerWidth < 1200 ? 60 : 50;
     return height - _pc
 }
-
 function estimatedFrameHeight(height) {
     console.debug("estimatedFrameHeight.getHeadingHeight", getHeadingHeight());
     var _pc = window.innerWidth < 450 ? 60 : window.innerWidth < 768 ? 60 : window.innerWidth < 1200 ? 65 : 50;
     return height - _pc
 }
-
 //TODO: body height
 function getHeadingHeight() {
     var height = 0;
@@ -71,7 +68,6 @@ function getHeadingHeight() {
 
     return height;
 }
-
 function generateTask(scope, t, f2) {
     console.debug("generateTask > scope.task.page", scope.task.page);
     scope.task.pageLoaded = false;
@@ -141,7 +137,6 @@ function generateTask(scope, t, f2) {
 
     t(loadGetFn, 500);
 }
-
 function isJson(str) {
     try {
         JSON.parse(str);
@@ -150,7 +145,6 @@ function isJson(str) {
     }
     return true;
 }
-
 function getHomePageFromTaskPages(task) {
     var $page = {};
 
@@ -163,7 +157,6 @@ function getHomePageFromTaskPages(task) {
 
     return $page;
 }
-
 function getPageIndexFromTaskPages(name, task) {
     var $index = -1;
     angular.forEach(task.pages, function (page, key) {
@@ -174,7 +167,6 @@ function getPageIndexFromTaskPages(name, task) {
 
     return $index;
 }
-
 function getPageIndexFromPages(name, pages) {
     var $index = {index: -1};
     angular.forEach(pages, function (page, key) {
@@ -187,7 +179,6 @@ function getPageIndexFromPages(name, pages) {
     }, $index);
     return $index;
 }
-
 function saveTaskSate(task, userTask, fluidHttpService, field) {
     if (task.generic === false) {
         if (task.id.indexOf("gen") === -1) {
@@ -201,7 +192,6 @@ function saveTaskSate(task, userTask, fluidHttpService, field) {
         }
     }
 }
-
 function autoSizePanel(task) {
     console.debug("autoSizePanel", task);
     var height = window.innerHeight;
@@ -232,7 +222,6 @@ function autoSizePanel(task) {
 
 
 }
-
 function getOffset(parent, offset, index) {
     var child = parent.children()[index];
     console.debug("fluidFrame-getOffset.parent", parent);
@@ -264,8 +253,6 @@ function getOffset(parent, offset, index) {
 
 
 }
-
-
 function fillHeight(element, height, reducedHeight) {
     console.debug("fillHeight-element: ", element);
     console.debug("fiilHeight-height: ", height)
@@ -277,8 +264,6 @@ function fillHeight(element, height, reducedHeight) {
     console.debug("fiilHeight-elemHeight: ", elemHeight)
     element.css("height", elemHeight + "px");
 }
-
-
 function autoFullscreen(element, height, width) {
     var offset = getOffset(element, 0, 0);
     console.debug("fluidFrame-autoFullscreen.offset", offset);
@@ -291,8 +276,6 @@ function autoFullscreen(element, height, width) {
     });
 
 }
-
-
 function fixPageHeight(element) {
     var offset = getOffset(element, 0, 0);
     var maxHeight = element.parent().css("height");
@@ -305,8 +288,6 @@ function fixPageHeight(element) {
         });
     }
 }
-
-
 function addItem(item, items, $index) {
     if (!$index) {
         $index = 0;
@@ -321,8 +302,6 @@ function addItem(item, items, $index) {
         }
     }
 }
-
-
 function filterPage(pages, $index) {
 
     if (!$index) {
@@ -345,8 +324,6 @@ function filterPage(pages, $index) {
         return pages;
     }
 }
-
-
 function clearObjects(arr, $index) {
     if (!$index) {
         $index = 0;
@@ -364,7 +341,6 @@ function clearObjects(arr, $index) {
     }
 
 }
-
 function LightenDarkenColor(col, amt) {
 
     var usePound = false;
@@ -493,8 +469,6 @@ function loadPage(fluidPanel) {
     }
 
 }
-
-
 function initOption(option, page) {
     if (option) {
         var param = option.param;
@@ -514,7 +488,6 @@ function initOption(option, page) {
         }
     }
 }
-
 
 //handles document here
 $(document).ready(function () {

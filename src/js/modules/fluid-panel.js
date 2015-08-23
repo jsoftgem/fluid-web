@@ -476,7 +476,7 @@ angular.module("fluidPanel", ["oc.lazyLoad", "fluidHttp", "fluidFrame", "fluidMe
                     };
                     backToolBarItem.visible = function () {
                         var fluidBreadcrumb = new FluidBreadcrumb(this.fluidPanel);
-                        return !fluidBreadcrumb.hasPrevious();
+                        return fluidBreadcrumb.hasPrevious();
                     };
                     backToolBarItem.disabled = function () {
                         var fluidBreadcrumb = new FluidBreadcrumb(this.fluidPanel);
@@ -495,7 +495,7 @@ angular.module("fluidPanel", ["oc.lazyLoad", "fluidHttp", "fluidFrame", "fluidMe
                     };
                     nextToolBarItem.visible = function () {
                         var fluidBreadcrumb = new FluidBreadcrumb(this.fluidPanel);
-                        return !fluidBreadcrumb.hasNext();
+                        return fluidBreadcrumb.hasNext();
                     };
                     nextToolBarItem.disabled = function () {
                         var fluidBreadcrumb = new FluidBreadcrumb(this.fluidPanel);
@@ -729,8 +729,20 @@ angular.module("fluidPanel", ["oc.lazyLoad", "fluidHttp", "fluidFrame", "fluidMe
                         }
                     };
                     this.currentPage = function () {
-                        return this.pages[this.fluidBreadcrumb.currentPage()];
+                        var page = this.pages[this.fluidBreadcrumb.currentPage()];
+                        this.preLoadPage(page);
+                        return page;
                     };
+
+
+                    this.preLoadPage = function (page) {
+                        if (task.showToolBar === undefined || task.showToolBar === false) {
+                            if (page.showToolBar !== undefined) {
+                                task.showToolBar = page.showToolBar;
+                            }
+                        }
+                    };
+
                     this.$destroy = function () {
                         if (this.destroy) {
                             this.clear();

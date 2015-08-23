@@ -1,7 +1,6 @@
 /**
  * Created by Jerico on 4/29/2015.
  */
-//TODO: create state manager for task; task should not be altered with scope.
 var taskKey = "$task_";
 var timeout = 30;//sets 30 seconds timeout.
 
@@ -35,7 +34,7 @@ angular.module("fluidTask", ["fluidSession", "fluidFrame"])
                         scope.open = function (page, workspace) {
                             var fluidFrame = new FluidFrame(scope.frame);
                             fluidFrame.openTask(scope._taskName, page, workspace);
-                        }
+                        };
 
                         scope.load = function (data) {
                             var task = new FluidTask(data);
@@ -127,6 +126,22 @@ angular.module("fluidTask", ["fluidSession", "fluidFrame"])
             setUrl: function (value) {
                 url = value;
             },
+            setTask: function (value) {
+                if (taskArray == null) {
+                    taskArray = [];
+                }
+
+                var exists = false;
+
+                for (var i = 0; i < taskArray.length; i++) {
+                    if (taskArray[i].name === value.name) {
+                        exists = true;
+                    }
+                }
+                if (!exists) {
+                    taskArray.push(value);
+                }
+            },
             setTasks: function (value) {
                 taskArray = value
             },
@@ -139,7 +154,7 @@ angular.module("fluidTask", ["fluidSession", "fluidFrame"])
                 }
                 console.debug("fluid-task-taskState.taskArray", taskArray);
                 return q(function (resolve, reject) {
-                        var length = taskArray.length - 1;
+                        var length = taskArray ? taskArray.length - 1 : 0;
                         var value = {done: false};
                         angular.forEach(taskArray, function (task, $index) {
                             if (!ss.containsKey(taskKey + task.name)) {
@@ -223,7 +238,7 @@ angular.module("fluidTask", ["fluidSession", "fluidFrame"])
                 }
 
             }).then(timeoutEvent);
-        }
+        };
         taskService.findTaskByUrl = function (url) {
             console.debug("fluidTask-fluidTaskService-findTaskByUrl.url", url);
             var deferred = q.defer();
@@ -277,7 +292,7 @@ angular.module("fluidTask", ["fluidSession", "fluidFrame"])
                 }, function () {
                     failed();
                 });
-            }
+            };
 
             task.close = function (ok, cancel) {
                 this.onClose(function () {
@@ -285,7 +300,7 @@ angular.module("fluidTask", ["fluidSession", "fluidFrame"])
                 }, function () {
                     cancel();
                 })
-            }
+            };
 
             task.onClose = function (ok, cancel) {
                 ok();
@@ -293,7 +308,7 @@ angular.module("fluidTask", ["fluidSession", "fluidFrame"])
 
             task.onLoad = function (ok, failed) {
                 ok();
-            }
+            };
 
             task.open = function ($event, frame) {
                 if (!task.active) {
@@ -315,12 +330,12 @@ angular.module("fluidTask", ["fluidSession", "fluidFrame"])
                         });
                     console.debug("fluid-task-task.open", "div.fluid-panel :eq(" + task.index + ")");
                 }
-            }
+            };
 
 
             task.panel = function () {
                 return $("#_id_fp_" + task.fluidId);
-            }
+            };
 
             console.debug("fluidTask-FluidTask.newTask", task);
             return task;
