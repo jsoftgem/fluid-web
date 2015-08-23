@@ -2576,6 +2576,8 @@ angular.module("fluidPage", ["fluidHttp", "fluidOption", "fluidPanel"])
                                         c(pageElement.contents())(scope);
                                         console.debug("fluidPage-loadPage.loaded-page", newPage);
                                         scope.loadFrameAdjustment();
+                                    },function(reason){
+                                    //TODO: add error loading page
                                     });
                             } else {
                                 pageElement.html("<ng-include class='page' src='fluidPageService.render(fluidPage)' onload='onLoad()'></ng-include>");
@@ -2689,9 +2691,10 @@ angular.module("fluidPage", ["fluidHttp", "fluidOption", "fluidPanel"])
 
                     this.resource = r(url, page.ajax.param, page.ajax.actions);
 
-                } /*else {
-                    throw "Page ajax.url is required!";
-                }*/
+                }
+                /*else {
+                 throw "Page ajax.url is required!";
+                 }*/
             }
 
             /*
@@ -4279,7 +4282,7 @@ angular.module("fluidTask", ["fluidSession", "fluidFrame"])
                 }
                 console.debug("fluid-task-taskState.taskArray", taskArray);
                 return q(function (resolve, reject) {
-                        var length = taskArray.length - 1;
+                        var length = taskArray ? taskArray.length - 1 : 0;
                         var value = {done: false};
                         angular.forEach(taskArray, function (task, $index) {
                             if (!ss.containsKey(taskKey + task.name)) {
@@ -4363,7 +4366,7 @@ angular.module("fluidTask", ["fluidSession", "fluidFrame"])
                 }
 
             }).then(timeoutEvent);
-        }
+        };
         taskService.findTaskByUrl = function (url) {
             console.debug("fluidTask-fluidTaskService-findTaskByUrl.url", url);
             var deferred = q.defer();

@@ -4,27 +4,21 @@
 angular.module("mainApp", ["fluid"])
     .config(["taskStateProvider", function (tsp) {
 
-        tsp.setTasks([
-            {
-                name: "moduleTask",
-                url: "docs/module_task/module-task.json"
-            },
-            {
-                name: "moduleBasic",
-                url: "docs/module_basic/module-basic.json"
-            }
-        ]);
-
     }])
-    .controller("mainCtrl", ["$scope", "fluidFrameService",
-        function (s, FrameService) {
+    .controller("mainCtrl", ["$scope", "fluidFrameService","sessionService",
+        function (s, FrameService,ss) {
+
             s.frame = new FrameService('appFrame');
+
             s.frame.fullScreen = true;
+
             s.getReducedHeight = function () {
                 var bottomHeight = $(".navbar-fixed-bottom").innerHeight();
                 var topHeight = $(".navbar-fixed-top").innerHeight();
                 return bottomHeight + topHeight;
             };
+
+
 
         }]);
 

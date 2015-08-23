@@ -1,7 +1,6 @@
 /**
  * Created by Jerico on 4/29/2015.
  */
-//TODO: create state manager for task; task should not be altered with scope.
 var taskKey = "$task_";
 var timeout = 30;//sets 30 seconds timeout.
 
@@ -139,7 +138,7 @@ angular.module("fluidTask", ["fluidSession", "fluidFrame"])
                 }
                 console.debug("fluid-task-taskState.taskArray", taskArray);
                 return q(function (resolve, reject) {
-                        var length = taskArray.length - 1;
+                        var length = taskArray ? taskArray.length - 1 : 0;
                         var value = {done: false};
                         angular.forEach(taskArray, function (task, $index) {
                             if (!ss.containsKey(taskKey + task.name)) {
@@ -223,7 +222,7 @@ angular.module("fluidTask", ["fluidSession", "fluidFrame"])
                 }
 
             }).then(timeoutEvent);
-        }
+        };
         taskService.findTaskByUrl = function (url) {
             console.debug("fluidTask-fluidTaskService-findTaskByUrl.url", url);
             var deferred = q.defer();

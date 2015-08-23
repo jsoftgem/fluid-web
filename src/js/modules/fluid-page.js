@@ -32,6 +32,8 @@ angular.module("fluidPage", ["fluidHttp", "fluidOption", "fluidPanel"])
                                         c(pageElement.contents())(scope);
                                         console.debug("fluidPage-loadPage.loaded-page", newPage);
                                         scope.loadFrameAdjustment();
+                                    },function(reason){
+                                    //TODO: add error loading page
                                     });
                             } else {
                                 pageElement.html("<ng-include class='page' src='fluidPageService.render(fluidPage)' onload='onLoad()'></ng-include>");
@@ -145,9 +147,10 @@ angular.module("fluidPage", ["fluidHttp", "fluidOption", "fluidPanel"])
 
                     this.resource = r(url, page.ajax.param, page.ajax.actions);
 
-                } /*else {
-                    throw "Page ajax.url is required!";
-                }*/
+                }
+                /*else {
+                 throw "Page ajax.url is required!";
+                 }*/
             }
 
             /*
