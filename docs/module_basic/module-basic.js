@@ -3,19 +3,14 @@
  */
 angular.module("moduleBasic", ["fluid"])
     .controller("moduleBasicCtrl", ["$scope", "$timeout", "TaskControl", "ToolBarItem", function (s, t, TaskControl, ToolBarItem) {
-
-
         var sample = new TaskControl();
         sample.label = "Sample";
         sample.setId("sample");
         sample.visible = function () {
             var breadcrumb = s.fluidPanel.fluidBreadcrumb;
-
             return breadcrumb.currentPage() === "page1";
-        }
+        };
         s.fluidPanel.addControl(sample);
-
-
         var toolbar = new ToolBarItem();
         toolbar.label = "sample";
         toolbar.setId("sample");
@@ -24,10 +19,7 @@ angular.module("moduleBasic", ["fluid"])
             return breadcrumb.currentPage() === "page1";
         };
         s.fluidPanel.addToolbarItem(toolbar);
-
         console.debug("moduleBasic.fluidPage", s.fluidPage);
-
-
         s.fluidPage.onLoad = function (ok) {
             this.option.putTemplate("onClose", "Do you want to close page {{fluidPage.title}} ? <a href='#' ng-click='fluidPage.ok()'>Yes</a> {{' '}} <a href='#' ng-click='fluidPage.cancel()'>No</a>");
 
@@ -55,11 +47,8 @@ angular.module("moduleBasic", ["fluid"])
              }*/
             return ok();
         }
-
         s.save = function (resources) {
             console.debug("moduleBasic-moduleBasicCtrl.resources", resources);
             resources.$save();
         }
-
-
     }]);

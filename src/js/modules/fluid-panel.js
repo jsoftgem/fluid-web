@@ -729,8 +729,20 @@ angular.module("fluidPanel", ["oc.lazyLoad", "fluidHttp", "fluidFrame", "fluidMe
                         }
                     };
                     this.currentPage = function () {
-                        return this.pages[this.fluidBreadcrumb.currentPage()];
+                        var page = this.pages[this.fluidBreadcrumb.currentPage()];
+                        this.preLoadPage(page);
+                        return page;
                     };
+
+
+                    this.preLoadPage = function (page) {
+                        if (task.showToolBar === undefined || task.showToolBar === false) {
+                            if (page.showToolBar !== undefined) {
+                                task.showToolBar = page.showToolBar;
+                            }
+                        }
+                    };
+
                     this.$destroy = function () {
                         if (this.destroy) {
                             this.clear();

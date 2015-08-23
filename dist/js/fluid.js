@@ -2544,16 +2544,16 @@ angular.module("fluidPage", ["fluidHttp", "fluidOption", "fluidPanel"])
                                     .then(function (data) {
                                         console.debug("fluidPage-loadPage.data", data);
                                         scope.data = data;
-                                        pageElement.html("<ng-include class='page' src='fluidPageService.render(fluidPage)' onload='onLoad()'></ng-include>");
+                                        pageElement.html("<ng-include ng-controller='" + scope.fluidPage.controller + "' class='page' src='fluidPageService.render(fluidPage)' onload='onLoad()'></ng-include>");
                                         pageElement.attr("page-name", newPage.name);
                                         c(pageElement.contents())(scope);
                                         console.debug("fluidPage-loadPage.loaded-page", newPage);
                                         scope.loadFrameAdjustment();
-                                    },function(reason){
-                                    //TODO: add error loading page
+                                    }, function (reason) {
+                                        //TODO: add error loading page
                                     });
                             } else {
-                                pageElement.html("<ng-include class='page' src='fluidPageService.render(fluidPage)' onload='onLoad()'></ng-include>");
+                                pageElement.html("<ng-include ng-controller='" + scope.fluidPage.controller + "' class='page' src='fluidPageService.render(fluidPage)' onload='onLoad()'></ng-include>");
                                 pageElement.attr("page-name", newPage.name);
                                 c(pageElement.contents())(scope);
                                 console.debug("fluidPage-loadPage.loaded-page", newPage);
@@ -2679,7 +2679,7 @@ angular.module("fluidPage", ["fluidHttp", "fluidOption", "fluidPanel"])
              }
              */
             console.debug("FluidPage-FluidPage.page", page);
-
+            this.controller = page.controller;
             this.isHome = page.isHome;
             this.name = page.name;
             this.id = page.id;
@@ -2823,11 +2823,7 @@ angular.module("fluidPage", ["fluidHttp", "fluidOption", "fluidPanel"])
                 this.onDestroy();
                 fps.destroyFluidPageState(this.name, this.fluidId);
             };
-
-
             this.watch = page.watch ? page.watch.split(",") : undefined;
-
-
             var def = {};
             angular.copy(this, def);
             this.default = def;
@@ -3731,8 +3727,20 @@ angular.module("fluidPanel", ["oc.lazyLoad", "fluidHttp", "fluidFrame", "fluidMe
                         }
                     };
                     this.currentPage = function () {
-                        return this.pages[this.fluidBreadcrumb.currentPage()];
+                        var page = this.pages[this.fluidBreadcrumb.currentPage()];
+                        this.preLoadPage(page);
+                        return page;
                     };
+
+
+                    this.preLoadPage = function (page) {
+                        if (task.showToolBar === undefined || task.showToolBar === false) {
+                            if (page.showToolBar !== undefined) {
+                                task.showToolBar = page.showToolBar;
+                            }
+                        }
+                    };
+
                     this.$destroy = function () {
                         if (this.destroy) {
                             this.clear();

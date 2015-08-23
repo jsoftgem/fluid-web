@@ -21,40 +21,12 @@
       "title": "Home",
       "home": "docs/module_basic/pages/page1.html",
       "isHome": true,
+      "controller": "moduleBasicCtrl",
       "ajax": {
         "isArray": true,
         "auto": true,
         "url": "docs/module_basic/pages/page1-data.json"
       }
-    },
-    {
-      "id": 2,
-      "name": "page2",
-      "title": "Editor",
-      "home": "docs/module_basic/pages/page2.html",
-      "showToolBar": true
-    },
-    {
-      "id": 3,
-      "name": "page3",
-      "title": "Page 3",
-      "static": true,
-      "home": "http://www.boxingnews24.com",
-      "html": "<div ng-controller='moduleBasicCtrl'><h1>Page3</h1><div><button class='btn btn-info' type='button' ng-click=\"fluidPanel.goTo('page4',$event)\">Next</button></div></div>"
-    },
-    {
-      "id": 4,
-      "name": "page4",
-      "title": "Page 4",
-      "static": true,
-      "html": "<div ng-controller='moduleBasicCtrl'><h1>Page4</h1><div><button class='btn btn-info' type='button' ng-click=\"fluidPanel.goTo('page5',$event)\">Next</button></div></div>"
-    },
-    {
-      "id": 5,
-      "name": "page5",
-      "title": "Page 5",
-      "static": true,
-      "html": "<div ng-controller='moduleBasicCtrl'><h1>Page5</h1><div></div></div>"
     }
   ]
 }
