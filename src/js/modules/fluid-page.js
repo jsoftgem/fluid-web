@@ -173,6 +173,7 @@ angular.module("fluidPage", ["fluidHttp", "fluidOption", "fluidPanel"])
             this.ajax = page.ajax;
             this.fluidId = page.fluidId;
             this.host = page.host;
+            this.showToolBar = page.showToolBar;
             /*
              TODO: create page transition
              if (page.animate) {
@@ -255,10 +256,9 @@ angular.module("fluidPage", ["fluidHttp", "fluidOption", "fluidPanel"])
                     }
                 }, $event);
             };
-            this.load = function (ok, failed) {
-                this.onLoad(function () {
-                    ok();
-                }, failed);
+            this.load = function (ok, cancel) {
+                ok();
+                this.onLoad(cancel);
             };
             this.failed = function (reason) {
                 rs.$broadcast("page_close_failed_evt" + this.fluidId + "_pg_" + this.name, reason);
@@ -277,8 +277,7 @@ angular.module("fluidPage", ["fluidHttp", "fluidOption", "fluidPanel"])
                     cancel();
                 });
             };
-            this.onLoad = function (ok, failed) {
-                ok();
+            this.onLoad = function (cancel) {
             };
             this.onClose = function (ok, cancel) {
                 ok();

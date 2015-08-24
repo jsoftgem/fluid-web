@@ -2,14 +2,8 @@
   "id": "moduleBasic",
   "name": "moduleBasic",
   "title": "Basic - Locked",
-  "size": 100,
-  "glyph": "fa fa-gears",
   "useImg": true,
   "imgSrc": "docs/module_basic/icon.png",
-  "active": true,
-  "locked": false,
-  "closeable": false,
-  "showToolBar": false,
   "lazyLoad": true,
   "moduleJS": "moduleBasic",
   "moduleFiles": "docs/module_basic/module-basic.js",
@@ -26,7 +20,8 @@
         "isArray": true,
         "auto": true,
         "url": "docs/module_basic/pages/page1-data.json"
-      }
+      },
+      "showToolBar": true
     }
   ]
 }

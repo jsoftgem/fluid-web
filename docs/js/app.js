@@ -17,10 +17,6 @@ angular.module("mainApp", ["fluid"])
 
             s.frame = new FrameService('appFrame');
 
-            s.frame.fullScreen = true;
-
-            s.frame.openTask("moduleBasic");
-
             s.getReducedHeight = function () {
                 var bottomHeight = $(".navbar-fixed-bottom").innerHeight();
                 var topHeight = $(".navbar-fixed-top").innerHeight();

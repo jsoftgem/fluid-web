@@ -705,49 +705,41 @@ fluidComponents
  */
 
 
-function Task() {
-    var task = {};
-
-    task.id = undefined;
-
-    task.glyph = undefined;
-
-    task.title = undefined;
-
-    task.active = undefined;
-
-    task.size = undefined;
-
-    task.pinned = undefined;
-
-    task.locked = undefined;
-
-    task.url = undefined;
-
-    task.page = undefined;
-
-    task.pages = undefined;
-
-    return task;
-}
-
-function Control() {
-    var control = {};
-    control.id = undefined;
-    control.glyph = undefined;
-    control.label = undefined;
-    control.disabled = undefined;
-    control.action = undefined;
-    control.visible = function () {
-        return true
-    };
-    return control;
-}
 
 var eventInterceptorId = "event_interceptor_id_";
 var goToEventID = "event_got_id_";
 var EVENT_NOT_ALLOWED = "not_allowed_";
 var AUTHORIZATION = "authorization";
+
+
+function setTaskDefault(task) {
+
+    if (task.size === undefined || task.size == null) {
+        task.size = 100;
+    }
+    if (task.active === undefined || task.active == null) {
+        task.active = true;
+    }
+    if (task.useImg === undefined || task.useImg == null) {
+        task.useImg = false;
+    }
+
+    if (task.locked === undefined || task.locked == null) {
+        task.locked = false;
+    }
+
+    if (task.closeable === undefined || task.closeable == null) {
+        task.closeable = true;
+    }
+    if (task.showToolBar === undefined || task.showToolBar == null) {
+        task.showToolBar = false;
+    }
+    if (task.glyph === undefined || task.glyph == null) {
+        task.glyph = "fa fa-gear";
+    }
+    return task;
+}
+
 function estimateHeight(height) {
     var _pc = window.innerWidth < 450 ? 55 : window.innerWidth < 768 ? 55 : window.innerWidth < 1200 ? 60 : 50;
     return height - _pc
@@ -1162,6 +1154,8 @@ function loadPage(fluidPanel) {
                 var page = fluidPanel.currentPage();
                 console.debug("util-loadPage.progress-loadPage.page", page);
                 if (page) {
+                    preLoadPage(fluidPanel.task, page);
+                    console.debug("util-loadPage.preLoadPage.fluidPanel", fluidPanel);
                     ok(page);
                 } else {
                     cancel("Page not found.");
@@ -1171,6 +1165,16 @@ function loadPage(fluidPanel) {
     }
 
 }
+
+
+function preLoadPage(task, page) {
+    if (page.showToolBar !== undefined) {
+        task.showToolBar = page.showToolBar;
+        console.debug("util-loadPage.preLoadPage.task", task);
+    }
+
+}
+
 function initOption(option, page) {
     if (option) {
         var param = option.param;
@@ -2690,6 +2694,7 @@ angular.module("fluidPage", ["fluidHttp", "fluidOption", "fluidPanel"])
             this.ajax = page.ajax;
             this.fluidId = page.fluidId;
             this.host = page.host;
+            this.showToolBar = page.showToolBar;
             /*
              TODO: create page transition
              if (page.animate) {
@@ -2772,10 +2777,9 @@ angular.module("fluidPage", ["fluidHttp", "fluidOption", "fluidPanel"])
                     }
                 }, $event);
             };
-            this.load = function (ok, failed) {
-                this.onLoad(function () {
-                    ok();
-                }, failed);
+            this.load = function (ok, cancel) {
+                ok();
+                this.onLoad(cancel);
             };
             this.failed = function (reason) {
                 rs.$broadcast("page_close_failed_evt" + this.fluidId + "_pg_" + this.name, reason);
@@ -2794,8 +2798,7 @@ angular.module("fluidPage", ["fluidHttp", "fluidOption", "fluidPanel"])
                     cancel();
                 });
             };
-            this.onLoad = function (ok, failed) {
-                ok();
+            this.onLoad = function (cancel) {
             };
             this.onClose = function (ok, cancel) {
                 ok();
@@ -3036,6 +3039,7 @@ angular.module("fluidPanel", ["oc.lazyLoad", "fluidHttp", "fluidFrame", "fluidMe
                 template: tc.get("templates/fluid/fluidPanel.html"),
                 link: {
                     pre: function (scope) {
+
                         scope.getTaskClass = function () {
                             if (scope.task) {
                                 var match = scope.task.name.match(/[A-Z]/g);
@@ -3502,28 +3506,6 @@ angular.module("fluidPanel", ["oc.lazyLoad", "fluidHttp", "fluidFrame", "fluidMe
                     nextToolBarItem.setId("next_pnl_tool");
                     this.addToolbarItem(nextToolBarItem);
 
-
-                    /*var undoToolBarItem = new ToolBarItem();
-                     undoToolBarItem.glyph = "fa fa-undo";
-                     undoToolBarItem.uiClass = "btn btn-warning";
-                     undoToolBarItem.label = "Unso";
-                     undoToolBarItem.action = function (task, $event) {
-                     this.fluidPanel.nextPage($event);
-                     };
-                     undoToolBarItem.disabled = function () {
-                     var currentPage = this.fluidPanel.currentPage();
-                     var fluidState = fps.fluidPageState(currentPage.name, this.fluidPanel.id);
-                     return fluidState.$currentState === 0;
-                     };
-                     undoToolBarItem.visible = function () {
-                     var currentPage = this.fluidPanel.currentPage();
-                     var fluidState = fps.fluidPageState(currentPage.name, this.fluidPanel.id);
-                     return fluidState.$currentState > 0;
-                     };
-                     undoToolBarItem.setId("undo_pnl_tool");
-                     this.addToolbarItem(undoToolBarItem);*/
-
-
                     var refreshToolBarItem = new ToolBarItem();
                     refreshToolBarItem.setId("refreshToolBarItem");
                     refreshToolBarItem.glyph = "fa fa-refresh";
@@ -3728,17 +3710,7 @@ angular.module("fluidPanel", ["oc.lazyLoad", "fluidHttp", "fluidFrame", "fluidMe
                     };
                     this.currentPage = function () {
                         var page = this.pages[this.fluidBreadcrumb.currentPage()];
-                        this.preLoadPage(page);
                         return page;
-                    };
-
-
-                    this.preLoadPage = function (page) {
-                        if (task.showToolBar === undefined || task.showToolBar === false) {
-                            if (page.showToolBar !== undefined) {
-                                task.showToolBar = page.showToolBar;
-                            }
-                        }
                     };
 
                     this.$destroy = function () {
@@ -4394,7 +4366,8 @@ angular.module("fluidTask", ["fluidSession", "fluidFrame"])
         //TODO: handle task state here; use this in fluidPanel
         var fluidTask = function (defaultTask) {
             var task = {};
-            angular.copy(defaultTask, task);
+
+            angular.copy(setTaskDefault(defaultTask), task);
 
             if (task.ajax) {
                 if (task.ajax.url) {
