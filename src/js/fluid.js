@@ -1,4 +1,4 @@
-/**Fluid Web v0.1.4
+/**Fluid Web v0.1.5
  * Created by Jerico de Guzman
  * October 2014**/
 'use strict';
@@ -9,7 +9,7 @@ var fluidComponents = angular.module("fluid", ["oc.lazyLoad", "LocalStorageModul
 
 var fidKey = /fid=[\w]*;/;
 var pgKey = /pg=[\w]*;/;
-var EVENT_TIME_OUT = "TIME_OUT", EVENT_TASK_LOADED = "TASK_LOAD";
+var EVENT_TIME_OUT = "$taskLoadedError", EVENT_TASK_LOADED = "$taskLoadedSuccess";
 
 fluidComponents.config(["$httpProvider", "localStorageServiceProvider", function (h, ls) {
     ls.setPrefix("fluid")
