@@ -1155,7 +1155,7 @@ function loadPage(fluidPanel) {
                 0;
                 if (page) {
                     preLoadPage(fluidPanel.task, page);
-                    console.debug("util-loadPage.preLoadPage.fluidPanel", fluidPanel);
+                    0;
                     ok(page);
                 } else {
                     cancel("Page not found.");
@@ -1170,7 +1170,7 @@ function loadPage(fluidPanel) {
 function preLoadPage(task, page) {
     if (page.showToolBar !== undefined) {
         task.showToolBar = page.showToolBar;
-        console.debug("util-loadPage.preLoadPage.task", task);
+        0;
     }
 
 }
