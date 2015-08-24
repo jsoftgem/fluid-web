@@ -270,7 +270,8 @@ angular.module("fluidTask", ["fluidSession", "fluidFrame"])
         //TODO: handle task state here; use this in fluidPanel
         var fluidTask = function (defaultTask) {
             var task = {};
-            angular.copy(defaultTask, task);
+
+            angular.copy(setTaskDefault(defaultTask), task);
 
             if (task.ajax) {
                 if (task.ajax.url) {

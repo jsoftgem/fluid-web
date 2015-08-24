@@ -1,6 +1,6 @@
 {
   "name": "fluid-web",
-  "version": "0.1.4",
+  "version": "0.1.5",
   "main": [
     "src/js/fluid.js",
     "src/css/fluid.css"

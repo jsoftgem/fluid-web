@@ -38,6 +38,7 @@ angular.module("fluidPanel", ["oc.lazyLoad", "fluidHttp", "fluidFrame", "fluidMe
                 template: tc.get("templates/fluid/fluidPanel.html"),
                 link: {
                     pre: function (scope) {
+
                         scope.getTaskClass = function () {
                             if (scope.task) {
                                 var match = scope.task.name.match(/[A-Z]/g);
@@ -504,28 +505,6 @@ angular.module("fluidPanel", ["oc.lazyLoad", "fluidHttp", "fluidFrame", "fluidMe
                     nextToolBarItem.setId("next_pnl_tool");
                     this.addToolbarItem(nextToolBarItem);
 
-
-                    /*var undoToolBarItem = new ToolBarItem();
-                     undoToolBarItem.glyph = "fa fa-undo";
-                     undoToolBarItem.uiClass = "btn btn-warning";
-                     undoToolBarItem.label = "Unso";
-                     undoToolBarItem.action = function (task, $event) {
-                     this.fluidPanel.nextPage($event);
-                     };
-                     undoToolBarItem.disabled = function () {
-                     var currentPage = this.fluidPanel.currentPage();
-                     var fluidState = fps.fluidPageState(currentPage.name, this.fluidPanel.id);
-                     return fluidState.$currentState === 0;
-                     };
-                     undoToolBarItem.visible = function () {
-                     var currentPage = this.fluidPanel.currentPage();
-                     var fluidState = fps.fluidPageState(currentPage.name, this.fluidPanel.id);
-                     return fluidState.$currentState > 0;
-                     };
-                     undoToolBarItem.setId("undo_pnl_tool");
-                     this.addToolbarItem(undoToolBarItem);*/
-
-
                     var refreshToolBarItem = new ToolBarItem();
                     refreshToolBarItem.setId("refreshToolBarItem");
                     refreshToolBarItem.glyph = "fa fa-refresh";
@@ -730,17 +709,7 @@ angular.module("fluidPanel", ["oc.lazyLoad", "fluidHttp", "fluidFrame", "fluidMe
                     };
                     this.currentPage = function () {
                         var page = this.pages[this.fluidBreadcrumb.currentPage()];
-                        this.preLoadPage(page);
                         return page;
-                    };
-
-
-                    this.preLoadPage = function (page) {
-                        if (task.showToolBar === undefined || task.showToolBar === false) {
-                            if (page.showToolBar !== undefined) {
-                                task.showToolBar = page.showToolBar;
-                            }
-                        }
                     };
 
                     this.$destroy = function () {

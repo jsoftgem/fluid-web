@@ -3,49 +3,41 @@
  */
 
 
-function Task() {
-    var task = {};
-
-    task.id = undefined;
-
-    task.glyph = undefined;
-
-    task.title = undefined;
-
-    task.active = undefined;
-
-    task.size = undefined;
-
-    task.pinned = undefined;
-
-    task.locked = undefined;
-
-    task.url = undefined;
-
-    task.page = undefined;
-
-    task.pages = undefined;
-
-    return task;
-}
-
-function Control() {
-    var control = {};
-    control.id = undefined;
-    control.glyph = undefined;
-    control.label = undefined;
-    control.disabled = undefined;
-    control.action = undefined;
-    control.visible = function () {
-        return true
-    };
-    return control;
-}
 
 var eventInterceptorId = "event_interceptor_id_";
 var goToEventID = "event_got_id_";
 var EVENT_NOT_ALLOWED = "not_allowed_";
 var AUTHORIZATION = "authorization";
+
+
+function setTaskDefault(task) {
+
+    if (task.size === undefined || task.size == null) {
+        task.size = 100;
+    }
+    if (task.active === undefined || task.active == null) {
+        task.active = true;
+    }
+    if (task.useImg === undefined || task.useImg == null) {
+        task.useImg = false;
+    }
+
+    if (task.locked === undefined || task.locked == null) {
+        task.locked = false;
+    }
+
+    if (task.closeable === undefined || task.closeable == null) {
+        task.closeable = true;
+    }
+    if (task.showToolBar === undefined || task.showToolBar == null) {
+        task.showToolBar = false;
+    }
+    if (task.glyph === undefined || task.glyph == null) {
+        task.glyph = "fa fa-gear";
+    }
+    return task;
+}
+
 function estimateHeight(height) {
     var _pc = window.innerWidth < 450 ? 55 : window.innerWidth < 768 ? 55 : window.innerWidth < 1200 ? 60 : 50;
     return height - _pc
@@ -460,6 +452,8 @@ function loadPage(fluidPanel) {
                 var page = fluidPanel.currentPage();
                 console.debug("util-loadPage.progress-loadPage.page", page);
                 if (page) {
+                    preLoadPage(fluidPanel.task, page);
+                    console.debug("util-loadPage.preLoadPage.fluidPanel", fluidPanel);
                     ok(page);
                 } else {
                     cancel("Page not found.");
@@ -469,6 +463,16 @@ function loadPage(fluidPanel) {
     }
 
 }
+
+
+function preLoadPage(task, page) {
+    if (page.showToolBar !== undefined) {
+        task.showToolBar = page.showToolBar;
+        console.debug("util-loadPage.preLoadPage.task", task);
+    }
+
+}
+
 function initOption(option, page) {
     if (option) {
         var param = option.param;
