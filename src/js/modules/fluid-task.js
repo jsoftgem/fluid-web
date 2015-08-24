@@ -258,12 +258,12 @@ angular.module("fluidTask", ["fluidSession", "fluidFrame"])
             }
 
             return deferred.promise;
-        }
+        };
         taskService.loadAjax = function (task) {
             return q(function (resolve, reject) {
 
             });
-        }
+        };
         return taskService;
     }])
     .factory("FluidTask", ["fluidTaskService", "$resource", "fluidFrameHandler", function (fluidTaskService, r, fluidFrameHandler) {
