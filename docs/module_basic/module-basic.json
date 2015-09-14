@@ -13,7 +13,7 @@
       "id": 1,
       "name": "page1",
       "title": "Home",
-      "home": "docs/module_basic/pages/page.html",
+      "home": "docs/module_basic/pages/page1.html",
       "isHome": true,
       "controller": "moduleBasicCtrl",
       "ajax": {

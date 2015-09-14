@@ -3076,7 +3076,7 @@ angular.module("fluidPage", ["fluidHttp", "fluidOption", "fluidPanel"])
                     }
                 }
 
-                return sce.trustAsUrl(page.home);
+                return page.home;
             }
 
         };
