@@ -1,12 +1,12 @@
 <span class="fluid-taskcontrols">
-      <div class="hidden-xs hidden-sm hidden-md hidden25 btn-group btn-group-xs">
+      <div class="hidden-xs hidden-sm hidden-md hidden25 btn-group btn-group-lg">
           <button id="{{control.getId($index)}}" type="button" ng-if="control.visible()" ng-disbabled="control.disabled()"
                   class="{{control.uiClass}}"
                   ng-repeat="control in fluidPanel.controls| reverse"
                   ng-class="control.class"
                   ng-click="control.action(task,$event)"><i class="{{control.glyph}} control-glyph"></i></button>
       </div>
-      <div class="hidden-fullscreen-lg hidden100 hidden50 hidden75 btn-group btn-group-xs small">
+      <div class="hidden-fullscreen-lg hidden100 hidden50 hidden75 btn-group btn-group-lg small">
           <a href="#" class="icon dropdown-toggle fa-inverse" data-toggle='dropdown'>
               <fluid-task-icon task="task"></fluid-task-icon>
           </a>

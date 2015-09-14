@@ -9,7 +9,10 @@ angular.module("mainApp", ["fluid"])
             name: "moduleBasic",
             url: "docs/module_basic/module-basic.json"
         });
-
+        tsp.setTask({
+            name: "pInventory",
+            url: "modules/inventory.json"
+        });
 
     }])
     .controller("mainCtrl", ["$scope", "fluidFrameService", "sessionService",

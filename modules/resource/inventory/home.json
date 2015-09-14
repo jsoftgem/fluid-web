@@ -1,0 +1,23 @@
+[
+  {
+    "categories": "Music/album",
+    "description": "Beatles - While Ablum",
+    "quantity": 100,
+    "price": 395.00,
+    "currency": "PHP"
+  },
+  {
+    "categories": "Clothes/garments",
+    "description": "Temple Dress",
+    "quantity": 500,
+    "price": 995.00,
+    "currency": "PHP"
+  },
+  {
+    "categories": "Clothes/accessories",
+    "description": "Black Belt",
+    "quantity": 200,
+    "price": 595.00,
+    "currency": "PHP"
+  }
+]

@@ -1,0 +1,29 @@
+{
+  "id": "pInventory",
+  "name": "pInventory",
+  "title": "Inventory Summary",
+  "size": 100,
+  "glyph": "fa fa-gears",
+  "useImg": false,
+  "imgSrc": "modules/resource/inventory/assets/inventory.png",
+  "closeable": false,
+  "showToolBar": false,
+  "lazyLoad": true,
+  "moduleJS": "portfolio.inventory",
+  "moduleFiles": "modules/resource/inventory/inventory.js",
+  "pages": [
+    {
+      "id": 5,
+      "name": "home",
+      "title": "Summary",
+      "controller": "homeCtrl",
+      "html": "modules/inventory/pages/home.html",
+      "ajax": {
+        "isArray": true,
+        "url": "modules/resource/inventory/home.json",
+        "auto": true
+      },
+      "isHome": true
+    }
+  ]
+}

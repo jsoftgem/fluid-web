@@ -31,7 +31,7 @@ angular.module("fluidInclude", [])
                 }
 
                 elem.html(tc.get($scope.loaderTemplate));
-
+                console.debug("fluid-include.attr.url", attrs.url);
                 if (tc.get(attrs.url)) {
                     elem.html(c(angular.element(tc.get(attrs.url)))($scope));
                     t(function () {

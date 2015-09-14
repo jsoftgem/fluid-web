@@ -204,14 +204,20 @@
     transition: width 0.2s;
 }
 
+.fluid-panel .panel-heading-height {
+    height: 48px;
+}
+
 .fullscreen .fluid-panel {
     width: 100%;
 }
 
 .fluid-panel .fluid-task-icon img {
-    -webkit-transform: scale(1.5, 1.5);
-    transform: scale(1.5, 1.5);
-    margin-bottom: -2px;
+    -webkit-transform: scale(2.2, 2.2);
+    transform: scale(2.2, 2.2);
+    margin-left: 1px;
+    margin-right: 1px;
+    margin-bottom: -15px;
 }
 
 .fluid-panel .fluid-task-icon i {
@@ -229,7 +235,6 @@
 
 .fluid-panel .panel-heading {
     padding: 0;
-    min-height: 25px;
 }
 
 .fluid-panel .panel-title {
@@ -287,7 +292,7 @@
 }
 
 .fluid-panel-icon-control {
-    margin-right: 5px;;
+    margin-right: 5px;
 }
 
 .fluid-panel-page {
@@ -301,8 +306,8 @@
 }
 
 .fluid-panel-page-list-hidden {
-    width: 0px;
-    height: 0px;
+    width: 0;
+    height: 0;
 }
 
 .fluid-panel-content {
