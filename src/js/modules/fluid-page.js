@@ -27,7 +27,7 @@ angular.module("fluidPage", ["fluidHttp", "fluidOption", "fluidPanel"])
                                     .then(function (data) {
                                         console.debug("fluidPage-loadPage.data", data);
                                         scope.data = data;
-                                        pageElement.html("<ng-include ng-controller='" + scope.fluidPage.controller + "' class='page' src='fluidPageService.render(fluidPage)' onload='onLoad()'></ng-include>");
+                                        pageElement.html("<fluid-include ng-controller='" + scope.fluidPage.controller + "' class='page' url='{{fluidPageService.render(fluidPage)}}' complete='onLoad()'></fluid-include>");
                                         pageElement.attr("page-name", newPage.name);
                                         c(pageElement.contents())(scope);
                                         console.debug("fluidPage-loadPage.loaded-page", newPage);
@@ -36,7 +36,7 @@ angular.module("fluidPage", ["fluidHttp", "fluidOption", "fluidPanel"])
                                         //TODO: add error loading page
                                     });
                             } else {
-                                pageElement.html("<ng-include ng-controller='" + scope.fluidPage.controller + "' class='page' src='fluidPageService.render(fluidPage)' onload='onLoad()'></ng-include>");
+                                pageElement.html("<fluid-include  ng-controller='" + scope.fluidPage.controller + "' class='page' url='{{fluidPageService.render(fluidPage)}}' complete='onLoad()'></fluid-include>");
                                 pageElement.attr("page-name", newPage.name);
                                 c(pageElement.contents())(scope);
                                 console.debug("fluidPage-loadPage.loaded-page", newPage);
@@ -317,7 +317,6 @@ angular.module("fluidPage", ["fluidHttp", "fluidOption", "fluidPanel"])
     .service("fluidPageService", ["$templateCache", "$q", "$sce", "$timeout", function (tc, q, sce) {
         this.pages = [];
         this.states = [];
-
         this.pageState = function (name) {
 
             if (this.states[name] !== undefined) {
@@ -362,7 +361,6 @@ angular.module("fluidPage", ["fluidHttp", "fluidOption", "fluidPanel"])
                 this.states[name] = null;
             }
         };
-
         this.loadAjax = function (fluidPage) {
             var fps = this;
             return q(function (resolve) {
@@ -460,7 +458,6 @@ angular.module("fluidPage", ["fluidHttp", "fluidOption", "fluidPanel"])
         this.clear = function (page) {
             this.pages[page] = undefined;
         };
-
         this.render = function (page) {
             if (page) {
                 if (page.static) {

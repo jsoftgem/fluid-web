@@ -126,6 +126,9 @@
 .fluid-frame .fullscreen {
     padding: 0px;
 }
+.fluid-include {
+    height: 300px;
+}
 .fluid-message {
     padding: 0 15px;
 }

@@ -5,7 +5,7 @@
 
 var fluidComponents = angular.module("fluid", ["oc.lazyLoad", "LocalStorageModule", "ngResource", "fluidTemplates", "fluidSession",
     "fluidHttp", "fluidFrame", "fluidMessage", "fluidOption", "fluidTool", "fluidPage", "fluidPanel", "fluidTasknav", "fluidTask", "fluidTaskcontrols",
-    "fluidFactories"]);
+    "fluidFactories", "fluidInclude"]);
 
 var fidKey = /fid=[\w]*;/;
 var pgKey = /pg=[\w]*;/;
