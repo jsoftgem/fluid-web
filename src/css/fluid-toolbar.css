@@ -1,7 +1,10 @@
 .fluid-toolbar {
+    margin-top: -4px;
+    display: inline-block;
     background-color: rgba(204, 229, 255, 0.5);
 }
 
-.fluid-toolbar .btn-group {
+.fluid-toolbar.fluid-toolbar-group {
     overflow-x: hidden;
+
 }

@@ -1,6 +1,8 @@
 <div class="fluid-toolbar">
-    <div class="btn-group btn-group-lg hidden-xs hidden-sm hidden-md" ng-if="fluidPanel && fluidPanel.toolbarItems && fluidPanel.toolbarItems.length > 0">
-        <button id="{{control.getId($index)}}" ng-if="control.visible()" ng-disabled="control.disabled()" class="{{control.class}}"
+    <div class="btn-group btn-group-lg hidden-xs hidden-sm hidden-md"
+         ng-if="fluidPanel && fluidPanel.toolbarItems && fluidPanel.toolbarItems.length > 0">
+        <button id="{{control.getId($index)}}" ng-if="control.visible()" ng-disabled="control.disabled()"
+                class="{{control.class}}"
                 ng-repeat="control in fluidPanel.toolbarItems"
                 ng-class="control.uiClass"
                 type="{{control.type}}" title="{{control.label}}"
@@ -9,8 +11,10 @@
         </button>
     </div>
 
-    <div class="btn-group btn-group-lg hidden-lg" role="toolbar" ng-if="fluidPanel && fluidPanel.toolbarItems && fluidPanel.toolbarItems.length > 0">
-        <button id="{{control.getId($index)}}" ng-if="control.visible()" ng-disabled="control.disabled()" class="{{control.class}}"
+    <div class="btn-group btn-group-lg hidden-lg" role="toolbar"
+         ng-if="fluidPanel && fluidPanel.toolbarItems && fluidPanel.toolbarItems.length > 0">
+        <button id="{{control.getId($index)}}" ng-if="control.visible()" ng-disabled="control.disabled()"
+                class="{{control.class}}"
                 ng-repeat="control in fluidPanel.toolbarItems"
                 ng-class="control.uiClass"
                 type="{{control.type}}" title="{{control.label}}"
