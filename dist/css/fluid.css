@@ -178,6 +178,7 @@
     overflow-y: auto;
 }
 .fluid-page {
+    display: inline-block;
     background: rgba(255, 255, 255, 0.5);
 }
 
