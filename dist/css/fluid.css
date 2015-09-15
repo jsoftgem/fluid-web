@@ -1,8 +1,7 @@
 .fluid-breadcrumb {
     overflow: hidden;
     float: left;
-    margin-right: -5px;
-    max-height: 22px;
+    padding: 15px 0;
 }
 
 .item {
@@ -213,19 +212,18 @@
 }
 
 .fluid-panel .fluid-task-icon img {
-    -webkit-transform: scale(2.2, 2.2);
-    transform: scale(2.2, 2.2);
+    -webkit-transform: scale(2.0, 2.2);
+    transform: scale(2.0, 2.2);
     margin-left: 1px;
     margin-right: 1px;
-    margin-bottom: -15px;
+}
+
+.fluid-panel .small {
+    padding: 15px 0;
 }
 
 .fluid-panel .fluid-task-icon i {
-    color: dimgrey;
-}
-
-.fullscreen .fluid-task-icon i {
-    color: dimgrey;
+    color : dimgrey;
 }
 
 .fluid-panel .containter {
@@ -244,6 +242,7 @@
 .fluid-panel .panel-title .left {
     float: left;
     margin-right: 3px;
+    padding: 15px 0;
 }
 
 .fluid-panel .panel-title .fluid-title-text {
@@ -517,11 +516,14 @@ body {
 
 }
 .fluid-toolbar {
+    margin-top: -4px;
+    display: inline-block;
     background-color: rgba(204, 229, 255, 0.5);
 }
 
-.fluid-toolbar .btn-group {
+.fluid-toolbar.fluid-toolbar-group {
     overflow-x: hidden;
+
 }
 /*
 To change this license header, choose License Headers in Project Properties.
