@@ -19,5 +19,26 @@
     "quantity": 200,
     "price": 595.00,
     "currency": "PHP"
+  },
+  {
+    "categories": "Accessories",
+    "description": "Nike Key Chain",
+    "quantity": 120,
+    "price": 299.00,
+    "currency": "PHP"
+  },
+  {
+    "categories": "Clothes/underwear",
+    "description": "Calvin Klein Sports",
+    "quantity": 90,
+    "price": 1995.00,
+    "currency": "PHP"
+  },
+  {
+    "categories": "Electronics/gadgets",
+    "description": "Nokia n95",
+    "quantity": 200,
+    "price": 10595.00,
+    "currency": "PHP"
   }
 ]

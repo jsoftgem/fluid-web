@@ -37,7 +37,10 @@ angular.module("fluidPanel", ["oc.lazyLoad", "fluidHttp", "fluidFrame", "fluidMe
                 replace: true,
                 template: tc.get("templates/fluid/fluidPanel.html"),
                 link: {
-                    pre: function (scope) {
+                    pre: function (scope, element) {
+
+                        scope.fluidFrame = new FluidFrame(scope.frame);
+
 
                         scope.getTaskClass = function () {
                             if (scope.task) {
@@ -57,7 +60,7 @@ angular.module("fluidPanel", ["oc.lazyLoad", "fluidHttp", "fluidFrame", "fluidMe
                                 scope.fluidPanel.frame.fluidPanel[scope.fluidPanel.id] = undefined;
                             }
                         });
-                        scope.fluidFrame = new FluidFrame(scope.frame);
+
                         scope.fluidTask = {};
                         scope.viewport = v.view;
                         $(window).on("resize", function () {
@@ -121,6 +124,9 @@ angular.module("fluidPanel", ["oc.lazyLoad", "fluidHttp", "fluidFrame", "fluidMe
                                 ok(scope.task);
                                 console.debug("fluidPanel.load-2");
                             }
+                            element.ready(function () {
+                                scope.fluidFrame.$().scrollTo(element, 200);
+                            });
                         };
                         scope.setSize = function (size) {
                             console.debug("fluidPanel2-setSize.size", size);
@@ -411,7 +417,22 @@ angular.module("fluidPanel", ["oc.lazyLoad", "fluidHttp", "fluidFrame", "fluidMe
                     fluidScreenControl.visible = function () {
                         return this.fluidPanel.frame.fullScreen;
                     };
+
                     this.addControl(fluidScreenControl);
+                    var refreshControl = new TaskControl();
+                    refreshControl.setId("refreshToolBarItem");
+                    refreshControl.glyph = "fa fa-refresh";
+                    refreshControl.uiClass = "btn btn-success";
+                    refreshControl.label = "Refresh";
+                    refreshControl.action = function (task, $event) {
+                        var page = this.fluidPanel.getPage(this.fluidPanel.fluidBreadcrumb.currentPage());
+                        page.refresh(page.$scope().loadPage,
+                            function () {
+                            }, $event);
+                    };
+                    refreshControl.setId("refresh_pnl_control");
+                    this.addControl(refreshControl);
+
 
                     var minimizeControl = new TaskControl()
                     minimizeControl.setId("minimizePanel");
@@ -505,19 +526,6 @@ angular.module("fluidPanel", ["oc.lazyLoad", "fluidHttp", "fluidFrame", "fluidMe
                     nextToolBarItem.setId("next_pnl_tool");
                     this.addToolbarItem(nextToolBarItem);
 
-                    var refreshToolBarItem = new ToolBarItem();
-                    refreshToolBarItem.setId("refreshToolBarItem");
-                    refreshToolBarItem.glyph = "fa fa-refresh";
-                    refreshToolBarItem.uiClass = "btn btn-success";
-                    refreshToolBarItem.label = "Refresh";
-                    refreshToolBarItem.action = function (task, $event) {
-                        var page = this.fluidPanel.getPage(this.fluidPanel.fluidBreadcrumb.currentPage());
-                        page.refresh(page.$scope().loadPage,
-                            function () {
-                            }, $event);
-                    };
-                    refreshToolBarItem.setId("refresh_pnl_tool");
-                    this.addToolbarItem(refreshToolBarItem);
 
                     if (task.toolbarItems) {
                         angular.forEach(task.toolbarItems, function (toolbarItem) {

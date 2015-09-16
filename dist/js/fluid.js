@@ -958,16 +958,26 @@ function fillHeight(element, height, reducedHeight) {
     console.debug("fiilHeight-elemHeight: ", elemHeight)
     element.css("height", elemHeight + "px");
 }
-function autoFullscreen(element, height, width) {
+function autoFullscreen(element, height) {
     var offset = getOffset(element, 0, 0);
     console.debug("fluidFrame-autoFullscreen.offset", offset);
     console.debug("fluidFrame-autoFullscreen.element", element);
     console.debug("fluidFrame-autoFullscreen.height", height);
     var pageHeight = (height - (offset > 0 ? (offset + 5) : 0));
-
+    console.debug("autoFullscreen.element-page", element.contents());
     element.find(".fluid-page").ready(function () {
         element.find(".fluid-page").css("height", pageHeight + "px").css("overflow-y", "auto");
     });
+
+}
+function autoPageFullscreen(parent, element, height) {
+    var offset = getOffset(parent, 0, 0);
+    console.debug("fluidFrame-autoFullscreen.offset", offset);
+    console.debug("fluidFrame-autoFullscreen.height", height);
+    var pageHeight = (height - (offset > 0 ? (offset + 5) : 0));
+    console.debug("autoFullscreen.element-page", element.contents());
+    element.css("height", pageHeight + "px").css("overflow-y", "auto");
+
 
 }
 function fixPageHeight(element) {
@@ -1503,7 +1513,6 @@ angular.module("fluidFrame", ["fluidHttp", "fluidTask", "fluidSession", "fluidPr
             scope: {name: "@", fullScreen: "=", showWorkspace: "="},
             link: function (scope, element) {
                 var _t_nf = "templates/fluid/fluidFrameNF.html";
-                var _t_f = "templates/fluid/fluidFrameF.html";
 
                 scope.renderFrame = function () {
                     console.debug("fluidFrame-renderFrame");
@@ -1547,7 +1556,7 @@ angular.module("fluidFrame", ["fluidHttp", "fluidTask", "fluidSession", "fluidPr
                     scope.setViewport();
                 });
                 scope.setViewport = function () {
-                }
+                };
                 scope.setViewport();
 
 
@@ -1555,24 +1564,22 @@ angular.module("fluidFrame", ["fluidHttp", "fluidTask", "fluidSession", "fluidPr
             template: tc.get("templates/fluid/fluidFrame.html")
         }
     }])
-    .directive("fluidFullscreenHeight", ["$window", function ($w) {
+    .directive("fluidFullscreenHeight", ["$window", "$timeout", function ($w, t) {
         return {
-            scope: false,
             restrict: "A",
             link: function (scope, element, attr) {
-
                 var w = angular.element($w);
+
                 if (attr.offset) {
                     scope.offset = attr.offset;
                 }
+
                 w.bind("resize", function () {
                     if (scope.frame.fullScreen) {
                         var frameElement = scope.frame.$();
                         var maxHeight = frameElement.css("height");
                         if (maxHeight) {
-                            console.debug("fluidPanel.fullScreen.resize.maxHeight", maxHeight);
-                            console.debug("fluidPanel.fullScreen.resize.innerHeight", frameElement.innerHeight());
-                            autoFullscreen(element, maxHeight.replace("px", ""), frameElement.innerWidth());
+                            autoFullscreen(frameElement.find(".fluid-panel"), maxHeight.replace("px", ""), frameElement.innerWidth());
                         }
                     }
                 });
@@ -2618,7 +2625,7 @@ angular.module("fluidPage", ["fluidHttp", "fluidOption", "fluidPanel"])
                 scope: {fluidPanel: "="},
                 template: tc.get("templates/fluid/fluidPage.html"),
                 link: {
-                    pre: function (scope) {
+                    pre: function (scope, element) {
                         scope.$on("$destroy", function () {
                             console.debug("fluid-page.$destroy", scope.fluidPage);
                             if (scope.fluidPage) {
@@ -2657,11 +2664,9 @@ angular.module("fluidPage", ["fluidHttp", "fluidOption", "fluidPanel"])
                             if (scope.fluidPanel.frame.fullScreen) {
                                 scope.fluidPanel.frame.$().scrollTop(0);
                                 var maxHeight = scope.fluidPanel.frame.$().css("height");
-                                console.debug("fluidPage.fullScreen.maxHeight", maxHeight);
-                                console.debug("fluidPage.fullScreen.innerHeight", scope.fluidPanel.frame.$().innerHeight());
-                                autoFullscreen(scope.fluidPanel.$(), maxHeight.replace("px", ""), scope.fluidPanel.frame.$().innerWidth());
+                                autoPageFullscreen(scope.fluidPanel.$(), element, maxHeight.replace("px", ""), scope.fluidPanel.frame.$().innerWidth());
                             } else {
-                                scope.fluidPanel.frame.$().find(".fluid-page").css("height", "").css("overflow-y", "");
+                                element.css("height", "").css("overflow-y", "");
                             }
                         }
                     },
@@ -2721,6 +2726,30 @@ angular.module("fluidPage", ["fluidHttp", "fluidOption", "fluidPanel"])
                 replace: true
             }
         }])
+    .directive("fluidPageFullscreen", ["$window", "$timeout", function ($w) {
+        return {
+            restrict: "A",
+            link: function (scope, element, attr) {
+
+                var w = angular.element($w);
+
+                if (attr.offset) {
+                    scope.offset = attr.offset;
+                }
+
+                w.bind("resize", function () {
+                    if (scope.fluidPanel.frame.fullScreen) {
+                        var parent = scope.fluidPanel.$();
+                        var frameElement = scope.fluidPanel.frame.$();
+                        var maxHeight = frameElement.css("height");
+                        if (maxHeight) {
+                            autoPageFullscreen(parent, element, maxHeight.replace("px", ""), frameElement.innerWidth());
+                        }
+                    }
+                });
+            }
+        }
+    }])
     .factory("FluidPage", ["fluidPageService", "$resource", "$q", "$timeout", "$rootScope", function (fps, r, q, t, rs) {
         var fluidPage = function (page) {
 
@@ -3123,7 +3152,10 @@ angular.module("fluidPanel", ["oc.lazyLoad", "fluidHttp", "fluidFrame", "fluidMe
                 replace: true,
                 template: tc.get("templates/fluid/fluidPanel.html"),
                 link: {
-                    pre: function (scope) {
+                    pre: function (scope, element) {
+
+                        scope.fluidFrame = new FluidFrame(scope.frame);
+
 
                         scope.getTaskClass = function () {
                             if (scope.task) {
@@ -3143,7 +3175,7 @@ angular.module("fluidPanel", ["oc.lazyLoad", "fluidHttp", "fluidFrame", "fluidMe
                                 scope.fluidPanel.frame.fluidPanel[scope.fluidPanel.id] = undefined;
                             }
                         });
-                        scope.fluidFrame = new FluidFrame(scope.frame);
+
                         scope.fluidTask = {};
                         scope.viewport = v.view;
                         $(window).on("resize", function () {
@@ -3207,6 +3239,9 @@ angular.module("fluidPanel", ["oc.lazyLoad", "fluidHttp", "fluidFrame", "fluidMe
                                 ok(scope.task);
                                 console.debug("fluidPanel.load-2");
                             }
+                            element.ready(function () {
+                                scope.fluidFrame.$().scrollTo(element, 200);
+                            });
                         };
                         scope.setSize = function (size) {
                             console.debug("fluidPanel2-setSize.size", size);
@@ -3497,7 +3532,22 @@ angular.module("fluidPanel", ["oc.lazyLoad", "fluidHttp", "fluidFrame", "fluidMe
                     fluidScreenControl.visible = function () {
                         return this.fluidPanel.frame.fullScreen;
                     };
+
                     this.addControl(fluidScreenControl);
+                    var refreshControl = new TaskControl();
+                    refreshControl.setId("refreshToolBarItem");
+                    refreshControl.glyph = "fa fa-refresh";
+                    refreshControl.uiClass = "btn btn-success";
+                    refreshControl.label = "Refresh";
+                    refreshControl.action = function (task, $event) {
+                        var page = this.fluidPanel.getPage(this.fluidPanel.fluidBreadcrumb.currentPage());
+                        page.refresh(page.$scope().loadPage,
+                            function () {
+                            }, $event);
+                    };
+                    refreshControl.setId("refresh_pnl_control");
+                    this.addControl(refreshControl);
+
 
                     var minimizeControl = new TaskControl()
                     minimizeControl.setId("minimizePanel");
@@ -3591,19 +3641,6 @@ angular.module("fluidPanel", ["oc.lazyLoad", "fluidHttp", "fluidFrame", "fluidMe
                     nextToolBarItem.setId("next_pnl_tool");
                     this.addToolbarItem(nextToolBarItem);
 
-                    var refreshToolBarItem = new ToolBarItem();
-                    refreshToolBarItem.setId("refreshToolBarItem");
-                    refreshToolBarItem.glyph = "fa fa-refresh";
-                    refreshToolBarItem.uiClass = "btn btn-success";
-                    refreshToolBarItem.label = "Refresh";
-                    refreshToolBarItem.action = function (task, $event) {
-                        var page = this.fluidPanel.getPage(this.fluidPanel.fluidBreadcrumb.currentPage());
-                        page.refresh(page.$scope().loadPage,
-                            function () {
-                            }, $event);
-                    };
-                    refreshToolBarItem.setId("refresh_pnl_tool");
-                    this.addToolbarItem(refreshToolBarItem);
 
                     if (task.toolbarItems) {
                         angular.forEach(task.toolbarItems, function (toolbarItem) {
@@ -4495,23 +4532,25 @@ angular.module("fluidTask", ["fluidSession", "fluidFrame"])
             task.open = function ($event, frame) {
                 if (!task.active) {
                     task.active = true;
-                }
-
-                var frame = fluidFrameHandler.frames[frameKey + task.frame];
-
-                if (frame.fullScreen) {
-                    frame.switchTo(task);
                 } else {
-                    var curFrame = $(".fluid-frame[name='" + frame.name + "']");
-                    curFrame
-                        .ready(function () {
-                            var panel = curFrame.find("div.fluid-panel:eq(" + task.index + ")");
-                            panel.ready(function () {
-                                curFrame.scrollTo(panel, 200);
+                    var frame = fluidFrameHandler.frames[frameKey + task.frame];
+
+                    if (frame.fullScreen) {
+                        frame.switchTo(task);
+                    } else {
+                        var curFrame = $(".fluid-frame[name='" + frame.name + "']");
+                        curFrame
+                            .ready(function () {
+                                var panel = curFrame.find("div.fluid-panel:eq(" + task.index + ")");
+                                panel.ready(function () {
+                                    curFrame.scrollTo(panel, 200);
+                                });
                             });
-                        });
-                    console.debug("fluid-task-task.open", "div.fluid-panel :eq(" + task.index + ")");
+                        console.debug("fluid-task-task.open", "div.fluid-panel :eq(" + task.index + ")");
+                    }
                 }
+
+
             };
 
 
@@ -4768,7 +4807,7 @@ angular.module("templates/fluid/fluidFrameF.html", []).run(["$templateCache", fu
 
 angular.module("templates/fluid/fluidFrameNF.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("templates/fluid/fluidFrameNF.html",
-    "<div class=\"on-complete\"><div class=\"fluid-frame-task\"><fluid-panel task=\"task\" frame=\"{{frame.name}}\" fluid-fullscreen-height ng-if=\"!frame.fullScreen || (frame.fullScreen && frame.task.fluidId === task.fluidId)\" ng-repeat=\"task in frame.tasks | filter:{active:true}\"></fluid-panel></div></div>");
+    "<div class=\"on-complete\"><div class=\"fluid-frame-task\"><fluid-panel task=\"task\" frame=\"{{frame.name}}\" ng-if=\"!frame.fullScreen || (frame.fullScreen && frame.task.fluidId === task.fluidId)\" ng-repeat=\"task in frame.tasks | filter:{active:true}\"></fluid-panel></div></div>");
 }]);
 
 angular.module("templates/fluid/fluidLoader.html", []).run(["$templateCache", function($templateCache) {
@@ -4954,7 +4993,7 @@ angular.module("templates/fluid/fluidOption.html", []).run(["$templateCache", fu
 
 angular.module("templates/fluid/fluidPage.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("templates/fluid/fluidPage.html",
-    "<div class=\"fluid-page\" ng-class=\"!fluidPage.loaded ? 'default-page':''\"></div>");
+    "<div ng-class=\"!fluidPage.loaded ? 'default-page':''\"></div>");
 }]);
 
 angular.module("templates/fluid/fluidPageError.html", []).run(["$templateCache", function($templateCache) {
@@ -5051,7 +5090,7 @@ angular.module("templates/fluid/fluidPageLoader.html", []).run(["$templateCache"
 
 angular.module("templates/fluid/fluidPanel.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("templates/fluid/fluidPanel.html",
-    "<div id=\"_id_fp\" ng-class=\"!fluidPanel.frame.fullScreen ? 'panel panel-default fluid-task ' + size : 'panel panel-default frame-fullscreen col-lg-12'\" class=\"fluid-panel {{getTaskClass()}}\"><div class=\"panel-heading fluid-panel-heading panel-heading-height\" ng-if=\"!task.locked\"><div class=\"panel-title fluid-panel-title\"><div class=\"left\"><a ng-if=\"fluidPanel && !progress.inProgress && !fluidFrame.progress.inProgress && !fluidPanel.frame.fullScreen\" href=\"#\" ng-click=\"collapsePanel()\" class=\"fluid-panel-heading-title\"><fluid-task-icon class=\"hidden-xs hidden-sm hidden-md hidden25\"></fluid-task-icon><span class=\"fluid-title-text\">{{task.title}}</span></a> <span ng-if=\"fluidPanel && !progress.inProgress && !fluidFrame.progress.inProgress && fluidPanel.frame.fullScreen\" class=\"fluid-panel-heading-title\"><fluid-task-icon class=\"hidden-xs hidden-sm hidden-md hidden25\"></fluid-task-icon><span class=\"fluid-title-text\">{{task.title}}</span></span><fluid-loader ng-if=\"progress.inProgress || fluidFrame.progress.inProgress\" class=\"fluid-panel-loader\"></fluid-loader></div><fluid-breadcrumb ng-if=\"fluidPanel && !fluidFrame.progress.inProgress && !progress.inProgress\"></fluid-breadcrumb><fluid-taskcontrols ng-if=\"fluidPanel\" class=\"controls\"></fluid-taskcontrols></div></div><div fluid-progress id=\"_id_fp_mp\" class=\"panel-collapse\" ng-class=\"fluidFrame.fullScreen ? 'collapse in': !task.collapsed ? 'collapse in' : 'collapse' \" asynchronous=\"true\"><div ng-if=\"fluidPanel\" id=\"_id_fpb\" class=\"panel-body container-fluid\"><fluid-option></fluid-option><fluid-tool ng-if=\"task.showToolBar\" class=\"width100pc\"></fluid-tool><fluid-page id=\"_id_fp_p\" fluid-panel=\"fluidPanel\" class=\"{{task.showToolBar ? 'toolbar':''}} width100pc\"></fluid-page></div></div><script ng-if=\"fluidPanel\" id=\"menu_option\" type=\"text/ng-template\"><div class=\"container-fluid\"></div></script><script id=\"_id_fp_msg\" type=\"text/ng-template\"><div class=\"fluid-message\">\n" +
+    "<div id=\"_id_fp\" ng-class=\"!fluidPanel.frame.fullScreen ? 'panel panel-default fluid-task ' + size : 'panel panel-default frame-fullscreen col-lg-12'\" class=\"fluid-panel {{getTaskClass()}}\"><div class=\"panel-heading fluid-panel-heading panel-heading-height\" ng-if=\"!task.locked\"><div class=\"panel-title fluid-panel-title\"><div class=\"left\"><a ng-if=\"fluidPanel && !progress.inProgress && !fluidFrame.progress.inProgress && !fluidPanel.frame.fullScreen\" href=\"#\" ng-click=\"collapsePanel()\" class=\"fluid-panel-heading-title\"><fluid-task-icon class=\"hidden-xs hidden-sm hidden-md hidden25\"></fluid-task-icon><span class=\"fluid-title-text\">{{task.title}}</span></a> <span ng-if=\"fluidPanel && !progress.inProgress && !fluidFrame.progress.inProgress && fluidPanel.frame.fullScreen\" class=\"fluid-panel-heading-title\"><fluid-task-icon class=\"hidden-xs hidden-sm hidden-md hidden25\"></fluid-task-icon><span class=\"fluid-title-text\">{{task.title}}</span></span><fluid-loader ng-if=\"progress.inProgress || fluidFrame.progress.inProgress\" class=\"fluid-panel-loader\"></fluid-loader></div><fluid-breadcrumb ng-if=\"fluidPanel && !fluidFrame.progress.inProgress && !progress.inProgress\"></fluid-breadcrumb><fluid-taskcontrols ng-if=\"fluidPanel\" class=\"controls\"></fluid-taskcontrols></div></div><div fluid-progress id=\"_id_fp_mp\" class=\"panel-collapse\" ng-class=\"fluidFrame.fullScreen ? 'collapse in': !task.collapsed ? 'collapse in' : 'collapse' \" asynchronous=\"true\"><div ng-if=\"fluidPanel\" id=\"_id_fpb\" class=\"panel-body container-fluid\"><fluid-option></fluid-option><fluid-tool ng-if=\"task.showToolBar\" class=\"width100pc\"></fluid-tool><fluid-page id=\"_id_fp_p\" fluid-page-fullscreen fluid-panel=\"fluidPanel\" class=\"{{task.showToolBar ? 'toolbar':''}} width100pc fluid-page\"></fluid-page></div></div><script ng-if=\"fluidPanel\" id=\"menu_option\" type=\"text/ng-template\"><div class=\"container-fluid\"></div></script><script id=\"_id_fp_msg\" type=\"text/ng-template\"><div class=\"fluid-message\">\n" +
     "            <p><span class=\"message-icon\"> <i ng-class=\"fluidMessage.icon\"></i> </span> {{fluidMessage.message}}</p>\n" +
     "        </div></script></div>");
 }]);

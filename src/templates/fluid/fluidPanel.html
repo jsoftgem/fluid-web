@@ -2,7 +2,8 @@
      ng-class="!fluidPanel.frame.fullScreen ? 'panel panel-default fluid-task ' + size : 'panel panel-default frame-fullscreen col-lg-12'"
      class="fluid-panel {{getTaskClass()}}">
     <div class="panel-heading fluid-panel-heading panel-heading-height" ng-if="!task.locked">
-        <div class="panel-title fluid-panel-title">
+        <div class="panel-title
+        fluid-panel-title">
             <div class="left">
                 <a ng-if="fluidPanel && !progress.inProgress && !fluidFrame.progress.inProgress && !fluidPanel.frame.fullScreen"
                    href="#" ng-click="collapsePanel()"
@@ -34,9 +35,9 @@
             * FluidMessage
             -->
             <fluid-tool ng-if="task.showToolBar" class="width100pc"></fluid-tool>
-            <fluid-page id="_id_fp_p"
+            <fluid-page id="_id_fp_p" fluid-page-fullscreen
                         fluid-panel="fluidPanel"
-                        class="{{task.showToolBar ? 'toolbar':''}} width100pc"></fluid-page>
+                        class="{{task.showToolBar ? 'toolbar':''}} width100pc fluid-page"></fluid-page>
 
         </div>
     </div>

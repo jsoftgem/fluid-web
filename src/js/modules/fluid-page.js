@@ -9,7 +9,7 @@ angular.module("fluidPage", ["fluidHttp", "fluidOption", "fluidPanel"])
                 scope: {fluidPanel: "="},
                 template: tc.get("templates/fluid/fluidPage.html"),
                 link: {
-                    pre: function (scope) {
+                    pre: function (scope, element) {
                         scope.$on("$destroy", function () {
                             console.debug("fluid-page.$destroy", scope.fluidPage);
                             if (scope.fluidPage) {
@@ -48,11 +48,9 @@ angular.module("fluidPage", ["fluidHttp", "fluidOption", "fluidPanel"])
                             if (scope.fluidPanel.frame.fullScreen) {
                                 scope.fluidPanel.frame.$().scrollTop(0);
                                 var maxHeight = scope.fluidPanel.frame.$().css("height");
-                                console.debug("fluidPage.fullScreen.maxHeight", maxHeight);
-                                console.debug("fluidPage.fullScreen.innerHeight", scope.fluidPanel.frame.$().innerHeight());
-                                autoFullscreen(scope.fluidPanel.$(), maxHeight.replace("px", ""), scope.fluidPanel.frame.$().innerWidth());
+                                autoPageFullscreen(scope.fluidPanel.$(), element, maxHeight.replace("px", ""), scope.fluidPanel.frame.$().innerWidth());
                             } else {
-                                scope.fluidPanel.frame.$().find(".fluid-page").css("height", "").css("overflow-y", "");
+                                element.css("height", "").css("overflow-y", "");
                             }
                         }
                     },
@@ -112,6 +110,30 @@ angular.module("fluidPage", ["fluidHttp", "fluidOption", "fluidPanel"])
                 replace: true
             }
         }])
+    .directive("fluidPageFullscreen", ["$window", "$timeout", function ($w) {
+        return {
+            restrict: "A",
+            link: function (scope, element, attr) {
+
+                var w = angular.element($w);
+
+                if (attr.offset) {
+                    scope.offset = attr.offset;
+                }
+
+                w.bind("resize", function () {
+                    if (scope.fluidPanel.frame.fullScreen) {
+                        var parent = scope.fluidPanel.$();
+                        var frameElement = scope.fluidPanel.frame.$();
+                        var maxHeight = frameElement.css("height");
+                        if (maxHeight) {
+                            autoPageFullscreen(parent, element, maxHeight.replace("px", ""), frameElement.innerWidth());
+                        }
+                    }
+                });
+            }
+        }
+    }])
     .factory("FluidPage", ["fluidPageService", "$resource", "$q", "$timeout", "$rootScope", function (fps, r, q, t, rs) {
         var fluidPage = function (page) {
 

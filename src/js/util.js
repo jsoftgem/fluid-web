@@ -256,16 +256,26 @@ function fillHeight(element, height, reducedHeight) {
     console.debug("fiilHeight-elemHeight: ", elemHeight)
     element.css("height", elemHeight + "px");
 }
-function autoFullscreen(element, height, width) {
+function autoFullscreen(element, height) {
     var offset = getOffset(element, 0, 0);
     console.debug("fluidFrame-autoFullscreen.offset", offset);
     console.debug("fluidFrame-autoFullscreen.element", element);
     console.debug("fluidFrame-autoFullscreen.height", height);
     var pageHeight = (height - (offset > 0 ? (offset + 5) : 0));
-
+    console.debug("autoFullscreen.element-page", element.contents());
     element.find(".fluid-page").ready(function () {
         element.find(".fluid-page").css("height", pageHeight + "px").css("overflow-y", "auto");
     });
+
+}
+function autoPageFullscreen(parent, element, height) {
+    var offset = getOffset(parent, 0, 0);
+    console.debug("fluidFrame-autoFullscreen.offset", offset);
+    console.debug("fluidFrame-autoFullscreen.height", height);
+    var pageHeight = (height - (offset > 0 ? (offset + 5) : 0));
+    console.debug("autoFullscreen.element-page", element.contents());
+    element.css("height", pageHeight + "px").css("overflow-y", "auto");
+
 
 }
 function fixPageHeight(element) {

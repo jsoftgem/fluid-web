@@ -18,6 +18,7 @@
     "angular-ui-ace": "~0.2.3"
   },
   "devDependencies": {
+    "angular-filter": "~0.5.1",
     "angular-mocks": "*"
   },
   "resolutions": {

@@ -151,6 +151,8 @@ module.exports = function (grunt) {
      grunt.registerTask('minified', ['bower', 'connect:server', 'watch:min']);
      grunt.registerTask('package', ['bower', 'jshint', 'karma:unit', 'html2js:dist', 'concat:dist', 'uglify:dist',
      'clean:temp', 'compress:dist']);*/
-    grunt.registerTask('package', ['bower', 'html2js:dist', 'concat:dist',/* 'strip',*/ 'uglify:dist',
+    grunt.registerTask('dev-package', ['bower', 'html2js:dist', 'concat:dist', 'uglify:dist',
+        'clean:temp', 'compress:dist', 'concat_css', 'cssmin']);
+    grunt.registerTask('package', ['bower', 'html2js:dist', 'concat:dist', 'strip', 'uglify:dist',
         'clean:temp', 'compress:dist', 'concat_css', 'cssmin']);
 }

@@ -1,6 +1,7 @@
 <div class='on-complete'>
     <div class='fluid-frame-task'>
-        <fluid-panel task='task' frame='{{frame.name}}' fluid-fullscreen-height ng-if="!frame.fullScreen || (frame.fullScreen && frame.task.fluidId === task.fluidId)"
+        <fluid-panel task='task' frame='{{frame.name}}'
+                     ng-if="!frame.fullScreen || (frame.fullScreen && frame.task.fluidId === task.fluidId)"
                      ng-repeat='task in frame.tasks | filter:{active:true}'></fluid-panel>
     </div>
 </div>

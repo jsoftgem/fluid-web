@@ -314,23 +314,25 @@ angular.module("fluidTask", ["fluidSession", "fluidFrame"])
             task.open = function ($event, frame) {
                 if (!task.active) {
                     task.active = true;
-                }
-
-                var frame = fluidFrameHandler.frames[frameKey + task.frame];
-
-                if (frame.fullScreen) {
-                    frame.switchTo(task);
                 } else {
-                    var curFrame = $(".fluid-frame[name='" + frame.name + "']");
-                    curFrame
-                        .ready(function () {
-                            var panel = curFrame.find("div.fluid-panel:eq(" + task.index + ")");
-                            panel.ready(function () {
-                                curFrame.scrollTo(panel, 200);
+                    var frame = fluidFrameHandler.frames[frameKey + task.frame];
+
+                    if (frame.fullScreen) {
+                        frame.switchTo(task);
+                    } else {
+                        var curFrame = $(".fluid-frame[name='" + frame.name + "']");
+                        curFrame
+                            .ready(function () {
+                                var panel = curFrame.find("div.fluid-panel:eq(" + task.index + ")");
+                                panel.ready(function () {
+                                    curFrame.scrollTo(panel, 200);
+                                });
                             });
-                        });
-                    console.debug("fluid-task-task.open", "div.fluid-panel :eq(" + task.index + ")");
+                        console.debug("fluid-task-task.open", "div.fluid-panel :eq(" + task.index + ")");
+                    }
                 }
+
+
             };
 
 

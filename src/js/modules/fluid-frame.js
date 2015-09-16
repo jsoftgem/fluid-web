@@ -22,7 +22,6 @@ angular.module("fluidFrame", ["fluidHttp", "fluidTask", "fluidSession", "fluidPr
             scope: {name: "@", fullScreen: "=", showWorkspace: "="},
             link: function (scope, element) {
                 var _t_nf = "templates/fluid/fluidFrameNF.html";
-                var _t_f = "templates/fluid/fluidFrameF.html";
 
                 scope.renderFrame = function () {
                     console.debug("fluidFrame-renderFrame");
@@ -66,7 +65,7 @@ angular.module("fluidFrame", ["fluidHttp", "fluidTask", "fluidSession", "fluidPr
                     scope.setViewport();
                 });
                 scope.setViewport = function () {
-                }
+                };
                 scope.setViewport();
 
 
@@ -74,24 +73,22 @@ angular.module("fluidFrame", ["fluidHttp", "fluidTask", "fluidSession", "fluidPr
             template: tc.get("templates/fluid/fluidFrame.html")
         }
     }])
-    .directive("fluidFullscreenHeight", ["$window", function ($w) {
+    .directive("fluidFullscreenHeight", ["$window", "$timeout", function ($w, t) {
         return {
-            scope: false,
             restrict: "A",
             link: function (scope, element, attr) {
-
                 var w = angular.element($w);
+
                 if (attr.offset) {
                     scope.offset = attr.offset;
                 }
+
                 w.bind("resize", function () {
                     if (scope.frame.fullScreen) {
                         var frameElement = scope.frame.$();
                         var maxHeight = frameElement.css("height");
                         if (maxHeight) {
-                            console.debug("fluidPanel.fullScreen.resize.maxHeight", maxHeight);
-                            console.debug("fluidPanel.fullScreen.resize.innerHeight", frameElement.innerHeight());
-                            autoFullscreen(element, maxHeight.replace("px", ""), frameElement.innerWidth());
+                            autoFullscreen(frameElement.find(".fluid-panel"), maxHeight.replace("px", ""), frameElement.innerWidth());
                         }
                     }
                 });
